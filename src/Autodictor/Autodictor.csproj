@@ -1,0 +1,524 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C93BB634-DE26-421B-9388-DBC08A777798}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MainExample</RootNamespace>
+    <AssemblyName>Автодиктор</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>MainExample.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.2.1.0\lib\net35\MoreLinq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NAudio">
+      <HintPath>bin\Debug\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NickBuhro.Translit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NickBuhro.Translit.1.0.0\lib\net45\NickBuhro.Translit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.3.11\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Reactive.Core, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\net45\System.Reactive.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\net45\System.Reactive.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WinFormsExpander, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WinFormsExpander.0.1.0\lib\net45\WinFormsExpander.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AdminForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdminForm.Designer.cs">
+      <DependentUpon>AdminForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AuthenticationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AuthenticationForm.Designer.cs">
+      <DependentUpon>AuthenticationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BlockingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BlockingForm.Designer.cs">
+      <DependentUpon>BlockingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BoardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BoardForm.Designer.cs">
+      <DependentUpon>BoardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CommunicationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommunicationForm.Designer.cs">
+      <DependentUpon>CommunicationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Comparers\TrainTableRecordComparer.cs" />
+    <Compile Include="Entites\SoundRecordChanges.cs" />
+    <Compile Include="Entites\TrainSheduleTable.cs" />
+    <Compile Include="Extension\ControlExtentions.cs" />
+    <Compile Include="Services\FactoryServices\PreprocessingOutputFactory.cs" />
+    <Compile Include="Services\GetDataService\GetCisOperSh.cs" />
+    <Compile Include="Services\GetDataService\GetCisRegSh.cs" />
+    <Compile Include="Services\GetDataService\GetSheduleDispatcherControl.cs" />
+    <Compile Include="Services\GetDataService\GetSheduleApkDk.cs" />
+    <Compile Include="Services\GetDataService\GetSheduleAbstract.cs" />
+    <Compile Include="Services\SoundRecordPreprocessingService.cs" />
+    <Compile Include="SoundPlayersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoundPlayersForm.Designer.cs">
+      <DependentUpon>SoundPlayersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TrainTableGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TrainTableGrid.Designer.cs">
+      <DependentUpon>TrainTableGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Infrastructure\StructCompare.cs" />
+    <Compile Include="Mappers\Mapper.cs" />
+    <Compile Include="OperativeSheduleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OperativeSheduleForm.Designer.cs">
+      <DependentUpon>OperativeSheduleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OperativeTableAddItemForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OperativeTableAddItemForm.Designer.cs">
+      <DependentUpon>OperativeTableAddItemForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="RegulatorySheduleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RegulatorySheduleForm.Designer.cs">
+      <DependentUpon>RegulatorySheduleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\AuthenticationService.cs" />
+    <Compile Include="Services\QueueSoundService.cs" />
+    <Compile Include="Services\SchedulingPipelineService.cs" />
+    <Compile Include="Services\TaskManagerService.cs" />
+    <Compile Include="SoundConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoundConfiguration.Designer.cs">
+      <DependentUpon>SoundConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StaticDisplayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StaticDisplayForm.Designer.cs">
+      <DependentUpon>StaticDisplayForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TechnicalMessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TechnicalMessageForm.Designer.cs">
+      <DependentUpon>TechnicalMessageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindowForm.Designer.cs">
+      <DependentUpon>MainWindowForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DynamicSoundForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DynamicSoundForm.Designer.cs">
+      <DependentUpon>DynamicSoundForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TrainTableOperative.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TrainTableOperative.Designer.cs">
+      <DependentUpon>TrainTableOperative.cs</DependentUpon>
+    </Compile>
+    <Compile Include="КарточкаСтатическогоЗвуковогоСообщения.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="КарточкаСтатическогоЗвуковогоСообщения.Designer.cs">
+      <DependentUpon>КарточкаСтатическогоЗвуковогоСообщения.cs</DependentUpon>
+    </Compile>
+    <Compile Include="КарточкаДвиженияПоезда.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="КарточкаДвиженияПоезда.Designer.cs">
+      <DependentUpon>КарточкаДвиженияПоезда.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ОкноАрхиваИзменений.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ОкноАрхиваИзменений.Designer.cs">
+      <DependentUpon>ОкноАрхиваИзменений.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ОкноДобавленияПоезда.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ОкноДобавленияПоезда.Designer.cs">
+      <DependentUpon>ОкноДобавленияПоезда.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ОкноНастроек.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ОкноНастроек.Designer.cs">
+      <DependentUpon>ОкноНастроек.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ОкноПрибытияОтправления.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ОкноПрибытияОтправления.Designer.cs">
+      <DependentUpon>ОкноПрибытияОтправления.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Оповещение.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Оповещение.Designer.cs">
+      <DependentUpon>Оповещение.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ПланРасписанияПоезда.cs" />
+    <Compile Include="Предупреждение.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Предупреждение.Designer.cs">
+      <DependentUpon>Предупреждение.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Расписание.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Расписание.Designer.cs">
+      <DependentUpon>Расписание.cs</DependentUpon>
+    </Compile>
+    <Compile Include="СписокВоспроизведения.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="СписокВоспроизведения.Designer.cs">
+      <DependentUpon>СписокВоспроизведения.cs</DependentUpon>
+    </Compile>
+    <Compile Include="СписокСтанций.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="СписокСтанций.Designer.cs">
+      <DependentUpon>СписокСтанций.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ФормаЗаписиСообщения.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ФормаЗаписиСообщения.designer.cs">
+      <DependentUpon>ФормаЗаписиСообщения.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AdminForm.resx">
+      <DependentUpon>AdminForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AuthenticationForm.resx">
+      <DependentUpon>AuthenticationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BlockingForm.resx">
+      <DependentUpon>BlockingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BoardForm.resx">
+      <DependentUpon>BoardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommunicationForm.resx">
+      <DependentUpon>CommunicationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoundPlayersForm.resx">
+      <DependentUpon>SoundPlayersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrainTableGrid.resx">
+      <DependentUpon>TrainTableGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperativeSheduleForm.resx">
+      <DependentUpon>OperativeSheduleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OperativeTableAddItemForm.resx">
+      <DependentUpon>OperativeTableAddItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RegulatorySheduleForm.resx">
+      <DependentUpon>RegulatorySheduleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoundConfiguration.resx">
+      <DependentUpon>SoundConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StaticDisplayForm.resx">
+      <DependentUpon>StaticDisplayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TechnicalMessageForm.resx">
+      <DependentUpon>TechnicalMessageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindowForm.resx">
+      <DependentUpon>MainWindowForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StaticSoundForm.resx">
+      <DependentUpon>StaticSoundForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="DynamicSoundForm.resx">
+      <DependentUpon>DynamicSoundForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrainTableOperative.resx">
+      <DependentUpon>TrainTableOperative.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="КарточкаСтатическогоЗвуковогоСообщения.resx">
+      <DependentUpon>КарточкаСтатическогоЗвуковогоСообщения.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="КарточкаДвиженияПоезда.resx">
+      <DependentUpon>КарточкаДвиженияПоезда.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ОкноАрхиваИзменений.resx">
+      <DependentUpon>ОкноАрхиваИзменений.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ОкноДобавленияПоезда.resx">
+      <DependentUpon>ОкноДобавленияПоезда.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ОкноНастроек.resx">
+      <DependentUpon>ОкноНастроек.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ОкноПрибытияОтправления.resx">
+      <DependentUpon>ОкноПрибытияОтправления.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Оповещение.resx">
+      <DependentUpon>Оповещение.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Предупреждение.resx">
+      <DependentUpon>Предупреждение.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Расписание.resx">
+      <DependentUpon>Расписание.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="СписокВоспроизведения.resx">
+      <DependentUpon>СписокВоспроизведения.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="СписокСтанций.resx">
+      <DependentUpon>СписокСтанций.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ФормаЗаписиСообщения.resx">
+      <DependentUpon>ФормаЗаписиСообщения.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="StaticSoundForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StaticSoundForm.Designer.cs">
+      <DependentUpon>StaticSoundForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Cancel.png" />
+    <Content Include="Images\DVD.PNG" />
+    <Content Include="Images\Icon.ico" />
+    <Content Include="Images\Ok.png" />
+    <Content Include="Images\ping ERROR.png" />
+    <Content Include="Images\ping NO.png" />
+    <Content Include="Images\ping YES - .png" />
+    <Content Include="Images\SmallIcon.gif" />
+    <Content Include="Images\SmallIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>Клиентский профиль .NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.VisualBasic.PowerPacks.10.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft Visual Basic PowerPacks 10.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Установщик Windows 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutodictorBL\AutodictorBL.csproj">
+      <Project>{ef089e5d-a3d1-47ba-a414-f9615e585d45}</Project>
+      <Name>AutodictorBL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommunicationDevices\CommunicationDevices.csproj">
+      <Project>{6a763286-f0a3-4218-85d1-dd8eb40dcff3}</Project>
+      <Name>CommunicationDevices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Communication\Communication.csproj">
+      <Project>{DEA394E0-F62E-459B-98CF-3EC8DA2A90A3}</Project>
+      <Name>Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{a28fd145-e193-4237-9d44-1bdf29b84b69}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{87b6f9ef-6a0d-4daf-9df0-718036b1c8e4}</Project>
+      <Name>Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WCFCis2AvtodictorContract\WCFCis2AvtodictorContract.csproj">
+      <Project>{57ca03dc-052f-445f-a708-edcd02d22e3f}</Project>
+      <Name>WCFCis2AvtodictorContract</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="bin\Debug\NAudio.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6A763286-F0A3-4218-85D1-DD8EB40DCFF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CommunicationDevices</RootNamespace>
+    <AssemblyName>CommunicationDevices</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MoreLinq, Version=2.0.20029.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.2.1.0\lib\net35\MoreLinq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.3.11\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Quartz, Version=2.6.1.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.2.6.1\lib\net40\Quartz.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sprache, Version=1.10.0.37, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sprache.1.10.0.37\lib\net40\Sprache.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sprache.Calc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sprache.Calc.1.0.0\lib\net40\Sprache.Calc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Reactive.Core, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.1.0\lib\net45\System.Reactive.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.1.0\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.1.0\lib\net45\System.Reactive.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.0\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Windows.Threading.3.1.0\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Behavior\BindingBehavior\Helpers\PaggingHelper.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToChange\Binding2ChangesBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToChange\Binding2ChangesEventBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToChange\IBinding2ChangesBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToChange\IBinding2ChangesEventBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToDepartureArrivalSchedule\IBinding2DepatureArrivalShBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToGeneralSchedule\BindingDevice2GeneralShBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToGetData\Binding2GetData.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToGetData\IBinding2GetData.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToPath\BindingDevice2PathBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToGeneralSchedule\IBinding2GeneralShBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToPath\IBinding2PathBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToStatic\Binding2StaticFormBehavior.cs" />
+    <Compile Include="Behavior\BindingBehavior\ToStatic\IBinding2StaticFormBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\HttpBehavior\BaseExhangeHttpBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\HttpBehavior\XmlExhangeHttpBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\ChannelManagement\ChannelManagementExchangeBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SibWayBehavior\BaseSibWayBehavior.cs" />
+    <Compile Include="Behavior\GetDataBehavior\BaseGetDataBehavior.cs" />
+    <Compile Include="Behavior\GetDataBehavior\ConvertGetedData\CisRegularShDataConverter.cs" />
+    <Compile Include="Behavior\GetDataBehavior\ConvertGetedData\CisOperativeShDataConverter.cs" />
+    <Compile Include="Behavior\GetDataBehavior\ConvertGetedData\DispatcherControlDataConverter.cs" />
+    <Compile Include="Behavior\GetDataBehavior\ConvertGetedData\IInputDataConverter.cs" />
+    <Compile Include="DataProviders\ChannelManagementDataProvider\ChannelManagement10ChWriteDataProvider.cs" />
+    <Compile Include="DataProviders\ChannelManagementDataProvider\ChannelManagement20ChWriteDataProvider.cs" />
+    <Compile Include="DataProviders\ChannelManagementDataProvider\ChannelManagementOnOffWriteDataProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\IFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlGetFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlApkDkMoscowFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlChangesFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlSheduleWindowFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlMainWindowFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlStaticWindowFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlTListFormatProvider.cs" />
+    <Compile Include="DataProviders\XmlDataProvider\StreamWriteDataProvider.cs" />
+    <Compile Include="Quartz\Jobs\QuartzJobVerificationActivation.cs" />
+    <Compile Include="Quartz\Shedules\QuartzVerificationActivation.cs" />
+    <Compile Include="Rules\ExchangeRules\BaseExchangeRule.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\ByRulesExchangeSpBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\ByRulesTableExchangeSpBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\TcpIpBehavior\ByRulesTableExchangeTcpIpBehavior.cs" />
+    <Compile Include="DataProviders\BuRuleDataProvider\ByRuleTableWriteDataProvider.cs" />
+    <Compile Include="DataProviders\BuRuleDataProvider\ByRuleWriteDataProvider.cs" />
+    <Compile Include="DataProviders\ILineByLineDrawingTableDataProvider.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\PcBehavior\ArivDepartExhangePcBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\PcBehavior\BaseExhangePcBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\VidorTableLineByLineExchangeSpBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\VidorExchangeBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\DisplSysExchangeBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\IExhangeBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\BaseExhangeSpBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\TcpIpBehavior\BaseExhangeTcpIpBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\TcpIpBehavior\VidorTableLineByLineExchangeTcpIpBehavior.cs" />
+    <Compile Include="ClientWCF\CisClient.cs" />
+    <Compile Include="Devices\Device.cs" />
+    <Compile Include="Devices\DeviceSetting.cs" />
+    <Compile Include="DI\WindsorConfig.cs" />
+    <Compile Include="DataProviders\DisplaySysDataProvider\PanelDispSysWriteDataProvider.cs" />
+    <Compile Include="DataProviders\UniversalInputType.cs" />
+    <Compile Include="DataProviders\VidorDataProvider\PanelVidorTable2StrWriteDataProvider.cs" />
+    <Compile Include="DataProviders\VidorDataProvider\PanelVidorTable1StrWriteDataProvider.cs" />
+    <Compile Include="DataProviders\VidorDataProvider\PanelVidorWriteDataProvider.cs" />
+    <Compile Include="Model\ExchangeModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Behavior\GetDataBehavior\ConvertGetedData\ApkDkVolgogradSheduleDataConverter.cs" />
+    <Compile Include="Services\UitPreprocessingChnagePathDirection4Transit.cs" />
+    <Compile Include="Services\UitPreprocessingOutputService.cs" />
+    <Compile Include="Services\UitPreprocessingTimezone.cs" />
+    <Compile Include="Settings\Conditions.cs" />
+    <Compile Include="Settings\XmlCisSettings\XmlCisSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlExchangeRule.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlPathPermissionSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlTransportSettings\XmlHttpSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlProviderTypeSetting.cs" />
+    <Compile Include="Settings\XmlSettingFactory.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlBindingSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlConditionsSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlCountRowSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlPagingSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlTransportSettings\XmlPcSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlTransportSettings\XmlTcpIpSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlTransportSettings\XmlSpSetting.cs" />
+    <Compile Include="Verification\VerificationActivation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Communication\Communication.csproj">
+      <Project>{dea394e0-f62e-459b-98cf-3ec8da2a90a3}</Project>
+      <Name>Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{a28fd145-e193-4237-9d44-1bdf29b84b69}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{87b6f9ef-6a0d-4daf-9df0-718036b1c8e4}</Project>
+      <Name>Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WCFAvtodictor2PcPanelContract\WCFAvtodictor2PcTableContract.csproj">
+      <Project>{e46e61b7-5efb-4c62-99ba-dba0971e2486}</Project>
+      <Name>WCFAvtodictor2PcTableContract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WCFCis2AvtodictorContract\WCFCis2AvtodictorContract.csproj">
+      <Project>{57ca03dc-052f-445f-a708-edcd02d22e3f}</Project>
+      <Name>WCFCis2AvtodictorContract</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Converters\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="job_scheduling_data_2_0.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
