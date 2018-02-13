@@ -8,18 +8,23 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Threading.Tasks;
 using AutodictorBL;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Rules;
 using AutodictorBL.Sound;
+using Autofac;
+using Autofac.Core;
 using Communication.Annotations;
 using Domain.Abstract;
 using Domain.Concrete;
 using Domain.Concrete.Generic;
 using Domain.Concrete.NoSqlReposutory;
+using Domain.Concrete.XmlRepository;
 using Domain.Entitys;
 using Domain.Entitys.Authentication;
 using Library.Logs;
 using Library.Xml;
 using MainExample.Services;
+using MainExample.Utils;
 
 
 namespace MainExample
@@ -74,6 +79,8 @@ namespace MainExample
             if (InstanceExists())
                 return;
 
+            AutofacConfig.ConfigureContainer();
+
             ЗагрузкаНазванийПутей();
             ЗагрузкаНазванийНаправлений();
             ОкноНастроек.ЗагрузитьНастройки();
@@ -86,14 +93,6 @@ namespace MainExample
 
             AuthenticationService.UsersDbInitialize();//не дожидаемся окончания Task-а загрузки БД
 
-            //загрузка правил создания звуковых шаблонов для TrainRecord.
-            //TODO: TrainRules Вынести в AutodictorBL
-            TrainRules = new TrainRules();
-            var result = TrainRules.LoadSetting();
-            if (!string.IsNullOrEmpty(result))
-            {
-                MessageBox.Show(result);
-            }
 
             try
             {
@@ -124,6 +123,21 @@ namespace MainExample
             AutodictorModel.LoadSetting(Настройки.ВыборУровняГромкости, GetFileName);
 
 
+
+            //DEBUG-------------
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IRepository<TrainTypeByRyle>>();
+                var acc = new AccessTrainTypeByRyle(repResolve);
+                var listRules = acc.GetAll();
+            }
+            //DEBUG-------------
+
+            //DEBUG-------------
+            //IRepository<TrainTypeByRyle> rep = new RepositoryXmlTrainTypeByRyle();
+            //var acc= new AccessTrainTypeByRyle(rep);
+            //var listRules = acc.GetAll();
+            //DEBUG-------------
 
 
             Application.EnableVisualStyles();

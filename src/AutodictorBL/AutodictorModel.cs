@@ -91,6 +91,9 @@ namespace AutodictorBL
 
 
 
+
+
+
         #region Dispouse
 
         public void Dispose()

@@ -60,10 +60,11 @@
     <Compile Include="AutodictorModel.cs" />
     <Compile Include="Builder\TrainRecordBuilder\TrainRecordBuilderBase.cs" />
     <Compile Include="Builder\TrainRecordBuilder\TrainRecordBuilderManual.cs" />
+    <Compile Include="DataAccess\AccessTrainTypeByRyle.cs" />
     <Compile Include="Entites\ВоспроизводимоеСообщение.cs" />
-    <Compile Include="Factory\TrainRecordFactoryBase.cs" />
-    <Compile Include="Factory\TrainRecordFactoryManual.cs" />
-    <Compile Include="Factory\TrainRecordFactoryRemote.cs" />
+    <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryBase.cs" />
+    <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryManual.cs" />
+    <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryRemote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\TrainRules.cs" />
     <Compile Include="Settings\XmlSettingFactory.cs" />

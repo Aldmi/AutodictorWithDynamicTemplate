@@ -1,4 +1,4 @@
-﻿namespace AutodictorBL.Factory
+﻿namespace AutodictorBL.Factory.TrainRecordFactory
 {
     public class TrainRecordFactoryRemote
     {

@@ -6,6 +6,7 @@ using System.Runtime;
 using System.Windows.Forms;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Factory;
+using AutodictorBL.Factory.TrainRecordFactory;
 using Domain.Entitys;
 using MainExample.Entites;
 

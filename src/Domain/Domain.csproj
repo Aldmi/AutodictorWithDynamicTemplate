@@ -47,8 +47,9 @@
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Concrete\Generic\RepositoryEf.cs" />
     <Compile Include="Concrete\NoSqlReposutory\RepositoryNoSql.cs" />
-    <Compile Include="Concrete\RepositoryXmlDirection.cs" />
-    <Compile Include="Concrete\RepositoryXmlPathways.cs" />
+    <Compile Include="Concrete\XmlRepository\RepositoryXmlDirection.cs" />
+    <Compile Include="Concrete\XmlRepository\RepositoryXmlPathways.cs" />
+    <Compile Include="Concrete\XmlRepository\RepositoryXmlTrainTypeByRyle.cs" />
     <Compile Include="Entitys\Authentication\Role.cs" />
     <Compile Include="Entitys\Authentication\User.cs" />
     <Compile Include="Entitys\TrainTypeByRyle.cs" />
@@ -66,6 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{87B6F9EF-6A0D-4DAF-9DF0-718036B1C8E4}</Project>
+      <Name>Library</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

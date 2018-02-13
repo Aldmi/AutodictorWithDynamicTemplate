@@ -1,8 +1,9 @@
 ﻿using AutodictorBL.Builder.TrainRecordBuilder;
+using AutodictorBL.Factory.TrainRecordFactory;
 using Domain.Entitys;
 
 
-namespace AutodictorBL.Factory
+namespace AutodictorBL.Factory.TrainRecordFactory
 {
     public class TrainRecordFactoryManual : TrainRecordFactoryBase
     {

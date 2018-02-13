@@ -5,7 +5,7 @@ using System.Xml.Linq;
 using Domain.Abstract;
 using Domain.Entitys;
 
-namespace Domain.Concrete
+namespace Domain.Concrete.XmlRepository
 {
     public class RepositoryXmlPathways : IRepository<Pathways>
     {
