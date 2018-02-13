@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AutodictorBL.Settings;
 using AutodictorBL.Settings.XmlSound;
 using AutodictorBL.Sound;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using Library.Logs;
 using Library.Xml;
 

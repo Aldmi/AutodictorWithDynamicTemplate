@@ -9,18 +9,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutodictorBL;
 using AutodictorBL.DataAccess;
-using AutodictorBL.Rules;
 using AutodictorBL.Sound;
 using Autofac;
 using Autofac.Core;
 using Communication.Annotations;
-using Domain.Abstract;
-using Domain.Concrete;
-using Domain.Concrete.Generic;
-using Domain.Concrete.NoSqlReposutory;
-using Domain.Concrete.XmlRepository;
-using Domain.Entitys;
-using Domain.Entitys.Authentication;
+using DAL.Abstract.Abstract;
+using DAL.Abstract.Concrete;
+using DAL.Abstract.Entitys;
+using DAL.Abstract.Entitys.Authentication;
+using DAL.NoSqlLiteDb.Repository;
 using Library.Logs;
 using Library.Xml;
 using MainExample.Services;
@@ -41,17 +38,15 @@ namespace MainExample
         public static List<string> НомераПоездов = new List<string>();
 
         public static string ИнфСтрокаНаТабло = "";
-        public static IRepository<Direction> DirectionRepository; // Направления. хранилище XML
-        public static IRepository<Pathways> PathWaysRepository; //Пути. хранилище XML
+        public static IDirectionRepository DirectionRepository; // Направления. хранилище XML
+        public static IPathwaysRepository PathWaysRepository; //Пути. хранилище XML
 
-        public static IRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
-
-        public static IRepository<User> UsersDbRepository; //Пользователи, хранилище NoSqlDb
+        //TODO: IGenericDataRepository НЕ использовать напрямую
+        public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
+        public static IGenericDataRepository<User> UsersDbRepository; //Пользователи, хранилище NoSqlDb
 
         public static Настройки Настройки;
 
-
-        public static TrainRules TrainRules;
 
         public static string[] ТипыОповещения = new string[] { "Не определено", "На Х-ый путь", "На Х-ом пути", "С Х-ого пути" };
         public static string[] ТипыВремени = new string[] { "Прибытие", "Отправление" };
@@ -80,6 +75,17 @@ namespace MainExample
                 return;
 
             AutofacConfig.ConfigureContainer();
+
+
+            //DEBUG-------------
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
+                var acc = new TrainTypeByRyleService(repResolve);
+                var listRules = acc.GetAll();
+            }
+            //DEBUG-------------
+
 
             ЗагрузкаНазванийПутей();
             ЗагрузкаНазванийНаправлений();
@@ -123,19 +129,9 @@ namespace MainExample
             AutodictorModel.LoadSetting(Настройки.ВыборУровняГромкости, GetFileName);
 
 
-
-            //DEBUG-------------
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IRepository<TrainTypeByRyle>>();
-                var acc = new AccessTrainTypeByRyle(repResolve);
-                var listRules = acc.GetAll();
-            }
-            //DEBUG-------------
-
             //DEBUG-------------
             //IRepository<TrainTypeByRyle> rep = new RepositoryXmlTrainTypeByRyle();
-            //var acc= new AccessTrainTypeByRyle(rep);
+            //var acc= new TrainTypeByRyleService(rep);
             //var listRules = acc.GetAll();
             //DEBUG-------------
 
@@ -237,12 +233,23 @@ namespace MainExample
         {
             try
             {
-                var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "Stations.xml"); //все настройки в одном файле
-                if (xmlFile == null)
-                    return;
+                //DEBUG-------------
+                using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+                {
+                    var repResolve = scope.Resolve<IDirectionRepository>();
+                    var dirServ = new DirectionService(repResolve);
+                    var listDirections = dirServ.GetAll();
+                }
+                //DEBUG-------------
 
-                DirectionRepository = new RepositoryXmlDirection(xmlFile);                 //хранилище XML
-                //directionRep = new RepositoryEf<Direction>(dbContext);                   //хранилище БД
+
+
+                //var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "Stations.xml"); //все настройки в одном файле
+                //if (xmlFile == null)
+                //    return;
+
+                //DirectionRepository = new RepositoryXmlDirection(xmlFile);                 //хранилище XML
+                ////directionRep = new RepositoryEf<Direction>(dbContext);                   //хранилище БД
             }
             catch (Exception ex)
             {
@@ -256,12 +263,22 @@ namespace MainExample
         {
             try
             {
-                var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "PathNames.xml"); //все настройки в одном файле
-                if (xmlFile == null)
-                    return;
+                //DEBUG-------------
+                using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+                {
+                    var repResolve = scope.Resolve<IPathwaysRepository>();
+                    var pathWaysServ = new PathwaysService(repResolve);
+                    var listPathwayses = pathWaysServ.GetAll();
+                }
+                //DEBUG-------------
 
-                PathWaysRepository = new RepositoryXmlPathways(xmlFile);                 //хранилище XML
-                //var directionRep = new RepositoryEf<Pathways>(dbContext);              //хранилище БД
+
+                //var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "PathNames.xml"); //все настройки в одном файле
+                //if (xmlFile == null)
+                //    return;
+
+                //PathWaysRepository = new RepositoryXmlPathways(xmlFile);                 //хранилище XML
+                ////var directionRep = new RepositoryEf<Pathways>(dbContext);              //хранилище БД
             }
             catch (Exception ex)
             {

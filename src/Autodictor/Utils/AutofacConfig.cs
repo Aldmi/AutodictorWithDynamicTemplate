@@ -1,7 +1,10 @@
-﻿using Autofac;
-using Domain.Abstract;
-using Domain.Concrete.XmlRepository;
-using Domain.Entitys;
+﻿using System.Collections.Generic;
+using Autofac;
+using Autofac.Core;
+using DAL.Abstract.Concrete;
+using DAL.Abstract.Entitys;
+using DAL.XmlRaw.Repository;
+
 
 namespace MainExample.Utils
 {
@@ -15,14 +18,32 @@ namespace MainExample.Utils
             // получаем экземпляр контейнера
             var builder = new ContainerBuilder();
 
-            // регистрируем споставление типов
-            builder.RegisterType<RepositoryXmlTrainTypeByRyle>().As<IRepository<TrainTypeByRyle>>();
+            RegisterType(builder);
 
             // создаем новый контейнер с теми зависимостями, которые определены выше
-             Container = builder.Build();
+            Container = builder.Build();
 
             // установка сопоставителя зависимостей для WinForms
             //DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+        }
+
+
+        /// <summary>
+        /// регистрируем сопоставление типов
+        /// </summary>
+        private static void RegisterType(ContainerBuilder builder)
+        {
+            builder.RegisterType<XmlRawTrainTypeByRuleRepository>().As<ITrainTypeByRyleRepository>()
+                .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
+                                                      new NamedParameter("fileName", "DynamicSound.xml") });
+
+            builder.RegisterType<XmlRawPathWaysRepository>().As<IPathwaysRepository>()
+                .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
+                                new NamedParameter("fileName", "DynamicSound.xml") });
+
+            builder.RegisterType<XmlRawDirectionRepository>().As<IDirectionRepository>()
+                .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
+                                new NamedParameter("fileName", "DynamicSound.xml") });
         }
     }
 }

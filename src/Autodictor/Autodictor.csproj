@@ -489,9 +489,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\AutodictorBL\AutodictorBL.csproj">
       <Project>{ef089e5d-a3d1-47ba-a414-f9615e585d45}</Project>
@@ -505,9 +503,17 @@
       <Project>{DEA394E0-F62E-459B-98CF-3EC8DA2A90A3}</Project>
       <Name>Communication</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Domain\Domain.csproj">
-      <Project>{a28fd145-e193-4237-9d44-1bdf29b84b69}</Project>
-      <Name>Domain</Name>
+    <ProjectReference Include="..\DAL.Abstract\DAL.Abstract.csproj">
+      <Project>{b3cf5fb8-856d-4b3e-ad4c-376388da658b}</Project>
+      <Name>DAL.Abstract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL.NoSqlLiteDb\DAL.NoSqlLiteDb.csproj">
+      <Project>{13930fa6-7596-4bba-b813-dda9b8dd928c}</Project>
+      <Name>DAL.NoSqlLiteDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL.XmlRaw\DAL.XmlRaw.csproj">
+      <Project>{9402a81c-b557-4027-8f10-a68c57db0054}</Project>
+      <Name>DAL.XmlRaw</Name>
     </ProjectReference>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{87b6f9ef-6a0d-4daf-9df0-718036b1c8e4}</Project>

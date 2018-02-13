@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
+
 
 namespace MainExample.Services.GetDataService
 {

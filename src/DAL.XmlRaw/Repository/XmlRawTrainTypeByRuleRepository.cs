@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
+using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using Library.Xml;
 
 
 namespace DAL.XmlRaw.Repository
 {
-    public class XmlRawTrainTypeByRuleRepository
+    public class XmlRawTrainTypeByRuleRepository : ITrainTypeByRyleRepository
     {
         private readonly XElement _xElement;
         private IEnumerable<TrainTypeByRyle> TrainTypeByRyles { get; set; }

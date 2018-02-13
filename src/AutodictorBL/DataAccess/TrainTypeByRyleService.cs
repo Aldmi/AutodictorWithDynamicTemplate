@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domain.Abstract;
-using Domain.Entitys;
+using DAL.Abstract.Concrete;
+using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.DataAccess
 {
-    public class AccessTrainTypeByRyle
+    public class TrainTypeByRyleService
     {
-        private readonly IRepository<TrainTypeByRyle> _repository;
+        private readonly ITrainTypeByRyleRepository _repository;
 
 
 
         #region ctor
 
-        public AccessTrainTypeByRyle(IRepository<TrainTypeByRyle> repository)
+        public TrainTypeByRyleService(ITrainTypeByRyleRepository repository)
         {
             _repository = repository;
         }

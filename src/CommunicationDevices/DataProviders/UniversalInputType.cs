@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MoreLinq;
 
 

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using CommunicationDevices.Behavior.BindingBehavior.ToStatic;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
-using Domain.Entitys.Authentication;
+using DAL.Abstract.Entitys.Authentication;
 
 
 namespace MainExample

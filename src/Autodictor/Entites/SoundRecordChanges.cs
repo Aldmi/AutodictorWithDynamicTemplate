@@ -1,5 +1,6 @@
 ﻿using System;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
+
 
 namespace MainExample.Entites
 {

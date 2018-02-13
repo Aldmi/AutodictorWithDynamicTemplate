@@ -121,7 +121,8 @@ namespace MainExample
                         inData.Time = new DateTime(2016, 11, 30, 15, 10, 00);
                         inData.Stations = "табло временно не работает";
                         inData.Note = "с остановками:  Химки, Ласточка, Строгино  ";
-                        inData.TypeTrain = Program.TrainRules.TrainTypeRules.FirstOrDefault();
+                        //TODO: использовать TrainTypeByRyleService
+                       // inData.TypeTrain = Program.TrainRules.TrainTypeRules.FirstOrDefault();
 
 
                         if (string.IsNullOrEmpty(sendStr) || string.IsNullOrWhiteSpace(sendStr))
@@ -139,15 +140,16 @@ namespace MainExample
                         }
                         else if (sendStr.ToLower() == "test") //Шаблон отправки ПРИГОРОД
                         {
-                            inData.TypeTrain = Program.TrainRules.TrainTypeRules.FirstOrDefault(); //TypeTrain.Suburban;
+                            //TODO: использовать TrainTypeByRyleService
+                            // inData.TypeTrain = Program.TrainRules.TrainTypeRules.FirstOrDefault(); //TypeTrain.Suburban;
 
                             _devises.ToList()[e.RowIndex].AddCycleFuncData(0, inData);
                             _devises.ToList()[e.RowIndex].AddOneTimeSendData(inData);
                         }
                         else if (sendStr.ToLower() == "testLong") //Шаблон отправки ДАЛЬНИЕ
                         {
-
-                            inData.TypeTrain = Program.TrainRules.TrainTypeRules.FirstOrDefault(); //TypeTrain.Express;
+                            //TODO: использовать TrainTypeByRyleService
+                            //inData.TypeTrain = Program.TrainRules.TrainTypeRules.FirstOrDefault(); //TypeTrain.Express;
                             _devises.ToList()[e.RowIndex].AddCycleFuncData(0, inData);
                             _devises.ToList()[e.RowIndex].AddOneTimeSendData(inData);
                         }

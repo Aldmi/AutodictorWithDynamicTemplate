@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Factory;
 using AutodictorBL.Factory.TrainRecordFactory;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MainExample.Entites;
 
 
@@ -52,14 +52,15 @@ namespace MainExample
             }
 
 
-            var typeTrain = Program.TrainRules.TrainTypeRules.ToList();
-            if (typeTrain.Any())
-            {
-                var typeTrainNames = typeTrain.Select(d => d.NameRu).ToArray();
-                cBТипПоезда.Items.AddRange(typeTrainNames);
-                var selectedIndex = typeTrain.IndexOf(расписаниеПоезда.TrainTypeByRyle);
-                cBТипПоезда.SelectedIndex = selectedIndex;
-            }
+            //TODO: использовать TrainTypeByRyleService
+            //var typeTrain = Program.TrainRules.TrainTypeRules.ToList();
+            //if (typeTrain.Any())
+            //{
+            //    var typeTrainNames = typeTrain.Select(d => d.NameRu).ToArray();
+            //    cBТипПоезда.Items.AddRange(typeTrainNames);
+            //    var selectedIndex = typeTrain.IndexOf(расписаниеПоезда.TrainTypeByRyle);
+            //    cBТипПоезда.SelectedIndex = selectedIndex;
+            //}
 
 
             string[] станции = расписаниеПоезда.Name.Split('-');
@@ -282,8 +283,9 @@ namespace MainExample
 
             РасписаниеПоезда.TrainPathDirection = (byte)cBОтсчетВагонов.SelectedIndex;
 
+            //TODO: использовать TrainTypeByRyleService
             // РасписаниеПоезда.ТипПоезда = (ТипПоезда)cBТипПоезда.SelectedIndex;
-            РасписаниеПоезда.TrainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : Program.TrainRules.TrainTypeRules[cBТипПоезда.SelectedIndex];
+            //РасписаниеПоезда.TrainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : Program.TrainRules.TrainTypeRules[cBТипПоезда.SelectedIndex];
 
 
             РасписаниеПоезда.ChangeTrainPathDirection = chBox_сменнаяНумерация.Checked;
@@ -764,22 +766,23 @@ namespace MainExample
         /// </summary>
         private void cBТипПоезда_SelectedIndexChanged(object sender, EventArgs e)
         {
-           var имяТипаПоезда= (string)cBТипПоезда.SelectedItem;
-           var выбранныйТип= Program.TrainRules.TrainTypeRules.FirstOrDefault(t => t.NameRu == имяТипаПоезда);
-            if (выбранныйТип != null)
-            {
-                var categoryText = "Не определенн";
-                switch (выбранныйТип.CategoryTrain)
-                {
-                    case CategoryTrain.Suburb:
-                        categoryText = "Пригород";
-                        break;
-                    case CategoryTrain.LongDist:
-                        categoryText = "Дальнего след.";
-                        break;
-                }
-                tb_Category.Text = categoryText;
-            }
+            //TODO: использовать TrainTypeByRyleService
+            //var имяТипаПоезда= (string)cBТипПоезда.SelectedItem;
+            //var выбранныйТип= Program.TrainRules.TrainTypeRules.FirstOrDefault(t => t.NameRu == имяТипаПоезда);
+            // if (выбранныйТип != null)
+            // {
+            //     var categoryText = "Не определенн";
+            //     switch (выбранныйТип.CategoryTrain)
+            //     {
+            //         case CategoryTrain.Suburb:
+            //             categoryText = "Пригород";
+            //             break;
+            //         case CategoryTrain.LongDist:
+            //             categoryText = "Дальнего след.";
+            //             break;
+            //     }
+            //     tb_Category.Text = categoryText;
+            // }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
-using AutodictorBL.Rules;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 
 
 namespace AutodictorBL.Builder.TrainRecordBuilder

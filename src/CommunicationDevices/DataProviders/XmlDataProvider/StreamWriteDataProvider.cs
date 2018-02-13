@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using Communication.Annotations;
 using Communication.Interfaces;
-using Domain.Entitys;
 using Library.Extensions;
 using Library.Logs;
 

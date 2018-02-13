@@ -1,4 +1,4 @@
-﻿using Domain.Entitys;
+﻿using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.Builder.TrainRecordBuilder
 {

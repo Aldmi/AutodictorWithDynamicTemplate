@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Entitys;
-using MainExample.Entites;
+using DAL.Abstract.Entitys;
+
 
 namespace MainExample.Services
 {

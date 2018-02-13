@@ -7,7 +7,7 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MainExample.Services;
 
 namespace MainExample.Entites
@@ -238,7 +238,8 @@ namespace MainExample.Entites
                                 int idType;
                                 if (int.TryParse(settings[11], out idType))
                                 {
-                                    данные.TrainTypeByRyle = Program.TrainRules.TrainTypeRules.FirstOrDefault(t => t.Id == idType);
+                                    //TODO: использовать TrainTypeByRyleService
+                                    //данные.TrainTypeByRyle = Program.TrainRules.TrainTypeRules.FirstOrDefault(t => t.Id == idType);
                                 }
 
                                 данные.ActionTrains = null;

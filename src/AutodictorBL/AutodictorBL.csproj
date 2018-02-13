@@ -60,13 +60,14 @@
     <Compile Include="AutodictorModel.cs" />
     <Compile Include="Builder\TrainRecordBuilder\TrainRecordBuilderBase.cs" />
     <Compile Include="Builder\TrainRecordBuilder\TrainRecordBuilderManual.cs" />
-    <Compile Include="DataAccess\AccessTrainTypeByRyle.cs" />
+    <Compile Include="DataAccess\DirectionService.cs" />
+    <Compile Include="DataAccess\PathwaysService.cs" />
+    <Compile Include="DataAccess\TrainTypeByRyleService.cs" />
     <Compile Include="Entites\ВоспроизводимоеСообщение.cs" />
     <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryBase.cs" />
     <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryManual.cs" />
     <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryRemote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rules\TrainRules.cs" />
     <Compile Include="Settings\XmlSettingFactory.cs" />
     <Compile Include="Settings\XmlSound\XmlSoundPlayerSettings.cs" />
     <Compile Include="Sound\ISoundPlayer.cs" />
@@ -85,9 +86,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj">
-      <Project>{a28fd145-e193-4237-9d44-1bdf29b84b69}</Project>
-      <Name>Domain</Name>
+    <ProjectReference Include="..\DAL.Abstract\DAL.Abstract.csproj">
+      <Project>{b3cf5fb8-856d-4b3e-ad4c-376388da658b}</Project>
+      <Name>DAL.Abstract</Name>
     </ProjectReference>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{87b6f9ef-6a0d-4daf-9df0-718036b1c8e4}</Project>

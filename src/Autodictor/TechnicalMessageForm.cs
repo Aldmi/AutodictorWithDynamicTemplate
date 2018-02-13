@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MainExample.Entites;
 
 namespace MainExample

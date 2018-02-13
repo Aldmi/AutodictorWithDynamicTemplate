@@ -4,8 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
 using AutodictorBL.Sound;
-using Domain.Entitys;
-using Domain.Entitys.Authentication;
+using DAL.Abstract.Entitys;
+using DAL.Abstract.Entitys.Authentication;
 using MainExample.Extension;
 using MainExample.Services;
 

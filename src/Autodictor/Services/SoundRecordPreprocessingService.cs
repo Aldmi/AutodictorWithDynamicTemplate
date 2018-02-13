@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
+
 
 namespace MainExample.Services
 {

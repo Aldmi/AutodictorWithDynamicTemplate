@@ -4,7 +4,7 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using AutodictorBL.Entites;
 using AutodictorBL.Settings.XmlSound;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using Microsoft.DirectX.AudioVideoPlayback;
 
 namespace AutodictorBL.Sound

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MainExample.Entites;
 using MainExample.Services;
 using MainExample.Services.FactoryServices;

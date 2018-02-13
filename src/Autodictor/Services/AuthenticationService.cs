@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.Entitys.Authentication;
+using DAL.Abstract.Entitys.Authentication;
+
 
 namespace MainExample.Services
 {
@@ -13,7 +14,6 @@ namespace MainExample.Services
 
         public bool IsAuthentication { get; private set; }
         public User CurrentUser { get; private set; }
-
         public User OldUser { get; private set; }
 
         #endregion

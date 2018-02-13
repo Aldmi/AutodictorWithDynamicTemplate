@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using CommunicationDevices.DataProviders;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MoreLinq;
 
 namespace CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData

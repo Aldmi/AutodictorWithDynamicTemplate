@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using CommunicationDevices.DataProviders;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
+
 
 namespace CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData
 {

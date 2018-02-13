@@ -35,13 +35,12 @@ using CommunicationDevices.DataProviders.VidorDataProvider;
 using CommunicationDevices.DataProviders.XmlDataProvider;
 using CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders;
 using CommunicationDevices.Devices;
-using CommunicationDevices.DI;
 using CommunicationDevices.Rules.ExchangeRules;
 using CommunicationDevices.Settings;
 using CommunicationDevices.Settings.XmlCisSettings;
 using CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings;
 using CommunicationDevices.Settings.XmlDeviceSettings.XmlTransportSettings;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using Library.Logs;
 using Library.Xml;
 using WCFAvtodictor2PcTableContract.DataContract;
@@ -112,9 +111,6 @@ namespace CommunicationDevices.Model
 
         public ExchangeModel()
         {
-            //РЕГИСТРАЦИЯ DI
-            _container.Install(new WindsorConfig());
-
             //РЕГИСТРАЦИЯ МАППИНГА
             Mapper.Initialize(cfg =>
             {

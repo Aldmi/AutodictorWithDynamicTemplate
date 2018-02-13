@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Model;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MainExample.Entites;
 
 
@@ -678,7 +678,8 @@ namespace MainExample.Mappers
                 СтанцияНазначения = data.СтанцияНазначения ?? string.Empty,
                 СтанцияОтправления = data.СтанцияОтправления ?? string.Empty,
                 ТаймерПовторения = data.ТаймерПовторения,
-                ТипПоезда = Program.TrainRules.TrainTypeRules.FirstOrDefault(r=>r.Id == data.IdТипПоезда),
+                //TODO: использовать TrainTypeByRyleService
+                //ТипПоезда = Program.TrainRules.TrainTypeRules.FirstOrDefault(r=>r.Id == data.IdТипПоезда),
                 ТипСообщения = data.ТипСообщения,
                 ФиксированноеВремяОтправления = data.ФиксированноеВремяОтправления,
                 ФиксированноеВремяПрибытия = data.ФиксированноеВремяПрибытия,

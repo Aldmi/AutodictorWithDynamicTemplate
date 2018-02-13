@@ -8,7 +8,7 @@ using AutodictorBL.Entites;
 using AutodictorBL.Sound;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using NickBuhro.Translit;
 
 

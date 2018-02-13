@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using AutodictorBL.Entites;
 using AutodictorBL.Sound;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using Library.Logs;
 using MainExample.Entites;
 using WCFCis2AvtodictorContract.DataContract;

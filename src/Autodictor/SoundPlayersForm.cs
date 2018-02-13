@@ -5,7 +5,7 @@ using System.Media;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
 using AutodictorBL.Sound;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MainExample.Extension;
 
 

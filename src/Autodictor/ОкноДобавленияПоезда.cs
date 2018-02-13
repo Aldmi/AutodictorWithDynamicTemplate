@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 using MainExample.Entites;
 using MainExample.Services;
 using MainExample.Services.FactoryServices;

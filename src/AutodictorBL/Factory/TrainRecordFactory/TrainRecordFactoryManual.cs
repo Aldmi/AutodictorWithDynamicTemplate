@@ -1,6 +1,6 @@
 ﻿using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Factory.TrainRecordFactory;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
 
 
 namespace AutodictorBL.Factory.TrainRecordFactory

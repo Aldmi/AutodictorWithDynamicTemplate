@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
-using Domain.Entitys;
+
 
 namespace CommunicationDevices.Behavior.BindingBehavior.ToChange
 {

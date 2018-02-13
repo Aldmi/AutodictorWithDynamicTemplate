@@ -8,7 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Communication.Annotations;
 using Communication.Interfaces;
-using Domain.Entitys;
+using DAL.Abstract.Entitys;
+
 
 namespace CommunicationDevices.DataProviders.DisplaySysDataProvider
 {
