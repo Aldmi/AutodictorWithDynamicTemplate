@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IGenericDataRepository.cs" />
+    <Compile Include="Abstract\IParticirovanieService.cs" />
     <Compile Include="Concrete\IRepository.cs" />
     <Compile Include="Entitys\Authentication\Role.cs" />
     <Compile Include="Entitys\Authentication\User.cs" />

@@ -1,5 +1,6 @@
 ﻿using DAL.Abstract.Abstract;
 using DAL.Abstract.Entitys;
+using DAL.Abstract.Entitys.Authentication;
 
 namespace DAL.Abstract.Concrete
 {
@@ -25,4 +26,21 @@ namespace DAL.Abstract.Concrete
     public interface IPathwaysRepository : IGenericDataRepository<Pathways>
     {
     }
+
+
+    /// <summary>
+    /// Доступ к пользователям
+    /// </summary>
+    public interface IUsersRepository : IGenericDataRepository<User>
+    {
+    }
+
+    /// <summary>
+    /// Доступ к пользователям
+    /// </summary>
+    public interface ISoundRecordChangesRepository : IGenericDataRepository<SoundRecordChangesDb>
+    {
+    }
+
+
 }

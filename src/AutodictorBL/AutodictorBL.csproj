@@ -62,7 +62,9 @@
     <Compile Include="Builder\TrainRecordBuilder\TrainRecordBuilderManual.cs" />
     <Compile Include="DataAccess\DirectionService.cs" />
     <Compile Include="DataAccess\PathwaysService.cs" />
+    <Compile Include="DataAccess\SoundRecChangesService.cs" />
     <Compile Include="DataAccess\TrainTypeByRyleService.cs" />
+    <Compile Include="DataAccess\UserService.cs" />
     <Compile Include="Entites\ВоспроизводимоеСообщение.cs" />
     <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryBase.cs" />
     <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryManual.cs" />

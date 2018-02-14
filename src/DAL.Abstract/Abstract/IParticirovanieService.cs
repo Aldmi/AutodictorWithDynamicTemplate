@@ -1,15 +1,12 @@
 ﻿using System;
-using DAL.Abstract.Abstract;
 using DAL.Abstract.Entitys;
-using DAL.NoSqlLiteDb.Repository;
 
-namespace DAL.NoSqlLiteDb.Service
+namespace DAL.Abstract.Abstract
 {
-    public interface IParticirovanieNoSqlService<T> where T : EntityBase
+    public interface IParticirovanieService<T> where T : EntityBase
     {
         IGenericDataRepository<T> GetRepositoryOnCurrentDay();
         IGenericDataRepository<T> GetRepositoryOnYesterdayDay();
         IGenericDataRepository<T> GetRepositoryOnDay(DateTime date);
-
     }
 }

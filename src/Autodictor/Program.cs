@@ -84,7 +84,37 @@ namespace MainExample
                 var acc = new TrainTypeByRyleService(repResolve);
                 var listRules = acc.GetAll();
             }
+        
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IPathwaysRepository>();
+                var acc = new PathwaysService(repResolve);
+                var listPathwayses = acc.GetAll();
+            }
+                
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IDirectionRepository>();
+                var acc = new DirectionService(repResolve);
+                var listDirections = acc.GetAll();
+            }
+
+            //Users--
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IUsersRepository>();
+                var acc = new UserService(repResolve);
+                var users= acc.GetAll();
+            }
+
+            //SoundRecordChanges--
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
+                var acc= new SoundRecChangesService(repResolve);
+            }
             //DEBUG-------------
+
 
 
             ЗагрузкаНазванийПутей();

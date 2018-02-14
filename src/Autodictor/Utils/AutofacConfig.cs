@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using Autofac.Core;
+using DAL.Abstract.Abstract;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
+using DAL.Abstract.Entitys.Authentication;
+using DAL.NoSqlLiteDb.Repository;
+using DAL.NoSqlLiteDb.Service;
 using DAL.XmlRaw.Repository;
 
 
@@ -39,11 +43,20 @@ namespace MainExample.Utils
 
             builder.RegisterType<XmlRawPathWaysRepository>().As<IPathwaysRepository>()
                 .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
-                                new NamedParameter("fileName", "DynamicSound.xml") });
+                                                      new NamedParameter("fileName", "PathNames.xml") });
 
             builder.RegisterType<XmlRawDirectionRepository>().As<IDirectionRepository>()
                 .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
-                                new NamedParameter("fileName", "DynamicSound.xml") });
+                                                      new NamedParameter("fileName", "Stations.xml") });
+
+
+            builder.RegisterType<NoSqlUsersRepository>().As<IUsersRepository>()
+                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"NoSqlDb\Users.db") });
+
+
+            builder.RegisterType<ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>>().As<IParticirovanieService<SoundRecordChangesDb>>()
+                .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") });
+
         }
     }
 }
