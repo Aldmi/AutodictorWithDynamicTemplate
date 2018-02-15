@@ -63,6 +63,7 @@
     <Compile Include="DataAccess\DirectionService.cs" />
     <Compile Include="DataAccess\PathwaysService.cs" />
     <Compile Include="DataAccess\SoundRecChangesService.cs" />
+    <Compile Include="DataAccess\TrainRecService.cs" />
     <Compile Include="DataAccess\TrainTypeByRyleService.cs" />
     <Compile Include="DataAccess\UserService.cs" />
     <Compile Include="Entites\ВоспроизводимоеСообщение.cs" />

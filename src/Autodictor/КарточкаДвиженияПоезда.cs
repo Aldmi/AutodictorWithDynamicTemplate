@@ -39,7 +39,7 @@ namespace MainExample
             _recordOld = record;
             _key = key;
             СтанцииВыбранногоНаправления = Program.ПолучитьСтанцииНаправления(record.Направление)?.Select(st => st.NameRu).ToList() ?? new List<string>();
-            НомераПутей = Program.PathWaysRepository.List().ToList();
+            НомераПутей = Program.PathwaysService.GetAll().ToList();
 
             InitializeComponent();
 
@@ -123,7 +123,7 @@ namespace MainExample
             txb_НомерПоезда2.Text = record.НомерПоезда2;
 
 
-            var directions = Program.DirectionRepository.List().ToList();
+            var directions = Program.DirectionService.GetAll().ToList();
             if (directions.Any())
             {
                 var stationsNames = directions.FirstOrDefault(d => d.Name == record.Направление)?.Stations?.Select(st => st.NameRu).ToArray();
@@ -839,7 +839,7 @@ namespace MainExample
             for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
                 СписокВыбранныхСтанций += lB_ПоСтанциям.Items[i] + ",";
 
-            var direction = Program.DirectionRepository.List().FirstOrDefault(d => d.Name == _record.Направление);
+            var direction = Program.DirectionService.GetAll().FirstOrDefault(d => d.Name == _record.Направление);
             var станцииНаправления = direction?.Stations.Select(st => st.NameRu).ToArray();
 
             СписокСтанций списокСтанций = new СписокСтанций(СписокВыбранныхСтанций, станцииНаправления);

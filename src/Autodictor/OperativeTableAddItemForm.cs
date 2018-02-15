@@ -33,7 +33,7 @@ namespace MainExample
         public OperativeTableAddItemForm()
         {
             TableRec= new TrainTableRecord();
-            НомераПутей = Program.PathWaysRepository.List().ToList();
+            НомераПутей = Program.PathwaysService.GetAll().ToList();
 
             InitializeComponent();
             InitializeFormDate();

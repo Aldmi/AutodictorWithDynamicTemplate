@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutodictorBL.DataAccess;
 using Autofac;
 using Autofac.Core;
 using DAL.Abstract.Abstract;
@@ -7,6 +8,7 @@ using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
+using DAL.Serialize.XML.Reposirory;
 using DAL.XmlRaw.Repository;
 
 
@@ -57,6 +59,29 @@ namespace MainExample.Utils
             builder.RegisterType<ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>>().As<IParticirovanieService<SoundRecordChangesDb>>()
                 .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") });
 
+
+            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("Local")
+            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") });
+
+
+            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
+            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
+
+
+            builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") });
+
+
+            builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
+
+
+
+            //builder.RegisterType<XmlSerializeTableRecRepository>()
+            //    .WithParameter(new ResolvedParameter(
+            //        (pi, ctx) => pi.ParameterType == typeof(ITrainTableRecRepository),
+            //        (pi, ctx) => ctx.ResolveNamed<ITrainTableRecRepository>("Remote")
+            //    ));
         }
     }
 }

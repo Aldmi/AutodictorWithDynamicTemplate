@@ -511,6 +511,10 @@
       <Project>{13930fa6-7596-4bba-b813-dda9b8dd928c}</Project>
       <Name>DAL.NoSqlLiteDb</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DAL.Serialize\DAL.Serialize.csproj">
+      <Project>{51c18ae8-8f3c-472c-8290-ad06d439a7df}</Project>
+      <Name>DAL.Serialize</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DAL.XmlRaw\DAL.XmlRaw.csproj">
       <Project>{9402a81c-b557-4027-8f10-a68c57db0054}</Project>
       <Name>DAL.XmlRaw</Name>

@@ -249,7 +249,7 @@ namespace MainExample.Entites
                                 if (данные.TrainPathDirection > 2)
                                     данные.TrainPathDirection = 0;
 
-                                var path = Program.PathWaysRepository.List().FirstOrDefault(p => p.Name == данные.TrainPathNumber[WeekDays.Постоянно]);
+                                var path = Program.PathwaysService.GetAll().FirstOrDefault(p => p.Name == данные.TrainPathNumber[WeekDays.Постоянно]);
                                 if (path == null)
                                     данные.TrainPathNumber[WeekDays.Постоянно] = "";
 

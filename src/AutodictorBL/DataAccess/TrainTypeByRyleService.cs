@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 
@@ -34,6 +35,17 @@ namespace AutodictorBL.DataAccess
         public IEnumerable<TrainTypeByRyle> GetAll()
         {
             return _repository.List();
+        }
+
+        public int GetIndexOf(TrainTypeByRyle rule)
+        {
+            if (rule == null)
+            {
+                return -1;
+            }
+
+            var findItem = GetAll().FirstOrDefault(r=>r.Id == rule.Id);
+            return GetAll().ToList().IndexOf(findItem);
         }
 
         #endregion

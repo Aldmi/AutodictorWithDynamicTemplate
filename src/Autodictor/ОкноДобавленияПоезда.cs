@@ -27,7 +27,7 @@ namespace MainExample
 
         public ОкноДобавленияПоезда(int recordId)
         {
-            НомераПутей = Program.PathWaysRepository.List().ToList();
+            НомераПутей = Program.PathwaysService.GetAll().ToList();
 
             InitializeComponent();
 

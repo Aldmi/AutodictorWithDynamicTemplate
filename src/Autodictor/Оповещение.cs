@@ -5,10 +5,14 @@ using System.Linq;
 using System.Runtime;
 using System.Windows.Forms;
 using AutodictorBL.Builder.TrainRecordBuilder;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Factory;
 using AutodictorBL.Factory.TrainRecordFactory;
+using Autofac;
+using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using MainExample.Entites;
+using MainExample.Utils;
 
 
 namespace MainExample
@@ -18,13 +22,20 @@ namespace MainExample
         public TrainTableRecord РасписаниеПоезда;
         private string[] СтанцииВыбранногоНаправления { get; set; } = new string[0];
         public List<Pathways> НомераПутей { get; set; }
+        public TrainTypeByRyleService TrainTypeByRyleService { get; set; }
 
 
 
         public Оповещение(TrainTableRecord расписаниеПоезда)
         {
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
+                TrainTypeByRyleService = new TrainTypeByRyleService(repResolve);
+            }
+
             this.РасписаниеПоезда = расписаниеПоезда;
-            НомераПутей = Program.PathWaysRepository.List().ToList();
+            НомераПутей = Program.PathwaysService.GetAll().ToList();
 
             InitializeComponent();
 
@@ -41,7 +52,7 @@ namespace MainExample
             chBoxВыводНаТабло.Checked = this.РасписаниеПоезда.IsScoreBoardOutput;
             chBoxВыводЗвука.Checked = this.РасписаниеПоезда.IsSoundOutput;
 
-            var directions = Program.DirectionRepository.List().ToList();
+            var directions = Program.DirectionService.GetAll().ToList();
             if (directions.Any())
             {
                 string[] directionNames = directions.Select(d => d.Name).ToArray();
@@ -52,15 +63,15 @@ namespace MainExample
             }
 
 
-            //TODO: использовать TrainTypeByRyleService
-            //var typeTrain = Program.TrainRules.TrainTypeRules.ToList();
-            //if (typeTrain.Any())
-            //{
-            //    var typeTrainNames = typeTrain.Select(d => d.NameRu).ToArray();
-            //    cBТипПоезда.Items.AddRange(typeTrainNames);
-            //    var selectedIndex = typeTrain.IndexOf(расписаниеПоезда.TrainTypeByRyle);
-            //    cBТипПоезда.SelectedIndex = selectedIndex;
-            //}
+            //TODO: использовать TrainTypeByRyleService   
+            var listTypeTrains = TrainTypeByRyleService.GetAll().ToList();
+            if (listTypeTrains.Any())
+            {
+                var typeTrainNames = listTypeTrains.Select(d => d.NameRu).ToArray();
+                cBТипПоезда.Items.AddRange(typeTrainNames);
+                var selectedIndex = TrainTypeByRyleService.GetIndexOf(расписаниеПоезда.TrainTypeByRyle);
+                cBТипПоезда.SelectedIndex = selectedIndex;
+            }
 
 
             string[] станции = расписаниеПоезда.Name.Split('-');
@@ -284,8 +295,9 @@ namespace MainExample
             РасписаниеПоезда.TrainPathDirection = (byte)cBОтсчетВагонов.SelectedIndex;
 
             //TODO: использовать TrainTypeByRyleService
-            // РасписаниеПоезда.ТипПоезда = (ТипПоезда)cBТипПоезда.SelectedIndex;
-            //РасписаниеПоезда.TrainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : Program.TrainRules.TrainTypeRules[cBТипПоезда.SelectedIndex];
+            //РасписаниеПоезда.ТипПоезда = (ТипПоезда)cBТипПоезда.SelectedIndex;
+            var listTypeTrains = TrainTypeByRyleService.GetAll().ToList();
+            РасписаниеПоезда.TrainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
 
 
             РасписаниеПоезда.ChangeTrainPathDirection = chBox_сменнаяНумерация.Checked;
@@ -692,7 +704,7 @@ namespace MainExample
                 if (selectedIndex < 0)
                     return;
 
-                var directions = Program.DirectionRepository.List().ToList();
+                var directions = Program.DirectionService.GetAll().ToList();
                 if (directions.Any())
                 {
                     СтанцииВыбранногоНаправления = directions[selectedIndex].Stations?.Select(st => st.NameRu).ToArray();
@@ -766,23 +778,23 @@ namespace MainExample
         /// </summary>
         private void cBТипПоезда_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //TODO: использовать TrainTypeByRyleService
-            //var имяТипаПоезда= (string)cBТипПоезда.SelectedItem;
-            //var выбранныйТип= Program.TrainRules.TrainTypeRules.FirstOrDefault(t => t.NameRu == имяТипаПоезда);
-            // if (выбранныйТип != null)
-            // {
-            //     var categoryText = "Не определенн";
-            //     switch (выбранныйТип.CategoryTrain)
-            //     {
-            //         case CategoryTrain.Suburb:
-            //             categoryText = "Пригород";
-            //             break;
-            //         case CategoryTrain.LongDist:
-            //             categoryText = "Дальнего след.";
-            //             break;
-            //     }
-            //     tb_Category.Text = categoryText;
-            // }
+            var имяТипаПоезда = (string)cBТипПоезда.SelectedItem;
+            var listTypeTrains = TrainTypeByRyleService.GetAll();
+            var выбранныйТип = listTypeTrains.FirstOrDefault(t => t.NameRu == имяТипаПоезда);
+            if (выбранныйТип != null)
+            {
+                var categoryText = "Не определенн";
+                switch (выбранныйТип.CategoryTrain)
+                {
+                    case CategoryTrain.Suburb:
+                        categoryText = "Пригород";
+                        break;
+                    case CategoryTrain.LongDist:
+                        categoryText = "Дальнего след.";
+                        break;
+                }
+                tb_Category.Text = categoryText;
+            }
         }
     }
 }

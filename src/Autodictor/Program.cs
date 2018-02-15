@@ -38,8 +38,14 @@ namespace MainExample
         public static List<string> НомераПоездов = new List<string>();
 
         public static string ИнфСтрокаНаТабло = "";
-        public static IDirectionRepository DirectionRepository; // Направления. хранилище XML
-        public static IPathwaysRepository PathWaysRepository; //Пути. хранилище XML
+
+        //public static IDirectionRepository DirectionRepository; // Направления. хранилище XML
+        // public static IPathwaysRepository PathWaysRepository; //Пути. хранилище XML
+        public static DirectionService DirectionService; // Направления. 
+        public static PathwaysService PathwaysService;   //Пути.
+
+
+
 
         //TODO: IGenericDataRepository НЕ использовать напрямую
         public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
@@ -113,6 +119,15 @@ namespace MainExample
                 var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
                 var acc= new SoundRecChangesService(repResolve);
             }
+
+            //TrainTableRec--
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
+
+                var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
+            }
+
             //DEBUG-------------
 
 
@@ -267,17 +282,13 @@ namespace MainExample
                 using (var scope = AutofacConfig.Container.BeginLifetimeScope())
                 {
                     var repResolve = scope.Resolve<IDirectionRepository>();
-                    var dirServ = new DirectionService(repResolve);
-                    var listDirections = dirServ.GetAll();
+                    DirectionService = new DirectionService(repResolve);
                 }
                 //DEBUG-------------
-
-
 
                 //var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "Stations.xml"); //все настройки в одном файле
                 //if (xmlFile == null)
                 //    return;
-
                 //DirectionRepository = new RepositoryXmlDirection(xmlFile);                 //хранилище XML
                 ////directionRep = new RepositoryEf<Direction>(dbContext);                   //хранилище БД
             }
@@ -293,20 +304,15 @@ namespace MainExample
         {
             try
             {
-                //DEBUG-------------
                 using (var scope = AutofacConfig.Container.BeginLifetimeScope())
                 {
                     var repResolve = scope.Resolve<IPathwaysRepository>();
-                    var pathWaysServ = new PathwaysService(repResolve);
-                    var listPathwayses = pathWaysServ.GetAll();
+                    PathwaysService = new PathwaysService(repResolve);
                 }
-                //DEBUG-------------
-
-
+           
                 //var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "PathNames.xml"); //все настройки в одном файле
                 //if (xmlFile == null)
                 //    return;
-
                 //PathWaysRepository = new RepositoryXmlPathways(xmlFile);                 //хранилище XML
                 ////var directionRep = new RepositoryEf<Pathways>(dbContext);              //хранилище БД
             }
@@ -317,23 +323,23 @@ namespace MainExample
         }
 
 
-
+        //TODO: DI. Вынести в DirectionService.
         public static List<Station> ПолучитьСтанцииНаправления(string имяНаправления)
         {
-            var direction = DirectionRepository.List().FirstOrDefault(d => d.Name == имяНаправления);
+            var direction = DirectionService.GetAll().FirstOrDefault(d => d.Name == имяНаправления);
             var станцииНаправления = direction?.Stations.ToList();
             return станцииНаправления;
         }
 
 
-
+        //TODO: DI. Вынести в DirectionService.
         public static Station ПолучитьСтанциюНаправления(string имяНаправления, string названиеСтанцииRu)
         {
             return ПолучитьСтанцииНаправления(имяНаправления)?.FirstOrDefault(st => st.NameRu == названиеСтанцииRu);
         }
 
 
-
+        //TODO: DI. Вынести в DirectionService.
         public static bool ПроеритьНаличиеСтанцииВНаправлении(string названиеСтанцииRu, string имяНаправления)
         {
             var станция = ПолучитьСтанцииНаправления(имяНаправления)?.FirstOrDefault(st => st.NameRu == названиеСтанцииRu);

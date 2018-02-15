@@ -67,7 +67,8 @@ namespace MainExample
             РежимРаботы = tSBРежимРаботы;
 
             Включить.BackColor = Color.Red;
-            QuartzVerificationActivation.Start(VerificationActivationService);
+
+           // QuartzVerificationActivation.Start(VerificationActivationService); //DEBUG
         }
 
 

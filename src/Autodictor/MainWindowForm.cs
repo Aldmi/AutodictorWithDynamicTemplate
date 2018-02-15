@@ -1947,7 +1947,7 @@ namespace MainExample
                         if (_checked && (данные.ТипСообщения == SoundRecordType.ДвижениеПоезда))
                         {
                             //ВЫВОД НА ПУТЕВЫЕ ТАБЛО
-                            var номераПутей = Program.PathWaysRepository.List().ToList();
+                            var номераПутей = Program.PathwaysService.GetAll().ToList();
                             var index = номераПутей.Select(p => p.Name).ToList().IndexOf(данные.НомерПути) + 1;
                             var indexOld = номераПутей.Select(p => p.Name).ToList().IndexOf(данныеOld.НомерПути) + 1;
                             var номерПути = (index > 0) ? index : 0;
@@ -2569,7 +2569,7 @@ namespace MainExample
                                         SoundRecord Данные = SoundRecords[Key];
                                         КлючВыбранныйМеню = Key;
 
-                                        var paths = Program.PathWaysRepository.List().Select(p => p.Name).ToList();
+                                        var paths = Program.PathwaysService.GetAll().Select(p => p.Name).ToList();
                                         for (int i = 0; i < СписокПолейПути.Length - 1; i++)
                                         {
                                             if (i < paths.Count)
@@ -2728,7 +2728,7 @@ namespace MainExample
 
             var воспроизводимыеСообщения = new List<ВоспроизводимоеСообщение>();
 
-            var номераПутей = Program.PathWaysRepository.List().ToList();
+            var номераПутей = Program.PathwaysService.GetAll().ToList();
             var путь = номераПутей.FirstOrDefault(p => p.Name == record.НомерПути);
 
             string eof = "X";
@@ -3403,7 +3403,7 @@ namespace MainExample
                 if (SoundRecords.Keys.Contains(КлючВыбранныйМеню) == true)
                 {
                     SoundRecord данные = SoundRecords[КлючВыбранныйМеню];
-                    var paths = Program.PathWaysRepository.List().Select(p => p.Name).ToList();
+                    var paths = Program.PathwaysService.GetAll().Select(p => p.Name).ToList();
 
                     for (int i = 0; i < СписокПолейПути.Length; i++)
                         if (СписокПолейПути[i].Name == tsmi.Name)

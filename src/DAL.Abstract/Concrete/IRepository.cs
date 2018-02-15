@@ -35,12 +35,16 @@ namespace DAL.Abstract.Concrete
     {
     }
 
+
     /// <summary>
-    /// Доступ к пользователям
+    /// Доступ к расписанию
     /// </summary>
-    public interface ISoundRecordChangesRepository : IGenericDataRepository<SoundRecordChangesDb>
+    public interface ITrainTableRecRepository : IGenericDataRepository<TrainTableRec>
     {
     }
+
+
+
 
 
 }
