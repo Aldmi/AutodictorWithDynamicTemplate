@@ -20,7 +20,7 @@ namespace MainExample.Entites
         private const string FileNameLocalTableRec = @"TableRecords.ini";
         private const string FileNameRemoteCisTableRec = @"TableRecordsRemoteCis.ini";
 
-        public static SourceData SourceLoad;
+        public static TrainRecType SourceLoad;
         public static List<TrainTableRecord> TrainTableRecords = new List<TrainTableRecord>(); // Содержит актуальное рабочее расписание
 
         #endregion
@@ -30,7 +30,7 @@ namespace MainExample.Entites
 
         #region Rx
 
-        public static Subject<SourceData> RemoteCisTableChangeRx { get; } = new Subject<SourceData>();
+        public static Subject<TrainRecType> RemoteCisTableChangeRx { get; } = new Subject<TrainRecType>();
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace MainExample.Entites
         {
             await Task.Factory.StartNew(() =>
             {
-                var trainTableRec = ЗагрузитьСписок(SourceLoad == SourceData.Local ? FileNameLocalTableRec : FileNameRemoteCisTableRec);
+                var trainTableRec = ЗагрузитьСписок(SourceLoad == TrainRecType.LocalMain ? FileNameLocalTableRec : FileNameRemoteCisTableRec);
                 if (trainTableRec != null)
                 {
                     TrainTableRecords.Clear();
@@ -74,7 +74,7 @@ namespace MainExample.Entites
         /// </summary>
         public static void SourceLoadMainList()
         {
-            var trainTableRec = ЗагрузитьСписок(SourceLoad == SourceData.Local ? FileNameLocalTableRec : FileNameRemoteCisTableRec);
+            var trainTableRec = ЗагрузитьСписок(SourceLoad == TrainRecType.LocalMain ? FileNameLocalTableRec : FileNameRemoteCisTableRec);
             if (trainTableRec != null)
             {
                 TrainTableRecords.Clear();
@@ -90,7 +90,7 @@ namespace MainExample.Entites
         {
             await Task.Factory.StartNew(() =>
             {
-                СохранитьСписок(TrainTableRecords, SourceLoad == SourceData.Local ? FileNameLocalTableRec : FileNameRemoteCisTableRec);
+                СохранитьСписок(TrainTableRecords, SourceLoad == TrainRecType.LocalMain ? FileNameLocalTableRec : FileNameRemoteCisTableRec);
             });
         }
 
@@ -108,7 +108,7 @@ namespace MainExample.Entites
 
             switch (SourceLoad)
             {
-                case SourceData.RemoteCis:
+                case TrainRecType.RemoteCis:
                     TrainTableRecords = trainTableRecords as List<TrainTableRecord>;
                     break;
             }

@@ -56,10 +56,10 @@ namespace MainExample
             _checkBoxes = new List<CheckBox> { chb_Id, chb_Номер, chb_ВремяПрибытия, chb_Стоянка, chb_ВремяОтпр, chb_Маршрут, chb_ДниСледования };
             Model2Controls();
 
-            rbSourseSheduleCis.Checked = (TrainSheduleTable.SourceLoad == SourceData.RemoteCis);
+            rbSourseSheduleCis.Checked = (TrainSheduleTable.SourceLoad == TrainRecType.RemoteCis);
             _dispouseRemoteCisTableChangeRx = TrainSheduleTable.RemoteCisTableChangeRx.Subscribe(data =>   //обновим данные в списке, при получении данных.
             {
-                if (data == SourceData.RemoteCis)
+                if (data == TrainRecType.RemoteCis)
                 {
                     ОбновитьДанныеВСпискеAsync();
                 }
@@ -616,7 +616,7 @@ namespace MainExample
             var rb = sender as RadioButton;
             if (rb != null)
             {
-                TrainSheduleTable.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? SourceData.Local : SourceData.RemoteCis;
+                TrainSheduleTable.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecType.LocalMain : TrainRecType.RemoteCis;
                 Program.Настройки.SourceTrainTableRecordLoad = TrainSheduleTable.SourceLoad.ToString();
                 ОкноНастроек.СохранитьНастройки();
 
