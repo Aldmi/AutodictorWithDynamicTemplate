@@ -53,19 +53,11 @@ namespace MainExample.Utils
 
 
             builder.RegisterType<NoSqlUsersRepository>().As<IUsersRepository>()
-                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"NoSqlDb\Users.db") });
+                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"NoSqlDb\Users.db") }).InstancePerLifetimeScope();
 
 
             builder.RegisterType<ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>>().As<IParticirovanieService<SoundRecordChangesDb>>()
                 .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") });
-
-
-            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("Local")
-            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") });
-
-
-            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
-            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
 
 
             builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)

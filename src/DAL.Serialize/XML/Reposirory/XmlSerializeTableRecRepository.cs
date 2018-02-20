@@ -9,13 +9,32 @@ namespace DAL.Serialize.XML.Reposirory
 {
     public class XmlSerializeTableRecRepository : ITrainTableRecRepository
     {
+        private List<TrainTableRec> ListMoq { get; set; }
 
 
         #region ctor
 
         public XmlSerializeTableRecRepository(string connection)
         {
-            
+            ListMoq= new List<TrainTableRec>
+            {
+                new TrainTableRec
+                {
+                    Id= 1,
+                    Active = true,
+                    ArrivalTime = new DateTime(2018, 02, 2, 10,12,0),
+                    DepartureTime = new DateTime(2018, 02, 2, 10,20,0),
+                    Num = "25"
+                },
+                new TrainTableRec
+                {
+                    Id= 2,
+                    Active = true,
+                    ArrivalTime = new DateTime(2018, 02, 2, 10,12,0),
+                    DepartureTime = new DateTime(2018, 02, 2, 10,20,0),
+                    Num = "65"
+                }
+            };
         }
 
         #endregion
@@ -30,7 +49,7 @@ namespace DAL.Serialize.XML.Reposirory
 
         public IEnumerable<TrainTableRec> List()
         {
-            throw new NotImplementedException();
+            return ListMoq;
         }
 
         public IEnumerable<TrainTableRec> List(Expression<Func<TrainTableRec, bool>> predicate)

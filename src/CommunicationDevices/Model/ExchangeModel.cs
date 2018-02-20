@@ -58,8 +58,6 @@ namespace CommunicationDevices.Model
 
         public static Station NameRailwayStation; // Название текущего вокзала
 
-        private readonly IWindsorContainer _container = new WindsorContainer();
-
         #endregion
 
 
@@ -73,6 +71,7 @@ namespace CommunicationDevices.Model
         public List<MasterSerialPort> MasterSerialPorts { get; set; } = new List<MasterSerialPort>();
 
         public List<Device> DeviceTables { get; set; } = new List<Device>();
+
         public Device DeviceSoundChannelManagement { get; set; } 
         
 
@@ -97,8 +96,6 @@ namespace CommunicationDevices.Model
         }
 
         public List<Task> BackGroundTasks { get; set; } = new List<Task>();
-
-        public IDisposable ApkDkVolgogradStreamChangeRxDispose { get; set; }
 
         #endregion
 
@@ -1086,7 +1083,6 @@ namespace CommunicationDevices.Model
         {
             CisClient?.Dispose();
             MasterSerialPorts?.ForEach(s => s.Dispose());
-            ApkDkVolgogradStreamChangeRxDispose?.Dispose();
         }
     }
 }

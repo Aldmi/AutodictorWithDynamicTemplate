@@ -21,8 +21,8 @@ namespace AutodictorBL.DataAccess
 
             //DEBUG---
             var rep = _particirovanieService.GetRepositoryOnCurrentDay();
-           var list=  rep.List();
-           rep.Add(new SoundRecordChangesDb {CauseOfChange = "dsdsd"});
+            var list=  rep.List();
+            rep.Add(new SoundRecordChangesDb {CauseOfChange = "dsdsd"});
             //DEBUG---
         }
 

@@ -1,4 +1,7 @@
-﻿using DAL.Abstract.Concrete;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DAL.Abstract.Concrete;
+using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.DataAccess
 {
@@ -7,6 +10,16 @@ namespace AutodictorBL.DataAccess
         private readonly ITrainTableRecRepository _repLocalMain;
         private readonly ITrainTableRecRepository _repRemoteCis;
         private readonly ITrainTypeByRyleRepository _repTypeByRyle;
+
+
+
+        #region prop
+
+        public TrainRecType SourceLoad { get; set; }
+
+        #endregion
+
+
 
 
         #region ctor
@@ -25,16 +38,31 @@ namespace AutodictorBL.DataAccess
 
         #region Methode
 
-        //public Pathways GetById(int id)
-        //{
-        //    return _repLocalMain.GetById(id);
-        //}
+        public TrainTableRec GetById(int id)
+        {
+            var rep = (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            return rep.GetById(id);
+        }
 
 
-        //public IEnumerable<Pathways> GetAll()
-        //{
-        //    return _repLocalMain.List();
-        //}
+        public IEnumerable<TrainTableRec> GetAll()
+        {
+            var rep = (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            return rep.List();
+        }
+
+
+        public void SaveAll(IEnumerable<TrainTableRec> list)
+        {
+            var rep = (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            rep.AddRange(list);
+        }
+
+        public void DeleteItem(TrainTableRec item)
+        {
+            var rep = (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            rep.Delete(item);
+        }
 
         #endregion
     }
