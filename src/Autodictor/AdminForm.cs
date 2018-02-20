@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
+using Autofac.Features.OwnedInstances;
+using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
 
 
@@ -14,12 +17,19 @@ namespace MainExample
 {
     public partial class AdminForm : Form
     {
+        private readonly IDisposable _userRepositoryOwner;
+
         public List<User> Users { get; set; }
+        private UserService UserService { get; }
 
 
 
-        public AdminForm()
+
+        public AdminForm(Owned<IUsersRepository> userRepository)
         {
+            UserService= new UserService(userRepository.Value);
+            _userRepositoryOwner = userRepository;
+
             InitializeComponent();
 
             btn_Load_Click(null, EventArgs.Empty);
@@ -84,7 +94,7 @@ namespace MainExample
         /// </summary>
         private void btn_Load_Click(object sender, EventArgs e)
         {
-            Users = Program.UsersDbRepository.List(user => user.Role != Role.Администратор).ToList();
+            Users= UserService.GetAll(user => user.Role != Role.Администратор).ToList();
             FillTable(Users);
         }
 
@@ -121,13 +131,11 @@ namespace MainExample
                 Users.Add(new User { Login = login, Password = password, Role = (Role)Enum.Parse(typeof(Role), role) });
             }
 
-
             //удалим всех пользователей кроме Админа.
-            Program.UsersDbRepository.Delete(user => user.Role != Role.Администратор);
+            UserService.Delete(user => user.Role != Role.Администратор);
 
             //Добавим из таблицы
-            Program.UsersDbRepository.AddRange(Users);
-
+            UserService.AddRange(Users);
         }
 
 
@@ -144,13 +152,13 @@ namespace MainExample
 
             var currentPassword = tb_ТекПароль.Text;
             var newPassword = tb_НовыйПароль.Text;
-            var adminUser = Program.UsersDbRepository.List().FirstOrDefault(user => user.Role == Role.Администратор);
+            var adminUser = UserService.GetAll().FirstOrDefault(user => user.Role == Role.Администратор);
             if (adminUser != null)
             {
                 if (adminUser.Password == currentPassword)
                 {
                     adminUser.Password = newPassword;
-                    Program.UsersDbRepository.Edit(adminUser);
+                    UserService.Edit(adminUser);
                     MessageBox.Show(@"ПАРОЛЬ УСПЕШНО СМЕНЕН");
                 }
                 else
@@ -186,5 +194,13 @@ namespace MainExample
         }
 
         #endregion
+
+
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _userRepositoryOwner.Dispose();
+            base.OnClosed(e);
+        }
     }
 }

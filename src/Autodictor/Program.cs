@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutodictorBL;
 using AutodictorBL.DataAccess;
+using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using Autofac;
 using Autofac.Core;
@@ -50,7 +51,7 @@ namespace MainExample
 
         //TODO: IGenericDataRepository НЕ использовать напрямую
         public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
-        public static IGenericDataRepository<User> UsersDbRepository; //Пользователи, хранилище NoSqlDb
+
 
         public static Настройки Настройки;
 
@@ -66,7 +67,7 @@ namespace MainExample
         public static string[] ШаблонОповещенияООтправлениеПоГотовностиПоезда = new string[] { "", "Отправление по готовности пассажирского поезда", "Отправление по готовности пригородного электропоезда", "Отправление по готовности фирменного поезда", "Отправление по готовности скорого поезда", "Отправление по готовности скоростного поезда", "Отправление по готовности ласточки", "Отправление по готовности РЭКСа" };
 
 
-        public static AuthenticationService AuthenticationService { get; set; } = new AuthenticationService();
+        public static IAuthentificationService AuthenticationService { get; set; }
 
         public static AutodictorModel AutodictorModel { get; set; }
 
@@ -83,51 +84,58 @@ namespace MainExample
 
             AutofacConfig.ConfigureContainer();
 
+     
+          //Сервис аутентификации
+          AuthenticationService= AutofacConfig.Container.Resolve<IAuthentificationService>();
+
+
+
+           
 
             //DEBUG-------------
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
-                var acc = new TrainTypeByRyleService(repResolve);
-                var listRules = acc.GetAll();
-            }
-        
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IPathwaysRepository>();
-                var acc = new PathwaysService(repResolve);
-                var listPathwayses = acc.GetAll();
-            }
-                
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IDirectionRepository>();
-                var acc = new DirectionService(repResolve);
-                var listDirections = acc.GetAll();
-            }
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
+            //    var acc = new TrainTypeByRyleService(repResolve);
+            //    var listRules = acc.GetAll();
+            //}
 
-            //Users--
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IUsersRepository>();
-                var acc = new UserService(repResolve);
-                var users= acc.GetAll();
-            }
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IPathwaysRepository>();
+            //    var acc = new PathwaysService(repResolve);
+            //    var listPathwayses = acc.GetAll();
+            //}
 
-            //SoundRecordChanges--
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
-                var acc= new SoundRecChangesService(repResolve);
-            }
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IDirectionRepository>();
+            //    var acc = new DirectionService(repResolve);
+            //    var listDirections = acc.GetAll();
+            //}
 
-            //TrainTableRec--
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
+            ////Users--
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IUsersRepository>();
+            //    var acc = new UserService(repResolve);
+            //    var users= acc.GetAll();
+            //}
 
-                var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
-            }
+            ////SoundRecordChanges--
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
+            //    var acc= new SoundRecChangesService(repResolve);
+            //}
+
+            ////TrainTableRec--
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
+
+            //    var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
+            //}
 
             //DEBUG-------------
 
@@ -139,11 +147,6 @@ namespace MainExample
 
             string connection = @"NoSqlDb\Main.db";
             SoundRecordChangesDbRepository = new RepositoryNoSql<SoundRecordChangesDb>(connection);
-
-            connection = @"NoSqlDb\Users.db";
-            UsersDbRepository = new RepositoryNoSql<User>(connection);
-
-            AuthenticationService.UsersDbInitialize();//не дожидаемся окончания Task-а загрузки БД
 
 
             try
@@ -175,13 +178,6 @@ namespace MainExample
             AutodictorModel.LoadSetting(Настройки.ВыборУровняГромкости, GetFileName);
 
 
-            //DEBUG-------------
-            //IRepository<TrainTypeByRyle> rep = new RepositoryXmlTrainTypeByRyle();
-            //var acc= new TrainTypeByRyleService(rep);
-            //var listRules = acc.GetAll();
-            //DEBUG-------------
-
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -189,7 +185,8 @@ namespace MainExample
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            Application.Run(new MainForm());
+            var mainForm = AutofacConfig.Container.Resolve<MainForm>();
+            Application.Run(mainForm);
 
             Dispose();
         }
@@ -371,6 +368,7 @@ namespace MainExample
 
         private static void Dispose()
         {
+            AutofacConfig.Container.Dispose();
             AutodictorModel?.Dispose();
         }
 

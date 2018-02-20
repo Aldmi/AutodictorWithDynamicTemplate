@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
+using AutodictorBL.Services;
+using Autofac.Features.OwnedInstances;
+using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
 using MainExample.Services;
 
@@ -14,19 +18,20 @@ namespace MainExample
 {
     public partial class AuthenticationForm : Form
     {
+        private UserService UserService { get; }
+        private readonly IDisposable _userRepositoryOwner;
+        private readonly IAuthentificationService _authentificationService;
+
+
         #region ctor
 
-        public AuthenticationForm()
+        public AuthenticationForm(Owned<IUsersRepository> userRepository, IAuthentificationService authentificationService)
         {
+            UserService = new UserService(userRepository.Value);
+            _userRepositoryOwner = userRepository;
+            _authentificationService = authentificationService;
+
             InitializeComponent();
-            CreateMyPasswordTextBox();
-
-            //Установить фокус на кнопку
-            btn_Enter.Focus();
-            btn_Enter.Select();
-
-            cb_Roles.DataSource = Enum.GetValues(typeof(Role));
-            cb_Roles.SelectedItem = Role.Диктор;
         }
 
         #endregion
@@ -52,6 +57,24 @@ namespace MainExample
 
         #region EventHandler
 
+        protected override async void OnLoad(EventArgs e)
+        {
+            await UserService.DbInitialize();
+
+            CreateMyPasswordTextBox();
+
+            //Установить фокус на кнопку
+            btn_Enter.Focus();
+            btn_Enter.Select();
+
+            cb_Roles.DataSource = Enum.GetValues(typeof(Role));
+            cb_Roles.SelectedItem = Role.Диктор;
+
+
+            base.OnLoad(e);
+        }
+
+
         private void cb_Roles_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cb = sender as ComboBox;
@@ -68,7 +91,7 @@ namespace MainExample
 
                cb_Users.Enabled = true;
                tb_password.Enabled = true;
-               var users = Program.UsersDbRepository.List(user => user.Role == role).ToList();
+               var users = UserService.GetAllUsersWithRole(role).ToList();
                if (!users.Any())
                {
                  cb_Users.DataSource = null;
@@ -87,13 +110,19 @@ namespace MainExample
             var loginUser= (User)cb_Users.SelectedItem ?? new User {Login = "НАБЛЮДАТЕЛЬ", Role = Role.Наблюдатель};
             loginUser.Password = tb_password.Text;
 
-            if (!Program.AuthenticationService.LogIn(loginUser))
+            if (!_authentificationService.LogIn(loginUser))
             {
                 MessageBox.Show(@"НЕ ВЕРНЫЙ ПАРОЛЬ!!!");
             }
 
             DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _userRepositoryOwner.Dispose();
+            base.OnClosed(e);
         }
 
         #endregion

@@ -10,6 +10,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
+using AutodictorBL.Services;
+using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.BindingBehavior;
 using CommunicationDevices.Behavior.BindingBehavior.ToPath;
 using CommunicationDevices.ClientWCF;
@@ -27,6 +29,13 @@ namespace MainExample
 {
     public partial class MainForm : Form
     {
+        private readonly Func<AdminForm> _adminFormFactory;
+        private readonly Func<AuthenticationForm> _authenticationFormFactory;
+
+        private readonly IDisposable _authentificationServiceOwner;
+        private readonly IAuthentificationService _authentificationService;
+
+
         public ExchangeModel ExchangeModel { get; set; }
         public IDisposable DispouseCisClientIsConnectRx { get; set; }
         public VerificationActivation VerificationActivationService { get; set; } = new VerificationActivation();
@@ -44,8 +53,13 @@ namespace MainExample
 
 
 
-        public MainForm()
+        public MainForm(Func<AdminForm> adminFormFactory, Func<AuthenticationForm> authenticationFormFactory, Owned<IAuthentificationService> authentificationService)
         {
+            _adminFormFactory = adminFormFactory;
+            _authenticationFormFactory = authenticationFormFactory;
+            _authentificationService = authentificationService.Value;
+            _authentificationServiceOwner = authentificationService;
+
             InitializeComponent();
 
             StaticSoundForm.ЗагрузитьСписок();
@@ -80,16 +94,16 @@ namespace MainExample
         private void CheckAuthentication(bool flagApplicationExit)
         {
             tSBAdmin.Visible = false;
-            while (Program.AuthenticationService.IsAuthentication == false)
+            while (_authentificationService.IsAuthentication == false)
             {
-                var autenForm = new AuthenticationForm();
+                var autenForm = _authenticationFormFactory();
                 var result = autenForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    if (Program.AuthenticationService.IsAuthentication)
+                    if (_authentificationService.IsAuthentication)
                     {
                         //ОТОБРАЗИТЬ ВОШЕДШЕГО ПОЛЬЗОВАТЕЛЯ
-                        tSBLogOut.Text = Program.AuthenticationService.CurrentUser.Login;
+                        tSBLogOut.Text = _authentificationService.CurrentUser.Login;
                     }
                 }
                 else
@@ -100,14 +114,14 @@ namespace MainExample
                     }
 
                     //ПОЛЬЗОВАТЕЛЬ - Предыдущий пользователь
-                    Program.AuthenticationService.SetOldUser();
-                    tSBLogOut.Text = Program.AuthenticationService.CurrentUser.Login;
+                    _authentificationService.SetOldUser();
+                    tSBLogOut.Text = _authentificationService.CurrentUser.Login;
                     break;
                 }
             }
 
             //Отрисовать вход в админку
-            switch (Program.AuthenticationService.CurrentUser.Role)
+            switch (_authentificationService.CurrentUser.Role)
             {
                 case Role.Администратор:
                     tSBAdmin.Visible = true;
@@ -177,7 +191,8 @@ namespace MainExample
                                                              ExchangeModel.Binding2ChangesSchedules,
                                                              ExchangeModel.Binding2ChangesEvent,
                                                              ExchangeModel.Binding2GetData,
-                                                             ExchangeModel.DeviceSoundChannelManagement)
+                                                             ExchangeModel.DeviceSoundChannelManagement,
+                                                             _authentificationService)
                 {
                     MdiParent = this,
                     WindowState = FormWindowState.Maximized
@@ -377,9 +392,9 @@ namespace MainExample
         private void добавитьСтатическоеСообщениеToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -390,7 +405,7 @@ namespace MainExample
             Сообщение.НазваниеКомпозиции = "";
             Сообщение.ОписаниеКомпозиции = "";
             Сообщение.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
-            КарточкаСтатическогоЗвуковогоСообщения ОкноСообщения = new КарточкаСтатическогоЗвуковогоСообщения(Сообщение);
+            КарточкаСтатическогоЗвуковогоСообщения ОкноСообщения = new КарточкаСтатическогоЗвуковогоСообщения(Сообщение, _authentificationService.CurrentUser);
             if (ОкноСообщения.ShowDialog() == DialogResult.OK)
             {
                 Сообщение = ОкноСообщения.ПолучитьИзмененнуюКарточку();
@@ -492,9 +507,9 @@ namespace MainExample
         private void добавитьВнештатныйПоездToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -587,9 +602,9 @@ namespace MainExample
         private void tsb_ТехническоеСообщение_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -605,9 +620,9 @@ namespace MainExample
         private void tSBРежимРаботы_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if(!Program.AuthenticationService.CheckRoleAcsess(new List<Role> {Role.Администратор, Role.Диктор, Role.Инженер}))
+            if(!_authentificationService.CheckRoleAcsess(new List<Role> {Role.Администратор, Role.Диктор, Role.Инженер}))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -672,7 +687,7 @@ namespace MainExample
         /// </summary>
         private void tSBLogOut_Click(object sender, EventArgs e)
         {
-            Program.AuthenticationService.LogOut();
+            _authentificationService.LogOut();
             CheckAuthentication(false);
         }
 
@@ -682,13 +697,16 @@ namespace MainExample
         /// </summary>
         private void tSBAdmin_Click(object sender, EventArgs e)
         {
-            var form= new AdminForm();
-            form.ShowDialog();
+            _adminFormFactory().ShowDialog();
+            //var form= new AdminForm();
+            //form.ShowDialog();
         }
 
 
         protected override void OnClosed(EventArgs e)
         {
+            _authentificationServiceOwner.Dispose();
+
             DispouseCisClientIsConnectRx.Dispose();
             ExchangeModel.Dispose();
 

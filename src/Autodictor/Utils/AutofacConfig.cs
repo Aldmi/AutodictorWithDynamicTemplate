@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutodictorBL.DataAccess;
+using AutodictorBL.Services;
 using Autofac;
 using Autofac.Core;
 using DAL.Abstract.Abstract;
@@ -67,6 +68,12 @@ namespace MainExample.Utils
             builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
                 .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
 
+
+            builder.RegisterType<MainForm>().InstancePerDependency();
+            builder.RegisterType<AdminForm>().InstancePerDependency();
+            builder.RegisterType<AuthenticationForm>().InstancePerDependency();
+
+            builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
 
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()

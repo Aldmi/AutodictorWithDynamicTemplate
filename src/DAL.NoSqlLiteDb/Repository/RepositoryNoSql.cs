@@ -130,7 +130,6 @@ namespace DAL.NoSqlLiteDb.Repository
                 var dbContext = db.GetCollection<T>(nameof(T));
                 dbContext.Delete(predicate);
             }
-
         }
 
 

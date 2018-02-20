@@ -97,11 +97,11 @@ namespace MainExample
         private void button2_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
-            {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
-                return;
-            }
+            //if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            //{
+            //    MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+            //    return;
+            //}
 
             StaticSoundRecord Данные;
 
@@ -118,11 +118,11 @@ namespace MainExample
         private void button3_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
-            {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
-                return;
-            }
+            //if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            //{
+            //    MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+            //    return;
+            //}
 
             ListView.SelectedIndexCollection sic = this.listView1.SelectedIndices;
 
@@ -305,11 +305,11 @@ namespace MainExample
         private void btnЗаписатьСообщение_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
-            {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
-                return;
-            }
+            //if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            //{
+            //    MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+            //    return;
+            //}
 
             ФормаЗаписиСообщения формаЗаписиСообщения = new ФормаЗаписиСообщения();
             if (формаЗаписиСообщения.ShowDialog() == DialogResult.OK)
