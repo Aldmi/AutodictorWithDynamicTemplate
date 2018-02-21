@@ -14,5 +14,8 @@ namespace AutodictorBL.Services
         void SetOldUser();
         void SetObserver();
         bool CheckRoleAcsess(IEnumerable<Role> roles);
+
+        User CreateUser(string login, string password, Role role);
+        User CreateObserver();
     }
 }

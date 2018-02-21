@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BCrypt.Net-Next, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BCrypt.Net-Next.2.1.2\lib\net452\BCrypt.Net-Next.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.DirectX.AudioVideoPlayback, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.AudioVideoPlayback.dll</HintPath>
@@ -71,6 +75,8 @@
     <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryManual.cs" />
     <Compile Include="Factory\TrainRecordFactory\TrainRecordFactoryRemote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AuthenticationService.cs" />
+    <Compile Include="Services\IAuthentificationService.cs" />
     <Compile Include="Settings\XmlSettingFactory.cs" />
     <Compile Include="Settings\XmlSound\XmlSoundPlayerSettings.cs" />
     <Compile Include="Sound\Converters\IFileNameConverter.cs" />

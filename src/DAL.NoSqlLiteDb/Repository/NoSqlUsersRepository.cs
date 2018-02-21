@@ -38,7 +38,7 @@ namespace DAL.NoSqlLiteDb.Repository
 
         public IEnumerable<User> List(Expression<Func<User, bool>> predicate)
         {
-            return Repository.List();
+            return Repository.List(predicate);
         }
 
         public void Add(User entity)

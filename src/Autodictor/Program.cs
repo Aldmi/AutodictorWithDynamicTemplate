@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutodictorBL;
 using AutodictorBL.DataAccess;
+using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using Autofac;
 using Autofac.Core;
@@ -31,46 +32,30 @@ namespace MainExample
     static class Program
     {
         static Mutex m_mutex;
-
         public static List<string> FilesFolder = null;
         public static List<string> NumbersFolder = null;
         public static List<string> СписокСтатическихСообщений = null;
         public static List<string> СписокДинамическихСообщений = null;
         public static List<string> НомераПоездов = new List<string>();
-
         public static string ИнфСтрокаНаТабло = "";
-
-        //public static IDirectionRepository DirectionRepository; // Направления. хранилище XML
-        // public static IPathwaysRepository PathWaysRepository; //Пути. хранилище XML
-        public static DirectionService DirectionService; // Направления. 
-        public static PathwaysService PathwaysService;   //Пути.
-
-        public static IEnumerable<TrainTypeByRyle> TrainTypes;
-
-
-        //TODO: IGenericDataRepository НЕ использовать напрямую
-        public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
-        public static IGenericDataRepository<User> UsersDbRepository; //Пользователи, хранилище NoSqlDb
-
         public static Настройки Настройки;
-
-
         public static string[] ТипыОповещения = new string[] { "Не определено", "На Х-ый путь", "На Х-ом пути", "С Х-ого пути" };
         public static string[] ТипыВремени = new string[] { "Прибытие", "Отправление" };
-
         public static List<string> ШаблоныОповещения = new List<string>();
-
         public static string[] ШаблонОповещенияОбОтменеПоезда = new string[] { "", "Отмена пассажирского поезда", "Отмена пригородного электропоезда", "Отмена фирменного поезда", "Отмена скорого поезда", "Отмена скоростного поезда", "Отмена ласточки", "Отмена РЭКСа" };
         public static string[] ШаблонОповещенияОЗадержкеПрибытияПоезда = new string[] { "", "Задержка прибытия пассажирского поезда", "Задержка прибытия пригородного электропоезда", "Задержка прибытия фирменного поезда", "Задержка прибытия скорого поезда", "Задержка прибытия скоростного поезда", "Задержка прибытия ласточки", "Задержка прибытия РЭКСа" };
         public static string[] ШаблонОповещенияОЗадержкеОтправленияПоезда = new string[] { "", "Задержка отправления пассажирского поезда", "Задержка отправления пригородного электропоезда", "Задержка отправления фирменного поезда", "Задержка отправления скорого поезда", "Задержка отправления скоростного поезда", "Задержка отправления ласточки", "Задержка отправления РЭКСа" };
         public static string[] ШаблонОповещенияООтправлениеПоГотовностиПоезда = new string[] { "", "Отправление по готовности пассажирского поезда", "Отправление по готовности пригородного электропоезда", "Отправление по готовности фирменного поезда", "Отправление по готовности скорого поезда", "Отправление по готовности скоростного поезда", "Отправление по готовности ласточки", "Отправление по готовности РЭКСа" };
-
-
-        public static DateTime StartTime { get; private set; }
-        public static AuthenticationService AuthenticationService { get; set; } = new AuthenticationService();
-
+        public static DateTime StartTime { get; } = DateTime.Now;
         public static AutodictorModel AutodictorModel { get; set; }
 
+        public static IAuthentificationService AuthenticationService { get; set; }
+        public static DirectionService DirectionService; // Направления. 
+        public static PathwaysService PathwaysService;   //Пути.
+        public static IEnumerable<TrainTypeByRyle> TrainTypes;
+        public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
+
+        public static IGenericDataRepository<User> UsersDbRepository;
 
 
         /// <summary>
@@ -82,73 +67,63 @@ namespace MainExample
             if (InstanceExists())
                 return;
 
-            StartTime = DateTime.Now;
-
             AutofacConfig.ConfigureContainer();
 
 
             //DEBUG-------------
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
-                var acc = new TrainTypeByRyleService(repResolve);
-                var listRules = acc.GetAll();
-                TrainTypes = listRules;
-            }
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
+            //    var acc = new TrainTypeByRyleService(repResolve);
+            //    var listRules = acc.GetAll();
+            //    TrainTypes = listRules;
+            //}
         
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IPathwaysRepository>();
-                var acc = new PathwaysService(repResolve);
-                var listPathwayses = acc.GetAll();
-            }
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IPathwaysRepository>();
+            //    var acc = new PathwaysService(repResolve);
+            //    var listPathwayses = acc.GetAll();
+            //}
                 
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IDirectionRepository>();
-                var acc = new DirectionService(repResolve);
-                var listDirections = acc.GetAll();
-            }
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IDirectionRepository>();
+            //    var acc = new DirectionService(repResolve);
+            //    var listDirections = acc.GetAll();
+            //}
 
-            //Users--
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IUsersRepository>();
-                var acc = new UserService(repResolve);
-                var users= acc.GetAll();
-            }
+            ////Users--
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IUsersRepository>();
+            //    var acc = new UserService(repResolve);
+            //    var users= acc.GetAll();
+            //}
 
-            //SoundRecordChanges--
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
-                var acc= new SoundRecChangesService(repResolve);
-            }
+            ////SoundRecordChanges--
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
+            //    var acc= new SoundRecChangesService(repResolve);
+            //}
 
-            //TrainTableRec--
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
+            ////TrainTableRec--
+            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            //{
+            //    var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
 
-                var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
-            }
+            //    var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
+            //}
 
             //DEBUG-------------
 
+            ResolveStaticServices();
 
-
-            ЗагрузкаНазванийПутей();
-            ЗагрузкаНазванийНаправлений();
             ОкноНастроек.ЗагрузитьНастройки();
 
             string connection = @"NoSqlDb\Main.db";
             SoundRecordChangesDbRepository = new RepositoryNoSql<SoundRecordChangesDb>(connection);
-
-            connection = @"NoSqlDb\Users.db";
-            UsersDbRepository = new RepositoryNoSql<User>(connection);
-
-            AuthenticationService.UsersDbInitialize();//не дожидаемся окончания Task-а загрузки БД
-
 
             try
             {
@@ -179,13 +154,6 @@ namespace MainExample
             AutodictorModel.LoadSetting(Настройки.ВыборУровняГромкости, GetFileName);
 
 
-            //DEBUG-------------
-            //IRepository<TrainTypeByRyle> rep = new RepositoryXmlTrainTypeByRyle();
-            //var acc= new TrainTypeByRyleService(rep);
-            //var listRules = acc.GetAll();
-            //DEBUG-------------
-
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -193,7 +161,8 @@ namespace MainExample
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            Application.Run(new MainForm());
+            var mainForm = AutofacConfig.Container.Resolve<MainForm>();
+            Application.Run(mainForm);
 
             Dispose();
         }
@@ -213,17 +182,6 @@ namespace MainExample
 
 
 
-        //public static ISoundPlayer LoadSettings()
-        //{
-        //   // return new PlayerDirectX(Настройки.ВыборУровняГромкости, GetFileName);
-
-
-        //    var player = new PlayerOmneo("192.168.1.44", 9407, "admin", "admin", "oll", 3000, 5000);
-        //    var task = player.ReConnect();   //выполняется фоновая задача, пока не подключится к контроллеру усилителя.
-        //    BackGroundTasks?.Add(task);
-        //    return player;
-        //}
-
 
         static bool InstanceExists()
         {
@@ -232,16 +190,6 @@ namespace MainExample
             return (!createdNew);
         }
 
-
-
-        public static string ByteArrayToHexString(byte[] data, int begin, int count)
-        {
-            int i;
-            StringBuilder sb = new StringBuilder(count * 3);
-            for (i = 0; i < count; i++)
-                sb.Append(Convert.ToString(data[begin + i], 16).PadLeft(2, '0').PadRight(3, ' '));
-            return sb.ToString().ToUpper();
-        }
 
 
 
@@ -279,53 +227,23 @@ namespace MainExample
 
 
 
-        public static void ЗагрузкаНазванийНаправлений()
+        public static void ResolveStaticServices()
         {
             try
             {
-                //DEBUG-------------
-                using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-                {
-                    var repResolve = scope.Resolve<IDirectionRepository>();
-                    DirectionService = new DirectionService(repResolve);
-                }
-                //DEBUG-------------
-
-                //var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "Stations.xml"); //все настройки в одном файле
-                //if (xmlFile == null)
-                //    return;
-                //DirectionRepository = new RepositoryXmlDirection(xmlFile);                 //хранилище XML
-                ////directionRep = new RepositoryEf<Direction>(dbContext);                   //хранилище БД
+                DirectionService= AutofacConfig.Container.Resolve<DirectionService>();
+                PathwaysService = AutofacConfig.Container.Resolve<PathwaysService>();
+                TrainTypes= AutofacConfig.Container.Resolve<TrainTypeByRyleService>().GetAll();
+                AuthenticationService = AutofacConfig.Container.Resolve<IAuthentificationService>();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"файл \"Stations.xml\" не загружен. Исключение: {ex.Message}");
+                MessageBox.Show($"ResolveStaticServices. Исключение: {ex.Message}");
             }
         }
 
 
 
-        public static void ЗагрузкаНазванийПутей()
-        {
-            try
-            {
-                using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-                {
-                    var repResolve = scope.Resolve<IPathwaysRepository>();
-                    PathwaysService = new PathwaysService(repResolve);
-                }
-           
-                //var xmlFile = XmlWorker.LoadXmlFile(string.Empty, "PathNames.xml"); //все настройки в одном файле
-                //if (xmlFile == null)
-                //    return;
-                //PathWaysRepository = new RepositoryXmlPathways(xmlFile);                 //хранилище XML
-                ////var directionRep = new RepositoryEf<Pathways>(dbContext);              //хранилище БД
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"файл \"PathNames.xml\" не загружен. Исключение: {ex.Message}");
-            }
-        }
 
 
         //TODO: DI. Вынести в DirectionService.
@@ -352,6 +270,7 @@ namespace MainExample
         }
 
 
+        //TODO: DI.Вынести в DirectionService.
         /// <summary>
         /// Находим объект Station в репозитории по коду Экспресс станции.
         /// </summary>
@@ -402,6 +321,7 @@ namespace MainExample
 
         private static void Dispose()
         {
+            AutofacConfig.Container.Dispose();
             AutodictorModel?.Dispose();
         }
 

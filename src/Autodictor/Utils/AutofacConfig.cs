@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutodictorBL.DataAccess;
+using AutodictorBL.Services;
 using Autofac;
 using Autofac.Core;
 using DAL.Abstract.Abstract;
@@ -21,16 +22,9 @@ namespace MainExample.Utils
 
         public static void ConfigureContainer()
         {
-            // получаем экземпляр контейнера
             var builder = new ContainerBuilder();
-
             RegisterType(builder);
-
-            // создаем новый контейнер с теми зависимостями, которые определены выше
             Container = builder.Build();
-
-            // установка сопоставителя зависимостей для WinForms
-            //DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
 
 
@@ -39,41 +33,44 @@ namespace MainExample.Utils
         /// </summary>
         private static void RegisterType(ContainerBuilder builder)
         {
+
+            //РЕПОЗИТОРИИ--------------------------------------------------------------------------------------------
             builder.RegisterType<XmlRawTrainTypeByRuleRepository>().As<ITrainTypeByRyleRepository>()
                 .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
-                                                      new NamedParameter("fileName", "DynamicSound.xml") });
+                                                      new NamedParameter("fileName", "DynamicSound.xml") }).InstancePerLifetimeScope();
 
             builder.RegisterType<XmlRawPathWaysRepository>().As<IPathwaysRepository>()
                 .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
-                                                      new NamedParameter("fileName", "PathNames.xml") });
+                                                      new NamedParameter("fileName", "PathNames.xml") }).InstancePerLifetimeScope();
 
             builder.RegisterType<XmlRawDirectionRepository>().As<IDirectionRepository>()
                 .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
-                                                      new NamedParameter("fileName", "Stations.xml") });
-
+                                                      new NamedParameter("fileName", "Stations.xml") }).InstancePerLifetimeScope();
 
             builder.RegisterType<NoSqlUsersRepository>().As<IUsersRepository>()
-                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"NoSqlDb\Users.db") });
-
+                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"NoSqlDb\Users.db") }).InstancePerLifetimeScope();
 
             builder.RegisterType<ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>>().As<IParticirovanieService<SoundRecordChangesDb>>()
-                .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") });
-
-
-            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("Local")
-            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") });
-
-
-            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
-            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
-
+                .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") }).InstancePerLifetimeScope();
 
             builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
                 .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") });
 
-
             builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
-                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
+                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") }).InstancePerLifetimeScope();
+
+
+            //СЕРВИСЫ---------------------------------------------------------------------------------
+            builder.RegisterType<DirectionService>().SingleInstance();
+            builder.RegisterType<PathwaysService>().SingleInstance();
+            builder.RegisterType<TrainTypeByRyleService>().SingleInstance();
+            builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
+
+
+            //ФОРМЫ----------------------------------------------------------------------------------
+            builder.RegisterType<MainForm>().InstancePerDependency();
+            builder.RegisterType<AdminForm>().InstancePerDependency();
+            builder.RegisterType<AuthenticationForm>().InstancePerDependency();
 
 
 

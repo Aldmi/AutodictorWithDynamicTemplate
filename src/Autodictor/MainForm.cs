@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
+using AutodictorBL.Services;
 using CommunicationDevices.Behavior.BindingBehavior;
 using CommunicationDevices.Behavior.BindingBehavior.ToPath;
 using CommunicationDevices.ClientWCF;
@@ -42,7 +43,7 @@ namespace MainExample
         public static ToolStripButton ОбновитьСписок = null;
         public static ToolStripButton РежимРаботы = null;
         
-        private AuthenticationService autenServ = Program.AuthenticationService;
+        private IAuthentificationService autenServ = Program.AuthenticationService;
         private List<UniversalInputType> table = new List<UniversalInputType>();
 
 
