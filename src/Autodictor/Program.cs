@@ -84,7 +84,6 @@ namespace MainExample
 
             AutofacConfig.ConfigureContainer();
 
-     
           //Сервис аутентификации
           AuthenticationService= AutofacConfig.Container.Resolve<IAuthentificationService>();
 
