@@ -10,8 +10,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
-using AutodictorBL.Services;
-using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.BindingBehavior;
 using CommunicationDevices.Behavior.BindingBehavior.ToPath;
 using CommunicationDevices.ClientWCF;
@@ -23,19 +21,13 @@ using DAL.Abstract.Entitys.Authentication;
 using MainExample.Entites;
 using MainExample.Extension;
 using MainExample.Services;
+using CommunicationDevices.DataProviders;
 
 
 namespace MainExample
 {
     public partial class MainForm : Form
     {
-        private readonly Func<AdminForm> _adminFormFactory;
-        private readonly Func<AuthenticationForm> _authenticationFormFactory;
-
-        private readonly IDisposable _authentificationServiceOwner;
-        private readonly IAuthentificationService _authentificationService;
-
-
         public ExchangeModel ExchangeModel { get; set; }
         public IDisposable DispouseCisClientIsConnectRx { get; set; }
         public VerificationActivation VerificationActivationService { get; set; } = new VerificationActivation();
@@ -49,17 +41,13 @@ namespace MainExample
         public static ToolStripButton Включить = null;
         public static ToolStripButton ОбновитьСписок = null;
         public static ToolStripButton РежимРаботы = null;
+        
+        private AuthenticationService autenServ = Program.AuthenticationService;
+        private List<UniversalInputType> table = new List<UniversalInputType>();
 
 
-
-
-        public MainForm(Func<AdminForm> adminFormFactory, Func<AuthenticationForm> authenticationFormFactory, Owned<IAuthentificationService> authentificationService)
+        public MainForm()
         {
-            _adminFormFactory = adminFormFactory;
-            _authenticationFormFactory = authenticationFormFactory;
-            _authentificationService = authentificationService.Value;
-            _authentificationServiceOwner = authentificationService;
-
             InitializeComponent();
 
             StaticSoundForm.ЗагрузитьСписок();
@@ -94,34 +82,38 @@ namespace MainExample
         private void CheckAuthentication(bool flagApplicationExit)
         {
             tSBAdmin.Visible = false;
-            while (_authentificationService.IsAuthentication == false)
+            while (autenServ.IsAuthentication == false)
             {
-                var autenForm = _authenticationFormFactory();
+                var autenForm = new AuthenticationForm();
                 var result = autenForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    if (_authentificationService.IsAuthentication)
+                    if (autenServ.IsAuthentication)
                     {
                         //ОТОБРАЗИТЬ ВОШЕДШЕГО ПОЛЬЗОВАТЕЛЯ
-                        tSBLogOut.Text = _authentificationService.CurrentUser.Login;
+                        var user = autenServ.CurrentUser;
+                        tSBLogOut.Text = user.Login;
+                        SendAuthenticationChanges(user, "Вход в систему");
                     }
                 }
                 else
-                {        
+                {
                     if (flagApplicationExit)
                     {
                         Application.Exit();                  //ВЫХОД
                     }
 
                     //ПОЛЬЗОВАТЕЛЬ - Предыдущий пользователь
-                    _authentificationService.SetOldUser();
-                    tSBLogOut.Text = _authentificationService.CurrentUser.Login;
+                    autenServ.SetOldUser();
+                    var user = autenServ.CurrentUser;
+                    tSBLogOut.Text = user.Login;
+                    SendAuthenticationChanges(user, "Вход в систему");
                     break;
                 }
             }
 
             //Отрисовать вход в админку
-            switch (_authentificationService.CurrentUser.Role)
+            switch (autenServ.CurrentUser.Role)
             {
                 case Role.Администратор:
                     tSBAdmin.Visible = true;
@@ -130,13 +122,54 @@ namespace MainExample
         }
 
 
+        private void SendAuthenticationChanges(User user, string causeOfChange)
+        {
+            if (table.Count < 1)
+            {
+                // Первичные изменения записываем в список изменений
+                table.Add(new UniversalInputType
+                {
+                    ViewBag = new Dictionary<string, dynamic>
+                    {
+                        { "TimeStamp", Program.StartTime },
+                        { "UserInfo", "" },
+                        { "CauseOfChange", "Запуск программы" }
+                    }
+                });
+            }
+            else if (table.Count >= 2)
+            {
+                table.RemoveAt(0);
+            }
+
+            // Пишем новые изменения на позицию (1)
+            table.Add(new UniversalInputType
+            {
+                ViewBag = new Dictionary<string, dynamic>
+                {
+                    { "TimeStamp", DateTime.Now },
+                    { "UserInfo", user.Login },
+                    { "CauseOfChange", causeOfChange }
+                }
+            });
+
+            if (table.Count != 2)
+            {
+                Library.Logs.Log.log.Fatal("Ахтунг! Изменений неверное количество. Должно быть 2 - старое и новое");
+            }
+            var uit = new UniversalInputType { TableData = table };
+            if (ExchangeModel.Binding2ChangesEvent.Any())
+            {
+                ExchangeModel.Binding2ChangesEvent.Last().SendMessage(uit);
+            }
+        }
 
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            CheckAuthentication(true);
-
             ExchangeModel.LoadSetting();
+            CheckAuthentication(true); // переместил сюда, т.к. иначе данные о первом логине не отправляются по причине незагруженной модели обмена
+                                       // это выключило возможность включения/отключения галки получения данных из ЦИС на нижней панели программы
             ExchangeModel.StartCisClient();
 
             ExchangeModel.InitializeDeviceSoundChannelManagement();
@@ -191,8 +224,7 @@ namespace MainExample
                                                              ExchangeModel.Binding2ChangesSchedules,
                                                              ExchangeModel.Binding2ChangesEvent,
                                                              ExchangeModel.Binding2GetData,
-                                                             ExchangeModel.DeviceSoundChannelManagement,
-                                                             _authentificationService)
+                                                             ExchangeModel.DeviceSoundChannelManagement)
                 {
                     MdiParent = this,
                     WindowState = FormWindowState.Maximized
@@ -392,9 +424,9 @@ namespace MainExample
         private void добавитьСтатическоеСообщениеToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!autenServ.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -405,7 +437,7 @@ namespace MainExample
             Сообщение.НазваниеКомпозиции = "";
             Сообщение.ОписаниеКомпозиции = "";
             Сообщение.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
-            КарточкаСтатическогоЗвуковогоСообщения ОкноСообщения = new КарточкаСтатическогоЗвуковогоСообщения(Сообщение, _authentificationService.CurrentUser);
+            КарточкаСтатическогоЗвуковогоСообщения ОкноСообщения = new КарточкаСтатическогоЗвуковогоСообщения(Сообщение);
             if (ОкноСообщения.ShowDialog() == DialogResult.OK)
             {
                 Сообщение = ОкноСообщения.ПолучитьИзмененнуюКарточку();
@@ -507,9 +539,9 @@ namespace MainExample
         private void добавитьВнештатныйПоездToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!autenServ.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -602,9 +634,9 @@ namespace MainExample
         private void tsb_ТехническоеСообщение_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!autenServ.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -620,9 +652,9 @@ namespace MainExample
         private void tSBРежимРаботы_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if(!_authentificationService.CheckRoleAcsess(new List<Role> {Role.Администратор, Role.Диктор, Role.Инженер}))
+            if(!autenServ.CheckRoleAcsess(new List<Role> {Role.Администратор, Role.Диктор, Role.Инженер}))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -687,7 +719,8 @@ namespace MainExample
         /// </summary>
         private void tSBLogOut_Click(object sender, EventArgs e)
         {
-            _authentificationService.LogOut();
+            autenServ.LogOut();
+            SendAuthenticationChanges(autenServ.OldUser, "Выход из системы");
             CheckAuthentication(false);
         }
 
@@ -697,16 +730,13 @@ namespace MainExample
         /// </summary>
         private void tSBAdmin_Click(object sender, EventArgs e)
         {
-            _adminFormFactory().ShowDialog();
-            //var form= new AdminForm();
-            //form.ShowDialog();
+            var form= new AdminForm();
+            form.ShowDialog();
         }
 
 
         protected override void OnClosed(EventArgs e)
         {
-            _authentificationServiceOwner.Dispose();
-
             DispouseCisClientIsConnectRx.Dispose();
             ExchangeModel.Dispose();
 
@@ -714,6 +744,22 @@ namespace MainExample
             QuartzVerificationActivation.Shutdown();
 
             base.OnClosed(e);
+        }
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                if (autenServ != null)
+                {
+                    autenServ.LogOut();
+                    SendAuthenticationChanges(autenServ.OldUser, "Выход из системы");
+                    System.Threading.Thread.Sleep(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using AutodictorBL.Entites;
 using AutodictorBL.Settings.XmlSound;
+using AutodictorBL.Sound.Converters;
 using DAL.Abstract.Entitys;
 using Microsoft.DirectX.AudioVideoPlayback;
 
@@ -51,6 +52,8 @@ namespace AutodictorBL.Sound
                 IsConnectChangeRx.OnNext(_isConnect);
             }
         }
+
+        public IFileNameConverter FileNameConverter => null; //Отстутсвует конвертор имени файлов
 
         #endregion
 
@@ -100,7 +103,7 @@ namespace AutodictorBL.Sound
         }
 
 
-        public  bool PlayFile(ВоспроизводимоеСообщение soundMessage)
+        public  bool PlayFile(ВоспроизводимоеСообщение soundMessage, bool useFileNameConverter = true)
         {
             var filePath = string.Empty;
             if (soundMessage != null)

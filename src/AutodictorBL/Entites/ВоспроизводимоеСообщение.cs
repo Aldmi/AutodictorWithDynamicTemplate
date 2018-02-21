@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using DAL.Abstract.Entitys;
 
-
 namespace AutodictorBL.Entites
 {
     public enum ТипСообщения

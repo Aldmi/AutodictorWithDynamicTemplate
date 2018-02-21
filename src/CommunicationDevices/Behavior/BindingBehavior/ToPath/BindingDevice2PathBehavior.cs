@@ -151,6 +151,7 @@ namespace CommunicationDevices.Behavior.BindingBehavior.ToPath
                 Time = DateTime.MinValue,
                 Stations = "   ",
                 Note = "   ",
+                //TypeTrain = TypeTrain.None,
                 TypeTrain = null,
                 TableData = new List<UniversalInputType>() { new UniversalInputType() }
             };

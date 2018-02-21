@@ -341,7 +341,7 @@ namespace MainExample.Mappers
                 IsActive = t.Active,
                 Id = t.Id,
                 Event = eventPars(t.ArrivalTime, t.DepartureTime),
-                TypeTrain = t.TrainTypeByRyle,
+                TypeTrain = t.TrainTypeByRyle.NameRu,
                 Note = t.Примечание, //C остановками: ...
                 PathNumber = ПолучитьНомерПутиПоДнямНедели(t),
                 VagonDirection = (VagonDirection)t.TrainPathDirection,
@@ -538,7 +538,7 @@ namespace MainExample.Mappers
                     StationArrival = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияНазначения : new Station(),
 
                     Note = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? data.Примечание : "   ",
-                    TypeTrain = data.ТипПоезда,
+                    TypeTrain = data.ТипПоезда.NameRu,
                     DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(data.ДниСледования).ПолучитьСтрокуОписанияРасписания(),
                     DaysFollowingAlias = data.ДниСледованияAlias,
                     Addition = (data.ИспользоватьДополнение["табло"]) ? data.Дополнение : string.Empty,
@@ -570,7 +570,7 @@ namespace MainExample.Mappers
                     StationDeparture =  cтанцияОтправления,  //(data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияОтправления : new Station(),
                     StationArrival = cтанцияНазначения,     // (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияНазначения : new Station(), 
                     Note = data.Примечание,
-                    TypeTrain = data.ТипПоезда,
+                    TypeTrain = data.ТипПоезда.NameRu,
                     DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(data.ДниСледования).ПолучитьСтрокуОписанияРасписания(),
                     DaysFollowingAlias = data.ДниСледованияAlias,
                     Addition = (data.ИспользоватьДополнение["табло"]) ? data.Дополнение : string.Empty,

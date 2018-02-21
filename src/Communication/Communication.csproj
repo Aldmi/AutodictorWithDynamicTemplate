@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LedScreenLibNetWrapper">
+      <HintPath>..\Libs\LedScreenLib-x86_20180119\LedScreenLibNetWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.3.11\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -69,6 +72,9 @@
     <Compile Include="Interfaces\IExchangeDataProviderBase.cs" />
     <Compile Include="SerialPort\MasterSerialPort.cs" />
     <Compile Include="Settings\XmlSerialSettings.cs" />
+    <Compile Include="SibWayApi\ItemSibWay.cs" />
+    <Compile Include="SibWayApi\SettingSibWay.cs" />
+    <Compile Include="SibWayApi\SibWay.cs" />
     <Compile Include="TcpIp\ListenerTcpIp.cs" />
     <Compile Include="TcpIp\MasterTcpIp.cs" />
     <Compile Include="Properties\Annotations.cs" />

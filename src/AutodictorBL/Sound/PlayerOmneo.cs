@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AutodictorBL.Entites;
 using AutodictorBL.Settings.XmlSound;
+using AutodictorBL.Sound.Converters;
 using Library.Extensions;
 using PRAESIDEOOPENINTERFACECOMSERVERLib;
 
@@ -58,6 +59,8 @@ namespace AutodictorBL.Sound
                 IsConnectChangeRx.OnNext(_isConnect);
             }
         }
+
+        public IFileNameConverter FileNameConverter => new Omneo8CharacterFileNameConverter();
 
         #endregion
 
@@ -180,7 +183,7 @@ namespace AutodictorBL.Sound
 
 
 
-        public bool PlayFile(ВоспроизводимоеСообщение soundMessage)
+        public bool PlayFile(ВоспроизводимоеСообщение soundMessage, bool useFileNameConverter = true)
         {
             if (!IsConnect)
                 return false;
@@ -193,7 +196,7 @@ namespace AutodictorBL.Sound
                 string endChime = string.Empty;
                 bool bLiveSpeech = false;
                 string audioInput = string.Empty;
-                string messages = soundMessage.ИмяВоспроизводимогоФайла;
+                string messages = useFileNameConverter ? FileNameConverter.Convert(soundMessage.ИмяВоспроизводимогоФайла) : soundMessage.ИмяВоспроизводимогоФайла;
                 int repeat = 1;
                 _currentCallId = _praesideoOi.createCall(_defaultZoneNames, priority, bPartial, startChime, endChime, bLiveSpeech, audioInput, messages, repeat);
 
@@ -206,7 +209,7 @@ namespace AutodictorBL.Sound
                 return false;
             }
         }
-
+        
 
         /// <summary>
         /// Запускает задачу _tcs которая длится _timeResponse (мсек)  - допустимое время на оповещение.

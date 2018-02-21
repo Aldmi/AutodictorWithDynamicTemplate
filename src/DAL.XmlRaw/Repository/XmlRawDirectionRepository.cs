@@ -75,7 +75,9 @@ namespace DAL.XmlRaw.Repository
                                 Id = int.Parse((string)stXml.Attribute("Id")),
                                 NameRu = (string)stXml.Attribute("NameRu"),
                                 NameEng = (string)stXml.Attribute("NameEng"),
-                                NameCh = (stXml.Attribute("NameCh") != null) ? (string)stXml.Attribute("NameCh") : string.Empty
+                                NameCh = (stXml.Attribute("NameCh") != null) ? (string)stXml.Attribute("NameCh") : string.Empty,
+                                CodeEsr = !string.IsNullOrEmpty((string)stXml.Attribute("CodeEsr")) ? int.Parse((string)stXml.Attribute("CodeEsr")) : 0,
+                                CodeExpress = !string.IsNullOrEmpty((string)stXml.Attribute("CodeExpress")) ? int.Parse((string)stXml.Attribute("CodeExpress")) : 0
                             });
                         }
                     }

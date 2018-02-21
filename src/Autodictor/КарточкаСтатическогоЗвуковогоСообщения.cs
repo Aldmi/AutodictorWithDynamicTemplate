@@ -5,9 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
-using AutodictorBL.Services;
 using DAL.Abstract.Entitys;
-using DAL.Abstract.Entitys.Authentication;
 using MainExample.Entites;
 
 
@@ -16,14 +14,10 @@ namespace MainExample
     public partial class КарточкаСтатическогоЗвуковогоСообщения : Form
     {
         private СтатическоеСообщение Record;
-        private readonly User _user;
 
-
-        public КарточкаСтатическогоЗвуковогоСообщения(СтатическоеСообщение Record, User user)
+        public КарточкаСтатическогоЗвуковогоСообщения(СтатическоеСообщение Record)
         {
             this.Record = Record;
-            _user = user;
-
 
             InitializeComponent();
 
@@ -134,7 +128,7 @@ namespace MainExample
                         //НастройкиВыводаЗвука = new НастройкиВыводаЗвука { ТолькоПоВнутреннемуКаналу = true }
                     };
                     MainWindowForm.QueueSound.AddItem(воспроизводимоеСообщение);
-                    Program.ЗаписьЛога("Действие оператора", "ВоспроизведениеАвтомат звукового сообщения: " + sound.Name, _user);
+                    Program.ЗаписьЛога("Действие оператора", "ВоспроизведениеАвтомат звукового сообщения: " + sound.Name, Program.AuthenticationService.CurrentUser);
                     break;
                 }
             }

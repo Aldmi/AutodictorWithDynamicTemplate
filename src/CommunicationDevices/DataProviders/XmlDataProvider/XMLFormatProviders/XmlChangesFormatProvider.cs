@@ -84,9 +84,10 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
                 var uit = universalInputTypes[i];
                 var uitNew = universalInputTypes[i+1];
 
-                string trainType = uit.TypeTrain.Id.ToString();
-                string typeName = uit.TypeTrain.NameRu;
-                string typeNameShort = uit.TypeTrain.AliasRu;
+                string trainType;
+                string typeName = uit.TypeTrain;
+                string typeNameShort;
+                GetTypeTrain(typeName, out trainType, out typeNameShort);
 
                 string timeArrival;
                 string timeDepart;
@@ -107,26 +108,34 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
 
                 // Время изменения
                 string timeStamp = string.Empty;
+                string timeStampNew = string.Empty;
                 switch (_dateTimeFormat)
                 {
                     case DateTimeFormat.None:
                     case DateTimeFormat.Sortable:
                         timeStamp = uit.ViewBag.ContainsKey("TimeStamp") ? ((DateTime)uit.ViewBag["TimeStamp"]).ToString("s") : string.Empty;
+                        timeStampNew = uitNew.ViewBag.ContainsKey("TimeStamp") ? ((DateTime)uitNew.ViewBag["TimeStamp"]).ToString("s") : string.Empty;
                         break;
 
                     case DateTimeFormat.LinuxTimeStamp:
                         timeStamp = uit.ViewBag.ContainsKey("TimeStamp") ? DateTimeConvertion.ConvertToUnixTimestamp((DateTime)uit.ViewBag["TimeStamp"]).ToString(CultureInfo.InvariantCulture) : string.Empty;
+                        timeStampNew = uitNew.ViewBag.ContainsKey("TimeStamp") ? DateTimeConvertion.ConvertToUnixTimestamp((DateTime)uitNew.ViewBag["TimeStamp"]).ToString(CultureInfo.InvariantCulture) : string.Empty;
                         break;
                 }
 
                 var userInfo = uit.ViewBag.ContainsKey("UserInfo") ? uit.ViewBag["UserInfo"] : string.Empty;
+                var userInfoNew = uitNew.ViewBag.ContainsKey("UserInfo") ? uitNew.ViewBag["UserInfo"] : string.Empty;
                 var causeOfChange = uit.ViewBag.ContainsKey("CauseOfChange") ? uit.ViewBag["CauseOfChange"] : string.Empty;
+                var causeOfChangeNew = uitNew.ViewBag.ContainsKey("CauseOfChange") ? uitNew.ViewBag["CauseOfChange"] : string.Empty;
 
                 xDoc.Root?.Add(
                     new XElement("t",
                     new XElement("TimeStamp", timeStamp),
+                    new XElement("TimeStampNew", timeStampNew),
                     new XElement("UserInfo", userInfo),
+                    new XElement("UserInfoNew", userInfoNew),
                     new XElement("CauseOfChange", causeOfChange),
+                    new XElement("CauseOfChangeNew", causeOfChangeNew),
                     //new XElement("Id", uit.Id),
                     new XElement("TrainNumber", uit.NumberOfTrain),
                     new XElement("TrainType", trainType),
@@ -184,6 +193,46 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
             return xDoc.ToString();
         }
 
+        private void GetTypeTrain(string typeTrain, out string typeTrainStr, out string typeNameShortStr)
+        {
+            typeTrainStr = String.Empty;
+            typeNameShortStr = typeTrain.Substring(0, 4);
+            switch (typeTrain)
+            {
+                case "":
+                    typeTrainStr = String.Empty;
+                    break;
+
+                case "Пригородный":
+                    typeTrainStr = "0";
+                    break;
+
+                case "Экспресс":
+                    typeTrainStr = "1";
+                    break;
+
+                case "Скорый":
+                    typeTrainStr = "2";
+                    break;
+
+                case "Фирменный":
+                    typeTrainStr = "3";
+                    break;
+
+                case "Пассажирский":
+                    typeTrainStr = "4";
+                    break;
+
+                case "Скоростной":
+                    typeTrainStr = "5";
+                    break;
+
+                case "РЭКС":
+                    typeTrainStr = "6";
+                    typeNameShortStr = "Эксп";
+                    break;
+            }
+        }
 
         private void GetTypeEvent(UniversalInputType uit, out string timeArrival, out string timeDepart, out byte direction)
         {

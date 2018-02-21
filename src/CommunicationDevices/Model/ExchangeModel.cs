@@ -24,6 +24,7 @@ using CommunicationDevices.Behavior.ExhangeBehavior.HttpBehavior;
 using CommunicationDevices.Behavior.ExhangeBehavior.PcBehavior;
 using CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior;
 using CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior.ChannelManagement;
+using CommunicationDevices.Behavior.ExhangeBehavior.SibWayBehavior;
 using CommunicationDevices.Behavior.ExhangeBehavior.TcpIpBehavior;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData;
@@ -35,6 +36,7 @@ using CommunicationDevices.DataProviders.VidorDataProvider;
 using CommunicationDevices.DataProviders.XmlDataProvider;
 using CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders;
 using CommunicationDevices.Devices;
+using CommunicationDevices.Mappers;
 using CommunicationDevices.Rules.ExchangeRules;
 using CommunicationDevices.Settings;
 using CommunicationDevices.Settings.XmlCisSettings;
@@ -58,6 +60,8 @@ namespace CommunicationDevices.Model
 
         public static Station NameRailwayStation; // Название текущего вокзала
 
+        private readonly IWindsorContainer _container = new WindsorContainer();
+
         #endregion
 
 
@@ -71,7 +75,6 @@ namespace CommunicationDevices.Model
         public List<MasterSerialPort> MasterSerialPorts { get; set; } = new List<MasterSerialPort>();
 
         public List<Device> DeviceTables { get; set; } = new List<Device>();
-
         public Device DeviceSoundChannelManagement { get; set; } 
         
 
@@ -97,6 +100,8 @@ namespace CommunicationDevices.Model
 
         public List<Task> BackGroundTasks { get; set; } = new List<Task>();
 
+        public IDisposable ApkDkVolgogradStreamChangeRxDispose { get; set; }
+
         #endregion
 
 
@@ -109,6 +114,7 @@ namespace CommunicationDevices.Model
         public ExchangeModel()
         {
             //РЕГИСТРАЦИЯ МАППИНГА
+            AutoMapperConfig.Register();
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<UniversalInputType, UniversalDisplayType>();
@@ -158,6 +164,7 @@ namespace CommunicationDevices.Model
             List<XmlPcSetting> xmlDevicePcSettings;
             List<XmlTcpIpSetting> xmlDeviceTcpIpSettings;
             List<XmlHttpSetting> xmlDeviceHttpSettings;
+            List<XmlSibWaySettings> xmlDeviceSibWaySettings;
             XmlCisSetting xmlCisSetting;
 
             try
@@ -171,6 +178,7 @@ namespace CommunicationDevices.Model
                 xmlDevicePcSettings = XmlSettingFactory.CreateXmlPcSetting(xmlFile);
                 xmlDeviceTcpIpSettings = XmlSettingFactory.CreateXmlTcpIpSetting(xmlFile);
                 xmlDeviceHttpSettings = XmlSettingFactory.CreateXmlHttpSetting(xmlFile);
+                xmlDeviceSibWaySettings = XmlSibWaySettings.LoadXmlSetting(xmlFile);
                 xmlCisSetting = XmlCisSetting.LoadXmlSetting(xmlFile);
             }
             catch (FileNotFoundException ex)
@@ -1028,6 +1036,87 @@ namespace CommunicationDevices.Model
 
 
 
+            #region СОЗДАНИЕ УСТРОЙСТВ С SIBWAY API
+
+            foreach (var xmlDeviceSibWay in xmlDeviceSibWaySettings)
+            {
+                XmlBindingSetting binding = null;
+                XmlConditionsSetting contrains = null;
+                XmlPagingSetting paging = null;
+
+                if (xmlDeviceSibWay.SpecialDictionary.ContainsKey("Binding"))
+                {
+                    binding = xmlDeviceSibWay.SpecialDictionary["Binding"] as XmlBindingSetting;
+                }
+
+                if (xmlDeviceSibWay.SpecialDictionary.ContainsKey("Contrains"))
+                {
+                    contrains = xmlDeviceSibWay.SpecialDictionary["Contrains"] as XmlConditionsSetting;
+                }
+
+                if (xmlDeviceSibWay.SpecialDictionary.ContainsKey("Paging"))
+                {
+                    paging = xmlDeviceSibWay.SpecialDictionary["Paging"] as XmlPagingSetting;
+                }
+
+                var setting = new DeviceSetting();
+
+
+                //привязка обязательный параметр
+                if (binding == null)
+                {
+                    MessageBox.Show($"Не указанны настройки привязки у ус-ва {xmlDeviceSibWay.Id}");
+                    return;
+                }
+
+                var sibWayBeh = new BaseExchangeSibWayBehavior(xmlDeviceSibWay.Period, xmlDeviceSibWay.SettingSibWay);
+                sibWayBeh.ProviderName = "SibWayProvider";
+
+                DeviceTables.Add(new Device(xmlDeviceSibWay.Id, xmlDeviceSibWay.SettingSibWay.Ip, "SibWay", xmlDeviceSibWay.Description, sibWayBeh, binding.BindingType, setting));
+
+                //создание поведения привязка табло к пути.
+                if (binding.BindingType == BindingType.ToPath)
+                {
+                    var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions);
+                    Binding2PathBehaviors.Add(bindingBeh);
+                    bindingBeh.InitializeDevicePathInfo();     //Вывод номера пути в пустом сообщении
+                    DeviceTables.Last().AddCycleFunc();        //Добавим все функции циклического опроса          
+                }
+
+                //создание поведения привязка табло к главному расписанию
+                if (binding.BindingType == BindingType.ToGeneral)
+                {
+                    Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                    //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
+                    if (!Binding2GeneralSchedules.Last().IsPaging)
+                    {
+                        DeviceTables.Last().AddCycleFunc();//добавим все функции циклического опроса
+                    }
+                }
+
+                //создание поведения привязка табло к форме статических сообщений
+                if (binding.BindingType == BindingType.ToStatic)
+                    Binding2StaticFormBehaviors.Add(new Binding2StaticFormBehavior(DeviceTables.Last()));
+
+                //создание поведения привязка табло к Изменениям
+                if (binding.BindingType == BindingType.ToChange)
+                {
+                    Binding2ChangesSchedules.Add(new Binding2ChangesBehavior(DeviceTables.Last(), binding.HourDepth, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                    //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
+                    if (!Binding2ChangesSchedules.Last().IsPaging)
+                    {
+                        DeviceTables.Last().AddCycleFunc();//добавим все функции циклического опроса
+                    }
+                }
+
+                //создание поведения привязка табло к отпрвки изменения по событию
+                if (binding.BindingType == BindingType.ToChangeEvent)
+                {
+                    Binding2ChangesEvent.Add(new Binding2ChangesEventBehavior(DeviceTables.Last()));
+                }
+            }
+
+            #endregion
 
 
             //ЗАПУСТИМ ФОНОВЫЕ ЗАДАЧИ ПО ПОДКЛЮЧЕНИЮ К УСТРО-ВАМ
@@ -1083,6 +1172,7 @@ namespace CommunicationDevices.Model
         {
             CisClient?.Dispose();
             MasterSerialPorts?.ForEach(s => s.Dispose());
+            ApkDkVolgogradStreamChangeRxDispose?.Dispose();
         }
     }
 }

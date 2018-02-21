@@ -125,7 +125,7 @@
     <Compile Include="Behavior\ExhangeBehavior\HttpBehavior\BaseExhangeHttpBehavior.cs" />
     <Compile Include="Behavior\ExhangeBehavior\HttpBehavior\XmlExhangeHttpBehavior.cs" />
     <Compile Include="Behavior\ExhangeBehavior\SerialPortBehavior\ChannelManagement\ChannelManagementExchangeBehavior.cs" />
-    <Compile Include="Behavior\ExhangeBehavior\SibWayBehavior\BaseSibWayBehavior.cs" />
+    <Compile Include="Behavior\ExhangeBehavior\SibWayBehavior\BaseExchangeSibWayBehavior.cs" />
     <Compile Include="Behavior\GetDataBehavior\BaseGetDataBehavior.cs" />
     <Compile Include="Behavior\GetDataBehavior\ConvertGetedData\CisRegularShDataConverter.cs" />
     <Compile Include="Behavior\GetDataBehavior\ConvertGetedData\CisOperativeShDataConverter.cs" />
@@ -143,6 +143,7 @@
     <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlStaticWindowFormatProvider.cs" />
     <Compile Include="DataProviders\XmlDataProvider\XMLFormatProviders\XmlTListFormatProvider.cs" />
     <Compile Include="DataProviders\XmlDataProvider\StreamWriteDataProvider.cs" />
+    <Compile Include="Mappers\AutoMapperConfig.cs" />
     <Compile Include="Quartz\Jobs\QuartzJobVerificationActivation.cs" />
     <Compile Include="Quartz\Shedules\QuartzVerificationActivation.cs" />
     <Compile Include="Rules\ExchangeRules\BaseExchangeRule.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlPathPermissionSetting.cs" />
     <Compile Include="Settings\XmlDeviceSettings\XmlTransportSettings\XmlHttpSetting.cs" />
     <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlProviderTypeSetting.cs" />
+    <Compile Include="Settings\XmlDeviceSettings\XmlTransportSettings\XmlSibWaySettings.cs" />
     <Compile Include="Settings\XmlSettingFactory.cs" />
     <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlBindingSetting.cs" />
     <Compile Include="Settings\XmlDeviceSettings\XmlSpecialSettings\XmlConditionsSetting.cs" />

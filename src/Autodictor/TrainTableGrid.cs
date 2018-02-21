@@ -8,13 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AutodictorBL.DataAccess;
-using Autofac;
-using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using MainExample.Entites;
 using MainExample.Extension;
-using MainExample.Utils;
 
 namespace MainExample
 {
@@ -28,12 +24,8 @@ namespace MainExample
         public static TrainTableGrid MyMainForm = null;
         private readonly List<CheckBox> _checkBoxes;
 
+        private static TrainSheduleTable _trainSheduleTable = new TrainSheduleTable();
         private readonly IDisposable _dispouseRemoteCisTableChangeRx;
-
-
-        private readonly TrainRecService _trainRecService;
-        private List<TrainTableRec> _trainTableRecords = new List<TrainTableRec>(); // Содержит актуальное рабочее расписание
-
         #endregion
 
 
@@ -60,17 +52,6 @@ namespace MainExample
             MyMainForm = this;
 
             InitializeComponent();
-
-
-            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            {
-                var repLocalMain = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
-                var repRemoteCis = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
-                var repTypeByRyle = scope.Resolve<ITrainTypeByRyleRepository>();
-
-                _trainRecService = new TrainRecService(repLocalMain, repRemoteCis, repTypeByRyle);
-            }
-
 
             _checkBoxes = new List<CheckBox> { chb_Id, chb_Номер, chb_ВремяПрибытия, chb_Стоянка, chb_ВремяОтпр, chb_Маршрут, chb_ДниСледования };
             Model2Controls();
@@ -478,11 +459,6 @@ namespace MainExample
         /// </summary>
         private async void btnLoad_Click(object sender, EventArgs e)
         {
-            //DEBUG---------------
-            _trainTableRecords = _trainRecService.GetAll().ToList();
-            //DEBUG---------------
-
-
             await TrainSheduleTable.SourceLoadMainListAsync();
             await ОбновитьДанныеВСпискеAsync();
         }
@@ -527,12 +503,6 @@ namespace MainExample
 
             var delItem = TrainSheduleTable.TrainTableRecords.FirstOrDefault(t => t.Id == (int)selected.Tag);
             TrainSheduleTable.TrainTableRecords.Remove(delItem);
-
-            //DEBUG-------------
-            //_trainRecService.DeleteItem(delItem);
-            //DEBUG------------
-
-
             await ОбновитьДанныеВСпискеAsync();
         }
 
@@ -596,10 +566,6 @@ namespace MainExample
             //Добавили в список
             TrainSheduleTable.TrainTableRecords.Add(Данные);
 
-            //DEBUG---------------
-            //_trainTableRecords.Add(Данные);
-            //DEBUG--------------
-
             //Отредактировали добавленный элемент
             int lastIndex = TrainSheduleTable.TrainTableRecords.Count - 1;
             var данные = EditData(TrainSheduleTable.TrainTableRecords[lastIndex]);
@@ -615,11 +581,6 @@ namespace MainExample
         /// </summary>
         private async void btn_Сохранить_Click(object sender, EventArgs e)
         {
-            //DEBUG-----------------------------------------
-            _trainRecService.SaveAll(_trainTableRecords);
-            //DEBUG-----------------------------------------
-
-
             await TrainSheduleTable.SourceSaveMainListAsync();
         }
 
@@ -655,13 +616,6 @@ namespace MainExample
             var rb = sender as RadioButton;
             if (rb != null)
             {
-                //DEBUG-------------------------
-                _trainRecService.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecType.LocalMain : TrainRecType.RemoteCis;
-                _trainTableRecords= _trainRecService.GetAll().ToList();
-                //DEBUG-------------------------
-
-
-
                 TrainSheduleTable.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecType.LocalMain : TrainRecType.RemoteCis;
                 Program.Настройки.SourceTrainTableRecordLoad = TrainSheduleTable.SourceLoad.ToString();
                 ОкноНастроек.СохранитьНастройки();

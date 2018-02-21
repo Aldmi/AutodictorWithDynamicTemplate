@@ -3,6 +3,7 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using AutodictorBL.Entites;
 using AutodictorBL.Settings.XmlSound;
+using AutodictorBL.Sound.Converters;
 
 
 namespace AutodictorBL.Sound
@@ -18,7 +19,7 @@ namespace AutodictorBL.Sound
 
     public interface ISoundPlayer : IDisposable
     {
-        bool PlayFile(ВоспроизводимоеСообщение soundMessage);
+        bool PlayFile(ВоспроизводимоеСообщение soundMessage, bool useFileNameConverter = true);
         void Pause();
         void Play();
         float GetDuration();
@@ -34,7 +35,9 @@ namespace AutodictorBL.Sound
         string GetInfo();
         string StatusString { get;}
 
-         Subject<string> StatusStringChangeRx { get; }  //Изменение StatusString
-         Subject<bool> IsConnectChangeRx { get; } //Изменение IsConnect
+        IFileNameConverter FileNameConverter { get; }  // конверетер имени проигрываемого файла в имя понятное конкретному плееру 
+
+        Subject<string> StatusStringChangeRx { get; }  //Изменение StatusString
+        Subject<bool> IsConnectChangeRx { get; } //Изменение IsConnect
     }
 }

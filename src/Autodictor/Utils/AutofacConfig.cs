@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using AutodictorBL.DataAccess;
-using AutodictorBL.Services;
 using Autofac;
 using Autofac.Core;
 using DAL.Abstract.Abstract;
@@ -54,11 +53,19 @@ namespace MainExample.Utils
 
 
             builder.RegisterType<NoSqlUsersRepository>().As<IUsersRepository>()
-                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"NoSqlDb\Users.db") }).InstancePerLifetimeScope();
+                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"NoSqlDb\Users.db") });
 
 
             builder.RegisterType<ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>>().As<IParticirovanieService<SoundRecordChangesDb>>()
-                .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") }).InstancePerLifetimeScope();
+                .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") });
+
+
+            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("Local")
+            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") });
+
+
+            //builder.RegisterType<XmlSerializeTableRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
+            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
 
 
             builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
@@ -68,12 +75,6 @@ namespace MainExample.Utils
             builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
                 .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") });
 
-
-            builder.RegisterType<MainForm>().InstancePerDependency();
-            builder.RegisterType<AdminForm>().InstancePerDependency();
-            builder.RegisterType<AuthenticationForm>().InstancePerDependency();
-
-            builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
 
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()

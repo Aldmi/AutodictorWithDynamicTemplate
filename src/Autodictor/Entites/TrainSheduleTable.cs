@@ -239,7 +239,7 @@ namespace MainExample.Entites
                                 if (int.TryParse(settings[11], out idType))
                                 {
                                     //TODO: использовать TrainTypeByRyleService
-                                    //данные.TrainTypeByRyle = Program.TrainRules.TrainTypeRules.FirstOrDefault(t => t.Id == idType);
+                                    данные.TrainTypeByRyle = Program.TrainTypes.FirstOrDefault(t => t.Id == idType);
                                 }
 
                                 данные.ActionTrains = null;

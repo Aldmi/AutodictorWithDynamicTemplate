@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutodictorBL;
 using AutodictorBL.DataAccess;
-using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using Autofac;
 using Autofac.Core;
@@ -46,12 +45,12 @@ namespace MainExample
         public static DirectionService DirectionService; // Направления. 
         public static PathwaysService PathwaysService;   //Пути.
 
-
+        public static IEnumerable<TrainTypeByRyle> TrainTypes;
 
 
         //TODO: IGenericDataRepository НЕ использовать напрямую
         public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
-
+        public static IGenericDataRepository<User> UsersDbRepository; //Пользователи, хранилище NoSqlDb
 
         public static Настройки Настройки;
 
@@ -67,7 +66,8 @@ namespace MainExample
         public static string[] ШаблонОповещенияООтправлениеПоГотовностиПоезда = new string[] { "", "Отправление по готовности пассажирского поезда", "Отправление по готовности пригородного электропоезда", "Отправление по готовности фирменного поезда", "Отправление по готовности скорого поезда", "Отправление по готовности скоростного поезда", "Отправление по готовности ласточки", "Отправление по готовности РЭКСа" };
 
 
-        public static IAuthentificationService AuthenticationService { get; set; }
+        public static DateTime StartTime { get; private set; }
+        public static AuthenticationService AuthenticationService { get; set; } = new AuthenticationService();
 
         public static AutodictorModel AutodictorModel { get; set; }
 
@@ -82,59 +82,56 @@ namespace MainExample
             if (InstanceExists())
                 return;
 
+            StartTime = DateTime.Now;
+
             AutofacConfig.ConfigureContainer();
 
-          //Сервис аутентификации
-          AuthenticationService= AutofacConfig.Container.Resolve<IAuthentificationService>();
-
-
-
-           
 
             //DEBUG-------------
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
-            //    var acc = new TrainTypeByRyleService(repResolve);
-            //    var listRules = acc.GetAll();
-            //}
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<ITrainTypeByRyleRepository>();
+                var acc = new TrainTypeByRyleService(repResolve);
+                var listRules = acc.GetAll();
+                TrainTypes = listRules;
+            }
+        
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IPathwaysRepository>();
+                var acc = new PathwaysService(repResolve);
+                var listPathwayses = acc.GetAll();
+            }
+                
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IDirectionRepository>();
+                var acc = new DirectionService(repResolve);
+                var listDirections = acc.GetAll();
+            }
 
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IPathwaysRepository>();
-            //    var acc = new PathwaysService(repResolve);
-            //    var listPathwayses = acc.GetAll();
-            //}
+            //Users--
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IUsersRepository>();
+                var acc = new UserService(repResolve);
+                var users= acc.GetAll();
+            }
 
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IDirectionRepository>();
-            //    var acc = new DirectionService(repResolve);
-            //    var listDirections = acc.GetAll();
-            //}
+            //SoundRecordChanges--
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
+                var acc= new SoundRecChangesService(repResolve);
+            }
 
-            ////Users--
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IUsersRepository>();
-            //    var acc = new UserService(repResolve);
-            //    var users= acc.GetAll();
-            //}
+            //TrainTableRec--
+            using (var scope = AutofacConfig.Container.BeginLifetimeScope())
+            {
+                var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
 
-            ////SoundRecordChanges--
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
-            //    var acc= new SoundRecChangesService(repResolve);
-            //}
-
-            ////TrainTableRec--
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
-
-            //    var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
-            //}
+                var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
+            }
 
             //DEBUG-------------
 
@@ -146,6 +143,11 @@ namespace MainExample
 
             string connection = @"NoSqlDb\Main.db";
             SoundRecordChangesDbRepository = new RepositoryNoSql<SoundRecordChangesDb>(connection);
+
+            connection = @"NoSqlDb\Users.db";
+            UsersDbRepository = new RepositoryNoSql<User>(connection);
+
+            AuthenticationService.UsersDbInitialize();//не дожидаемся окончания Task-а загрузки БД
 
 
             try
@@ -177,6 +179,13 @@ namespace MainExample
             AutodictorModel.LoadSetting(Настройки.ВыборУровняГромкости, GetFileName);
 
 
+            //DEBUG-------------
+            //IRepository<TrainTypeByRyle> rep = new RepositoryXmlTrainTypeByRyle();
+            //var acc= new TrainTypeByRyleService(rep);
+            //var listRules = acc.GetAll();
+            //DEBUG-------------
+
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -184,8 +193,7 @@ namespace MainExample
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            var mainForm = AutofacConfig.Container.Resolve<MainForm>();
-            Application.Run(mainForm);
+            Application.Run(new MainForm());
 
             Dispose();
         }
@@ -344,6 +352,33 @@ namespace MainExample
         }
 
 
+        /// <summary>
+        /// Находим объект Station в репозитории по коду Экспресс станции.
+        /// </summary>
+        public static Station GetStationByCode(int codeExpress)
+        {
+            if (codeExpress == 0)
+            {
+                //MessageBox.Show("Передана пустая станция");
+                return new Station { NameRu = default(string), CodeExpress = codeExpress };
+            }
+            foreach (var direction in DirectionService.GetAll())
+            {
+                var station = GetStationByCode(codeExpress, direction.Name);
+                if (station != null)
+                    return station;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Находим объект Station в репозитории по коду Экспресс станции, зная направление, на котором находится станция.
+        /// </summary>
+        public static Station GetStationByCode(int codeExpress, string имяНаправления)
+        {
+            return ПолучитьСтанцииНаправления(имяНаправления)?.FirstOrDefault(st => st.CodeExpress == codeExpress);
+        }
+        
 
         public static void ЗаписьЛога(string ТипСообщения, string Сообщение, User user)
         {
@@ -367,7 +402,6 @@ namespace MainExample
 
         private static void Dispose()
         {
-            AutofacConfig.Container.Dispose();
             AutodictorModel?.Dispose();
         }
 

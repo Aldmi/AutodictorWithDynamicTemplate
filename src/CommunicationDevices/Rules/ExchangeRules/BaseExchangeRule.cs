@@ -136,7 +136,7 @@ namespace CommunicationDevices.Rules.ExchangeRules
 
                     if (subvar == "TypeName")
                     {
-                        var ruTypeTrain = uit.TypeTrain.NameRu;
+                        var ruTypeTrain = uit.TypeTrain;
                         var formatStr = string.Format(replaseStr.Replace("TypeName", "0"), ruTypeTrain);
                         resStr.Append(formatStr);
                         continue;
@@ -145,7 +145,7 @@ namespace CommunicationDevices.Rules.ExchangeRules
 
                     if (subvar == "TypeAlias")
                     {
-                        var ruTypeTrain = uit.TypeTrain.NameRu;
+                        var ruTypeTrain = uit.TypeTrain.Substring(0, 4);
                         var formatStr = string.Format(replaseStr.Replace("TypeAlias", "0"), ruTypeTrain);
                         resStr.Append(formatStr);
                         continue;

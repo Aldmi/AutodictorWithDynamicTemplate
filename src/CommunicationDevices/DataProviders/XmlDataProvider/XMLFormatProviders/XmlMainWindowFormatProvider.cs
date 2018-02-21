@@ -97,9 +97,10 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
             var xDoc = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"), new XElement("tlist"));
             foreach (var uit in tables)
             {
-                string trainType = uit.TypeTrain.Id.ToString();
-                string typeName = uit.TypeTrain.NameRu;
-                string typeNameShort = uit.TypeTrain.AliasRu;
+                string trainType;
+                string typeName = uit.TypeTrain;
+                string typeNameShort;
+                GetTypeTrain(typeName, out trainType, out typeNameShort);
 
                 var timeArrival = string.Empty;
                 var timeDepart = string.Empty;
@@ -224,6 +225,46 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
             //-----------------------------
 
             return xDoc.ToString();
+        }
+        private void GetTypeTrain(string typeTrain, out string typeTrainStr, out string typeNameShortStr)
+        {
+            typeTrainStr = String.Empty;
+            typeNameShortStr = typeTrain.Substring(0, 4);
+            switch (typeTrain)
+            {
+                case "":
+                    typeTrainStr = String.Empty;
+                    break;
+
+                case "Пригородный":
+                    typeTrainStr = "0";
+                    break;
+
+                case "Экспресс":
+                    typeTrainStr = "1";
+                    break;
+
+                case "Скорый":
+                    typeTrainStr = "2";
+                    break;
+
+                case "Фирменный":
+                    typeTrainStr = "3";
+                    break;
+
+                case "Пассажирский":
+                    typeTrainStr = "4";
+                    break;
+
+                case "Скоростной":
+                    typeTrainStr = "5";
+                    break;
+
+                case "РЭКС":
+                    typeTrainStr = "6";
+                    typeNameShortStr = "Эксп";
+                    break;
+            }
         }
     }
 }
