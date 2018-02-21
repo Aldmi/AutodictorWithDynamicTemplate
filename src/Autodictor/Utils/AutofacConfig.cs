@@ -64,7 +64,8 @@ namespace MainExample.Utils
             builder.RegisterType<DirectionService>().SingleInstance();
             builder.RegisterType<PathwaysService>().SingleInstance();
             builder.RegisterType<TrainTypeByRyleService>().SingleInstance();
-            builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
+            builder.RegisterType<UserService>().InstancePerLifetimeScope();
+            builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().InstancePerLifetimeScope();
 
 
             //ФОРМЫ----------------------------------------------------------------------------------

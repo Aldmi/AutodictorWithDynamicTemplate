@@ -97,8 +97,6 @@ namespace AutodictorBL.DataAccess
             });
         }
 
-
-
         #endregion
     }
 }

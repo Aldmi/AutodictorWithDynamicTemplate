@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
 using BCrypt.Net;
@@ -47,6 +48,43 @@ namespace AutodictorBL.Services
 
         #region Methode
 
+
+        /// <summary>
+        /// Инициализация NoSql БД
+        /// </summary>
+        public async Task UsersDbInitialize()
+        {
+            await Task.Factory.StartNew(() =>
+                {
+                    // Обновляем список свойств у элементов репозитория (элемент совместимости со старыми версиями репозитория)
+                    var users = _usersRepository.List();
+                    foreach (var user in users)
+                    {
+                        if (user.StartDate == null || user.StartDate == DateTime.MinValue)
+                            user.StartDate = new DateTime(1900, 01, 01);
+                        if (user.EndDate == null || user.EndDate == DateTime.MinValue)
+                            user.EndDate = new DateTime(2100, 01, 01);
+                        if (user.FullName == null)
+                            user.FullName = user.Login;
+                        if (user.Login == "Админ" && !user.IsEnabled)
+                            user.IsEnabled = true;
+                        _usersRepository.Edit(user);
+                    }
+
+                    string adminLogin = "Админ";
+
+                    var admin = _usersRepository.List(user => (user.Role == Role.Администратор) &&
+                                                                       user.IsEnabled).FirstOrDefault();
+                    if (admin == null)
+                    {
+                        _usersRepository.Add(CreateUser(adminLogin, Crypt("123456", Complexity), Role.Администратор)); // создаем локального админа на случай, если связи с ЦИС больше не будет
+                    }
+                }
+            );
+        }
+
+
+
         /// <summary>
         /// Вход пользователя
         /// </summary>
@@ -78,21 +116,6 @@ namespace AutodictorBL.Services
         }
 
 
-        public string CreateSalt()
-        {
-            return BCrypt.Net.BCrypt.GenerateSalt();
-        }
-        public string CreateSalt(int workFactor)
-        {
-            return BCrypt.Net.BCrypt.GenerateSalt(workFactor);
-        }
-
-        public string Crypt(string password)
-        {
-            //string salt = BCrypt.Net.BCrypt.GenerateSalt();
-            string hash = BCrypt.Net.BCrypt.HashPassword(password + HardAdminSalt);
-            return hash;
-        }
         public string Crypt(string password, int workFactor)
         {
             //string salt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -100,7 +123,8 @@ namespace AutodictorBL.Services
             return hash;//hash;
         }
 
-        public bool IsCorrectPassword(string password, string hash)
+
+        private bool IsCorrectPassword(string password, string hash)
         {
             try
             {
@@ -123,6 +147,7 @@ namespace AutodictorBL.Services
             }
         }
 
+
         /// <summary>
         /// Создание пользователя с заданным логином, паролем и ролью
         /// </summary>
@@ -139,6 +164,7 @@ namespace AutodictorBL.Services
                 IsEnabled = true
             };
         }
+
         public User CreateUser(string login, string password, Role role, string fullName)
         {
             return new User
@@ -152,6 +178,7 @@ namespace AutodictorBL.Services
                 IsEnabled = true
             };
         }
+
         public User CreateUser(string login, string password, Role role, DateTime startDate, DateTime endDate)
         {
             return new User
