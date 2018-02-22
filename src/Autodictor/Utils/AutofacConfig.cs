@@ -33,7 +33,6 @@ namespace MainExample.Utils
         /// </summary>
         private static void RegisterType(ContainerBuilder builder)
         {
-
             //РЕПОЗИТОРИИ--------------------------------------------------------------------------------------------
             builder.RegisterType<XmlRawTrainTypeByRuleRepository>().As<ITrainTypeByRyleRepository>()
                 .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
@@ -64,15 +63,15 @@ namespace MainExample.Utils
             builder.RegisterType<DirectionService>().SingleInstance();
             builder.RegisterType<PathwaysService>().SingleInstance();
             builder.RegisterType<TrainTypeByRyleService>().SingleInstance();
-            builder.RegisterType<UserService>().InstancePerLifetimeScope();
-            builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().InstancePerLifetimeScope();
+            builder.RegisterType<UserService>().InstancePerDependency();
+            builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
 
 
             //ФОРМЫ----------------------------------------------------------------------------------
             builder.RegisterType<MainForm>().InstancePerDependency();
             builder.RegisterType<AdminForm>().InstancePerDependency();
             builder.RegisterType<AuthenticationForm>().InstancePerDependency();
-
+            builder.RegisterType<MainWindowForm>().InstancePerDependency();
 
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()

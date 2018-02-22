@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
+using AutodictorBL.Services;
+using Autofac.Features.OwnedInstances;
+using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
 
 
@@ -14,12 +18,20 @@ namespace MainExample
 {
     public partial class AdminForm : Form
     {
+        private readonly IAuthentificationService _authentificationService;
+        private readonly IDisposable _userServiceOwner;
+        private UserService UserService { get; }
+
         public List<User> Users { get; set; }
 
 
 
-        public AdminForm()
+        public AdminForm(Owned<UserService> userService, IAuthentificationService authentificationService)
         {
+            UserService = userService.Value;
+            _userServiceOwner = userService;
+            _authentificationService = authentificationService;
+
             InitializeComponent();
 
             btn_Load_Click(null, EventArgs.Empty);
@@ -60,10 +72,6 @@ namespace MainExample
         }
 
 
-
-
-
-
         #region EventHander
 
         /// <summary>
@@ -84,7 +92,7 @@ namespace MainExample
         /// </summary>
         private void btn_Load_Click(object sender, EventArgs e)
         {
-            Users = Program.UsersDbRepository.List(user => user.Role != Role.Администратор).ToList();
+            Users = UserService.GetAll(user => user.Role != Role.Администратор).ToList();
             FillTable(Users);
         }
 
@@ -118,16 +126,15 @@ namespace MainExample
                     return;
                 }
 
-                Users.Add(Program.AuthenticationService.CreateUser(login, password, (Role)Enum.Parse(typeof(Role), role)));
+                Users.Add(_authentificationService.CreateUser(login, password, (Role)Enum.Parse(typeof(Role), role)));
             }
 
 
             //удалим всех пользователей кроме Админа.
-            Program.UsersDbRepository.Delete(user => user.Role != Role.Администратор);
+            UserService.Delete(user => user.Role != Role.Администратор);
 
             //Добавим из таблицы
-            Program.UsersDbRepository.AddRange(Users);
-
+            UserService.AddRange(Users);
         }
 
 
@@ -144,13 +151,13 @@ namespace MainExample
 
             var currentPassword = tb_ТекПароль.Text;
             var newPassword = tb_НовыйПароль.Text;
-            var adminUser = Program.UsersDbRepository.List().FirstOrDefault(user => user.Role == Role.Администратор && user.IsEnabled);
+            var adminUser = UserService.GetAll().FirstOrDefault(user => user.Role == Role.Администратор && user.IsEnabled);
             if (adminUser != null)
             {
                 if (adminUser.Password == currentPassword)
                 {
                     adminUser.Password = newPassword;
-                    Program.UsersDbRepository.Edit(adminUser);
+                    UserService.Edit(adminUser);
                     MessageBox.Show(@"ПАРОЛЬ УСПЕШНО ИЗМЕНЕН");
                 }
                 else
@@ -183,6 +190,13 @@ namespace MainExample
                 var soundPlayers = new SoundPlayersForm();
                 soundPlayers.Show();
             }
+        }
+
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _userServiceOwner.Dispose();
+            base.OnClosed(e);
         }
 
         #endregion

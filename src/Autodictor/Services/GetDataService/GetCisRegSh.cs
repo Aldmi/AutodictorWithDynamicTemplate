@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutodictorBL.Services;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
+using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
 using MainExample.Entites;
@@ -14,12 +16,16 @@ namespace MainExample.Services.GetDataService
 {
     class GetCisRegSh : GetSheduleAbstract
     {
+        private readonly IUsersRepository _usersRepository;
+
+
+
         #region ctor
 
-        public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords) 
+        public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords, IUsersRepository usersRepository) 
             : base(baseGetDataBehavior, soundRecords)
         {
-
+            _usersRepository = usersRepository;
         }
 
         #endregion
@@ -44,11 +50,9 @@ namespace MainExample.Services.GetDataService
                 {
                     if (universalInputTypes.FirstOrDefault(u => string.IsNullOrWhiteSpace(u.NumberOfTrain) && u.ViewBag.ContainsKey("login") && u.ViewBag["login"] != null) != null)
                     {
-                        var usersDb = Program.UsersDbRepository.List().ToList();
-                        if (usersDb == null)
-                            return;
+                        var usersDb = _usersRepository.List().ToList();
                         usersDb.Clear();
-                        Program.UsersDbRepository.Delete(u => true);
+                        _usersRepository.Delete(u => true);
                         foreach (var uit in universalInputTypes)
                         {
                             try
@@ -89,7 +93,7 @@ namespace MainExample.Services.GetDataService
                                 System.Windows.Forms.MessageBox.Show("Не получилось обновить репозиторий. Ошибка: " + ex.Message);
                             }
                         }
-                        Program.UsersDbRepository.AddRange(usersDb);
+                        _usersRepository.AddRange(usersDb);
                     }
                     else
                     {

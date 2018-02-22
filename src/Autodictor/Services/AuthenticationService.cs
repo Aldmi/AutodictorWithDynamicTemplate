@@ -5,14 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Abstract.Entitys.Authentication;
 using BCrypt.Net;
+using DAL.Abstract.Concrete;
 
 
 namespace MainExample.Services
 {
     public class AuthenticationService
     {
+        #region field
         private const string hard_admin_salt = "AssIbir2018Super10987612345"; // дополнительная соль
         private const int complexity = 12; // сложность вычисления хэш-функции
+
+        private readonly IUsersRepository _usersRepository;
+
+        #endregion
+
+
 
         #region prop
 
@@ -22,6 +30,16 @@ namespace MainExample.Services
 
         #endregion
 
+
+
+        #region ctor
+
+        public AuthenticationService(IUsersRepository usersRepository)
+        {
+            _usersRepository = usersRepository;
+        }
+
+        #endregion
 
 
 
@@ -36,7 +54,7 @@ namespace MainExample.Services
             await Task.Factory.StartNew(() =>
             {
                 // Обновляем список свойств у элементов репозитория (элемент совместимости со старыми версиями репозитория)
-                var users = Program.UsersDbRepository.List();
+                var users = _usersRepository.List();
                 foreach (var user in users)
                 {
                     if (user.StartDate == null || user.StartDate == DateTime.MinValue)
@@ -47,16 +65,16 @@ namespace MainExample.Services
                         user.FullName = user.Login;
                     if (user.Login == "Админ" && !user.IsEnabled)
                         user.IsEnabled = true;
-                    Program.UsersDbRepository.Edit(user);
+                    _usersRepository.Edit(user);
                 }
 
                 string adminLogin = "Админ";
 
-                var admin = Program.UsersDbRepository.List(user => (user.Role == Role.Администратор) &&
+                var admin = _usersRepository.List(user => (user.Role == Role.Администратор) &&
                                                                    user.IsEnabled).FirstOrDefault();
                 if (admin == null)
                 {
-                    Program.UsersDbRepository.Add(CreateUser(adminLogin, Crypt("123456", complexity), Role.Администратор)); // создаем локального админа на случай, если связи с ЦИС больше не будет
+                    _usersRepository.Add(CreateUser(adminLogin, Crypt("123456", complexity), Role.Администратор)); // создаем локального админа на случай, если связи с ЦИС больше не будет
                 }
             }
              );
@@ -75,7 +93,7 @@ namespace MainExample.Services
             }
 
             DateTime today = DateTime.Today;
-            var usr = Program.UsersDbRepository.List(u => (u.Role == user.Role) &&
+            var usr = _usersRepository.List(u => (u.Role == user.Role) &&
                                                                 (u.Login == user.Login) &&
                                                                 (u.IsEnabled) &&
                                                                 (u.StartDate <= today && u.EndDate >= today)).FirstOrDefault(); // находим пользователя, у которого совпала и роль, и логин

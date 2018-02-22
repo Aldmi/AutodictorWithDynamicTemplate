@@ -12,6 +12,7 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AutodictorBL.Entites;
+using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using CommunicationDevices.Behavior.BindingBehavior.ToChange;
 using CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule;
@@ -23,6 +24,7 @@ using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
 using CommunicationDevices.Model;
 using CommunicationDevices.Services;
+using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
 using Library.Convertion;
@@ -44,6 +46,8 @@ namespace MainExample
 
     public partial class MainWindowForm : Form
     {
+        private readonly IAuthentificationService _authentificationService;
+        private readonly IUsersRepository _usersRepository;
         private const int ВремяЗадержкиВоспроизведенныхСобытий = 20;  //сек
 
 
@@ -107,32 +111,120 @@ namespace MainExample
 
 
         // Конструктор
-        public MainWindowForm(CisClient cisClient,
-                              IEnumerable<IBinding2PathBehavior> binding2PathBehaviors,
-                              IEnumerable<IBinding2GeneralSchedule> binding2GeneralScheduleBehaviors,
-                              IEnumerable<IBinding2ChangesBehavior> binding2ChangesBehaviors,
-                              IEnumerable<IBinding2ChangesEventBehavior> binding2ChangesEventBehaviors,
-                              IEnumerable<IBinding2GetData> binding2GetDataBehaviors,
-                              Device soundChanelManagment)
+        //public MainWindowForm(CisClient cisClient,
+        //                      IEnumerable<IBinding2PathBehavior> binding2PathBehaviors,
+        //                      IEnumerable<IBinding2GeneralSchedule> binding2GeneralScheduleBehaviors,
+        //                      IEnumerable<IBinding2ChangesBehavior> binding2ChangesBehaviors,
+        //                      IEnumerable<IBinding2ChangesEventBehavior> binding2ChangesEventBehaviors,
+        //                      IEnumerable<IBinding2GetData> binding2GetDataBehaviors,
+        //                      Device soundChanelManagment,
+        //                      IAuthentificationService authentificationService,
+        //                      IUsersRepository usersRepository)
+        //{
+            
+        //    if (myMainForm != null)
+        //        return;
+
+        //    myMainForm = this;
+
+        //    _authentificationService = authentificationService;
+        //    _usersRepository = usersRepository;
+
+        //    InitializeComponent();
+
+        //    tableLayoutPanel1.Visible = false;
+
+        //    CisClient = cisClient;
+
+        //    Binding2PathBehaviors = binding2PathBehaviors;
+        //    Binding2GeneralScheduleBehaviors = binding2GeneralScheduleBehaviors;
+        //    Binding2ChangesBehaviors = binding2ChangesBehaviors;
+        //    Binding2ChangesEventBehaviors = binding2ChangesEventBehaviors;
+        //    Binding2GetDataBehaviors = binding2GetDataBehaviors;
+        //    SoundChanelManagment = soundChanelManagment;
+     
+        //    MainForm.Пауза.Click += new System.EventHandler(this.btnПауза_Click);
+        //    MainForm.Включить.Click += new System.EventHandler(this.btnБлокировка_Click);
+        //    MainForm.ОбновитьСписок.Click += new System.EventHandler(this.btnОбновитьСписок_Click);
+
+
+        //    СписокПолейПути = new ToolStripMenuItem[] { путь0ToolStripMenuItem, путь1ToolStripMenuItem, путь2ToolStripMenuItem, путь3ToolStripMenuItem, путь4ToolStripMenuItem, путь5ToolStripMenuItem, путь6ToolStripMenuItem, путь7ToolStripMenuItem, путь8ToolStripMenuItem, путь9ToolStripMenuItem, путь10ToolStripMenuItem, путь11ToolStripMenuItem, путь12ToolStripMenuItem, путь13ToolStripMenuItem, путь14ToolStripMenuItem, путь15ToolStripMenuItem, путь16ToolStripMenuItem, путь17ToolStripMenuItem, путь18ToolStripMenuItem, путь19ToolStripMenuItem, путь20ToolStripMenuItem, путь21ToolStripMenuItem, путь22ToolStripMenuItem, путь23ToolStripMenuItem, путь24ToolStripMenuItem, путь25ToolStripMenuItem };
+
+
+        //    //if (CisClient.IsConnect)
+        //    //{
+        //    //    MainForm.СвязьСЦис.Text = "ЦИС на связи";
+        //    //    MainForm.СвязьСЦис.BackColor = Color.LightGreen;
+        //    //}
+        //    //else
+        //    //{
+        //    //    MainForm.СвязьСЦис.Text = "ЦИС НЕ на связи";
+        //    //    MainForm.СвязьСЦис.BackColor = Color.Orange;
+        //    //}
+
+        //    //DispouseCisClientIsConnectRx = CisClient.IsConnectChange.Subscribe(isConnect =>
+        //    //{
+        //    //    if (isConnect)
+        //    //    {
+        //    //        MainForm.СвязьСЦис.Text = "ЦИС на связи";
+        //    //        MainForm.СвязьСЦис.BackColor = Color.LightGreen;
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        MainForm.СвязьСЦис.Text = "ЦИС НЕ на связи";
+        //    //        MainForm.СвязьСЦис.BackColor = Color.Orange;
+        //    //    }
+        //    //});
+
+        //    //
+        //    DispouseQueueChangeRx = QueueSound.QueueChangeRx.Subscribe(status =>
+        //    {
+        //        switch (status)
+        //        {
+        //            case StatusPlaying.Start:
+        //                СобытиеНачалоПроигрыванияОчередиЗвуковыхСообщений();
+        //                break;
+
+        //            case StatusPlaying.Stop:
+        //                СобытиеКонецПроигрыванияОчередиЗвуковыхСообщений();
+        //                break;
+        //        }
+        //    });
+        //    DispouseStaticChangeRx = QueueSound.StaticChangeRx.Subscribe(StaticChangeRxEventHandler);
+        //    DispouseTemplateChangeRx = QueueSound.TemplateChangeRx.Subscribe(TemplateChangeRxEventHandler);
+
+          
+        //    //ЗАПУСК ОЧЕРЕДИ ЗВУКА
+        //    QueueSound.StartQueue();
+
+        //    MainForm.Включить.BackColor = Color.Red;
+        //    Program.ЗаписьЛога("Системное сообщение", "Программный комплекс включен", _authentificationService.CurrentUser);
+        //}
+
+
+        public MainWindowForm(ExchangeModel exchangeModel, IAuthentificationService authentificationService, IUsersRepository usersRepository)
         {
             if (myMainForm != null)
                 return;
 
             myMainForm = this;
 
+            _authentificationService = authentificationService;
+            _usersRepository = usersRepository;
+
             InitializeComponent();
 
             tableLayoutPanel1.Visible = false;
 
-            CisClient = cisClient;
 
-            Binding2PathBehaviors = binding2PathBehaviors;
-            Binding2GeneralScheduleBehaviors = binding2GeneralScheduleBehaviors;
-            Binding2ChangesBehaviors = binding2ChangesBehaviors;
-            Binding2ChangesEventBehaviors = binding2ChangesEventBehaviors;
-            Binding2GetDataBehaviors = binding2GetDataBehaviors;
-            SoundChanelManagment = soundChanelManagment;
-     
+            CisClient = exchangeModel.CisClient;
+            Binding2PathBehaviors = exchangeModel.Binding2PathBehaviors;
+            Binding2GeneralScheduleBehaviors = exchangeModel.Binding2GeneralSchedules;
+            Binding2ChangesBehaviors = exchangeModel.Binding2ChangesSchedules;
+            Binding2ChangesEventBehaviors = exchangeModel.Binding2ChangesEvent;
+            Binding2GetDataBehaviors = exchangeModel.Binding2GetData;
+            SoundChanelManagment = exchangeModel.DeviceSoundChannelManagement;
+
             MainForm.Пауза.Click += new System.EventHandler(this.btnПауза_Click);
             MainForm.Включить.Click += new System.EventHandler(this.btnБлокировка_Click);
             MainForm.ОбновитьСписок.Click += new System.EventHandler(this.btnОбновитьСписок_Click);
@@ -140,33 +232,6 @@ namespace MainExample
 
             СписокПолейПути = new ToolStripMenuItem[] { путь0ToolStripMenuItem, путь1ToolStripMenuItem, путь2ToolStripMenuItem, путь3ToolStripMenuItem, путь4ToolStripMenuItem, путь5ToolStripMenuItem, путь6ToolStripMenuItem, путь7ToolStripMenuItem, путь8ToolStripMenuItem, путь9ToolStripMenuItem, путь10ToolStripMenuItem, путь11ToolStripMenuItem, путь12ToolStripMenuItem, путь13ToolStripMenuItem, путь14ToolStripMenuItem, путь15ToolStripMenuItem, путь16ToolStripMenuItem, путь17ToolStripMenuItem, путь18ToolStripMenuItem, путь19ToolStripMenuItem, путь20ToolStripMenuItem, путь21ToolStripMenuItem, путь22ToolStripMenuItem, путь23ToolStripMenuItem, путь24ToolStripMenuItem, путь25ToolStripMenuItem };
 
-
-            //if (CisClient.IsConnect)
-            //{
-            //    MainForm.СвязьСЦис.Text = "ЦИС на связи";
-            //    MainForm.СвязьСЦис.BackColor = Color.LightGreen;
-            //}
-            //else
-            //{
-            //    MainForm.СвязьСЦис.Text = "ЦИС НЕ на связи";
-            //    MainForm.СвязьСЦис.BackColor = Color.Orange;
-            //}
-
-            //DispouseCisClientIsConnectRx = CisClient.IsConnectChange.Subscribe(isConnect =>
-            //{
-            //    if (isConnect)
-            //    {
-            //        MainForm.СвязьСЦис.Text = "ЦИС на связи";
-            //        MainForm.СвязьСЦис.BackColor = Color.LightGreen;
-            //    }
-            //    else
-            //    {
-            //        MainForm.СвязьСЦис.Text = "ЦИС НЕ на связи";
-            //        MainForm.СвязьСЦис.BackColor = Color.Orange;
-            //    }
-            //});
-
-            //
             DispouseQueueChangeRx = QueueSound.QueueChangeRx.Subscribe(status =>
             {
                 switch (status)
@@ -183,13 +248,14 @@ namespace MainExample
             DispouseStaticChangeRx = QueueSound.StaticChangeRx.Subscribe(StaticChangeRxEventHandler);
             DispouseTemplateChangeRx = QueueSound.TemplateChangeRx.Subscribe(TemplateChangeRxEventHandler);
 
-          
+
             //ЗАПУСК ОЧЕРЕДИ ЗВУКА
             QueueSound.StartQueue();
 
             MainForm.Включить.BackColor = Color.Red;
-            Program.ЗаписьЛога("Системное сообщение", "Программный комплекс включен", Program.AuthenticationService.CurrentUser);
+            Program.ЗаписьЛога("Системное сообщение", "Программный комплекс включен", _authentificationService.CurrentUser);
         }
+
 
 
         /// <summary>
@@ -230,7 +296,7 @@ namespace MainExample
                         chbox_CisRegShControl.Visible = true;
                         chbox_CisRegShControl.Checked = Program.Настройки.GetDataCisRegShStart;
 
-                        CisRegShAbstract = new GetCisRegSh(beh.BaseGetDataBehavior, null);
+                        CisRegShAbstract = new GetCisRegSh(beh.BaseGetDataBehavior, null, _usersRepository);
                         CisRegShAbstract.SubscribeAndStart(chbox_CisRegShControl);
                         CisRegShAbstract.Enable = chbox_CisRegShControl.Checked;
                         break;
@@ -518,9 +584,9 @@ namespace MainExample
         private void btnБлокировка_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -530,14 +596,14 @@ namespace MainExample
                 MainForm.Включить.Text = "ОТКЛЮЧИТЬ";
                 MainForm.Включить.BackColor = Color.LightGreen;
                 QueueSound.StartAndPlayedCurrentMessage();
-                Program.ЗаписьЛога("Действие оператора", "Работа разрешена", Program.AuthenticationService.CurrentUser);
+                Program.ЗаписьЛога("Действие оператора", "Работа разрешена", _authentificationService.CurrentUser);
             }
             else
             {
                 MainForm.Включить.Text = "ВКЛЮЧИТЬ";
                 MainForm.Включить.BackColor = Color.Red;
                 QueueSound.StopAndPlayedCurrentMessage();
-                Program.ЗаписьЛога("Действие оператора", "Работа запрещена", Program.AuthenticationService.CurrentUser);
+                Program.ЗаписьЛога("Действие оператора", "Работа запрещена", _authentificationService.CurrentUser);
             }
         }
 
@@ -1220,7 +1286,7 @@ namespace MainExample
                             {
                                 if (РазрешениеРаботы == true)
                                 {
-                                    Program.ЗаписьЛога("Автоматическое воспроизведение статического звукового сообщения", Сообщение.НазваниеКомпозиции, Program.AuthenticationService.CurrentUser);
+                                    Program.ЗаписьЛога("Автоматическое воспроизведение статического звукового сообщения", Сообщение.НазваниеКомпозиции, _authentificationService.CurrentUser);
                                     var воспроизводимоеСообщение = new ВоспроизводимоеСообщение
                                     {
                                         ParentId = null,
@@ -2167,9 +2233,9 @@ namespace MainExample
         private void btnПауза_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -3303,7 +3369,7 @@ namespace MainExample
 
             var логНомерПоезда = string.IsNullOrEmpty(record.НомерПоезда2) ? record.НомерПоезда : record.НомерПоезда + "/" + record.НомерПоезда2;
             var логНазваниеПоезда = record.НазваниеПоезда;
-            Program.ЗаписьЛога(названиеСообщения, $"Формирование звукового сообщения для поезда \"№{логНомерПоезда}  {логНазваниеПоезда}\": " + logMessage + ". Повтор " + record.КоличествоПовторений + " раз.", Program.AuthenticationService.CurrentUser);
+            //Program.ЗаписьЛога(названиеСообщения, $"Формирование звукового сообщения для поезда \"№{логНомерПоезда}  {логНазваниеПоезда}\": " + logMessage + ". Повтор " + record.КоличествоПовторений + " раз.", _authentificationService.CurrentUser);
         }
 
 
@@ -3337,7 +3403,7 @@ namespace MainExample
                             {
                                 if (Sound.Name == Данные.НазваниеКомпозиции)
                                 {
-                                    Program.ЗаписьЛога("Действие оператора", "ВоспроизведениеАвтомат статического звукового сообщения: " + Sound.Name, Program.AuthenticationService.CurrentUser);
+                                    Program.ЗаписьЛога("Действие оператора", "ВоспроизведениеАвтомат статического звукового сообщения: " + Sound.Name, _authentificationService.CurrentUser);
                                     var воспроизводимоеСообщение = new ВоспроизводимоеСообщение
                                     {
                                         ParentId = null,
@@ -3379,7 +3445,7 @@ namespace MainExample
                         {
                             СтатическоеСообщение Данные = СтатическиеЗвуковыеСообщения[Key];
                             Данные.Активность = !Данные.Активность;
-                            Program.ЗаписьЛога("Действие оператора", (Данные.Активность ? "Включение " : "Отключение ") + "звукового сообщения: \"" + Данные.НазваниеКомпозиции + "\" (" + Данные.Время.ToString("HH:mm") + ")", Program.AuthenticationService.CurrentUser);
+                            Program.ЗаписьЛога("Действие оператора", (Данные.Активность ? "Включение " : "Отключение ") + "звукового сообщения: \"" + Данные.НазваниеКомпозиции + "\" (" + Данные.Время.ToString("HH:mm") + ")", _authentificationService.CurrentUser);
                             СтатическиеЗвуковыеСообщения[Key] = Данные;
                         }
                     }
@@ -3410,7 +3476,7 @@ namespace MainExample
                         {
                             string старыйНомерПути = данные.НомерПути;
                             данные.НомерПути = i == 0 ? "" : paths[i - 1];
-                            if (старыйНомерПути != данные.НомерПути) Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + данные.НомерПоезда + " " + данные.НазваниеПоезда + ": " + "Путь: " + старыйНомерПути + " -> " + данные.НомерПути + "; ", Program.AuthenticationService.CurrentUser);
+                            if (старыйНомерПути != данные.НомерПути) Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + данные.НомерПоезда + " " + данные.НазваниеПоезда + ": " + "Путь: " + старыйНомерПути + " -> " + данные.НомерПути + "; ", _authentificationService.CurrentUser);
 
                             данные.ТипСообщения = SoundRecordType.ДвижениеПоезда;
                             данные.НазванияТабло = данные.НомерПути != "0" ? Binding2PathBehaviors.Select(beh => beh.GetDevicesName4Path(данные.НомерПути)).Where(str => str != null).ToArray() : null;
@@ -3436,7 +3502,7 @@ namespace MainExample
                             {
                                 byte СтараяНумерацияПоезда = данные.НумерацияПоезда;
                                 данные.НумерацияПоезда = (byte)i;
-                                if (СтараяНумерацияПоезда != данные.НумерацияПоезда) Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + данные.НомерПоезда + " " + данные.НазваниеПоезда + ": " + "Нум.пути: " + СтараяНумерацияПоезда.ToString() + " -> " + данные.НумерацияПоезда.ToString() + "; ", Program.AuthenticationService.CurrentUser);
+                                if (СтараяНумерацияПоезда != данные.НумерацияПоезда) Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + данные.НомерПоезда + " " + данные.НазваниеПоезда + ": " + "Нум.пути: " + СтараяНумерацияПоезда.ToString() + " -> " + данные.НумерацияПоезда.ToString() + "; ", _authentificationService.CurrentUser);
                                 SoundRecords[КлючВыбранныйМеню] = данные;
 
                                 var старыеДанные = данные;
@@ -3457,7 +3523,7 @@ namespace MainExample
                             {
                                 byte СтароеКоличествоПовторений = данные.КоличествоПовторений;
                                 данные.КоличествоПовторений = (byte)(i + 1);
-                                if (СтароеКоличествоПовторений != данные.КоличествоПовторений) Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + данные.НомерПоезда + " " + данные.НазваниеПоезда + ": " + "Кол.повт.: " + СтароеКоличествоПовторений.ToString() + " -> " + данные.КоличествоПовторений.ToString() + "; ", Program.AuthenticationService.CurrentUser);
+                                if (СтароеКоличествоПовторений != данные.КоличествоПовторений) Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + данные.НомерПоезда + " " + данные.НазваниеПоезда + ": " + "Кол.повт.: " + СтароеКоличествоПовторений.ToString() + " -> " + данные.КоличествоПовторений.ToString() + "; ", _authentificationService.CurrentUser);
                                 SoundRecords[КлючВыбранныйМеню] = данные;
 
                                 var старыеДанные = данные;
@@ -3732,7 +3798,7 @@ namespace MainExample
                     ((данные.ФиксированноеВремяОтправления == null) ? "--:--" : данные.ФиксированноеВремяОтправления.Value.ToString("HH:mm")) + "; ";
 
             if (сообщениеОбИзменениях != "")
-                Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + старыеДанные.НомерПоезда + " " + старыеДанные.НазваниеПоезда + ": " + сообщениеОбИзменениях, Program.AuthenticationService.CurrentUser);
+                Program.ЗаписьЛога("Действие оператора", "Изменение настроек поезда: " + старыеДанные.НомерПоезда + " " + старыеДанные.НазваниеПоезда + ": " + сообщениеОбИзменениях, _authentificationService.CurrentUser);
 
             return данные;
         }
@@ -3747,7 +3813,7 @@ namespace MainExample
                 TimeStamp = DateTime.Now,
                 Rec = старыеДанные,
                 NewRec = данные,
-                UserInfo= $"{Program.AuthenticationService.CurrentUser.Login}  ({Program.AuthenticationService.CurrentUser.Role})",
+                UserInfo= $"{_authentificationService.CurrentUser.Login}  ({_authentificationService.CurrentUser.Role})",
                 CauseOfChange = источникИзменений
             };
             SoundRecordChanges.Add(recChange);

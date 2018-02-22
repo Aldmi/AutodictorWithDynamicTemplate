@@ -11,7 +11,11 @@ using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using AutodictorBL.Services;
+using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.BindingBehavior;
+using CommunicationDevices.Behavior.BindingBehavior.ToChange;
+using CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule;
+using CommunicationDevices.Behavior.BindingBehavior.ToGetData;
 using CommunicationDevices.Behavior.BindingBehavior.ToPath;
 using CommunicationDevices.ClientWCF;
 using CommunicationDevices.Quartz.Jobs;
@@ -23,12 +27,21 @@ using MainExample.Entites;
 using MainExample.Extension;
 using MainExample.Services;
 using CommunicationDevices.DataProviders;
+using CommunicationDevices.Devices;
 
 
 namespace MainExample
 {
     public partial class MainForm : Form
     {
+        private readonly Func<AdminForm> _adminFormFactory;
+        private readonly Func<AuthenticationForm> _authenticationFormFactory;
+
+        private readonly IDisposable _authentificationServiceOwner;
+        private readonly Func<ExchangeModel, MainWindowForm> _mainWindowFormFactory;
+        private readonly IAuthentificationService _authentificationService;
+
+
         public ExchangeModel ExchangeModel { get; set; }
         public IDisposable DispouseCisClientIsConnectRx { get; set; }
         public VerificationActivation VerificationActivationService { get; set; } = new VerificationActivation();
@@ -43,12 +56,20 @@ namespace MainExample
         public static ToolStripButton ОбновитьСписок = null;
         public static ToolStripButton РежимРаботы = null;
         
-        private IAuthentificationService autenServ = Program.AuthenticationService;
         private List<UniversalInputType> table = new List<UniversalInputType>();
 
 
-        public MainForm()
+        public MainForm(Func<AdminForm> adminFormFactory,
+                        Func<AuthenticationForm> authenticationFormFactory,
+                        Owned<IAuthentificationService> authentificationService,
+                        Func<ExchangeModel, MainWindowForm> mainWindowFormFactory)
         {
+            _adminFormFactory = adminFormFactory;
+            _authenticationFormFactory = authenticationFormFactory;
+            _authentificationService = authentificationService.Value;
+            _authentificationServiceOwner = authentificationService;
+            _mainWindowFormFactory = mainWindowFormFactory;
+
             InitializeComponent();
 
             StaticSoundForm.ЗагрузитьСписок();
@@ -83,16 +104,16 @@ namespace MainExample
         private void CheckAuthentication(bool flagApplicationExit)
         {
             tSBAdmin.Visible = false;
-            while (autenServ.IsAuthentication == false)
+            while (_authentificationService.IsAuthentication == false)
             {
-                var autenForm = new AuthenticationForm();
+                var autenForm = _authenticationFormFactory();
                 var result = autenForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    if (autenServ.IsAuthentication)
+                    if (_authentificationService.IsAuthentication)
                     {
                         //ОТОБРАЗИТЬ ВОШЕДШЕГО ПОЛЬЗОВАТЕЛЯ
-                        var user = autenServ.CurrentUser;
+                        var user = _authentificationService.CurrentUser;
                         tSBLogOut.Text = user.Login;
                         SendAuthenticationChanges(user, "Вход в систему");
                     }
@@ -105,8 +126,8 @@ namespace MainExample
                     }
 
                     //ПОЛЬЗОВАТЕЛЬ - Предыдущий пользователь
-                    autenServ.SetOldUser();
-                    var user = autenServ.CurrentUser;
+                    _authentificationService.SetOldUser();
+                    var user = _authentificationService.CurrentUser;
                     tSBLogOut.Text = user.Login;
                     SendAuthenticationChanges(user, "Вход в систему");
                     break;
@@ -114,7 +135,7 @@ namespace MainExample
             }
 
             //Отрисовать вход в админку
-            switch (autenServ.CurrentUser.Role)
+            switch (_authentificationService.CurrentUser.Role)
             {
                 case Role.Администратор:
                     tSBAdmin.Visible = true;
@@ -219,17 +240,9 @@ namespace MainExample
             }
             else
             {
-                MainWindowForm mainform = new MainWindowForm(ExchangeModel.CisClient,
-                                                             ExchangeModel.Binding2PathBehaviors,
-                                                             ExchangeModel.Binding2GeneralSchedules,
-                                                             ExchangeModel.Binding2ChangesSchedules,
-                                                             ExchangeModel.Binding2ChangesEvent,
-                                                             ExchangeModel.Binding2GetData,
-                                                             ExchangeModel.DeviceSoundChannelManagement)
-                {
-                    MdiParent = this,
-                    WindowState = FormWindowState.Maximized
-                };
+                var mainform = _mainWindowFormFactory(ExchangeModel);
+                mainform.MdiParent = this;
+                mainform.WindowState = FormWindowState.Maximized;
                 mainform.Show();
                 mainform.btnОбновитьСписок_Click(null, EventArgs.Empty);
             }
@@ -425,9 +438,9 @@ namespace MainExample
         private void добавитьСтатическоеСообщениеToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!autenServ.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -540,9 +553,9 @@ namespace MainExample
         private void добавитьВнештатныйПоездToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!autenServ.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -635,9 +648,9 @@ namespace MainExample
         private void tsb_ТехническоеСообщение_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!autenServ.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -653,9 +666,9 @@ namespace MainExample
         private void tSBРежимРаботы_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if(!autenServ.CheckRoleAcsess(new List<Role> {Role.Администратор, Role.Диктор, Role.Инженер}))
+            if(!_authentificationService.CheckRoleAcsess(new List<Role> {Role.Администратор, Role.Диктор, Role.Инженер}))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{autenServ.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -720,8 +733,8 @@ namespace MainExample
         /// </summary>
         private void tSBLogOut_Click(object sender, EventArgs e)
         {
-            autenServ.LogOut();
-            SendAuthenticationChanges(autenServ.OldUser, "Выход из системы");
+            _authentificationService.LogOut();
+            SendAuthenticationChanges(_authentificationService.OldUser, "Выход из системы");
             CheckAuthentication(false);
         }
 
@@ -731,8 +744,7 @@ namespace MainExample
         /// </summary>
         private void tSBAdmin_Click(object sender, EventArgs e)
         {
-            var form= new AdminForm();
-            form.ShowDialog();
+            _adminFormFactory().ShowDialog();
         }
 
 
@@ -746,14 +758,15 @@ namespace MainExample
 
             base.OnClosed(e);
         }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
-                if (autenServ != null)
+                if (_authentificationService != null)
                 {
-                    autenServ.LogOut();
-                    SendAuthenticationChanges(autenServ.OldUser, "Выход из системы");
+                    _authentificationService.LogOut();
+                    SendAuthenticationChanges(_authentificationService.OldUser, "Выход из системы");
                     System.Threading.Thread.Sleep(1000);
                 }
             }

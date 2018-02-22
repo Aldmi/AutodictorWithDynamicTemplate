@@ -49,14 +49,13 @@ namespace MainExample
         public static DateTime StartTime { get; } = DateTime.Now;
         public static AutodictorModel AutodictorModel { get; set; }
 
-        public static IAuthentificationService AuthenticationService { get; set; }
         public static DirectionService DirectionService; // Направления. 
         public static PathwaysService PathwaysService;   //Пути.
         public static IEnumerable<TrainTypeByRyle> TrainTypes;
         public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
 
         //public static IGenericDataRepository<User> UsersDbRepository;
-
+        public static IAuthentificationService AuthenticationService { get; set; }
 
         /// <summary>
         /// The main entry point for the application.
