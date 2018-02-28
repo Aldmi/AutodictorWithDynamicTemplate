@@ -46,6 +46,7 @@ namespace MainExample
 
     public partial class MainWindowForm : Form
     {
+        private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> _staticSoundCardFormFactory;
         private readonly IAuthentificationService _authentificationService;
         private readonly IUsersRepository _usersRepository;
         private const int ВремяЗадержкиВоспроизведенныхСобытий = 20;  //сек
@@ -202,13 +203,17 @@ namespace MainExample
         //}
 
 
-        public MainWindowForm(ExchangeModel exchangeModel, IAuthentificationService authentificationService, IUsersRepository usersRepository)
+        public MainWindowForm(ExchangeModel exchangeModel,
+                              Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
+                              IAuthentificationService authentificationService,
+                              IUsersRepository usersRepository)
         {
             if (myMainForm != null)
                 return;
 
             myMainForm = this;
 
+            _staticSoundCardFormFactory = staticSoundCardFormFactory;
             _authentificationService = authentificationService;
             _usersRepository = usersRepository;
 
@@ -2295,11 +2300,10 @@ namespace MainExample
                         if (СтатическиеЗвуковыеСообщения.Keys.Contains(Key) == true)
                         {
                             СтатическоеСообщение Данные = СтатическиеЗвуковыеСообщения[Key];
-
-                            КарточкаСтатическогоЗвуковогоСообщения Карточка = new КарточкаСтатическогоЗвуковогоСообщения(Данные);
-                            if (Карточка.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            КарточкаСтатическогоЗвуковогоСообщения окноСообщения = _staticSoundCardFormFactory(Данные);
+                            if (окноСообщения.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                Данные = Карточка.ПолучитьИзмененнуюКарточку();
+                                Данные = окноСообщения.ПолучитьИзмененнуюКарточку();
 
                                 string Key2 = Данные.Время.ToString("yy.MM.dd  HH:mm:ss");
                                 string[] SubKeys = Key.Split(':');
@@ -3667,10 +3671,10 @@ namespace MainExample
                         if (СтатическиеЗвуковыеСообщения.Keys.Contains(Key))
                         {
                             СтатическоеСообщение Данные = СтатическиеЗвуковыеСообщения[Key];
-                            КарточкаСтатическогоЗвуковогоСообщения Карточка = new КарточкаСтатическогоЗвуковогоСообщения(Данные);
-                            if (Карточка.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            КарточкаСтатическогоЗвуковогоСообщения окноСообщения = _staticSoundCardFormFactory(Данные);
+                            if (окноСообщения.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                Данные = Карточка.ПолучитьИзмененнуюКарточку();
+                                Данные = окноСообщения.ПолучитьИзмененнуюКарточку();
 
                                 string Key2 = Данные.Время.ToString("yy.MM.dd  HH:mm:ss");
                                 string[] SubKeys = Key.Split(':');

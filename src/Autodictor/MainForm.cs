@@ -11,12 +11,14 @@ using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using AutodictorBL.Services;
+using AutodictorBL.Sound;
 using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.BindingBehavior;
 using CommunicationDevices.Behavior.BindingBehavior.ToChange;
 using CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule;
 using CommunicationDevices.Behavior.BindingBehavior.ToGetData;
 using CommunicationDevices.Behavior.BindingBehavior.ToPath;
+using CommunicationDevices.Behavior.BindingBehavior.ToStatic;
 using CommunicationDevices.ClientWCF;
 using CommunicationDevices.Quartz.Jobs;
 using CommunicationDevices.Quartz.Shedules;
@@ -36,9 +38,12 @@ namespace MainExample
     {
         private readonly Func<AdminForm> _adminFormFactory;
         private readonly Func<AuthenticationForm> _authenticationFormFactory;
+        private readonly Func<ExchangeModel, MainWindowForm> _mainWindowFormFactory;
+        private readonly Func<ICollection<IBinding2StaticFormBehavior>, StaticDisplayForm> _staticDisplayFormFactory;
+        private readonly Func<ISoundPlayer, StaticSoundForm> _staticSoundFormFactory;
+        private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> _staticSoundCardFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
-        private readonly Func<ExchangeModel, MainWindowForm> _mainWindowFormFactory;
         private readonly IAuthentificationService _authentificationService;
 
 
@@ -59,16 +64,33 @@ namespace MainExample
         private List<UniversalInputType> table = new List<UniversalInputType>();
 
 
+
+
+        //public MainForm(Func<AdminForm> adminFormFactory,
+        //    Func<AuthenticationForm> authenticationFormFactory,
+        //    Func<ExchangeModel, MainWindowForm> mainWindowFormFactory,
+        //    Func<ICollection<IBinding2StaticFormBehavior>, MainWindowForm> staticDisplayFormFactory,
+        //    Func<ISoundPlayer, StaticSoundForm> staticSoundFormFactory,
+        //    Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
+        //    Owned<IAuthentificationService> authentificationService)
+
+
         public MainForm(Func<AdminForm> adminFormFactory,
                         Func<AuthenticationForm> authenticationFormFactory,
-                        Owned<IAuthentificationService> authentificationService,
-                        Func<ExchangeModel, MainWindowForm> mainWindowFormFactory)
+                        Func<ExchangeModel, MainWindowForm> mainWindowFormFactory,
+                        Func<ICollection<IBinding2StaticFormBehavior>, StaticDisplayForm> staticDisplayFormFactory,
+                        Func<ISoundPlayer, StaticSoundForm> staticSoundFormFactory,
+                        Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
+                        Owned<IAuthentificationService> authentificationService)
         {
             _adminFormFactory = adminFormFactory;
             _authenticationFormFactory = authenticationFormFactory;
+            _mainWindowFormFactory = mainWindowFormFactory;
+            _staticDisplayFormFactory = staticDisplayFormFactory;
+            _staticSoundFormFactory = staticSoundFormFactory;
+            _staticSoundCardFormFactory = staticSoundCardFormFactory;
             _authentificationService = authentificationService.Value;
             _authentificationServiceOwner = authentificationService;
-            _mainWindowFormFactory = mainWindowFormFactory;
 
             InitializeComponent();
 
@@ -104,13 +126,13 @@ namespace MainExample
         private void CheckAuthentication(bool flagApplicationExit)
         {
             tSBAdmin.Visible = false;
-            while (_authentificationService.IsAuthentication == false)
+            while (_authentificationService.IsAuthentification == false)
             {
                 var autenForm = _authenticationFormFactory();
                 var result = autenForm.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    if (_authentificationService.IsAuthentication)
+                    if (_authentificationService.IsAuthentification)
                     {
                         //ОТОБРАЗИТЬ ВОШЕДШЕГО ПОЛЬЗОВАТЕЛЯ
                         var user = _authentificationService.CurrentUser;
@@ -193,27 +215,8 @@ namespace MainExample
             CheckAuthentication(true); // переместил сюда, т.к. иначе данные о первом логине не отправляются по причине незагруженной модели обмена
                                        // это выключило возможность включения/отключения галки получения данных из ЦИС на нижней панели программы
             ExchangeModel.StartCisClient();
-
             ExchangeModel.InitializeDeviceSoundChannelManagement();
-
-            DispouseCisClientIsConnectRx = ExchangeModel.CisClient.IsConnectChange.Subscribe(isConnect =>
-            {
-                //TODO: вызывать через Invoke
-                //if (isConnect)
-                //{
-                //    СвязьСЦис = tSLСостояниеСвязиСЦИС;
-                //    СвязьСЦис.BackColor = Color.LightGreen;
-                //    СвязьСЦис.Text = "ЦИС на связи";
-                //}
-                //else
-                //{
-                //    СвязьСЦис = tSLСостояниеСвязиСЦИС;
-                //    СвязьСЦис .BackColor = Color.Orange;
-                //    СвязьСЦис.Text = "ЦИС НЕ на связи";
-                //}
-            });
-
-            DispouseActivationWarningInvokeRx = VerificationActivationService.WarningInvokeRx.Subscribe(verAct =>
+            DispouseActivationWarningInvokeRx= VerificationActivationService.WarningInvokeRx.Subscribe(verAct =>
             {
                this.InvokeIfNeeded(() =>
                {
@@ -299,9 +302,13 @@ namespace MainExample
             }
             else
             {
-                StaticSoundForm form = new StaticSoundForm(Program.AutodictorModel.SoundPlayer);
-                form.MdiParent = this;
-                form.Show();
+                var statSoundForm = _staticSoundFormFactory(Program.AutodictorModel.SoundPlayer);
+                statSoundForm.MdiParent = this;
+                statSoundForm.Show();
+
+                //StaticSoundForm form = new StaticSoundForm(Program.AutodictorModel.SoundPlayer);
+                //form.MdiParent = this;
+                //form.Show();
             }
         }
 
@@ -444,33 +451,35 @@ namespace MainExample
                 return;
             }
 
-            СтатическоеСообщение Сообщение;
-            Сообщение.ID = 0;
-            Сообщение.Активность = true;
-            Сообщение.Время = DateTime.Now;
-            Сообщение.НазваниеКомпозиции = "";
-            Сообщение.ОписаниеКомпозиции = "";
-            Сообщение.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
-            КарточкаСтатическогоЗвуковогоСообщения ОкноСообщения = new КарточкаСтатическогоЗвуковогоСообщения(Сообщение);
-            if (ОкноСообщения.ShowDialog() == DialogResult.OK)
+            СтатическоеСообщение сообщение;
+            сообщение.ID = 0;
+            сообщение.Активность = true;
+            сообщение.Время = DateTime.Now;
+            сообщение.НазваниеКомпозиции = "";
+            сообщение.ОписаниеКомпозиции = "";
+            сообщение.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
+           // КарточкаСтатическогоЗвуковогоСообщения ОкноСообщения = new КарточкаСтатическогоЗвуковогоСообщения(Сообщение);
+
+            КарточкаСтатическогоЗвуковогоСообщения окноСообщения = _staticSoundCardFormFactory(сообщение);
+            if (окноСообщения.ShowDialog() == DialogResult.OK)
             {
-                Сообщение = ОкноСообщения.ПолучитьИзмененнуюКарточку();
+                сообщение = окноСообщения.ПолучитьИзмененнуюКарточку();
 
                 int ПопыткиВставитьСообщение = 5;
                 while (ПопыткиВставитьСообщение-- > 0)
                 {
-                    string Key = Сообщение.Время.ToString("HH:mm:ss");
+                    string Key = сообщение.Время.ToString("HH:mm:ss");
                     string[] SubKeys = Key.Split(':');
                     if (SubKeys[0].Length == 1)
                         Key = "0" + Key;
 
                     if (MainWindowForm.СтатическиеЗвуковыеСообщения.ContainsKey(Key))
                     {
-                        Сообщение.Время = Сообщение.Время.AddSeconds(1);
+                        сообщение.Время = сообщение.Время.AddSeconds(1);
                         continue;
                     }
 
-                    MainWindowForm.СтатическиеЗвуковыеСообщения.Add(Key, Сообщение);
+                    MainWindowForm.СтатическиеЗвуковыеСообщения.Add(Key, сообщение);
                     MainWindowForm.СтатическиеЗвуковыеСообщения.OrderBy(key => key.Value);
                     MainWindowForm.ФлагОбновитьСписокЗвуковыхСообщений = true;
                     break;
@@ -637,9 +646,13 @@ namespace MainExample
             }
             else                                                                   //Открытие окна
             {
-                StaticDisplayForm staticDisplayForm = new StaticDisplayForm(ExchangeModel.Binding2StaticFormBehaviors);
-                //staticDisplayForm.MdiParent = this;
-                staticDisplayForm.Show();
+                var statDispForm = _staticDisplayFormFactory(ExchangeModel.Binding2StaticFormBehaviors);
+                statDispForm.MdiParent = this;
+                statDispForm.Show();
+
+                //StaticDisplayForm staticDisplayForm = new StaticDisplayForm(ExchangeModel.Binding2StaticFormBehaviors);
+                ////staticDisplayForm.MdiParent = this;
+                //staticDisplayForm.Show();
             }
         }
 
@@ -750,14 +763,14 @@ namespace MainExample
 
         protected override void OnClosed(EventArgs e)
         {
-            DispouseCisClientIsConnectRx.Dispose();
             ExchangeModel.Dispose();
-
             DispouseActivationWarningInvokeRx.Dispose();
             QuartzVerificationActivation.Shutdown();
+            _authentificationServiceOwner.Dispose();
 
             base.OnClosed(e);
         }
+
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {

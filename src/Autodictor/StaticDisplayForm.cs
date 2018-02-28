@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.Services;
 using CommunicationDevices.Behavior.BindingBehavior.ToStatic;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
@@ -19,6 +20,7 @@ namespace MainExample
     public partial class StaticDisplayForm : Form
     {
         public static StaticDisplayForm MyStaticDisplayForm = null;
+        private readonly IAuthentificationService _authentificationService;
         private readonly IList<IBinding2StaticFormBehavior> _binding2StaticFormBehaviors;
         private int _currentSelectIndex = -1;
         private bool _currentTableChanged;
@@ -31,8 +33,6 @@ namespace MainExample
         public Dictionary<byte, List<string>> Tables { get; set; } = new Dictionary<byte, List<string>>();
 
         #endregion
-
-
 
 
 
@@ -51,15 +51,13 @@ namespace MainExample
         }
 
 
-        public StaticDisplayForm(ICollection<IBinding2StaticFormBehavior> binding2StaticFormBehaviors) : this()
+        public StaticDisplayForm(ICollection<IBinding2StaticFormBehavior> binding2StaticFormBehaviors, IAuthentificationService authentificationService) : this()
         {
             this._binding2StaticFormBehaviors = binding2StaticFormBehaviors.ToList();
+            _authentificationService = authentificationService;
         }
 
-
         #endregion
-
-
 
 
 
@@ -221,9 +219,9 @@ namespace MainExample
         private void btn_Show_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 

@@ -26,6 +26,7 @@ namespace DAL.NoSqlLiteDb.Repository
 
 
 
+
         public User GetById(int id)
         {
             return Repository.GetById(id);

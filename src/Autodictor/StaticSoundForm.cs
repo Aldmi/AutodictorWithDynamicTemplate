@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
+using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
@@ -32,23 +33,22 @@ namespace MainExample
 
         public IDisposable DispouseQueueChangeRx { get; set; }
         private readonly ISoundPlayer _soundPlayer;
+        private readonly IAuthentificationService _authentificationService;
 
 
-
-
-        public StaticSoundForm(ISoundPlayer soundPlayer)
+        public StaticSoundForm(ISoundPlayer soundPlayer, IAuthentificationService authentificationService)
         {
             if (thisForm != null)
                 return;
 
             thisForm = this;
 
+            _soundPlayer = soundPlayer;
+            _authentificationService = authentificationService;
+
             InitializeComponent();
             ЗагрузитьСписок();
             ОбновитьДанныеВСписке();
-
-            _soundPlayer = soundPlayer;
-
 
             btn_Пуск.Enabled = (MainWindowForm.QueueSound.Count == 0);
             DispouseQueueChangeRx = MainWindowForm.QueueSound.QueueChangeRx.Subscribe(status =>
@@ -97,9 +97,9 @@ namespace MainExample
         private void button2_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -118,9 +118,9 @@ namespace MainExample
         private void button3_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -305,9 +305,9 @@ namespace MainExample
         private void btnЗаписатьСообщение_Click(object sender, EventArgs e)
         {
             //проверка ДОСТУПА
-            if (!Program.AuthenticationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
+            if (!_authentificationService.CheckRoleAcsess(new List<Role> { Role.Администратор, Role.Диктор, Role.Инженер }))
             {
-                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{Program.AuthenticationService.CurrentUser.Role}"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 

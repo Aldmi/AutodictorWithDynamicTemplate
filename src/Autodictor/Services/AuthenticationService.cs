@@ -13,6 +13,7 @@ namespace MainExample.Services
     public class AuthenticationService
     {
         #region field
+
         private const string hard_admin_salt = "AssIbir2018Super10987612345"; // дополнительная соль
         private const int complexity = 12; // сложность вычисления хэш-функции
 

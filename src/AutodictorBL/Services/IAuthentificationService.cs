@@ -5,7 +5,7 @@ namespace AutodictorBL.Services
 {
     public interface IAuthentificationService
     {
-         bool IsAuthentication { get;  }
+         bool IsAuthentification { get;  }
          User CurrentUser { get; }
          User OldUser { get; }
 

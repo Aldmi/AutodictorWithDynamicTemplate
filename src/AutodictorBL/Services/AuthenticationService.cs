@@ -9,7 +9,7 @@ using BCrypt.Net;
 
 namespace AutodictorBL.Services
 {
-    public class AuthenticationService : IAuthentificationService
+    public class AuthenticationService : IAuthentificationService, IDisposable
     {
         #region field
 
@@ -25,7 +25,7 @@ namespace AutodictorBL.Services
 
         #region prop
 
-        public bool IsAuthentication { get; private set; }
+        public bool IsAuthentification { get; private set; }
         public User CurrentUser { get; private set; }
         public User OldUser { get; private set; }
 
@@ -110,7 +110,7 @@ namespace AutodictorBL.Services
             }
 
             CurrentUser = existUser;
-            IsAuthentication = true;
+            IsAuthentification = true;
 
             return true;
         }
@@ -233,7 +233,7 @@ namespace AutodictorBL.Services
         {
             OldUser = CurrentUser;
             CurrentUser = null;
-            IsAuthentication = false;
+            IsAuthentification = false;
         }
 
 
@@ -243,7 +243,7 @@ namespace AutodictorBL.Services
         /// </summary>
         public void SetOldUser()
         {
-            IsAuthentication = true;
+            IsAuthentification = true;
             CurrentUser = OldUser;
         }
 
@@ -253,7 +253,7 @@ namespace AutodictorBL.Services
         /// </summary>
         public void SetObserver()
         {
-            IsAuthentication = true;
+            IsAuthentification = true;
             CurrentUser = new User { Login = "Наблюдатель", Role = Role.Наблюдатель };
         }
 
@@ -267,6 +267,19 @@ namespace AutodictorBL.Services
             return roles.Contains(CurrentUser.Role);
         }
 
+
+        #endregion
+
+
+
+
+
+        #region Dispose
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

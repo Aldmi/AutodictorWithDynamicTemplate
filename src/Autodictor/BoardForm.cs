@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.Services;
 using CommunicationDevices.ClientWCF;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
@@ -27,8 +28,6 @@ namespace MainExample
         public static BoardForm MyBoardForm = null;
         private readonly IEnumerable<Device> _devises;
 
-
-
         public List<IDisposable> DispouseIsDataExchangeSuccessChangeRx { get; set; }= new List<IDisposable>();
         public List<IDisposable> DispouseIsConnectChangeRx { get; set; } = new List<IDisposable>();
         public List<IDisposable> DispouseLastSendDataChangeRx { get; set; } = new List<IDisposable>();
@@ -44,9 +43,9 @@ namespace MainExample
             InitializeComponent();
 
             _devises = devices;
+
             if (_devises != null && _devises.Any())
                 FillBoardsDataGrid(_devises);
-
 
             dataGridViewBoards.CellClick += dataGridView1_CellClick;
 

@@ -54,8 +54,6 @@ namespace MainExample
         public static IEnumerable<TrainTypeByRyle> TrainTypes;
         public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
 
-        //public static IGenericDataRepository<User> UsersDbRepository;
-        public static IAuthentificationService AuthenticationService { get; set; }
 
         /// <summary>
         /// The main entry point for the application.
@@ -231,13 +229,9 @@ namespace MainExample
             try
             {
                 DirectionService= AutofacConfig.Container.Resolve<DirectionService>();
-                //var dd = DirectionService.GetAll();
-
                 PathwaysService = AutofacConfig.Container.Resolve<PathwaysService>();
-                //var gg = PathwaysService.GetAll();
-
                 TrainTypes = AutofacConfig.Container.Resolve<TrainTypeByRyleService>().GetAll();
-                AuthenticationService = AutofacConfig.Container.Resolve<IAuthentificationService>();
+                //AuthenticationService = AutofacConfig.Container.Resolve<IAuthentificationService>();
             }
             catch (Exception ex)
             {

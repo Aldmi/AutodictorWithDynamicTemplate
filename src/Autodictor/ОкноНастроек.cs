@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.Services;
 
 
 namespace MainExample
@@ -553,7 +554,7 @@ namespace MainExample
             }
             catch (Exception ex)
             {
-                Program.ЗаписьЛога("Системное сообщение", "Ошибка загрузки настроек: " + ex.Message, Program.AuthenticationService.CurrentUser);
+                //Program.ЗаписьЛога("Системное сообщение", "Ошибка загрузки настроек: " + ex.Message, _authentificationService.CurrentUser);
             }
 
             if (Program.Настройки.ЗадержкаМеждуЗвуковымиСообщениями < 1)
@@ -708,7 +709,7 @@ namespace MainExample
             }
             catch (Exception ex)
             {
-                Program.ЗаписьЛога("Системное сообщение", "Ошибка сохранения настроек: " + ex.Message, Program.AuthenticationService.CurrentUser);
+                //Program.ЗаписьЛога("Системное сообщение", "Ошибка сохранения настроек: " + ex.Message, Program.AuthenticationService.CurrentUser);
             }
         }
 

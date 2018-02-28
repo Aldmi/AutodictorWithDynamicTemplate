@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
+using AutodictorBL.Services;
 using DAL.Abstract.Entitys;
 using MainExample.Entites;
 
@@ -13,30 +14,34 @@ namespace MainExample
 {
     public partial class КарточкаСтатическогоЗвуковогоСообщения : Form
     {
-        private СтатическоеСообщение Record;
+        private СтатическоеСообщение _record;
+        private readonly IAuthentificationService _authentificationService;
 
-        public КарточкаСтатическогоЗвуковогоСообщения(СтатическоеСообщение Record)
+
+
+        public КарточкаСтатическогоЗвуковогоСообщения(СтатическоеСообщение record, IAuthentificationService authentificationService)
         {
-            this.Record = Record;
+            this._record = record;
+            _authentificationService = authentificationService;
 
             InitializeComponent();
 
-            dTP_Время.Value = this.Record.Время;
+            dTP_Время.Value = this._record.Время;
 
             foreach (var item in StaticSoundForm.StaticSoundRecords)
                 cB_Messages.Items.Add(item.Name);
 
-            cB_Messages.Text = this.Record.НазваниеКомпозиции;
+            cB_Messages.Text = this._record.НазваниеКомпозиции;
             foreach (var Sound in StaticSoundForm.StaticSoundRecords)
             {
                 if (Sound.Name == cB_Messages.Text)
                 {
-                    Record.ОписаниеКомпозиции = Sound.Message;
+                    record.ОписаниеКомпозиции = Sound.Message;
                     break;
                 }
             }
 
-            if (this.Record.Активность == false)
+            if (this._record.Активность == false)
                 cBЗаблокировать.Checked = true;
 
             ОбновитьТекстВОкне();
@@ -45,23 +50,23 @@ namespace MainExample
 
         private void ОбновитьТекстВОкне()
         {
-            rTB_Сообщение.Text = Record.ОписаниеКомпозиции;
+            rTB_Сообщение.Text = _record.ОписаниеКомпозиции;
         }
 
 
         private void btn_ЗадатьВремя_Click(object sender, EventArgs e)
         {
-            Record.Время = dTP_Время.Value;
+            _record.Время = dTP_Время.Value;
         }
 
         public СтатическоеСообщение ПолучитьИзмененнуюКарточку()
         {
-            return Record;
+            return _record;
         }
 
         private void cBЗаблокировать_CheckedChanged(object sender, EventArgs e)
         {
-            Record.Активность = !cBЗаблокировать.Checked;
+            _record.Активность = !cBЗаблокировать.Checked;
 
             if (cBЗаблокировать.Checked)
             {
@@ -93,12 +98,12 @@ namespace MainExample
             {
                 if (ЗвуковоеСообщение.Name == cB_Messages.Text)
                 {
-                    Record.НазваниеКомпозиции = cB_Messages.Text;
+                    _record.НазваниеКомпозиции = cB_Messages.Text;
                     foreach (var Sound in StaticSoundForm.StaticSoundRecords)
                     {
                         if (Sound.Name == cB_Messages.Text)
                         {
-                            Record.ОписаниеКомпозиции = Sound.Message;
+                            _record.ОписаниеКомпозиции = Sound.Message;
                             break;
                         }
                     }
@@ -128,7 +133,7 @@ namespace MainExample
                         //НастройкиВыводаЗвука = new НастройкиВыводаЗвука { ТолькоПоВнутреннемуКаналу = true }
                     };
                     MainWindowForm.QueueSound.AddItem(воспроизводимоеСообщение);
-                    Program.ЗаписьЛога("Действие оператора", "ВоспроизведениеАвтомат звукового сообщения: " + sound.Name, Program.AuthenticationService.CurrentUser);
+                    Program.ЗаписьЛога("Действие оператора", "ВоспроизведениеАвтомат звукового сообщения: " + sound.Name, _authentificationService.CurrentUser);
                     break;
                 }
             }

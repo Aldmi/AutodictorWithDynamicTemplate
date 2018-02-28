@@ -72,6 +72,11 @@ namespace MainExample.Utils
             builder.RegisterType<AdminForm>().InstancePerDependency();
             builder.RegisterType<AuthenticationForm>().InstancePerDependency();
             builder.RegisterType<MainWindowForm>().InstancePerDependency();
+            builder.RegisterType<StaticDisplayForm>().InstancePerDependency();
+            builder.RegisterType<StaticSoundForm>().InstancePerDependency();
+            builder.RegisterType<КарточкаСтатическогоЗвуковогоСообщения>().InstancePerDependency();
+
+
 
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()
