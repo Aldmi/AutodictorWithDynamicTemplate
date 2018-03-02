@@ -137,7 +137,7 @@ namespace DAL.XmlRaw.Repository
         }
 
 
-        public void AddRange(IEnumerable<TrainTypeByRyle> entity)
+        public void AddRange(IEnumerable<TrainTypeByRyle> entitys)
         {
             throw new NotImplementedException();
         }

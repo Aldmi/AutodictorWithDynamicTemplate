@@ -187,11 +187,11 @@
     <Compile Include="SoundPlayersForm.Designer.cs">
       <DependentUpon>SoundPlayersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TrainTableGrid.cs">
+    <Compile Include="TrainTableGridForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TrainTableGrid.Designer.cs">
-      <DependentUpon>TrainTableGrid.cs</DependentUpon>
+    <Compile Include="TrainTableGridForm.Designer.cs">
+      <DependentUpon>TrainTableGridForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\StructCompare.cs" />
     <Compile Include="Mappers\Mapper.cs" />
@@ -357,8 +357,8 @@
     <EmbeddedResource Include="SoundPlayersForm.resx">
       <DependentUpon>SoundPlayersForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TrainTableGrid.resx">
-      <DependentUpon>TrainTableGrid.cs</DependentUpon>
+    <EmbeddedResource Include="TrainTableGridForm.resx">
+      <DependentUpon>TrainTableGridForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OperativeSheduleForm.resx">
       <DependentUpon>OperativeSheduleForm.cs</DependentUpon>
@@ -510,6 +510,10 @@
     <ProjectReference Include="..\DAL.Abstract\DAL.Abstract.csproj">
       <Project>{b3cf5fb8-856d-4b3e-ad4c-376388da658b}</Project>
       <Name>DAL.Abstract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL.InMemory\DAL.InMemory.csproj">
+      <Project>{74342e72-89af-4218-b6ec-939fc4253443}</Project>
+      <Name>DAL.InMemory</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL.NoSqlLiteDb\DAL.NoSqlLiteDb.csproj">
       <Project>{13930fa6-7596-4bba-b813-dda9b8dd928c}</Project>

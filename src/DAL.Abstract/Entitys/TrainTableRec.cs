@@ -20,23 +20,23 @@ namespace DAL.Abstract.Entitys
         public string Num;                //Номер поезда
         public string Num2;               //Номер поезда 2 (для транзита)
         public string Name;               //Название поезда
-        public string Direction;          //направление
+        public Direction Direction;       //Направление
         public Station StationDepart;     //станция отправления
         public Station StationArrival;    //станция прибытия
-        public DateTime ArrivalTime;        //время прибытие
-        public string StopTime;           //время стоянка
-        public DateTime DepartureTime;      //время отправление
-        public string FollowingTime;      //время следования (время в пути)
+        public DateTime? ArrivalTime;     //время прибытие
+        public TimeSpan? StopTime;        //время стоянка (для транзитов)
+        public DateTime? DepartureTime;   //время отправление
+        public DateTime? FollowingTime;   //время следования (время в пути)
         public string Days;               //дни следования
         public string DaysAlias;          //дни следования (строка заполняется в ручную)
-        public bool Active;               //активность, отмека галочкой
-        public WagonsNumbering WagonsNumbering;   //Нумерация вагонов
-        public bool ChangeTrainPathDirection;      //смена направления (для транзитов)
-        public Dictionary<WeekDays, string> TrainPathNumber;      //Пути по дням недели или постоянно
-        public bool PathWeekDayes;                                //true - установленны пути по дням недели, false - путь установленн постоянно
-        public string Примечание;
         public DateTime ВремяНачалаДействияРасписания;
         public DateTime ВремяОкончанияДействияРасписания;
+        public bool Active;               //активность, отмека галочкой
+        public WagonsNumbering WagonsNumbering;   //Нумерация вагонов
+        public bool? ChangeTrainPathDirection;      //смена направления (для транзитов)
+        public Dictionary<WeekDays, Pathways> TrainPathNumber;      //Пути по дням недели или постоянно
+        public bool PathWeekDayes;                                //true - установленны пути по дням недели, false - путь установленн постоянно
+        public string Примечание;
         public string Addition;                                   //Дополнение
         public Dictionary<string, bool> ИспользоватьДополнение;   //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
         public bool Автомат;                                      // true - поезд обрабатывается в автомате.

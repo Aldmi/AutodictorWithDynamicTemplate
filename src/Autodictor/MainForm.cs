@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using Autofac.Features.OwnedInstances;
@@ -42,6 +43,7 @@ namespace MainExample
         private readonly Func<ICollection<IBinding2StaticFormBehavior>, StaticDisplayForm> _staticDisplayFormFactory;
         private readonly Func<ISoundPlayer, StaticSoundForm> _staticSoundFormFactory;
         private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> _staticSoundCardFormFactory;
+        private readonly Func<TrainTableGridForm> _trainTableGridFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
         private readonly IAuthentificationService _authentificationService;
@@ -75,12 +77,16 @@ namespace MainExample
         //    Owned<IAuthentificationService> authentificationService)
 
 
+        // TrainTableGridForm
+        
+
         public MainForm(Func<AdminForm> adminFormFactory,
                         Func<AuthenticationForm> authenticationFormFactory,
                         Func<ExchangeModel, MainWindowForm> mainWindowFormFactory,
                         Func<ICollection<IBinding2StaticFormBehavior>, StaticDisplayForm> staticDisplayFormFactory,
                         Func<ISoundPlayer, StaticSoundForm> staticSoundFormFactory,
                         Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
+                        Func<TrainTableGridForm> trainTableGridFormFactory,
                         Owned<IAuthentificationService> authentificationService)
         {
             _adminFormFactory = adminFormFactory;
@@ -89,8 +95,11 @@ namespace MainExample
             _staticDisplayFormFactory = staticDisplayFormFactory;
             _staticSoundFormFactory = staticSoundFormFactory;
             _staticSoundCardFormFactory = staticSoundCardFormFactory;
+            _trainTableGridFormFactory = trainTableGridFormFactory;
             _authentificationService = authentificationService.Value;
             _authentificationServiceOwner = authentificationService;
+
+
 
             InitializeComponent();
 
@@ -256,14 +265,15 @@ namespace MainExample
         //Расписание движения поездов
         private void listExample_Click(object sender, EventArgs e)
         {
-            if (TrainTableGrid.MyMainForm != null)
+            if (TrainTableGridForm.MyMainForm != null)
             {
-                TrainTableGrid.MyMainForm.Show();
-                TrainTableGrid.MyMainForm.WindowState = FormWindowState.Normal;
+                TrainTableGridForm.MyMainForm.Show();
+                TrainTableGridForm.MyMainForm.WindowState = FormWindowState.Normal;
             }
             else
             {
-                TrainTableGrid form = new TrainTableGrid() { MdiParent = this };
+                TrainTableGridForm form= _trainTableGridFormFactory();
+                form.MdiParent = this;
                 form.Show();
             }
         }

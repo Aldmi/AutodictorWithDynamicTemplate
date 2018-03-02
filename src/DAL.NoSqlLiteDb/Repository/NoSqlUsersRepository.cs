@@ -47,9 +47,9 @@ namespace DAL.NoSqlLiteDb.Repository
              Repository.Add(entity);
         }
 
-        public void AddRange(IEnumerable<User> entity)
+        public void AddRange(IEnumerable<User> entitys)
         {
-            Repository.AddRange(entity);
+            Repository.AddRange(entitys);
         }
 
         public void Delete(User entity)

@@ -3,10 +3,13 @@ using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
 using Autofac;
 using Autofac.Core;
+using Autofac.Features.OwnedInstances;
+using Castle.Core.Logging;
 using DAL.Abstract.Abstract;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
+using DAL.InMemory.Repository;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
 using DAL.Serialize.XML.Reposirory;
@@ -52,19 +55,39 @@ namespace MainExample.Utils
             builder.RegisterType<ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>>().As<IParticirovanieService<SoundRecordChangesDb>>()
                 .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") }).InstancePerLifetimeScope();
 
-            builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
-                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") });
 
-            builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
-                .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") }).InstancePerLifetimeScope();
+            //builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") }).InstancePerLifetimeScope();
+
+            //builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") }).InstancePerLifetimeScope();
+
+
+            //TEST TrainRecRepository
+            builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+                .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain") }).InstancePerLifetimeScope();
+
+            builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+                .WithParameters(new List<Parameter> { new NamedParameter("key", @"RemoteCis") }).InstancePerLifetimeScope();
 
 
             //СЕРВИСЫ---------------------------------------------------------------------------------
             builder.RegisterType<DirectionService>().SingleInstance();
             builder.RegisterType<PathwaysService>().SingleInstance();
-            builder.RegisterType<TrainTypeByRyleService>().SingleInstance();
+            builder.RegisterType<TrainTypeByRyleService>().SingleInstance(); //TODO: удалить
             builder.RegisterType<UserService>().InstancePerDependency();
             builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
+            builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repLocalMain")),
+                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain)),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repRemoteCis")),
+                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "repTypeByRyle")),
+                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>())
+                }).SingleInstance();
 
 
             //ФОРМЫ----------------------------------------------------------------------------------
@@ -75,9 +98,8 @@ namespace MainExample.Utils
             builder.RegisterType<StaticDisplayForm>().InstancePerDependency();
             builder.RegisterType<StaticSoundForm>().InstancePerDependency();
             builder.RegisterType<КарточкаСтатическогоЗвуковогоСообщения>().InstancePerDependency();
-
-
-
+            builder.RegisterType<TrainTableGridForm>().InstancePerDependency();
+            
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()
             //    .WithParameter(new ResolvedParameter(

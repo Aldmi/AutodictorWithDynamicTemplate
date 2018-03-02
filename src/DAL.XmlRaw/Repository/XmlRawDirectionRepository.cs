@@ -119,7 +119,7 @@ namespace DAL.XmlRaw.Repository
             throw new NotImplementedException();
         }
 
-        public void AddRange(IEnumerable<Direction> entity)
+        public void AddRange(IEnumerable<Direction> entitys)
         {
             throw new NotImplementedException();
         }

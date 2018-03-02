@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DAL.Abstract.Entitys;
 using MainExample.Services;
 
+
 namespace MainExample.Entites
 {
     public class TrainSheduleTable

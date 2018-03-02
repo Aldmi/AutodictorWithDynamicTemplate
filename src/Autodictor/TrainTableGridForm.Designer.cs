@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class TrainTableGrid
+    partial class TrainTableGridForm
     {
         /// <summary>
         /// Required designer variable.
@@ -539,14 +539,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Столбцы";
             // 
-            // TrainTableGrid
+            // TrainTableGridForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1109, 593);
             this.Controls.Add(this.tab_Managment);
             this.Controls.Add(this.dgv_TrainTable);
-            this.Name = "TrainTableGrid";
+            this.Name = "TrainTableGridForm";
             this.Text = "Расписание движения поездов";
             ((System.ComponentModel.ISupportInitialize)(this.dgv_TrainTable)).EndInit();
             this.tab_Managment.ResumeLayout(false);

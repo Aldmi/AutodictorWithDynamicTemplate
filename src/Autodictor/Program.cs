@@ -75,14 +75,160 @@ namespace MainExample
             //    var listRules = acc.GetAll();
             //    TrainTypes = listRules;
             //}
-        
+
+
+            var serv = AutofacConfig.Container.Resolve<TrainRecService>();
+            var items = new List<TrainTableRec>
+            {
+                new TrainTableRec
+                {
+                    Id = 1,
+                    Num = "452",
+                    Num2 = "",
+                    Addition = "",
+                    Name = "Москва-Владивосток",
+                    StationArrival = null,
+                    StationDepart = null,
+                    Direction = null,
+                    ArrivalTime = null,
+                    StopTime = null,
+                    DepartureTime = null,
+                    FollowingTime = null,
+                    Days = "",
+                    DaysAlias = "",
+                    Active = true,
+                    WagonsNumbering = WagonsNumbering.None,
+                    ChangeTrainPathDirection = false,
+                    TrainPathNumber = new Dictionary<WeekDays, Pathways>
+                    {
+                        [WeekDays.Постоянно] = null,
+                        [WeekDays.Пн] = null,
+                        [WeekDays.Вт] = null,
+                        [WeekDays.Ср] = null,
+                        [WeekDays.Ср] = null,
+                        [WeekDays.Чт] = null,
+                        [WeekDays.Пт] = null,
+                        [WeekDays.Сб] = null,
+                        [WeekDays.Вс] = null
+                    },
+                    PathWeekDayes = false,
+                    Примечание = "",
+                    ВремяНачалаДействияРасписания = DateTime.MinValue,
+                    ВремяОкончанияДействияРасписания = DateTime.MaxValue,
+                    ИспользоватьДополнение = new Dictionary<string, bool>
+                    {
+                       ["звук"] = false,
+                       ["табло"] = false
+                    },
+                    Автомат = true,
+                    IsScoreBoardOutput = false,
+                    IsSoundOutput = true,
+                    TrainTypeByRyle = null,
+                    ActionTrains = new List<ActionTrain>()
+                 },
+                new TrainTableRec
+                {
+                    Id = 2,
+                    Num = "111",
+                    Num2 = "",
+                    Addition = "",
+                    Name = "Питер-Самара",
+                    StationArrival = null,
+                    StationDepart = null,
+                    Direction = null,
+                    ArrivalTime = null,
+                    StopTime = null,
+                    DepartureTime = null,
+                    FollowingTime = null,
+                    Days = "",
+                    DaysAlias = "",
+                    Active = true,
+                    WagonsNumbering = WagonsNumbering.None,
+                    ChangeTrainPathDirection = false,
+                    TrainPathNumber = new Dictionary<WeekDays, Pathways>
+                    {
+                        [WeekDays.Постоянно] = null,
+                        [WeekDays.Пн] = null,
+                        [WeekDays.Вт] = null,
+                        [WeekDays.Ср] = null,
+                        [WeekDays.Ср] = null,
+                        [WeekDays.Чт] = null,
+                        [WeekDays.Пт] = null,
+                        [WeekDays.Сб] = null,
+                        [WeekDays.Вс] = null
+                    },
+                    PathWeekDayes = false,
+                    Примечание = "",
+                    ВремяНачалаДействияРасписания = DateTime.MinValue,
+                    ВремяОкончанияДействияРасписания = DateTime.MaxValue,
+                    ИспользоватьДополнение = new Dictionary<string, bool>
+                    {
+                        ["звук"] = false,
+                        ["табло"] = false
+                    },
+                    Автомат = true,
+                    IsScoreBoardOutput = false,
+                    IsSoundOutput = true,
+                    TrainTypeByRyle = null,
+                    ActionTrains = new List<ActionTrain>()
+                },
+                new TrainTableRec
+                {
+                    Id = 3,
+                    Num = "365",
+                    Num2 = "",
+                    Addition = "",
+                    Name = "Киров-Брянск",
+                    StationArrival = null,
+                    StationDepart = null,
+                    Direction = null,
+                    ArrivalTime = null,
+                    StopTime = null,
+                    DepartureTime = null,
+                    FollowingTime = null,
+                    Days = "",
+                    DaysAlias = "",
+                    Active = true,
+                    WagonsNumbering = WagonsNumbering.None,
+                    ChangeTrainPathDirection = false,
+                    TrainPathNumber = new Dictionary<WeekDays, Pathways>
+                    {
+                        [WeekDays.Постоянно] = null,
+                        [WeekDays.Пн] = null,
+                        [WeekDays.Вт] = null,
+                        [WeekDays.Ср] = null,
+                        [WeekDays.Ср] = null,
+                        [WeekDays.Чт] = null,
+                        [WeekDays.Пт] = null,
+                        [WeekDays.Сб] = null,
+                        [WeekDays.Вс] = null
+                    },
+                    PathWeekDayes = false,
+                    Примечание = "",
+                    ВремяНачалаДействияРасписания = DateTime.MinValue,
+                    ВремяОкончанияДействияРасписания = DateTime.MaxValue,
+                    ИспользоватьДополнение = new Dictionary<string, bool>
+                    {
+                        ["звук"] = false,
+                        ["табло"] = false
+                    },
+                    Автомат = true,
+                    IsScoreBoardOutput = false,
+                    IsSoundOutput = true,
+                    TrainTypeByRyle = null,
+                    ActionTrains = new List<ActionTrain>()
+                }
+            };
+            serv.ReWriteAll(items);
+
+
             //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
             //{
             //    var repResolve = scope.Resolve<IPathwaysRepository>();
             //    var acc = new PathwaysService(repResolve);
             //    var listPathwayses = acc.GetAll();
             //}
-                
+
             //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
             //{
             //    var repResolve = scope.Resolve<IDirectionRepository>();
@@ -147,7 +293,7 @@ namespace MainExample
             catch (Exception ex) { };
 
 
-            AutodictorModel= new AutodictorModel();
+            AutodictorModel = new AutodictorModel();
             AutodictorModel.LoadSetting(Настройки.ВыборУровняГромкости, GetFileName);
 
 
@@ -228,7 +374,7 @@ namespace MainExample
         {
             try
             {
-                DirectionService= AutofacConfig.Container.Resolve<DirectionService>();
+                DirectionService = AutofacConfig.Container.Resolve<DirectionService>();
                 PathwaysService = AutofacConfig.Container.Resolve<PathwaysService>();
                 TrainTypes = AutofacConfig.Container.Resolve<TrainTypeByRyleService>().GetAll();
                 //AuthenticationService = AutofacConfig.Container.Resolve<IAuthentificationService>();
@@ -294,7 +440,7 @@ namespace MainExample
         {
             return ПолучитьСтанцииНаправления(имяНаправления)?.FirstOrDefault(st => st.CodeExpress == codeExpress);
         }
-        
+
 
         public static void ЗаписьЛога(string ТипСообщения, string Сообщение, User user)
         {

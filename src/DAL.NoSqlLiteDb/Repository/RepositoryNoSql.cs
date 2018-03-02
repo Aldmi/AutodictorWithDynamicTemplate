@@ -81,13 +81,13 @@ namespace DAL.NoSqlLiteDb.Repository
         }
 
 
-        public void AddRange(IEnumerable<T> entity)
+        public void AddRange(IEnumerable<T> entitys)
         {
             using (var db = new LiteDatabase(_connectionString))
             {
                 // Get a collection (or create, if doesn't exist)
                 var dbContext = db.GetCollection<T>(nameof(T));
-                dbContext.Insert(entity);
+                dbContext.Insert(entitys);
                 dbContext.EnsureIndex(x => x.Id);
             }
         }

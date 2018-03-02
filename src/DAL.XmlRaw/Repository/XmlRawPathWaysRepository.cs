@@ -108,7 +108,7 @@ namespace DAL.XmlRaw.Repository
             throw new NotImplementedException();
         }
 
-        public void AddRange(IEnumerable<Pathways> entity)
+        public void AddRange(IEnumerable<Pathways> entitys)
         {
             throw new NotImplementedException();
         }

@@ -9,7 +9,7 @@ using BCrypt.Net;
 
 namespace AutodictorBL.Services
 {
-    public class AuthenticationService : IAuthentificationService, IDisposable
+    public class AuthenticationService : IAuthentificationService
     {
         #region field
 
@@ -270,17 +270,5 @@ namespace AutodictorBL.Services
 
         #endregion
 
-
-
-
-
-        #region Dispose
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

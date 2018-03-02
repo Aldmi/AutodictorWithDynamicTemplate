@@ -9,8 +9,6 @@ namespace DAL.Serialize.XML.Reposirory
 {
     public class XmlSerializeTableRecRepository : ITrainTableRecRepository
     {
-
-
         #region ctor
 
         public XmlSerializeTableRecRepository(string connection)
@@ -43,7 +41,7 @@ namespace DAL.Serialize.XML.Reposirory
             throw new NotImplementedException();
         }
 
-        public void AddRange(IEnumerable<TrainTableRec> entity)
+        public void AddRange(IEnumerable<TrainTableRec> entitys)
         {
             throw new NotImplementedException();
         }

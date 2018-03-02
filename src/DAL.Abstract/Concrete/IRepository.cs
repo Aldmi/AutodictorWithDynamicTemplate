@@ -42,9 +42,4 @@ namespace DAL.Abstract.Concrete
     public interface ITrainTableRecRepository : IGenericDataRepository<TrainTableRec>
     {
     }
-
-
-
-
-
 }

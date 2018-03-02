@@ -8,24 +8,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
+using Autofac.Features.OwnedInstances;
 using DAL.Abstract.Entitys;
 using MainExample.Entites;
 using MainExample.Extension;
 
+
 namespace MainExample
 {
-
-    public partial class TrainTableGrid : Form
+    public partial class TrainTableGridForm : Form
     {
         #region Field
 
         private const string PathGridSetting = "UISettings/GridTableRec.ini";
 
-        public static TrainTableGrid MyMainForm = null;
+        public static TrainTableGridForm MyMainForm = null;
         private readonly List<CheckBox> _checkBoxes;
-
-        private static TrainSheduleTable _trainSheduleTable = new TrainSheduleTable();
         private readonly IDisposable _dispouseRemoteCisTableChangeRx;
+
+        private readonly IDisposable _trainRecServiceOwner;
+        private readonly TrainRecService _trainRecService;
+        private List<TrainTableRec> _listRecords = new List<TrainTableRec>(); // Содержит актуальное рабочее расписание
+
         #endregion
 
 
@@ -41,29 +46,32 @@ namespace MainExample
 
 
 
-
-
         #region ctor
-
-        public TrainTableGrid()
+        //Owned<TrainRecService> - форма управляет временем жизни всего скоупа TrainRecService.
+        //Поэтому если время жизни TrainRecService- InstancePerLifetimeScope, то при закрытии формы весь скоуп TrainRecService будет уничтожен.
+        public TrainTableGridForm(Owned<TrainRecService> trainRecService) 
         {
             if (MyMainForm != null)
                 return;
             MyMainForm = this;
+
+            _trainRecServiceOwner = trainRecService;
+            _trainRecService = trainRecService.Value;
 
             InitializeComponent();
 
             _checkBoxes = new List<CheckBox> { chb_Id, chb_Номер, chb_ВремяПрибытия, chb_Стоянка, chb_ВремяОтпр, chb_Маршрут, chb_ДниСледования };
             Model2Controls();
 
-            rbSourseSheduleCis.Checked = (TrainSheduleTable.SourceLoad == TrainRecType.RemoteCis);
-            _dispouseRemoteCisTableChangeRx = TrainSheduleTable.RemoteCisTableChangeRx.Subscribe(data =>   //обновим данные в списке, при получении данных.
-            {
-                if (data == TrainRecType.RemoteCis)
-                {
-                    ОбновитьДанныеВСпискеAsync();
-                }
-            });
+
+            rbSourseSheduleCis.Checked = (_trainRecService.SourceLoad == TrainRecType.RemoteCis);
+            //_dispouseRemoteCisTableChangeRx = TrainSheduleTable.RemoteCisTableChangeRx.Subscribe(data =>   //обновим данные в списке, при получении данных.
+            //{
+            //    if (data == TrainRecType.RemoteCis)
+            //    {
+            //        ОбновитьДанныеВСпискеAsync();
+            //    }
+            //});
         }
 
         #endregion
@@ -229,26 +237,13 @@ namespace MainExample
                 {
                     var row = dgv_TrainTable.Rows[i];
                     var id = (int)row.Cells[0].Value;
-                    var firstOrDefault = TrainSheduleTable.TrainTableRecords.FirstOrDefault(t => t.Id == id);
-
+                    var firstOrDefault = _listRecords.FirstOrDefault(t => t.Id == id);
                     dgv_TrainTable.Rows[i].DefaultCellStyle.BackColor = firstOrDefault.Active ? Color.LightGreen : Color.LightGray;
                     dgv_TrainTable.Rows[i].Tag = firstOrDefault.Id;
                 }
 
                 dgv_TrainTable.AllowUserToResizeColumns = true;
             });
-
-            //for (var i = 0; i < dgv_TrainTable.Rows.Count; i++)
-            //{
-            //    var row = dgv_TrainTable.Rows[i];
-            //    var id = (int)row.Cells[0].Value;
-            //    var firstOrDefault = TrainSheduleTable.TrainTableRecords.FirstOrDefault(t => t.ID == id);
-
-            //    dgv_TrainTable.Rows[i].DefaultCellStyle.BackColor = firstOrDefault.Active ? Color.LightGreen : Color.LightGray;
-            //    dgv_TrainTable.Rows[i].Tag = firstOrDefault.ID;
-            //}
-
-            //dgv_TrainTable.AllowUserToResizeColumns = true;
         }
 
 
@@ -258,17 +253,17 @@ namespace MainExample
             dgv_TrainTable.InvokeIfNeeded(() =>
             {
                 DataTable.Rows.Clear();
-                for (var i = 0; i < TrainSheduleTable.TrainTableRecords.Count; i++)
+                for (var i = 0; i < _listRecords.Count; i++)
                 {
-                    var данные = TrainSheduleTable.TrainTableRecords[i];
+                    var данные = _listRecords[i];
                     string строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.Days).ПолучитьСтрокуОписанияРасписания();
 
                     var row = DataTable.NewRow();
                     row["Id"] = данные.Id;
                     row["Номер"] = данные.Num;
-                    row["ВремяПрибытия"] = данные.ArrivalTime;
-                    row["Стоянка"] = данные.StopTime;
-                    row["ВремяОтправления"] = данные.DepartureTime;
+                    row["ВремяПрибытия"] = данные.ArrivalTime?.ToString("t") ?? string.Empty;
+                    row["Стоянка"] = данные.StopTime?.ToString("t") ?? string.Empty;
+                    row["ВремяОтправления"] = данные.DepartureTime?.ToString("t") ?? string.Empty;
                     row["Маршрут"] = данные.Name;
                     row["ДниСледования"] = строкаОписанияРасписания;
                     DataTable.Rows.Add(row);
@@ -287,18 +282,19 @@ namespace MainExample
         /// Редактирование элемента
         /// </summary>
         /// <param name="index">Если указанн индекс то элемент уже есть в списке, если равен null, то это новый элемент добавленный в конец списка</param>
-        private TrainTableRecord? EditData(TrainTableRecord данные, int? index = null)
+        private TrainTableRec AddOrEdit(TrainTableRec данные, int? index = null)
         {
             ПланРасписанияПоезда текущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.Days);
             текущийПланРасписанияПоезда.УстановитьНомерПоезда(данные.Num);
             текущийПланРасписанияПоезда.УстановитьНазваниеПоезда(данные.Name);
 
-            Оповещение оповещение = new Оповещение(данные);
-            оповещение.ShowDialog();
-            данные.Active = !оповещение.cBБлокировка.Checked;
-            if (оповещение.DialogResult == DialogResult.OK)
+
+            //Оповещение оповещение = new Оповещение(данные);
+            //оповещение.ShowDialog();
+            //данные.Active = !оповещение.cBБлокировка.Checked;
+           // if (оповещение.DialogResult == DialogResult.OK)
             {
-                данные = оповещение.РасписаниеПоезда;
+                //данные = оповещение.РасписаниеПоезда;
                 var строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.Days).ПолучитьСтрокуОписанияРасписания();
                 if (index != null)
                 {
@@ -327,6 +323,7 @@ namespace MainExample
                 }
                 return данные;
             }
+
 
             return null;
         }
@@ -459,7 +456,7 @@ namespace MainExample
         /// </summary>
         private async void btnLoad_Click(object sender, EventArgs e)
         {
-            await TrainSheduleTable.SourceLoadMainListAsync();
+            _listRecords= _trainRecService.GetAll().ToList();
             await ОбновитьДанныеВСпискеAsync();
         }
 
@@ -474,20 +471,20 @@ namespace MainExample
             if (selected == null)
                 return;
 
-            for (int i = 0; i < TrainSheduleTable.TrainTableRecords.Count; i++)
+            for (int i = 0; i < _listRecords.Count; i++)
             {
-                if (TrainSheduleTable.TrainTableRecords[i].Id == (int)selected.Tag)
+                var item = _listRecords[i];
+                if (item.Id == (int)selected.Tag)
                 {
-                    var данные = EditData(TrainSheduleTable.TrainTableRecords[i], i);
+                    var данные = AddOrEdit(item, i);
                     if (данные != null)
                     {
-                        TrainSheduleTable.TrainTableRecords[i] = данные.Value;
+                        _listRecords[i] = данные;
                         await РаскраситьСписокAsync();
                     }
                     break;
                 }
             }
-
         }
 
 
@@ -501,8 +498,8 @@ namespace MainExample
             if (selected == null)
                 return;
 
-            var delItem = TrainSheduleTable.TrainTableRecords.FirstOrDefault(t => t.Id == (int)selected.Tag);
-            TrainSheduleTable.TrainTableRecords.Remove(delItem);
+            var delItem = _listRecords.FirstOrDefault(t => t.Id == (int)selected.Tag);
+            _listRecords.Remove(delItem);
             await ОбновитьДанныеВСпискеAsync();
         }
 
@@ -512,66 +509,65 @@ namespace MainExample
         /// </summary>
         private void btn_ДобавитьЗапись_Click(object sender, EventArgs e)
         {
-            int maxId = TrainSheduleTable.TrainTableRecords.Any() ? TrainSheduleTable.TrainTableRecords.Max(t => t.Id) : 0;
+            int maxId = _listRecords.Any() ? _listRecords.Max(t => t.Id) : 0;
 
             //создали новый элемент
-            TrainTableRecord Данные;
-            Данные.Id = ++maxId;
-            Данные.Num = "";
-            Данные.Num2 = "";
-            Данные.Addition = "";
-            Данные.Name = "";
-            Данные.StationArrival = "";
-            Данные.StationDepart = "";
-            Данные.Direction = "";
-            Данные.ArrivalTime = "00:00";
-            Данные.StopTime = "00:00";
-            Данные.DepartureTime = "00:00";
-            Данные.FollowingTime = "00:00";
-            Данные.Days = "";
-            Данные.DaysAlias = "";
-            Данные.Active = true;
-            Данные.SoundTemplates = "";
-            Данные.TrainPathDirection = 0x01;
-            Данные.ChangeTrainPathDirection = false;
-            Данные.TrainPathNumber = new Dictionary<WeekDays, string>
+            TrainTableRec item = new TrainTableRec();
+            item.Id = ++maxId;
+            item.Num = "";
+            item.Num2 = "";
+            item.Addition = "";
+            item.Name = "";
+            item.StationArrival = null;
+            item.StationDepart = null;
+            item.Direction = null;
+            item.ArrivalTime = null;
+            item.StopTime = null;
+            item.DepartureTime = null;
+            item.FollowingTime = null;
+            item.Days = "";
+            item.DaysAlias = "";
+            item.Active = true;
+            item.WagonsNumbering = WagonsNumbering.None;
+            item.ChangeTrainPathDirection = false;
+            item.TrainPathNumber = new Dictionary<WeekDays, Pathways>
             {
-                [WeekDays.Постоянно] = String.Empty,
-                [WeekDays.Пн] = String.Empty,
-                [WeekDays.Вт] = String.Empty,
-                [WeekDays.Ср] = String.Empty,
-                [WeekDays.Ср] = String.Empty,
-                [WeekDays.Чт] = String.Empty,
-                [WeekDays.Пт] = String.Empty,
-                [WeekDays.Сб] = String.Empty,
-                [WeekDays.Вс] = String.Empty
+                [WeekDays.Постоянно] = null,
+                [WeekDays.Пн] = null,
+                [WeekDays.Вт] = null,
+                [WeekDays.Ср] = null,
+                [WeekDays.Ср] = null,
+                [WeekDays.Чт] = null,
+                [WeekDays.Пт] = null,
+                [WeekDays.Сб] = null,
+                [WeekDays.Вс] = null
             };
-            Данные.PathWeekDayes = false;
-            Данные.Примечание = "";
-            Данные.ВремяНачалаДействияРасписания = new DateTime(1900, 1, 1);
-            Данные.ВремяОкончанияДействияРасписания = new DateTime(2100, 1, 1);
-            Данные.Addition = "";
-            Данные.ИспользоватьДополнение = new Dictionary<string, bool>
+            item.PathWeekDayes = false;
+            item.Примечание = "";
+            item.ВремяНачалаДействияРасписания =  DateTime.MinValue;
+            item.ВремяОкончанияДействияРасписания = DateTime.MaxValue;
+            item.Addition = "";
+            item.ИспользоватьДополнение = new Dictionary<string, bool>
             {
                 ["звук"] = false,
                 ["табло"] = false
             };
-            Данные.Автомат = true;
+            item.Автомат = true;
 
-            Данные.IsScoreBoardOutput = false;
-            Данные.IsSoundOutput = true;
-            Данные.TrainTypeByRyle = null;
-            Данные.ActionTrains = null;
+            item.IsScoreBoardOutput = false;
+            item.IsSoundOutput = true;
+            item.TrainTypeByRyle = null;
+            item.ActionTrains = new List<ActionTrain>();
 
             //Добавили в список
-            TrainSheduleTable.TrainTableRecords.Add(Данные);
+            _listRecords.Add(item);
 
             //Отредактировали добавленный элемент
-            int lastIndex = TrainSheduleTable.TrainTableRecords.Count - 1;
-            var данные = EditData(TrainSheduleTable.TrainTableRecords[lastIndex]);
-            if (данные != null)
+            int lastIndex = _listRecords.Count - 1;
+            var data = AddOrEdit(_listRecords[lastIndex]);
+            if (data != null)
             {
-                TrainSheduleTable.TrainTableRecords[lastIndex] = данные.Value;
+               _listRecords[lastIndex] = data;
             }
         }
 
@@ -581,7 +577,7 @@ namespace MainExample
         /// </summary>
         private async void btn_Сохранить_Click(object sender, EventArgs e)
         {
-            await TrainSheduleTable.SourceSaveMainListAsync();
+            _trainRecService.ReWriteAll(_listRecords);
         }
 
 
@@ -594,20 +590,6 @@ namespace MainExample
         }
 
 
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (MyMainForm == this)
-                MyMainForm = null;
-
-            //DispouseCisClientIsConnectRx.Dispose();
-            _dispouseRemoteCisTableChangeRx.Dispose();
-            base.OnClosing(e);
-        }
-
-        #endregion
-
-
         /// <summary>
         /// Источник изменения загрузки расписания
         /// </summary>
@@ -616,13 +598,31 @@ namespace MainExample
             var rb = sender as RadioButton;
             if (rb != null)
             {
-                TrainSheduleTable.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecType.LocalMain : TrainRecType.RemoteCis;
-                Program.Настройки.SourceTrainTableRecordLoad = TrainSheduleTable.SourceLoad.ToString();
-                ОкноНастроек.СохранитьНастройки();
+                _trainRecService.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecType.LocalMain : TrainRecType.RemoteCis;
+                _listRecords = _trainRecService.GetAll().ToList();
+                //Сохранение настроек-----------------------------
+                //Program.Настройки.SourceTrainTableRecordLoad = _trainRecService.SourceLoad.ToString();
+                //ОкноНастроек.СохранитьНастройки();
+                //------------------------------------------------
 
-                await TrainSheduleTable.SourceLoadMainListAsync();
                 await ОбновитьДанныеВСпискеAsync();
             }
         }
+
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (MyMainForm == this)
+                MyMainForm = null;
+
+            _trainRecServiceOwner.Dispose();
+
+            //DispouseCisClientIsConnectRx.Dispose();
+            //_dispouseRemoteCisTableChangeRx.Dispose();
+            base.OnClosing(e);
+        }
+
+        #endregion
+
     }
 }
