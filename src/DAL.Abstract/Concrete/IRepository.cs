@@ -23,7 +23,7 @@ namespace DAL.Abstract.Concrete
     /// <summary>
     /// Доступ к путям
     /// </summary>
-    public interface IPathwaysRepository : IGenericDataRepository<Pathways>
+    public interface IPathwaysRepository : IGenericDataRepository<Pathway>
     {
     }
 

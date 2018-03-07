@@ -20,7 +20,7 @@ namespace MainExample
         public SoundRecord Record;
         public int  RecordId { get; private set; }
         private string[] СтанцииВыбранногоНаправления { get; set; } = new string[0];
-        private List<Pathways> НомераПутей { get; set; }
+        private List<Pathway> НомераПутей { get; set; }
         public List<string> ИспользуемыеНомераПоездов { get; set; }
 
 

@@ -671,7 +671,7 @@
             this.label115.Name = "label115";
             this.label115.Size = new System.Drawing.Size(410, 20);
             this.label115.TabIndex = 22;
-            this.label115.Text = "Оповещение самого раннего времени шаблона , мин";
+            this.label115.Text = "EditTrainTableRecForm самого раннего времени шаблона , мин";
             // 
             // tBИнтОповещООтпрПоГотов
             // 

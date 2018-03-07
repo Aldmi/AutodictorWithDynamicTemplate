@@ -99,6 +99,7 @@ namespace MainExample.Utils
             builder.RegisterType<StaticSoundForm>().InstancePerDependency();
             builder.RegisterType<КарточкаСтатическогоЗвуковогоСообщения>().InstancePerDependency();
             builder.RegisterType<TrainTableGridForm>().InstancePerDependency();
+            builder.RegisterType<EditTrainTableRecForm>().InstancePerDependency();
             
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()

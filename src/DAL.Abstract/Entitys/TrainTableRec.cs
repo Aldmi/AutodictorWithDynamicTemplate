@@ -34,7 +34,7 @@ namespace DAL.Abstract.Entitys
         public bool Active;               //активность, отмека галочкой
         public WagonsNumbering WagonsNumbering;   //Нумерация вагонов
         public bool? ChangeTrainPathDirection;      //смена направления (для транзитов)
-        public Dictionary<WeekDays, Pathways> TrainPathNumber;      //Пути по дням недели или постоянно
+        public Dictionary<WeekDays, Pathway> TrainPathNumber;      //Пути по дням недели или постоянно
         public bool PathWeekDayes;                                //true - установленны пути по дням недели, false - путь установленн постоянно
         public string Примечание;
         public string Addition;                                   //Дополнение

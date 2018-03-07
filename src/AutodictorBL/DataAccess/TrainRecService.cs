@@ -12,7 +12,9 @@ namespace AutodictorBL.DataAccess
 
         private readonly ITrainTableRecRepository _repLocalMain;
         private readonly ITrainTableRecRepository _repRemoteCis;
-        private readonly ITrainTypeByRyleRepository _repTypeByRyle;
+        private readonly TrainTypeByRyleService _trainTypeByRyleService;
+        private readonly PathwaysService _pathwaysService;
+        private readonly DirectionService _directionService;
 
         #endregion
 
@@ -30,11 +32,17 @@ namespace AutodictorBL.DataAccess
 
         #region ctor
 
-        public TrainRecService(ITrainTableRecRepository repLocalMain, ITrainTableRecRepository repRemoteCis, ITrainTypeByRyleRepository repTypeByRyle)
+        public TrainRecService(ITrainTableRecRepository repLocalMain,
+                               ITrainTableRecRepository repRemoteCis,
+                               TrainTypeByRyleService trainTypeByRyleService,
+                               PathwaysService pathwaysService,
+                               DirectionService directionService)
         {
             _repLocalMain = repLocalMain;
             _repRemoteCis = repRemoteCis;
-            _repTypeByRyle = repTypeByRyle;
+            _trainTypeByRyleService = trainTypeByRyleService;
+            _pathwaysService = pathwaysService;
+            _directionService = directionService;
         }
 
         #endregion
@@ -72,11 +80,51 @@ namespace AutodictorBL.DataAccess
             rep.Delete(item);
         }
 
-
         public void DeleteItem(Expression<Func<TrainTableRec, bool>> predicate)
         {
             var rep = (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
             rep.Delete(predicate);
+        }
+
+
+        public IEnumerable<Pathway> GetPathways(Expression<Func<Pathway, bool>> predicate = null)
+        {
+            return predicate == null ? _pathwaysService.GetAll() : _pathwaysService.GetAllByFilter(predicate);
+        }
+
+        public IEnumerable<Direction> GetDirections(Expression<Func<Direction, bool>> predicate = null)
+        {
+            return predicate == null ? _directionService.GetAll() : _directionService.GetAllByFilter(predicate);
+        }
+
+        public IEnumerable<Station> GetStationsInDirectionByName(string directionName)
+        {
+           return _directionService.GetStationsInDirectionByName(directionName);
+        }
+
+        public Station GetStationInDirectionByNameStation(string directionName, string stationNameRu)
+        {
+            return _directionService.GetStationInDirectionByNameStation(directionName, stationNameRu);
+        }
+
+        public Station GetStationInDirectionByCodeExpressStation(string directionName, int codeExpress)
+        {
+            return _directionService.GetStationInDirectionByCodeExpressStation(directionName, codeExpress);
+        }
+
+        public TrainTypeByRyle GetTrainTypeByRyleById(int id)
+        {
+            return _trainTypeByRyleService.GetById(id);
+        }
+
+        public IEnumerable<TrainTypeByRyle> GetTrainTypeByRyles(Expression<Func<TrainTypeByRyle, bool>> predicate = null)
+        {
+            return predicate == null ? _trainTypeByRyleService.GetAll() : _trainTypeByRyleService.GetAllByFilter(predicate);
+        }
+
+        public int GetIndexOfRule(TrainTypeByRyle rule)
+        {
+            return _trainTypeByRyleService.GetIndexOf(rule);
         }
 
         #endregion

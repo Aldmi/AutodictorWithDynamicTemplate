@@ -122,23 +122,23 @@ namespace MainExample
                             ТекущийПланРасписанияПоезда.УстановитьНомерПоезда(Данные.Num);
                             ТекущийПланРасписанияПоезда.УстановитьНазваниеПоезда(Данные.Name);
 
-                            Оповещение оповещение = new Оповещение(Данные);
-                            оповещение.ShowDialog();
-                            Данные.Active = !оповещение.cBБлокировка.Checked;
-                            if (оповещение.DialogResult == System.Windows.Forms.DialogResult.OK)
-                            {
-                                Данные = оповещение.РасписаниеПоезда;
-                                this.listView1.Items[item].SubItems[1].Text = Данные.Num;
-                                this.listView1.Items[item].SubItems[2].Text = Данные.Name;
-                                this.listView1.Items[item].SubItems[3].Text = Данные.ArrivalTime;
-                                this.listView1.Items[item].SubItems[4].Text = Данные.StopTime;
-                                this.listView1.Items[item].SubItems[5].Text = Данные.DepartureTime;
+                            //EditTrainTableRecForm editTrainTableRecForm = new EditTrainTableRecForm(Данные);
+                            //editTrainTableRecForm.ShowDialog();
+                            //Данные.Active = !editTrainTableRecForm.cBБлокировка.Checked;
+                            //if (editTrainTableRecForm.DialogResult == System.Windows.Forms.DialogResult.OK)
+                            //{
+                            //    Данные = editTrainTableRecForm.TrainRec;
+                            //    this.listView1.Items[item].SubItems[1].Text = Данные.Num;
+                            //    this.listView1.Items[item].SubItems[2].Text = Данные.Name;
+                            //    this.listView1.Items[item].SubItems[3].Text = Данные.ArrivalTime;
+                            //    this.listView1.Items[item].SubItems[4].Text = Данные.StopTime;
+                            //    this.listView1.Items[item].SubItems[5].Text = Данные.DepartureTime;
 
-                                string СтрокаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(Данные.Days).ПолучитьСтрокуОписанияРасписания();
-                                this.listView1.Items[item].SubItems[6].Text = СтрокаОписанияРасписания;
+                            //    string СтрокаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(Данные.Days).ПолучитьСтрокуОписанияРасписания();
+                            //    this.listView1.Items[item].SubItems[6].Text = СтрокаОписанияРасписания;
 
-                                this.listView1.Items[item].BackColor = Данные.Active ? Color.LightGreen : Color.LightGray;
-                            }
+                            //    this.listView1.Items[item].BackColor = Данные.Active ? Color.LightGreen : Color.LightGray;
+                            //}
 
                             TrainTableRecords[i] = Данные;
                             //ОбновитьСостояниеАктивностиВТаблице();

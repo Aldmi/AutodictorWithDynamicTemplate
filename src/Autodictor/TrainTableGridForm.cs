@@ -27,8 +27,10 @@ namespace MainExample
         private readonly List<CheckBox> _checkBoxes;
         private readonly IDisposable _dispouseRemoteCisTableChangeRx;
 
-        private readonly IDisposable _trainRecServiceOwner;
+        private readonly Func<TrainTableRec, EditTrainTableRecForm> _editTrainTableRecFormFactory;
         private readonly TrainRecService _trainRecService;
+        private readonly IDisposable _trainRecServiceOwner;
+
         private List<TrainTableRec> _listRecords = new List<TrainTableRec>(); // Содержит актуальное рабочее расписание
 
         #endregion
@@ -49,7 +51,7 @@ namespace MainExample
         #region ctor
         //Owned<TrainRecService> - форма управляет временем жизни всего скоупа TrainRecService.
         //Поэтому если время жизни TrainRecService- InstancePerLifetimeScope, то при закрытии формы весь скоуп TrainRecService будет уничтожен.
-        public TrainTableGridForm(Owned<TrainRecService> trainRecService) 
+        public TrainTableGridForm(Owned<TrainRecService> trainRecService, Func<TrainTableRec, EditTrainTableRecForm> editTrainTableRecFormFactory) 
         {
             if (MyMainForm != null)
                 return;
@@ -57,6 +59,8 @@ namespace MainExample
 
             _trainRecServiceOwner = trainRecService;
             _trainRecService = trainRecService.Value;
+            _editTrainTableRecFormFactory = editTrainTableRecFormFactory;
+  
 
             InitializeComponent();
 
@@ -65,7 +69,7 @@ namespace MainExample
 
 
             rbSourseSheduleCis.Checked = (_trainRecService.SourceLoad == TrainRecType.RemoteCis);
-            //_dispouseRemoteCisTableChangeRx = TrainSheduleTable.RemoteCisTableChangeRx.Subscribe(data =>   //обновим данные в списке, при получении данных.
+            //_dispouseRemoteCisTableChangeRx = TrainSheduleTable.RemoteCisTableChangeRx.Subscribe(data =>   //обновим tableRec в списке, при получении данных.
             //{
             //    if (data == TrainRecType.RemoteCis)
             //    {
@@ -282,46 +286,45 @@ namespace MainExample
         /// Редактирование элемента
         /// </summary>
         /// <param name="index">Если указанн индекс то элемент уже есть в списке, если равен null, то это новый элемент добавленный в конец списка</param>
-        private TrainTableRec AddOrEdit(TrainTableRec данные, int? index = null)
+        private TrainTableRec AddOrEdit(TrainTableRec tableRec, int? index = null)
         {
-            ПланРасписанияПоезда текущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.Days);
-            текущийПланРасписанияПоезда.УстановитьНомерПоезда(данные.Num);
-            текущийПланРасписанияПоезда.УстановитьНазваниеПоезда(данные.Name);
+            ПланРасписанияПоезда текущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(tableRec.Days);
+            текущийПланРасписанияПоезда.УстановитьНомерПоезда(tableRec.Num);
+            текущийПланРасписанияПоезда.УстановитьНазваниеПоезда(tableRec.Name);
 
-
-            //Оповещение оповещение = new Оповещение(данные);
-            //оповещение.ShowDialog();
-            //данные.Active = !оповещение.cBБлокировка.Checked;
-           // if (оповещение.DialogResult == DialogResult.OK)
+            var editForm = _editTrainTableRecFormFactory(tableRec);
+            editForm.ShowDialog();
+            tableRec.Active = !editForm.cBБлокировка.Checked;
+            if (editForm.DialogResult == DialogResult.OK)
             {
-                //данные = оповещение.РасписаниеПоезда;
-                var строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.Days).ПолучитьСтрокуОписанияРасписания();
+                tableRec = editForm.TrainRec;
+                var строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(tableRec.Days).ПолучитьСтрокуОписанияРасписания();
                 if (index != null)
                 {
                     var row = DataTable.Rows[index.Value];
-                    row["Номер"] = данные.Num;
-                    row["ВремяПрибытия"] = данные.ArrivalTime;
-                    row["Стоянка"] = данные.StopTime;
-                    row["ВремяОтправления"] = данные.DepartureTime;
-                    row["Маршрут"] = данные.Name;
+                    row["Номер"] = tableRec.Num;
+                    row["ВремяПрибытия"] = tableRec.ArrivalTime?.ToString("HH:mm") ?? string.Empty;
+                    row["Стоянка"] = tableRec.StopTime?.ToString(@"hh\:mm") ?? string.Empty;
+                    row["ВремяОтправления"] = tableRec.DepartureTime?.ToString("HH:mm") ?? string.Empty;
+                    row["Маршрут"] = tableRec.Name;
                     row["ДниСледования"] = строкаОписанияРасписания;
                 }
                 else
                 {
                     var row = DataTable.NewRow();
-                    row["Id"] = данные.Id;
-                    row["Номер"] = данные.Num;
-                    row["ВремяПрибытия"] = данные.ArrivalTime;
-                    row["Стоянка"] = данные.StopTime;
-                    row["ВремяОтправления"] = данные.DepartureTime;
-                    row["Маршрут"] = данные.Name;
+                    row["Id"] = tableRec.Id;
+                    row["Номер"] = tableRec.Num;
+                    row["ВремяПрибытия"] = tableRec.ArrivalTime?.ToString("HH:mm") ?? string.Empty;
+                    row["Стоянка"] = tableRec.StopTime?.ToString(@"hh\:mm") ?? string.Empty;
+                    row["ВремяОтправления"] = tableRec.DepartureTime?.ToString("HH:mm") ?? string.Empty;
+                    row["Маршрут"] = tableRec.Name;
                     row["ДниСледования"] = строкаОписанияРасписания;
                     DataTable.Rows.Add(row);
 
-                    dgv_TrainTable.Rows[dgv_TrainTable.Rows.Count - 1].DefaultCellStyle.BackColor = данные.Active ? Color.LightGreen : Color.LightGray;
-                    dgv_TrainTable.Rows[dgv_TrainTable.Rows.Count - 1].Tag = данные.Id;
+                    dgv_TrainTable.Rows[dgv_TrainTable.Rows.Count - 1].DefaultCellStyle.BackColor = tableRec.Active ? Color.LightGreen : Color.LightGray;
+                    dgv_TrainTable.Rows[dgv_TrainTable.Rows.Count - 1].Tag = tableRec.Id;
                 }
-                return данные;
+                return tableRec;
             }
 
 
@@ -530,7 +533,7 @@ namespace MainExample
             item.Active = true;
             item.WagonsNumbering = WagonsNumbering.None;
             item.ChangeTrainPathDirection = false;
-            item.TrainPathNumber = new Dictionary<WeekDays, Pathways>
+            item.TrainPathNumber = new Dictionary<WeekDays, Pathway>
             {
                 [WeekDays.Постоянно] = null,
                 [WeekDays.Пн] = null,

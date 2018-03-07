@@ -23,7 +23,7 @@ namespace MainExample
         private bool _сделаныИзменения = false;
         private bool _разрешениеИзменений = false;
         private List<string> СтанцииВыбранногоНаправления { get; set; }
-        public List<Pathways> НомераПутей { get; set; }
+        public List<Pathway> НомераПутей { get; set; }
 
 
 
@@ -393,7 +393,7 @@ namespace MainExample
             foreach (string шаблон in ЭлементыШаблона)
             {
                 string текстПодстановки = String.Empty;
-                Pathways путь;
+                Pathway путь;
                 switch (шаблон)
                 {
                     case "НА НОМЕР ПУТЬ":

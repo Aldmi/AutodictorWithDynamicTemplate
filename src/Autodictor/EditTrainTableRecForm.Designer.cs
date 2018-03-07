@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class Оповещение
+    partial class EditTrainTableRecForm
     {
         /// <summary>
         /// Required designer variable.
@@ -1033,7 +1033,7 @@
             this.tb_Category.Size = new System.Drawing.Size(143, 26);
             this.tb_Category.TabIndex = 64;
             // 
-            // Оповещение
+            // EditTrainTableRecForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -1065,7 +1065,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.Name = "Оповещение";
+            this.Name = "EditTrainTableRecForm";
             this.Text = "Редактор расписания движения для поезда";
             this.gBНаправление.ResumeLayout(false);
             this.gBНаправление.PerformLayout();

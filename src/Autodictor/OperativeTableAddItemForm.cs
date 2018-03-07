@@ -23,7 +23,7 @@ namespace MainExample
         public TrainTableRecord TableRec { get;  private set; }
         private string[] СтанцииВыбранногоНаправления { get; set; } = new string[0];
         private Расписание Расписание { get; set; }
-        public List<Pathways> НомераПутей { get; set; }
+        public List<Pathway> НомераПутей { get; set; }
 
 
 

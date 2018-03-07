@@ -299,11 +299,11 @@
     <Compile Include="ОкноПрибытияОтправления.Designer.cs">
       <DependentUpon>ОкноПрибытияОтправления.cs</DependentUpon>
     </Compile>
-    <Compile Include="Оповещение.cs">
+    <Compile Include="EditTrainTableRecForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Оповещение.Designer.cs">
-      <DependentUpon>Оповещение.cs</DependentUpon>
+    <Compile Include="EditTrainTableRecForm.Designer.cs">
+      <DependentUpon>EditTrainTableRecForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ПланРасписанияПоезда.cs" />
     <Compile Include="Предупреждение.cs">
@@ -422,8 +422,8 @@
     <EmbeddedResource Include="ОкноПрибытияОтправления.resx">
       <DependentUpon>ОкноПрибытияОтправления.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Оповещение.resx">
-      <DependentUpon>Оповещение.cs</DependentUpon>
+    <EmbeddedResource Include="EditTrainTableRecForm.resx">
+      <DependentUpon>EditTrainTableRecForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Предупреждение.resx">
       <DependentUpon>Предупреждение.cs</DependentUpon>

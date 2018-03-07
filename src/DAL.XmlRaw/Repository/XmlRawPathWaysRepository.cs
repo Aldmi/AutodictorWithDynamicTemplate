@@ -12,7 +12,7 @@ namespace DAL.XmlRaw.Repository
     public class XmlRawPathWaysRepository : IPathwaysRepository
     {
         private readonly XElement _xElement;
-        private IEnumerable<Pathways> Pathways { get; set; }
+        private IEnumerable<Pathway> Pathways { get; set; }
 
 
 
@@ -38,28 +38,28 @@ namespace DAL.XmlRaw.Repository
 
 
 
-        public Pathways GetById(int id)
+        public Pathway GetById(int id)
         {
             throw new NotImplementedException();
         }
 
 
 
-        public IEnumerable<Pathways> List()
+        public IEnumerable<Pathway> List()
         {
             return Pathways ?? (Pathways = ParseXmlFile());
         }
 
 
 
-        private IEnumerable<Pathways> ParseXmlFile()
+        private IEnumerable<Pathway> ParseXmlFile()
         {
-            var pathWays = new List<Pathways>();
+            var pathWays = new List<Pathway>();
             try
             {
                 foreach (var directXml in _xElement.Elements("Path"))
                 {
-                    var path = new Pathways
+                    var path = new Pathway
                     {
                         Id = int.Parse((string)directXml.Attribute("Id")),
                         Name = (string)directXml.Attribute("Name"),
@@ -83,32 +83,32 @@ namespace DAL.XmlRaw.Repository
 
 
 
-        public IEnumerable<Pathways> List(Expression<Func<Pathways, bool>> predicate)
+        public IEnumerable<Pathway> List(Expression<Func<Pathway, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public void Add(Pathways entity)
+        public void Add(Pathway entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Pathways entity)
+        public void Delete(Pathway entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Edit(Pathways entity)
+        public void Edit(Pathway entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Expression<Func<Pathways, bool>> predicate)
+        public void Delete(Expression<Func<Pathway, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public void AddRange(IEnumerable<Pathways> entitys)
+        public void AddRange(IEnumerable<Pathway> entitys)
         {
             throw new NotImplementedException();
         }

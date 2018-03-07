@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 
@@ -33,6 +34,11 @@ namespace AutodictorBL.DataAccess
 
 
         public IEnumerable<TrainTypeByRyle> GetAll()
+        {
+            return _repository.List();
+        }
+
+        public IEnumerable<TrainTypeByRyle> GetAllByFilter(Expression<Func<TrainTypeByRyle, bool>> predicate)
         {
             return _repository.List();
         }

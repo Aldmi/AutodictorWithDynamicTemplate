@@ -99,7 +99,7 @@ namespace MainExample
                     Active = true,
                     WagonsNumbering = WagonsNumbering.None,
                     ChangeTrainPathDirection = false,
-                    TrainPathNumber = new Dictionary<WeekDays, Pathways>
+                    TrainPathNumber = new Dictionary<WeekDays, Pathway>
                     {
                         [WeekDays.Постоянно] = null,
                         [WeekDays.Пн] = null,
@@ -145,7 +145,7 @@ namespace MainExample
                     Active = true,
                     WagonsNumbering = WagonsNumbering.None,
                     ChangeTrainPathDirection = false,
-                    TrainPathNumber = new Dictionary<WeekDays, Pathways>
+                    TrainPathNumber = new Dictionary<WeekDays, Pathway>
                     {
                         [WeekDays.Постоянно] = null,
                         [WeekDays.Пн] = null,
@@ -191,7 +191,7 @@ namespace MainExample
                     Active = true,
                     WagonsNumbering = WagonsNumbering.None,
                     ChangeTrainPathDirection = false,
-                    TrainPathNumber = new Dictionary<WeekDays, Pathways>
+                    TrainPathNumber = new Dictionary<WeekDays, Pathway>
                     {
                         [WeekDays.Постоянно] = null,
                         [WeekDays.Пн] = null,

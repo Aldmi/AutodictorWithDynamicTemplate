@@ -1,6 +1,6 @@
 ﻿namespace DAL.Abstract.Entitys
 {
-    public class Pathways : EntityBase
+    public class Pathway : EntityBase
     {
         public string Name { get; set; }
 
