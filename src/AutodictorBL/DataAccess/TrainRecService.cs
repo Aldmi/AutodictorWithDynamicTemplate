@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
@@ -91,6 +92,12 @@ namespace AutodictorBL.DataAccess
         {
             return predicate == null ? _pathwaysService.GetAll() : _pathwaysService.GetAllByFilter(predicate);
         }
+
+        public Pathway GetPathByName(string pathName)
+        {
+            return _pathwaysService.GetByName(pathName);
+        }
+
 
         public IEnumerable<Direction> GetDirections(Expression<Func<Direction, bool>> predicate = null)
         {

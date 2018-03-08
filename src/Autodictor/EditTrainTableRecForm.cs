@@ -260,7 +260,7 @@ namespace MainExample
             TrainRec.Active = !cBБлокировка.Checked;
             //TrainRec.SoundTemplates = ПолучитьШаблоныОповещения();
 
-            SavePathValues(ref TrainRec);
+            SavePathValues(TrainRec);
 
             TrainRec.WagonsNumbering = (WagonsNumbering) cBОтсчетВагонов.SelectedIndex;
 
@@ -644,25 +644,26 @@ namespace MainExample
                         continue;
 
                     // Выставить значения путей
-                    dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value =
-                        string.IsNullOrEmpty(path.Value.Name) ? string.Empty : path.Value.Name;
+                    dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
                     rowNumber++;
                 }
             }
         }
 
 
-        private void SavePathValues(ref TrainTableRec rec)
+        private void SavePathValues(TrainTableRec rec)
         {
-            //TODO: найти cBПутьПоУмолчанию в репозитории Путей
+            var pathName = cBПутьПоУмолчанию.Text;
+            var path = _trainRecService.GetPathByName(pathName);
+            rec.TrainPathNumber[WeekDays.Постоянно] = path;
 
-            //rec.TrainPathNumber[WeekDays.Постоянно] = cBПутьПоУмолчанию;
-
-            //for (int i = 0; i < dgv_ПутиПоДнямНедели.Rows.Count; i++)
-            //{
-            //    var key = (WeekDays)dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Tag;
-            //    rec.TrainPathNumber[key] = (string)((dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Value == null) ? string.Empty : dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Value);
-            //}
+            for (int i = 0; i < dgv_ПутиПоДнямНедели.Rows.Count; i++)
+            {
+                pathName= (string)dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Value ?? string.Empty;
+                path = _trainRecService.GetPathByName(pathName);
+                var key = (WeekDays)dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Tag;
+                rec.TrainPathNumber[key] = path;
+            }
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
@@ -29,6 +30,11 @@ namespace AutodictorBL.DataAccess
         public Pathway GetById(int id)
         {
             return _repository.GetById(id);
+        }
+
+        public Pathway GetByName(string name)
+        {
+            return GetAll().FirstOrDefault(path=>path.Name == name);
         }
 
 

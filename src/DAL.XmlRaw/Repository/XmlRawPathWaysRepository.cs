@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
 using DAL.Abstract.Concrete;
@@ -85,7 +86,7 @@ namespace DAL.XmlRaw.Repository
 
         public IEnumerable<Pathway> List(Expression<Func<Pathway, bool>> predicate)
         {
-            throw new NotImplementedException();
+           return List().Where(predicate.Compile());
         }
 
         public void Add(Pathway entity)
