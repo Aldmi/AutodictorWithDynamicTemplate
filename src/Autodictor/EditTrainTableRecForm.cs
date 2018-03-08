@@ -17,6 +17,15 @@ using MainExample.Utils;
 
 namespace MainExample
 {
+
+    /// <summary>
+    /// Форма редактирования поезда в расписаннии
+    /// TrainTableRec попадает по значению (сам элемент раписания)
+    /// Данные из TrainTableRec инициализируют значения контроллов UI
+    /// Любые изменения происходят только в значениях контроллов UI
+    /// При нажатии на ПРИМЕНИТЬ значения контроллов UI попадают в TrainTableRec
+    /// При нажатии на ОТМЕНА объект TrainTableRec не меняется.
+    /// </summary>
     public partial class EditTrainTableRecForm : Form
     {
         #region field
@@ -26,8 +35,6 @@ namespace MainExample
         private string[] SelectedDestinationStations { get; set; } = new string[0];
 
         #endregion
-
-
 
 
         #region ctor
@@ -73,37 +80,43 @@ namespace MainExample
             string[] станции = trainRec.Name.Split('-');
             if (станции.Length == 2)
             {
-                cBОткуда.Text = станции[0].Trim(new char[] { ' ' });
-                cBКуда.Text = станции[1].Trim(new char[] { ' ' });
+                cBОткуда.Text = станции[0].Trim(new char[] {' '});
+                cBКуда.Text = станции[1].Trim(new char[] {' '});
             }
             else if (станции.Length == 1 && trainRec.Name != "")
             {
-                cBКуда.Text = trainRec.Name.Trim(new char[] { ' ' });
+                cBКуда.Text = trainRec.Name.Trim(new char[] {' '});
             }
 
 
-            if ((trainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) && (trainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
+            if ((trainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
+                (trainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
                 rBВремяДействияПостоянно.Checked = true;
-            else if ((trainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) && (trainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
+            else if ((trainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
+                     (trainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
             {
                 dTPВремяДействияС2.Value = trainRec.ВремяНачалаДействияРасписания;
                 dTPВремяДействияПо2.Value = trainRec.ВремяОкончанияДействияРасписания;
                 rBВремяДействияСПо.Checked = true;
             }
-            else if ((trainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) && (trainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
+            else if ((trainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
+                     (trainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
             {
                 dTPВремяДействияС.Value = trainRec.ВремяНачалаДействияРасписания;
                 rBВремяДействияС.Checked = true;
             }
-            else if ((trainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) && (trainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
+            else if ((trainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
+                     (trainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
             {
                 dTPВремяДействияПо.Value = trainRec.ВремяОкончанияДействияРасписания;
                 rBВремяДействияПо.Checked = true;
             }
 
-            ПланРасписанияПоезда ТекущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
+            ПланРасписанияПоезда ТекущийПланРасписанияПоезда =
+                ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
             Расписание расписание = new Расписание(ТекущийПланРасписанияПоезда);
-            tBОписаниеДнейСледования.Text = расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
+            tBОписаниеДнейСледования.Text =
+                расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
             tb_ДниСледованияAlias.Text = trainRec.DaysAlias;
 
             this.Text = "Расписание движения для поезда: " + trainRec.Num + " - " + trainRec.Name;
@@ -125,20 +138,19 @@ namespace MainExample
                 dTPПрибытие.Value = TrainRec.ArrivalTime.Value;
                 dTPОтправление.Value = TrainRec.DepartureTime.Value;
             }
-            else
-            if (TrainRec.ArrivalTime.HasValue)
+            else if (TrainRec.ArrivalTime.HasValue)
             {
                 rBПрибытие.Checked = true;
                 dTPПрибытие.Value = TrainRec.ArrivalTime.Value;
             }
-            else 
-            if (TrainRec.DepartureTime.HasValue)
-            {                
+            else if (TrainRec.DepartureTime.HasValue)
+            {
                 rBОтправление.Checked = true;
                 dTPОтправление.Value = TrainRec.DepartureTime.Value;
             }
-          
-            dTPСледования.Value = TrainRec.FollowingTime ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
+            dTPСледования.Value = TrainRec.FollowingTime ??
+                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
             cBБлокировка.Checked = !trainRec.Active;
 
@@ -178,21 +190,26 @@ namespace MainExample
         #endregion
 
 
-
-
         private void btnПрименить_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(tBНомерПоезда.Text) ||
+                string.IsNullOrEmpty(cBТипПоезда.Text) ||
+                string.IsNullOrEmpty(cBНаправ.Text) ||
+                (string.IsNullOrEmpty(cBОткуда.Text) && string.IsNullOrEmpty(cBКуда.Text)))
+            {
+                MessageBox.Show(@"Обязательные поля не заполнены !!!");
+                return;
+            }
+
             ApplyChangedUi2Model();
             DialogResult = DialogResult.OK;
         }
 
 
-
-        private void button2_Click(object sender, EventArgs e)
+        private void btnОтмена_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
-
 
 
         private void ApplyChangedUi2Model()
@@ -213,8 +230,10 @@ namespace MainExample
 
 
             TrainRec.Direction = Program.DirectionService.GetByName(cBНаправ.Text);
-            TrainRec.StationDepart = TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBОткуда.Text);//TODO: Искать по id
-            TrainRec.StationArrival = TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBКуда.Text);//TODO: Искать по id 
+            TrainRec.StationDepart =
+                TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBОткуда.Text); //TODO: Искать по id
+            TrainRec.StationArrival =
+                TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBКуда.Text); //TODO: Искать по id 
 
 
             if (rBВремяДействияС.Checked == true)
@@ -248,7 +267,8 @@ namespace MainExample
             //TODO: использовать TrainTypeByRyleService
             //TrainRec.ТипПоезда = (ТипПоезда)cBТипПоезда.SelectedIndex;
             var listTypeTrains = _trainRecService.GetTrainTypeByRyles().ToList();
-            TrainRec.TrainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
+            TrainRec.TrainTypeByRyle =
+                (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
 
             TrainRec.ChangeTrainPathDirection = chBox_сменнаяНумерация.Checked;
             TrainRec.IsScoreBoardOutput = chBoxВыводНаТабло.Checked;
@@ -260,8 +280,7 @@ namespace MainExample
                 TrainRec.DepartureTime = null;
                 TrainRec.StopTime = null;
             }
-            else
-            if (rBОтправление.Checked == true)
+            else if (rBОтправление.Checked == true)
             {
                 TrainRec.DepartureTime = dTPОтправление.Value;
                 TrainRec.ArrivalTime = null;
@@ -319,7 +338,6 @@ namespace MainExample
         }
 
 
-
         public string ПолучитьШаблоныОповещения()
         {
             string РезультирующийШаблонОповещения = "";
@@ -328,17 +346,17 @@ namespace MainExample
             {
                 РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[0].Text + ":";
                 РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[1].Text + ":";
-                РезультирующийШаблонОповещения += (this.lVШаблоныОповещения.Items[item].SubItems[2].Text == "Отправление") ? "1:" : "0:";
+                РезультирующийШаблонОповещения +=
+                    (this.lVШаблоныОповещения.Items[item].SubItems[2].Text == "Отправление") ? "1:" : "0:";
             }
 
             if (РезультирующийШаблонОповещения.Length > 0)
                 if (РезультирующийШаблонОповещения[РезультирующийШаблонОповещения.Length - 1] == ':')
-                    РезультирующийШаблонОповещения = РезультирующийШаблонОповещения.Remove(РезультирующийШаблонОповещения.Length - 1);
+                    РезультирующийШаблонОповещения =
+                        РезультирующийШаблонОповещения.Remove(РезультирующийШаблонОповещения.Length - 1);
 
             return РезультирующийШаблонОповещения;
         }
-
-
 
 
         private void ОтобразитьШаблоныОповещания(string soundTemplates)
@@ -359,7 +377,11 @@ namespace MainExample
                         int типОповещенияПути;
                         int.TryParse(шаблонОповещения[3 * i + 2], out типОповещенияПути);
                         типОповещенияПути %= 2;
-                        ListViewItem lvi = new ListViewItem(new string[] { шаблонОповещения[3 * i + 0], шаблонОповещения[3 * i + 1], Program.ТипыВремени[типОповещенияПути] });
+                        ListViewItem lvi = new ListViewItem(new string[]
+                        {
+                            шаблонОповещения[3 * i + 0], шаблонОповещения[3 * i + 1],
+                            Program.ТипыВремени[типОповещенияПути]
+                        });
                         this.lVШаблоныОповещения.Items.Add(lvi);
                     }
                 }
@@ -367,7 +389,6 @@ namespace MainExample
 
             cBВремяОповещения.SelectedIndex = 0;
         }
-
 
 
         private void rBОтправление_CheckedChanged(object sender, EventArgs e)
@@ -381,8 +402,7 @@ namespace MainExample
                 chBox_сменнаяНумерация.Checked = false;
                 chBox_сменнаяНумерация.Enabled = false;
             }
-            else
-            if (rBОтправление.Checked)
+            else if (rBОтправление.Checked)
             {
                 dTPПрибытие.Visible = false;
                 dTPОтправление.Visible = true;
@@ -402,7 +422,6 @@ namespace MainExample
         }
 
 
-
         private void btnРедактировать_Click(object sender, EventArgs e)
         {
             string списокВыбранныхСтанций = "";
@@ -419,7 +438,6 @@ namespace MainExample
                     lVСписокСтанций.Items.Add(res);
             }
         }
-
 
 
         private void cBБлокировка_CheckedChanged(object sender, EventArgs e)
@@ -453,7 +471,8 @@ namespace MainExample
 
         private void btnДниСледования_Click(object sender, EventArgs e)
         {
-            ПланРасписанияПоезда ТекущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
+            ПланРасписанияПоезда ТекущийПланРасписанияПоезда =
+                ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
             ТекущийПланРасписанияПоезда.УстановитьНомерПоезда(this.TrainRec.Num);
             ТекущийПланРасписанияПоезда.УстановитьНазваниеПоезда(this.TrainRec.Name);
 
@@ -466,7 +485,8 @@ namespace MainExample
             else if (rBВремяДействияПо.Checked)
                 ВремяДействия = "по " + dTPВремяДействияПо.Value.ToString("dd.MM.yyyy");
             else if (rBВремяДействияСПо.Checked)
-                ВремяДействия = "c " + dTPВремяДействияС2.Value.ToString("dd.MM.yyyy") + " по " + dTPВремяДействияПо2.Value.ToString("dd.MM.yyyy");
+                ВремяДействия = "c " + dTPВремяДействияС2.Value.ToString("dd.MM.yyyy") + " по " +
+                                dTPВремяДействияПо2.Value.ToString("dd.MM.yyyy");
             else
                 ВремяДействия = "постоянно";
 
@@ -475,10 +495,10 @@ namespace MainExample
             if (расписание.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
                 this.TrainRec.Days = расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуРасписания();
-                tBОписаниеДнейСледования.Text = расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
+                tBОписаниеДнейСледования.Text =
+                    расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
             }
         }
-
 
 
         private void btnДобавитьШаблон_Click(object sender, EventArgs e)
@@ -496,16 +516,18 @@ namespace MainExample
 
                 if (Result == true)
                 {
-                    ListViewItem lvi = new ListViewItem(new string[] { cBШаблонОповещения.Text, tBВремяОповещения.Text, cBВремяОповещения.Text });
+                    ListViewItem lvi = new ListViewItem(new string[]
+                        {cBШаблонОповещения.Text, tBВремяОповещения.Text, cBВремяОповещения.Text});
                     this.lVШаблоныОповещения.Items.Add(lvi);
                 }
                 else
                 {
-                    MessageBox.Show(this, "Строка должна содержать время смещения шаблона оповещения, разделенного запятыми", "Внимание !!!");
+                    MessageBox.Show(this,
+                        "Строка должна содержать время смещения шаблона оповещения, разделенного запятыми",
+                        "Внимание !!!");
                 }
             }
         }
-
 
 
         private void btnУдалитьШаблон_Click(object sender, EventArgs e)
@@ -535,7 +557,6 @@ namespace MainExample
         }
 
 
-
         private void rb_Постоянно_CheckedChanged(object sender, EventArgs e)
         {
             var radioButton = sender as RadioButton;
@@ -547,7 +568,6 @@ namespace MainExample
         }
 
 
-
         private void rb_ПоДнямНедели_CheckedChanged(object sender, EventArgs e)
         {
             var radioButton = sender as RadioButton;
@@ -557,7 +577,6 @@ namespace MainExample
                 ChangePathValues(TrainRec);
             }
         }
-
 
 
         private void InitializePathValues(TrainTableRec rec)
@@ -576,7 +595,7 @@ namespace MainExample
                 cBПутьПоУмолчанию.Enabled = false;
             }
 
-            DataGridViewComboBoxColumn cmb = (DataGridViewComboBoxColumn)dgv_ПутиПоДнямНедели.Columns[1];
+            DataGridViewComboBoxColumn cmb = (DataGridViewComboBoxColumn) dgv_ПутиПоДнямНедели.Columns[1];
             foreach (var путь in _trainRecService.GetPathways().Select(p => p.Name))
             {
                 cmb.Items.Add(путь);
@@ -588,17 +607,16 @@ namespace MainExample
                 if (path.Key == WeekDays.Постоянно)
                     continue;
 
-                object[] row = { path.Key.ToString() };
+                object[] row = {path.Key.ToString()};
                 dgv_ПутиПоДнямНедели.Rows.Add(row);
 
                 // Выставить значения путей 
-                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
+                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value =
+                    string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
                 dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Tag = path.Key;
                 rowNumber++;
             }
-
         }
-
 
 
         private void ChangePathValues(TrainTableRec rec)
@@ -626,12 +644,12 @@ namespace MainExample
                         continue;
 
                     // Выставить значения путей
-                    dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value.Name) ? string.Empty : path.Value.Name;
+                    dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value =
+                        string.IsNullOrEmpty(path.Value.Name) ? string.Empty : path.Value.Name;
                     rowNumber++;
                 }
             }
         }
-
 
 
         private void SavePathValues(ref TrainTableRec rec)
@@ -648,14 +666,12 @@ namespace MainExample
         }
 
 
-
         private void cBНаправ_SelectedIndexChanged(object sender, EventArgs e)
         {
             var comboBox = sender as ComboBox;
             if (comboBox != null)
             {
                 var selectedIndex = comboBox.SelectedIndex;
-
                 if (selectedIndex < 0)
                     return;
 
@@ -673,11 +689,9 @@ namespace MainExample
                 }
 
                 rBНеОповещать.Checked = true;
-                TrainRec.Примечание = "";
                 lVСписокСтанций.Items.Clear();
             }
         }
-
 
 
         private void rBВремяДействияС_CheckedChanged(object sender, EventArgs e)
@@ -733,7 +747,7 @@ namespace MainExample
         /// </summary>
         private void cBТипПоезда_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var имяТипаПоезда = (string)cBТипПоезда.SelectedItem;
+            var имяТипаПоезда = (string) cBТипПоезда.SelectedItem;
             var listTypeTrains = _trainRecService.GetTrainTypeByRyles();
             var выбранныйТип = listTypeTrains.FirstOrDefault(t => t.NameRu == имяТипаПоезда);
             if (выбранныйТип != null)

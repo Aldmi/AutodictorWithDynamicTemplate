@@ -145,7 +145,7 @@
             this.btn_Отменить.TabIndex = 34;
             this.btn_Отменить.Text = "Отменить";
             this.btn_Отменить.UseVisualStyleBackColor = true;
-            this.btn_Отменить.Click += new System.EventHandler(this.button2_Click);
+            this.btn_Отменить.Click += new System.EventHandler(this.btnОтмена_Click);
             // 
             // gBНаправление
             // 
