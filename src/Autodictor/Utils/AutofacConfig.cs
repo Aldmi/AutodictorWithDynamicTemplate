@@ -9,6 +9,7 @@ using DAL.Abstract.Abstract;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
+using DAL.Composite.Repository;
 using DAL.InMemory.Repository;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
@@ -64,11 +65,56 @@ namespace MainExample.Utils
 
 
             //TEST TrainRecRepository
-            builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+            //builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+            //    .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain") }).InstancePerLifetimeScope();
+
+            //builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+            //    .WithParameters(new List<Parameter> { new NamedParameter("key", @"RemoteCis") }).InstancePerLifetimeScope();
+
+            //ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "LocalMain"
+            builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("LocalMain")
                 .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain") }).InstancePerLifetimeScope();
 
-            builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+            //ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "RemoteCis"
+            builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
                 .WithParameters(new List<Parameter> { new NamedParameter("key", @"RemoteCis") }).InstancePerLifetimeScope();
+
+
+            //ITrainTableRecRepository -> CompositerTrainRecRepositoryDecorator with key= TrainRecType.LocalMain
+            builder.RegisterType<CompositerTrainRecRepositoryDecorator>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+                .WithParameters(new List<ResolvedParameter> {
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "trainTableRecRep")),
+                        (pi, ctx) => ctx.ResolveNamed<ITrainTableRecRepository>("LocalMain")),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "trainTypeByRyleRep")),
+                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>()),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(IPathwaysRepository) && (pi.Name == "pathwaysRep")),
+                        (pi, ctx) => ctx.Resolve<IPathwaysRepository>()),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(IDirectionRepository) && (pi.Name == "directionRep")),
+                        (pi, ctx) => ctx.Resolve<IDirectionRepository>())
+                }).InstancePerLifetimeScope();
+
+            //ITrainTableRecRepository -> CompositerTrainRecRepositoryDecorator with key= TrainRecType.RemoteCis
+            builder.RegisterType<CompositerTrainRecRepositoryDecorator>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+                .WithParameters(new List<ResolvedParameter> {
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "trainTableRecRep")),
+                        (pi, ctx) => ctx.ResolveNamed<ITrainTableRecRepository>("RemoteCis")),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "trainTypeByRyleRep")),
+                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>()),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(IPathwaysRepository) && (pi.Name == "pathwaysRep")),
+                        (pi, ctx) => ctx.Resolve<IPathwaysRepository>()),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(IDirectionRepository) && (pi.Name == "directionRep")),
+                        (pi, ctx) => ctx.Resolve<IDirectionRepository>())
+                }).InstancePerLifetimeScope();
+
+
 
 
             //СЕРВИСЫ---------------------------------------------------------------------------------

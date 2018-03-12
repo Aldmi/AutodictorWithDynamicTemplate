@@ -101,6 +101,10 @@
       <Project>{b3cf5fb8-856d-4b3e-ad4c-376388da658b}</Project>
       <Name>DAL.Abstract</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DAL.Composite\DAL.Composite.csproj">
+      <Project>{6c145733-3a76-4afa-85f6-8e782108a27b}</Project>
+      <Name>DAL.Composite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{87b6f9ef-6a0d-4daf-9df0-718036b1c8e4}</Project>
       <Name>Library</Name>
