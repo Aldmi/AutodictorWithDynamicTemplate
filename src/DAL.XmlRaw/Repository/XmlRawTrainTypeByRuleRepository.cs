@@ -41,10 +41,11 @@ namespace DAL.XmlRaw.Repository
 
 
 
+        #region Methode
 
         public TrainTypeByRyle GetById(int id)
         {
-            throw new NotImplementedException();
+            return List().FirstOrDefault(rule => rule.Id == id);
         }
 
 
@@ -127,7 +128,7 @@ namespace DAL.XmlRaw.Repository
 
         public IEnumerable<TrainTypeByRyle> List(Expression<Func<TrainTypeByRyle, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return List().Where(predicate.Compile());
         }
 
 
@@ -148,14 +149,18 @@ namespace DAL.XmlRaw.Repository
             throw new NotImplementedException();
         }
 
+
         public void Delete(Expression<Func<TrainTypeByRyle, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
+
         public void Edit(TrainTypeByRyle entity)
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

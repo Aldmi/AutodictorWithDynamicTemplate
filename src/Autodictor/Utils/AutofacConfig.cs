@@ -88,13 +88,7 @@ namespace MainExample.Utils
                         (pi, ctx) => ctx.ResolveNamed<ITrainTableRecRepository>("LocalMain")),
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "trainTypeByRyleRep")),
-                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>()),
-                    new ResolvedParameter(
-                        (pi, ctx) => (pi.ParameterType == typeof(IPathwaysRepository) && (pi.Name == "pathwaysRep")),
-                        (pi, ctx) => ctx.Resolve<IPathwaysRepository>()),
-                    new ResolvedParameter(
-                        (pi, ctx) => (pi.ParameterType == typeof(IDirectionRepository) && (pi.Name == "directionRep")),
-                        (pi, ctx) => ctx.Resolve<IDirectionRepository>())
+                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>())
                 }).InstancePerLifetimeScope();
 
             //ITrainTableRecRepository -> CompositerTrainRecRepositoryDecorator with key= TrainRecType.RemoteCis
@@ -105,13 +99,7 @@ namespace MainExample.Utils
                         (pi, ctx) => ctx.ResolveNamed<ITrainTableRecRepository>("RemoteCis")),
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "trainTypeByRyleRep")),
-                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>()),
-                    new ResolvedParameter(
-                        (pi, ctx) => (pi.ParameterType == typeof(IPathwaysRepository) && (pi.Name == "pathwaysRep")),
-                        (pi, ctx) => ctx.Resolve<IPathwaysRepository>()),
-                    new ResolvedParameter(
-                        (pi, ctx) => (pi.ParameterType == typeof(IDirectionRepository) && (pi.Name == "directionRep")),
-                        (pi, ctx) => ctx.Resolve<IDirectionRepository>())
+                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>())
                 }).InstancePerLifetimeScope();
 
 
@@ -129,10 +117,7 @@ namespace MainExample.Utils
                         (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain)),
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repRemoteCis")),
-                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)),
-                    new ResolvedParameter(
-                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "repTypeByRyle")),
-                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>())
+                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis))
                 }).SingleInstance();
 
 

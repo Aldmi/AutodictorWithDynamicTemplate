@@ -68,14 +68,14 @@ namespace MainExample
             Model2Controls();
 
 
-            rbSourseSheduleCis.Checked = (_trainRecService.SourceLoad == TrainRecType.RemoteCis);
-            //_dispouseRemoteCisTableChangeRx = TrainSheduleTable.RemoteCisTableChangeRx.Subscribe(data =>   //обновим tableRec в списке, при получении данных.
-            //{
-            //    if (data == TrainRecType.RemoteCis)
-            //    {
-            //        ОбновитьДанныеВСпискеAsync();
-            //    }
-            //});
+             rbSourseSheduleCis.Checked = (_trainRecService.SourceLoad == TrainRecType.RemoteCis);
+            _dispouseRemoteCisTableChangeRx = _trainRecService.RemoteCisTableChangeRx.Subscribe(data =>   //обновим tableRec в списке, при получении данных.
+            {
+                if (data == TrainRecType.RemoteCis)
+                {
+                    btnLoad_Click(null, EventArgs.Empty);
+                }
+            });
         }
 
         #endregion
@@ -265,9 +265,9 @@ namespace MainExample
                     var row = DataTable.NewRow();
                     row["Id"] = данные.Id;
                     row["Номер"] = данные.Num;
-                    row["ВремяПрибытия"] = данные.ArrivalTime?.ToString("t") ?? string.Empty;
-                    row["Стоянка"] = данные.StopTime?.ToString("t") ?? string.Empty;
-                    row["ВремяОтправления"] = данные.DepartureTime?.ToString("t") ?? string.Empty;
+                    row["ВремяПрибытия"] = данные.ArrivalTime?.ToString("HH:mm") ?? string.Empty;
+                    row["Стоянка"] = данные.StopTime?.ToString(@"hh\:mm") ?? string.Empty;
+                    row["ВремяОтправления"] = данные.DepartureTime?.ToString("HH:mm") ?? string.Empty;
                     row["Маршрут"] = данные.Name;
                     row["ДниСледования"] = строкаОписанияРасписания;
                     DataTable.Rows.Add(row);

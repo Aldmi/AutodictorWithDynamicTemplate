@@ -10,7 +10,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         #region prop
 
         private string DaysFollowingFormat { get; }
-        private IRuleByTrainType Rule { get; }
+        private TrainTypeByRyle Rule { get; }
 
         #endregion
 
@@ -19,7 +19,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         #region ctor
 
-        public TrainRecordBuilderManual(TrainTableRecord trainTableBase, string daysFollowingFormat, IRuleByTrainType rule)
+        public TrainRecordBuilderManual(TrainTableRecord trainTableBase, string daysFollowingFormat, TrainTypeByRyle rule)
         {
             TrainTableRecord = trainTableBase;
             DaysFollowingFormat = daysFollowingFormat;

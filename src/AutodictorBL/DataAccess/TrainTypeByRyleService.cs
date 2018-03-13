@@ -32,7 +32,6 @@ namespace AutodictorBL.DataAccess
             return _repository.GetById(id);
         }
 
-
         public IEnumerable<TrainTypeByRyle> GetAll()
         {
             return _repository.List();
@@ -40,7 +39,7 @@ namespace AutodictorBL.DataAccess
 
         public IEnumerable<TrainTypeByRyle> GetAllByFilter(Expression<Func<TrainTypeByRyle, bool>> predicate)
         {
-            return _repository.List();
+            return _repository.List().Where(predicate.Compile());
         }
 
         public int GetIndexOf(TrainTypeByRyle rule)

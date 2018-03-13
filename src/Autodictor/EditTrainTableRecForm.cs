@@ -37,6 +37,8 @@ namespace MainExample
         #endregion
 
 
+
+
         #region ctor
 
         public EditTrainTableRecForm(TrainRecService trainRecService, TrainTableRec trainRec)
@@ -188,6 +190,8 @@ namespace MainExample
         }
 
         #endregion
+
+
 
 
         private void btnПрименить_Click(object sender, EventArgs e)
@@ -543,7 +547,7 @@ namespace MainExample
         {
             try
             {
-                //var rule = TrainRec.TrainTypeByRyle;
+                var rule = TrainRec.TrainTypeByRyle;
                 //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
                 //var factory = new TrainRecordFactoryManual(builder);
                 //TrainRec = factory.Construct();

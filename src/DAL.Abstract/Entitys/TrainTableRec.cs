@@ -9,8 +9,8 @@ namespace DAL.Abstract.Entitys
     public enum WagonsNumbering
     {
         None,
-        Tail,
-        Head
+        Head,
+        Rear   
     };
 
     //!!!!!! НОВАЯ РЕАЛИЗАЦИЯ

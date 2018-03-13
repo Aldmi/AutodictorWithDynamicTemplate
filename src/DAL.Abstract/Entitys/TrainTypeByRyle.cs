@@ -41,6 +41,7 @@ namespace DAL.Abstract.Entitys
 
         public TrainTypeByRyle(string id, string typeTrain, string nameRu, string aliasRu, string nameEng, string aliasEng, string nameCh, string aliasCh, string showPathTimer, string warningTimer, List<ActionTrain> actionTrains)
         {
+            int intVal;
             Id = int.Parse(id);
             switch (typeTrain)
             {
@@ -63,7 +64,7 @@ namespace DAL.Abstract.Entitys
             NameCh = nameCh;
             AliasCh = aliasCh;
             ShowPathTimer = showPathTimer;
-            WarningTimer = int.Parse(warningTimer);
+            WarningTimer = int.TryParse(warningTimer, out intVal) ? intVal : 0;
             ActionTrains = actionTrains;
         }
 

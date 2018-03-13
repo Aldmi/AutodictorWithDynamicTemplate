@@ -17,6 +17,7 @@ namespace DAL.XmlRaw.Repository
 
 
 
+
         #region ctor
 
         public XmlRawPathWaysRepository(XElement xElement)
@@ -37,20 +38,18 @@ namespace DAL.XmlRaw.Repository
 
 
 
-
+        #region Methode
 
         public Pathway GetById(int id)
         {
-            throw new NotImplementedException();
+            return List().FirstOrDefault(path => path.Id == id);
         }
-
 
 
         public IEnumerable<Pathway> List()
         {
             return Pathways ?? (Pathways = ParseXmlFile());
         }
-
 
 
         private IEnumerable<Pathway> ParseXmlFile()
@@ -86,7 +85,7 @@ namespace DAL.XmlRaw.Repository
 
         public IEnumerable<Pathway> List(Expression<Func<Pathway, bool>> predicate)
         {
-           return List().Where(predicate.Compile());
+            return List().Where(predicate.Compile());
         }
 
         public void Add(Pathway entity)
@@ -113,5 +112,7 @@ namespace DAL.XmlRaw.Repository
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

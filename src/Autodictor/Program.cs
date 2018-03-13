@@ -89,7 +89,7 @@ namespace MainExample
                     Name = "Москва-Владивосток",
                     StationArrival = null,
                     StationDepart = null,
-                    Direction = null,
+                    Direction = new Direction {Id = 1},//null
                     ArrivalTime = null,
                     StopTime = null,
                     DepartureTime = null,
@@ -101,7 +101,7 @@ namespace MainExample
                     ChangeTrainPathDirection = false,
                     TrainPathNumber = new Dictionary<WeekDays, Pathway>
                     {
-                        [WeekDays.Постоянно] = null,
+                        [WeekDays.Постоянно] = new Pathway {Id = 1},
                         [WeekDays.Пн] = null,
                         [WeekDays.Вт] = null,
                         [WeekDays.Ср] = null,
@@ -123,7 +123,7 @@ namespace MainExample
                     Автомат = true,
                     IsScoreBoardOutput = false,
                     IsSoundOutput = true,
-                    TrainTypeByRyle = null,
+                    TrainTypeByRyle = new TrainTypeByRyle("1", null, null, null, null, null, null, null, null, null, null),//null
                     ActionTrains = new List<ActionTrain>()
                  },
                 new TrainTableRec

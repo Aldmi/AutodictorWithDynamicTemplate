@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reactive.Subjects;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 
@@ -26,6 +28,15 @@ namespace AutodictorBL.DataAccess
         public TrainRecType SourceLoad { get; set; }
 
         #endregion
+
+
+
+        #region Rx
+
+        public Subject<TrainRecType> RemoteCisTableChangeRx { get; } = new Subject<TrainRecType>();
+
+        #endregion
+
 
 
 
@@ -71,6 +82,8 @@ namespace AutodictorBL.DataAccess
             var rep= (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
             rep.Delete(t=> true);
             rep.AddRange(list);
+
+            RemoteCisTableChangeRx.OnNext(SourceLoad);
         }
 
 
@@ -137,9 +150,13 @@ namespace AutodictorBL.DataAccess
 
 
 
+
         public void Dispose()
         {
-            
+            if (!RemoteCisTableChangeRx.IsDisposed)
+            {
+                RemoteCisTableChangeRx.Dispose();
+            }
         }
     }
 }

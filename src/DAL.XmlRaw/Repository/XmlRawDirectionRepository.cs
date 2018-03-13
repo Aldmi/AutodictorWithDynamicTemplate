@@ -41,7 +41,7 @@ namespace DAL.XmlRaw.Repository
 
         public Direction GetById(int id)
         {
-            throw new NotImplementedException();
+           return List().FirstOrDefault(dir => dir.Id == 1);
         }
 
 
@@ -96,7 +96,7 @@ namespace DAL.XmlRaw.Repository
 
         public IEnumerable<Direction> List(Expression<Func<Direction, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return List().Where(predicate.Compile());
         }
 
         public void Add(Direction entity)
