@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime;
 using System.Windows.Forms;
@@ -11,8 +12,10 @@ using AutodictorBL.Factory.TrainRecordFactory;
 using Autofac;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
+using DevExpress.XtraGrid.Views.Grid;
 using MainExample.Entites;
 using MainExample.Utils;
+using MainExample.ViewModel;
 
 
 namespace MainExample
@@ -34,6 +37,8 @@ namespace MainExample
         private readonly TrainRecService _trainRecService;
         private string[] SelectedDestinationStations { get; set; } = new string[0];
 
+        private List<ActionTrainViewModel> ActionTrainsVm { get; set; } = new List<ActionTrainViewModel>();
+
         #endregion
 
 
@@ -44,18 +49,62 @@ namespace MainExample
         public EditTrainTableRecForm(TrainRecService trainRecService, TrainTableRec trainRec)
         {
             _trainRecService = trainRecService;
-            this.TrainRec = trainRec;
+            TrainRec = trainRec;
 
             InitializeComponent();
+            SettingUi();
+        }
 
+        #endregion
+
+
+
+        protected override void OnLoad(EventArgs e)
+        {
+            //загрузка настроек грида
+            var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
+            if (File.Exists(path2Setting))
+            {
+                gv_ActionTrains.RestoreLayoutFromXml(path2Setting);
+            }
+
+            Model2Ui();
+            base.OnLoad(e);
+        }
+
+
+        protected override void OnClosed(EventArgs e)
+        {
+            //Сохранение настроек грида
+            var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
+            gv_ActionTrains.SaveLayoutToXml(path2Setting);  
+            
+            base.Close();   
+        }
+
+
+        private void SettingUi()
+        {
+            // Make the grid read-only.
+            gv_ActionTrains.OptionsBehavior.Editable = true;
+            // Prevent the focused cell from being highlighted.
+            gv_ActionTrains.OptionsSelection.EnableAppearanceFocusedCell = false;
+            //// Draw a dotted focus rectangle around the entire row.
+            gv_ActionTrains.FocusRectStyle = DrawFocusRectStyle.RowFullFocus;
+        }
+
+
+
+        private void Model2Ui()
+        {
             cBПутьПоУмолчанию.Items.Add("Не определен");
             foreach (var путь in _trainRecService.GetPathways().Select(p => p.Name))
                 cBПутьПоУмолчанию.Items.Add(путь);
 
             cBПутьПоУмолчанию.Text = this.TrainRec.TrainPathNumber[WeekDays.Постоянно]?.Name ?? string.Empty;
-            InitializePathValues(trainRec);
+            InitializePathValues(TrainRec);
 
-            cBОтсчетВагонов.SelectedIndex = (int) this.TrainRec.WagonsNumbering;
+            cBОтсчетВагонов.SelectedIndex = (int)this.TrainRec.WagonsNumbering;
             chBox_сменнаяНумерация.Checked = TrainRec.ChangeTrainPathDirection ?? false;
             chBoxВыводНаТабло.Checked = this.TrainRec.IsScoreBoardOutput;
             chBoxВыводЗвука.Checked = this.TrainRec.IsSoundOutput;
@@ -67,7 +116,7 @@ namespace MainExample
                 cBНаправ.Items.AddRange(directionNames);
 
                 //загрузили выбранное направление
-                cBНаправ.Text = trainRec.Direction?.Name ?? string.Empty;
+                cBНаправ.Text = TrainRec.Direction?.Name ?? string.Empty;
             }
 
             var listTypeTrains = _trainRecService.GetTrainTypeByRyles().ToList();
@@ -75,42 +124,42 @@ namespace MainExample
             {
                 var typeTrainNames = listTypeTrains.Select(d => d.NameRu).ToArray();
                 cBТипПоезда.Items.AddRange(typeTrainNames);
-                var selectedIndex = _trainRecService.GetIndexOfRule(trainRec.TrainTypeByRyle);
+                var selectedIndex = _trainRecService.GetIndexOfRule(TrainRec.TrainTypeByRyle);
                 cBТипПоезда.SelectedIndex = selectedIndex;
             }
 
-            string[] станции = trainRec.Name.Split('-');
+            string[] станции = TrainRec.Name.Split('-');
             if (станции.Length == 2)
             {
-                cBОткуда.Text = станции[0].Trim(new char[] {' '});
-                cBКуда.Text = станции[1].Trim(new char[] {' '});
+                cBОткуда.Text = станции[0].Trim(new char[] { ' ' });
+                cBКуда.Text = станции[1].Trim(new char[] { ' ' });
             }
-            else if (станции.Length == 1 && trainRec.Name != "")
+            else if (станции.Length == 1 && TrainRec.Name != "")
             {
-                cBКуда.Text = trainRec.Name.Trim(new char[] {' '});
+                cBКуда.Text = TrainRec.Name.Trim(new char[] { ' ' });
             }
 
 
-            if ((trainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
-                (trainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
+            if ((TrainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
+                (TrainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
                 rBВремяДействияПостоянно.Checked = true;
-            else if ((trainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
-                     (trainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
+            else if ((TrainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
+                     (TrainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
             {
-                dTPВремяДействияС2.Value = trainRec.ВремяНачалаДействияРасписания;
-                dTPВремяДействияПо2.Value = trainRec.ВремяОкончанияДействияРасписания;
+                dTPВремяДействияС2.Value = TrainRec.ВремяНачалаДействияРасписания;
+                dTPВремяДействияПо2.Value = TrainRec.ВремяОкончанияДействияРасписания;
                 rBВремяДействияСПо.Checked = true;
             }
-            else if ((trainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
-                     (trainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
+            else if ((TrainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
+                     (TrainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
             {
-                dTPВремяДействияС.Value = trainRec.ВремяНачалаДействияРасписания;
+                dTPВремяДействияС.Value = TrainRec.ВремяНачалаДействияРасписания;
                 rBВремяДействияС.Checked = true;
             }
-            else if ((trainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
-                     (trainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
+            else if ((TrainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
+                     (TrainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
             {
-                dTPВремяДействияПо.Value = trainRec.ВремяОкончанияДействияРасписания;
+                dTPВремяДействияПо.Value = TrainRec.ВремяОкончанияДействияРасписания;
                 rBВремяДействияПо.Checked = true;
             }
 
@@ -119,18 +168,18 @@ namespace MainExample
             Расписание расписание = new Расписание(ТекущийПланРасписанияПоезда);
             tBОписаниеДнейСледования.Text =
                 расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
-            tb_ДниСледованияAlias.Text = trainRec.DaysAlias;
+            tb_ДниСледованияAlias.Text = TrainRec.DaysAlias;
 
-            this.Text = "Расписание движения для поезда: " + trainRec.Num + " - " + trainRec.Name;
-            tBНомерПоезда.Text = trainRec.Num;
-            tBНомерПоездаДоп.Text = trainRec.Num2;
+            this.Text = "Расписание движения для поезда: " + TrainRec.Num + " - " + TrainRec.Name;
+            tBНомерПоезда.Text = TrainRec.Num;
+            tBНомерПоездаДоп.Text = TrainRec.Num2;
 
-            tb_Дополнение.Text = trainRec.Addition;
-            cb_Дополнение_Табло.Checked = trainRec.ИспользоватьДополнение["табло"];
-            cb_Дополнение_Звук.Checked = trainRec.ИспользоватьДополнение["звук"];
+            tb_Дополнение.Text = TrainRec.Addition;
+            cb_Дополнение_Табло.Checked = TrainRec.ИспользоватьДополнение["табло"];
+            cb_Дополнение_Звук.Checked = TrainRec.ИспользоватьДополнение["звук"];
 
-            rB_РежРабАвтомат.Checked = trainRec.Автомат;
-            rB_РежРабРучной.Checked = !trainRec.Автомат;
+            rB_РежРабАвтомат.Checked = TrainRec.Автомат;
+            rB_РежРабРучной.Checked = !TrainRec.Автомат;
 
             // ОтобразитьШаблоныОповещания(trainRec.SoundTemplates);
 
@@ -154,30 +203,30 @@ namespace MainExample
             dTPСледования.Value = TrainRec.FollowingTime ??
                                   new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
-            cBБлокировка.Checked = !trainRec.Active;
+            cBБлокировка.Checked = !TrainRec.Active;
 
             //TODO:trainRec.Примечание Сделать классом "StopTheTrain"
-            if (trainRec.Примечание.Contains("Со всеми остановками"))
+            if (TrainRec.Примечание.Contains("Со всеми остановками"))
             {
                 rBСоВсемиОстановками.Checked = true;
             }
-            else if (trainRec.Примечание.Contains("Без остановок"))
+            else if (TrainRec.Примечание.Contains("Без остановок"))
             {
                 rBБезОстановок.Checked = true;
             }
-            else if (trainRec.Примечание.Contains("С остановками: "))
+            else if (TrainRec.Примечание.Contains("С остановками: "))
             {
                 rBСОстановкамиНа.Checked = true;
-                string Примечание = trainRec.Примечание.Replace("С остановками: ", "");
+                string Примечание = TrainRec.Примечание.Replace("С остановками: ", "");
                 string[] СписокСтанций = Примечание.Split(',');
                 foreach (var Станция in СписокСтанций)
                     if (SelectedDestinationStations.Contains(Станция))
                         lVСписокСтанций.Items.Add(Станция);
             }
-            else if (trainRec.Примечание.Contains("Кроме: "))
+            else if (TrainRec.Примечание.Contains("Кроме: "))
             {
                 rBСОстановкамиКроме.Checked = true;
-                string Примечание = trainRec.Примечание.Replace("Кроме: ", "");
+                string Примечание = TrainRec.Примечание.Replace("Кроме: ", "");
                 string[] СписокСтанций = Примечание.Split(',');
                 foreach (var Станция in СписокСтанций)
                     if (SelectedDestinationStations.Contains(Станция))
@@ -187,9 +236,32 @@ namespace MainExample
             {
                 rBНеОповещать.Checked = true;
             }
+
+
+            //Заполнение списка шаблонов
+            foreach (var trRec in TrainRec.ActionTrains)
+            {
+                ActionTrainsVm.Add(MapActionTrain2ViewModel(trRec));
+            }
+            gridCtrl_ActionTrains.DataSource = ActionTrainsVm;
         }
 
-        #endregion
+
+
+        private ActionTrainViewModel MapActionTrain2ViewModel(ActionTrain actionTrain)
+        {
+            return new ActionTrainViewModel
+            {
+                Id = actionTrain.Id,
+                Name = actionTrain.Name,
+                ActionTimeCycle = actionTrain.Time.CycleTime,
+                ActionTimeDelta = actionTrain.Time.DeltaTime,
+                ActionTypeViewModel = (ActionTypeViewModel) actionTrain.ActionType,
+                Priority = actionTrain.Priority,
+                Repeat = actionTrain.Repeat,
+                Langs = actionTrain.Langs.Select(lang => new LangViewModel { Id = lang.Id, Name = lang.Name, IsEnable = lang.IsEnable }).ToList()
+            };
+        }
 
 
 
@@ -342,57 +414,57 @@ namespace MainExample
         }
 
 
-        public string ПолучитьШаблоныОповещения()
-        {
-            string РезультирующийШаблонОповещения = "";
+        //public string ПолучитьШаблоныОповещения()
+        //{
+        //    string РезультирующийШаблонОповещения = "";
 
-            for (int item = 0; item < this.lVШаблоныОповещения.Items.Count; item++)
-            {
-                РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[0].Text + ":";
-                РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[1].Text + ":";
-                РезультирующийШаблонОповещения +=
-                    (this.lVШаблоныОповещения.Items[item].SubItems[2].Text == "Отправление") ? "1:" : "0:";
-            }
+        //    for (int item = 0; item < this.lVШаблоныОповещения.Items.Count; item++)
+        //    {
+        //        РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[0].Text + ":";
+        //        РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[1].Text + ":";
+        //        РезультирующийШаблонОповещения +=
+        //            (this.lVШаблоныОповещения.Items[item].SubItems[2].Text == "Отправление") ? "1:" : "0:";
+        //    }
 
-            if (РезультирующийШаблонОповещения.Length > 0)
-                if (РезультирующийШаблонОповещения[РезультирующийШаблонОповещения.Length - 1] == ':')
-                    РезультирующийШаблонОповещения =
-                        РезультирующийШаблонОповещения.Remove(РезультирующийШаблонОповещения.Length - 1);
+        //    if (РезультирующийШаблонОповещения.Length > 0)
+        //        if (РезультирующийШаблонОповещения[РезультирующийШаблонОповещения.Length - 1] == ':')
+        //            РезультирующийШаблонОповещения =
+        //                РезультирующийШаблонОповещения.Remove(РезультирующийШаблонОповещения.Length - 1);
 
-            return РезультирующийШаблонОповещения;
-        }
-
-
-        private void ОтобразитьШаблоныОповещания(string soundTemplates)
-        {
-            cBШаблонОповещения.Items.Add("Блокировка");
-
-            foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
-                cBШаблонОповещения.Items.Add(Item.Name);
+        //    return РезультирующийШаблонОповещения;
+        //}
 
 
-            string[] шаблонОповещения = soundTemplates.Split(':');
-            if ((шаблонОповещения.Length % 3) == 0)
-            {
-                for (int i = 0; i < шаблонОповещения.Length / 3; i++)
-                {
-                    if (cBШаблонОповещения.Items.Contains(шаблонОповещения[3 * i + 0]))
-                    {
-                        int типОповещенияПути;
-                        int.TryParse(шаблонОповещения[3 * i + 2], out типОповещенияПути);
-                        типОповещенияПути %= 2;
-                        ListViewItem lvi = new ListViewItem(new string[]
-                        {
-                            шаблонОповещения[3 * i + 0], шаблонОповещения[3 * i + 1],
-                            Program.ТипыВремени[типОповещенияПути]
-                        });
-                        this.lVШаблоныОповещения.Items.Add(lvi);
-                    }
-                }
-            }
+        //private void ОтобразитьШаблоныОповещания(string soundTemplates)
+        //{
+        //    cBШаблонОповещения.Items.Add("Блокировка");
 
-            cBВремяОповещения.SelectedIndex = 0;
-        }
+        //    foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
+        //        cBШаблонОповещения.Items.Add(Item.Name);
+
+
+        //    string[] шаблонОповещения = soundTemplates.Split(':');
+        //    if ((шаблонОповещения.Length % 3) == 0)
+        //    {
+        //        for (int i = 0; i < шаблонОповещения.Length / 3; i++)
+        //        {
+        //            if (cBШаблонОповещения.Items.Contains(шаблонОповещения[3 * i + 0]))
+        //            {
+        //                int типОповещенияПути;
+        //                int.TryParse(шаблонОповещения[3 * i + 2], out типОповещенияПути);
+        //                типОповещенияПути %= 2;
+        //                ListViewItem lvi = new ListViewItem(new string[]
+        //                {
+        //                    шаблонОповещения[3 * i + 0], шаблонОповещения[3 * i + 1],
+        //                    Program.ТипыВремени[типОповещенияПути]
+        //                });
+        //                this.lVШаблоныОповещения.Items.Add(lvi);
+        //            }
+        //        }
+        //    }
+
+        //    cBВремяОповещения.SelectedIndex = 0;
+        //}
 
 
         private void rBОтправление_CheckedChanged(object sender, EventArgs e)
@@ -507,40 +579,32 @@ namespace MainExample
 
         private void btnДобавитьШаблон_Click(object sender, EventArgs e)
         {
-            if (cBШаблонОповещения.SelectedIndex >= 0)
-            {
-                string ВремяОповещения = tBВремяОповещения.Text.Replace(" ", "");
-                string[] Времена = ВремяОповещения.Split(',');
+            //if (cBШаблонОповещения.SelectedIndex >= 0)
+            //{
+            //    string ВремяОповещения = tBВремяОповещения.Text.Replace(" ", "");
+            //    string[] Времена = ВремяОповещения.Split(',');
 
-                int TempInt = 0;
-                bool Result = true;
+            //    int TempInt = 0;
+            //    bool Result = true;
 
-                foreach (var ВременнойИнтервал in Времена)
-                    Result &= int.TryParse(ВременнойИнтервал, out TempInt);
+            //    foreach (var ВременнойИнтервал in Времена)
+            //        Result &= int.TryParse(ВременнойИнтервал, out TempInt);
 
-                if (Result == true)
-                {
-                    ListViewItem lvi = new ListViewItem(new string[]
-                        {cBШаблонОповещения.Text, tBВремяОповещения.Text, cBВремяОповещения.Text});
-                    this.lVШаблоныОповещения.Items.Add(lvi);
-                }
-                else
-                {
-                    MessageBox.Show(this,
-                        "Строка должна содержать время смещения шаблона оповещения, разделенного запятыми",
-                        "Внимание !!!");
-                }
-            }
+            //    if (Result == true)
+            //    {
+            //        ListViewItem lvi = new ListViewItem(new string[]
+            //            {cBШаблонОповещения.Text, tBВремяОповещения.Text, cBВремяОповещения.Text});
+            //        this.lVШаблоныОповещения.Items.Add(lvi);
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show(this,
+            //            "Строка должна содержать время смещения шаблона оповещения, разделенного запятыми",
+            //            "Внимание !!!");
+            //    }
+            //}
         }
 
-
-        private void btnУдалитьШаблон_Click(object sender, EventArgs e)
-        {
-            while (lVШаблоныОповещения.SelectedItems.Count > 0)
-            {
-                lVШаблоныОповещения.Items.Remove(lVШаблоныОповещения.SelectedItems[0]);
-            }
-        }
 
 
         private void btnАвтогенерацияШаблонов_Click(object sender, EventArgs e)
@@ -769,6 +833,11 @@ namespace MainExample
                 }
                 tb_Category.Text = categoryText;
             }
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

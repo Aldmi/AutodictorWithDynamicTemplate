@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btn_Принять = new System.Windows.Forms.Button();
             this.btn_Отменить = new System.Windows.Forms.Button();
             this.gBНаправление = new System.Windows.Forms.GroupBox();
@@ -76,24 +77,12 @@
             this.btnДниСледования = new System.Windows.Forms.Button();
             this.cBБлокировка = new System.Windows.Forms.CheckBox();
             this.gBШаблонОповещения = new System.Windows.Forms.GroupBox();
-            this.btnАвтогенерацияШаблонов = new System.Windows.Forms.Button();
-            this.tb_КолвоПовторовEng = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.tb_КолвоПовторовRu = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cBВремяОповещения = new System.Windows.Forms.ComboBox();
-            this.tBВремяОповещения = new System.Windows.Forms.TextBox();
+            this.gridCtrl_ActionTrains = new DevExpress.XtraGrid.GridControl();
+            this.gv_ActionTrains = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cBШаблонОповещения = new System.Windows.Forms.ComboBox();
-            this.lVШаблоныОповещения = new System.Windows.Forms.ListView();
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.btnУдалитьШаблон = new System.Windows.Forms.Button();
             this.btnДобавитьШаблон = new System.Windows.Forms.Button();
+            this.btnАвтогенерацияШаблонов = new System.Windows.Forms.Button();
             this.tb_Дополнение = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.cb_Дополнение_Табло = new System.Windows.Forms.CheckBox();
@@ -114,15 +103,20 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chBoxВыводЗвука = new System.Windows.Forms.CheckBox();
             this.tb_Category = new System.Windows.Forms.TextBox();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.gBНаправление.SuspendLayout();
             this.gBОстановки.SuspendLayout();
             this.gBДниСледования.SuspendLayout();
             this.grbВремяДействия.SuspendLayout();
             this.gBШаблонОповещения.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridCtrl_ActionTrains)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gv_ActionTrains)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.gbРежимРаботы.SuspendLayout();
             this.gb_ПутьПоУмолчанию.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_ПутиПоДнямНедели)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_Принять
@@ -645,19 +639,8 @@
             // 
             // gBШаблонОповещения
             // 
-            this.gBШаблонОповещения.Controls.Add(this.btnАвтогенерацияШаблонов);
-            this.gBШаблонОповещения.Controls.Add(this.tb_КолвоПовторовEng);
-            this.gBШаблонОповещения.Controls.Add(this.label11);
-            this.gBШаблонОповещения.Controls.Add(this.tb_КолвоПовторовRu);
-            this.gBШаблонОповещения.Controls.Add(this.label10);
-            this.gBШаблонОповещения.Controls.Add(this.label9);
-            this.gBШаблонОповещения.Controls.Add(this.label7);
-            this.gBШаблонОповещения.Controls.Add(this.cBВремяОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.tBВремяОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.cBШаблонОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.lVШаблоныОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.btnУдалитьШаблон);
-            this.gBШаблонОповещения.Controls.Add(this.btnДобавитьШаблон);
+            this.gBШаблонОповещения.Controls.Add(this.gridCtrl_ActionTrains);
+            this.gBШаблонОповещения.Controls.Add(this.groupBox2);
             this.gBШаблонОповещения.Location = new System.Drawing.Point(398, 393);
             this.gBШаблонОповещения.Name = "gBШаблонОповещения";
             this.gBШаблонОповещения.Size = new System.Drawing.Size(716, 360);
@@ -665,160 +648,66 @@
             this.gBШаблонОповещения.TabStop = false;
             this.gBШаблонОповещения.Text = "Шаблоны оповещения";
             // 
-            // btnАвтогенерацияШаблонов
+            // gridCtrl_ActionTrains
             // 
-            this.btnАвтогенерацияШаблонов.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.btnАвтогенерацияШаблонов.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnАвтогенерацияШаблонов.Location = new System.Drawing.Point(6, 218);
-            this.btnАвтогенерацияШаблонов.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btnАвтогенерацияШаблонов.Name = "btnАвтогенерацияШаблонов";
-            this.btnАвтогенерацияШаблонов.Size = new System.Drawing.Size(105, 131);
-            this.btnАвтогенерацияШаблонов.TabIndex = 63;
-            this.btnАвтогенерацияШаблонов.Text = "Авто";
-            this.btnАвтогенерацияШаблонов.UseVisualStyleBackColor = false;
-            this.btnАвтогенерацияШаблонов.Click += new System.EventHandler(this.btnАвтогенерацияШаблонов_Click);
+            this.gridCtrl_ActionTrains.Location = new System.Drawing.Point(6, 92);
+            this.gridCtrl_ActionTrains.MainView = this.gv_ActionTrains;
+            this.gridCtrl_ActionTrains.Name = "gridCtrl_ActionTrains";
+            this.gridCtrl_ActionTrains.Size = new System.Drawing.Size(704, 262);
+            this.gridCtrl_ActionTrains.TabIndex = 65;
+            this.gridCtrl_ActionTrains.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gv_ActionTrains});
             // 
-            // tb_КолвоПовторовEng
+            // gv_ActionTrains
             // 
-            this.tb_КолвоПовторовEng.Location = new System.Drawing.Point(365, 87);
-            this.tb_КолвоПовторовEng.Name = "tb_КолвоПовторовEng";
-            this.tb_КолвоПовторовEng.Size = new System.Drawing.Size(50, 26);
-            this.tb_КолвоПовторовEng.TabIndex = 62;
+            this.gv_ActionTrains.GridControl = this.gridCtrl_ActionTrains;
+            this.gv_ActionTrains.Name = "gv_ActionTrains";
             // 
-            // label11
+            // groupBox2
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(322, 93);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(41, 20);
-            this.label11.TabIndex = 61;
-            this.label11.Text = "Eng";
-            // 
-            // tb_КолвоПовторовRu
-            // 
-            this.tb_КолвоПовторовRu.Location = new System.Drawing.Point(233, 87);
-            this.tb_КолвоПовторовRu.Name = "tb_КолвоПовторовRu";
-            this.tb_КолвоПовторовRu.Size = new System.Drawing.Size(50, 26);
-            this.tb_КолвоПовторовRu.TabIndex = 60;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 93);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(152, 20);
-            this.label10.TabIndex = 59;
-            this.label10.Text = "Кол-во повторов";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(199, 93);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(32, 20);
-            this.label9.TabIndex = 58;
-            this.label9.Text = "Ru";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 59);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(192, 20);
-            this.label7.TabIndex = 53;
-            this.label7.Text = "Время через запятую";
-            // 
-            // cBВремяОповещения
-            // 
-            this.cBВремяОповещения.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cBВремяОповещения.FormattingEnabled = true;
-            this.cBВремяОповещения.Items.AddRange(new object[] {
-            "Прибытие",
-            "Отправление"});
-            this.cBВремяОповещения.Location = new System.Drawing.Point(479, 54);
-            this.cBВремяОповещения.Name = "cBВремяОповещения";
-            this.cBВремяОповещения.Size = new System.Drawing.Size(225, 28);
-            this.cBВремяОповещения.TabIndex = 57;
-            // 
-            // tBВремяОповещения
-            // 
-            this.tBВремяОповещения.Location = new System.Drawing.Point(204, 56);
-            this.tBВремяОповещения.Name = "tBВремяОповещения";
-            this.tBВремяОповещения.Size = new System.Drawing.Size(211, 26);
-            this.tBВремяОповещения.TabIndex = 55;
+            this.groupBox2.Controls.Add(this.cBШаблонОповещения);
+            this.groupBox2.Controls.Add(this.btnДобавитьШаблон);
+            this.groupBox2.Controls.Add(this.btnАвтогенерацияШаблонов);
+            this.groupBox2.Location = new System.Drawing.Point(6, 23);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(698, 68);
+            this.groupBox2.TabIndex = 64;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Генерация";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // cBШаблонОповещения
             // 
             this.cBШаблонОповещения.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBШаблонОповещения.FormattingEnabled = true;
-            this.cBШаблонОповещения.Location = new System.Drawing.Point(6, 23);
+            this.cBШаблонОповещения.Location = new System.Drawing.Point(176, 29);
             this.cBШаблонОповещения.Name = "cBШаблонОповещения";
-            this.cBШаблонОповещения.Size = new System.Drawing.Size(698, 28);
+            this.cBШаблонОповещения.Size = new System.Drawing.Size(469, 28);
             this.cBШаблонОповещения.TabIndex = 53;
-            // 
-            // lVШаблоныОповещения
-            // 
-            this.lVШаблоныОповещения.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader5,
-            this.columnHeader4,
-            this.columnHeader6});
-            this.lVШаблоныОповещения.FullRowSelect = true;
-            this.lVШаблоныОповещения.GridLines = true;
-            this.lVШаблоныОповещения.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.lVШаблоныОповещения.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lVШаблоныОповещения.Location = new System.Drawing.Point(123, 116);
-            this.lVШаблоныОповещения.Name = "lVШаблоныОповещения";
-            this.lVШаблоныОповещения.Size = new System.Drawing.Size(587, 238);
-            this.lVШаблоныОповещения.TabIndex = 51;
-            this.lVШаблоныОповещения.UseCompatibleStateImageBehavior = false;
-            this.lVШаблоныОповещения.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Шаблон";
-            this.columnHeader2.Width = 340;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Время оповещения";
-            this.columnHeader3.Width = 177;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "Время";
-            this.columnHeader5.Width = 125;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Ru";
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "Eng";
-            // 
-            // btnУдалитьШаблон
-            // 
-            this.btnУдалитьШаблон.Location = new System.Drawing.Point(6, 167);
-            this.btnУдалитьШаблон.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btnУдалитьШаблон.Name = "btnУдалитьШаблон";
-            this.btnУдалитьШаблон.Size = new System.Drawing.Size(105, 35);
-            this.btnУдалитьШаблон.TabIndex = 54;
-            this.btnУдалитьШаблон.Text = "Удалить";
-            this.btnУдалитьШаблон.UseVisualStyleBackColor = true;
-            this.btnУдалитьШаблон.Click += new System.EventHandler(this.btnУдалитьШаблон_Click);
             // 
             // btnДобавитьШаблон
             // 
-            this.btnДобавитьШаблон.Location = new System.Drawing.Point(6, 122);
+            this.btnДобавитьШаблон.Location = new System.Drawing.Point(651, 27);
             this.btnДобавитьШаблон.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btnДобавитьШаблон.Name = "btnДобавитьШаблон";
-            this.btnДобавитьШаблон.Size = new System.Drawing.Size(105, 35);
+            this.btnДобавитьШаблон.Size = new System.Drawing.Size(41, 30);
             this.btnДобавитьШаблон.TabIndex = 53;
-            this.btnДобавитьШаблон.Text = "Добавить";
+            this.btnДобавитьШаблон.Text = "+";
             this.btnДобавитьШаблон.UseVisualStyleBackColor = true;
             this.btnДобавитьШаблон.Click += new System.EventHandler(this.btnДобавитьШаблон_Click);
+            // 
+            // btnАвтогенерацияШаблонов
+            // 
+            this.btnАвтогенерацияШаблонов.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnАвтогенерацияШаблонов.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnАвтогенерацияШаблонов.Location = new System.Drawing.Point(13, 24);
+            this.btnАвтогенерацияШаблонов.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btnАвтогенерацияШаблонов.Name = "btnАвтогенерацияШаблонов";
+            this.btnАвтогенерацияШаблонов.Size = new System.Drawing.Size(109, 37);
+            this.btnАвтогенерацияШаблонов.TabIndex = 63;
+            this.btnАвтогенерацияШаблонов.Text = "Авто";
+            this.btnАвтогенерацияШаблонов.UseVisualStyleBackColor = false;
+            this.btnАвтогенерацияШаблонов.Click += new System.EventHandler(this.btnАвтогенерацияШаблонов_Click);
             // 
             // tb_Дополнение
             // 
@@ -1033,6 +922,10 @@
             this.tb_Category.Size = new System.Drawing.Size(143, 26);
             this.tb_Category.TabIndex = 64;
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // EditTrainTableRecForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
@@ -1076,7 +969,9 @@
             this.grbВремяДействия.ResumeLayout(false);
             this.grbВремяДействия.PerformLayout();
             this.gBШаблонОповещения.ResumeLayout(false);
-            this.gBШаблонОповещения.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridCtrl_ActionTrains)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gv_ActionTrains)).EndInit();
+            this.groupBox2.ResumeLayout(false);
             this.gbРежимРаботы.ResumeLayout(false);
             this.gbРежимРаботы.PerformLayout();
             this.gb_ПутьПоУмолчанию.ResumeLayout(false);
@@ -1084,6 +979,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgv_ПутиПоДнямНедели)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1132,25 +1028,10 @@
         private System.Windows.Forms.Button btnДниСледования;
         private System.Windows.Forms.TextBox tBОписаниеДнейСледования;
         private System.Windows.Forms.GroupBox gBШаблонОповещения;
-        private System.Windows.Forms.TextBox tBВремяОповещения;
         private System.Windows.Forms.ComboBox cBШаблонОповещения;
-        private System.Windows.Forms.ListView lVШаблоныОповещения;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.Button btnУдалитьШаблон;
         private System.Windows.Forms.Button btnДобавитьШаблон;
-        private System.Windows.Forms.ComboBox cBВремяОповещения;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tb_Дополнение;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox tb_КолвоПовторовEng;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox tb_КолвоПовторовRu;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.CheckBox cb_Дополнение_Табло;
         private System.Windows.Forms.CheckBox cb_Дополнение_Звук;
         private System.Windows.Forms.GroupBox gbРежимРаботы;
@@ -1176,5 +1057,9 @@
         public System.Windows.Forms.CheckBox chBoxВыводЗвука;
         private System.Windows.Forms.Button btnАвтогенерацияШаблонов;
         private System.Windows.Forms.TextBox tb_Category;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
+        private DevExpress.XtraGrid.GridControl gridCtrl_ActionTrains;
+        private DevExpress.XtraGrid.Views.Grid.GridView gv_ActionTrains;
     }
 }
