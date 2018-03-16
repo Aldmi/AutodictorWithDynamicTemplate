@@ -51,7 +51,6 @@
             this.cBТипПоезда = new System.Windows.Forms.ComboBox();
             this.cBПутьПоУмолчанию = new System.Windows.Forms.ComboBox();
             this.cBОтсчетВагонов = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.gBОстановки = new System.Windows.Forms.GroupBox();
             this.btnРедактировать = new System.Windows.Forms.Button();
             this.lVСписокСтанций = new System.Windows.Forms.ListView();
@@ -104,6 +103,8 @@
             this.chBoxВыводЗвука = new System.Windows.Forms.CheckBox();
             this.tb_Category = new System.Windows.Forms.TextBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.gBНаправление.SuspendLayout();
             this.gBОстановки.SuspendLayout();
             this.gBДниСледования.SuspendLayout();
@@ -117,11 +118,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgv_ПутиПоДнямНедели)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_Принять
             // 
-            this.btn_Принять.Location = new System.Drawing.Point(1120, 708);
+            this.btn_Принять.Location = new System.Drawing.Point(1250, 836);
             this.btn_Принять.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btn_Принять.Name = "btn_Принять";
             this.btn_Принять.Size = new System.Drawing.Size(123, 35);
@@ -132,7 +134,7 @@
             // 
             // btn_Отменить
             // 
-            this.btn_Отменить.Location = new System.Drawing.Point(1267, 707);
+            this.btn_Отменить.Location = new System.Drawing.Point(1121, 836);
             this.btn_Отменить.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btn_Отменить.Name = "btn_Отменить";
             this.btn_Отменить.Size = new System.Drawing.Size(123, 35);
@@ -351,19 +353,10 @@
             "Не объявлять",
             "С головы состава",
             "С хвоста состава"});
-            this.cBОтсчетВагонов.Location = new System.Drawing.Point(218, 357);
+            this.cBОтсчетВагонов.Location = new System.Drawing.Point(12, 25);
             this.cBОтсчетВагонов.Name = "cBОтсчетВагонов";
-            this.cBОтсчетВагонов.Size = new System.Drawing.Size(341, 28);
+            this.cBОтсчетВагонов.Size = new System.Drawing.Size(218, 28);
             this.cBОтсчетВагонов.TabIndex = 48;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 360);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(175, 20);
-            this.label4.TabIndex = 47;
-            this.label4.Text = "Нумерация вагонов";
             // 
             // gBОстановки
             // 
@@ -472,7 +465,7 @@
             this.gBДниСледования.Controls.Add(this.tb_ДниСледованияAlias);
             this.gBДниСледования.Controls.Add(this.tBОписаниеДнейСледования);
             this.gBДниСледования.Controls.Add(this.btnДниСледования);
-            this.gBДниСледования.Location = new System.Drawing.Point(14, 393);
+            this.gBДниСледования.Location = new System.Drawing.Point(14, 468);
             this.gBДниСледования.Name = "gBДниСледования";
             this.gBДниСледования.Size = new System.Drawing.Size(378, 360);
             this.gBДниСледования.TabIndex = 50;
@@ -629,7 +622,7 @@
             this.cBБлокировка.AutoSize = true;
             this.cBБлокировка.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cBБлокировка.ForeColor = System.Drawing.Color.OrangeRed;
-            this.cBБлокировка.Location = new System.Drawing.Point(1118, 663);
+            this.cBБлокировка.Location = new System.Drawing.Point(52, 836);
             this.cBБлокировка.Name = "cBБлокировка";
             this.cBБлокировка.Size = new System.Drawing.Size(275, 33);
             this.cBБлокировка.TabIndex = 51;
@@ -641,9 +634,9 @@
             // 
             this.gBШаблонОповещения.Controls.Add(this.gridCtrl_ActionTrains);
             this.gBШаблонОповещения.Controls.Add(this.groupBox2);
-            this.gBШаблонОповещения.Location = new System.Drawing.Point(398, 393);
+            this.gBШаблонОповещения.Location = new System.Drawing.Point(398, 468);
             this.gBШаблонОповещения.Name = "gBШаблонОповещения";
-            this.gBШаблонОповещения.Size = new System.Drawing.Size(716, 360);
+            this.gBШаблонОповещения.Size = new System.Drawing.Size(981, 360);
             this.gBШаблонОповещения.TabIndex = 52;
             this.gBШаблонОповещения.TabStop = false;
             this.gBШаблонОповещения.Text = "Шаблоны оповещения";
@@ -653,7 +646,7 @@
             this.gridCtrl_ActionTrains.Location = new System.Drawing.Point(6, 92);
             this.gridCtrl_ActionTrains.MainView = this.gv_ActionTrains;
             this.gridCtrl_ActionTrains.Name = "gridCtrl_ActionTrains";
-            this.gridCtrl_ActionTrains.Size = new System.Drawing.Size(704, 262);
+            this.gridCtrl_ActionTrains.Size = new System.Drawing.Size(969, 262);
             this.gridCtrl_ActionTrains.TabIndex = 65;
             this.gridCtrl_ActionTrains.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gv_ActionTrains});
@@ -670,7 +663,7 @@
             this.groupBox2.Controls.Add(this.btnАвтогенерацияШаблонов);
             this.groupBox2.Location = new System.Drawing.Point(6, 23);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(698, 68);
+            this.groupBox2.Size = new System.Drawing.Size(969, 68);
             this.groupBox2.TabIndex = 64;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Генерация";
@@ -680,14 +673,15 @@
             // 
             this.cBШаблонОповещения.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBШаблонОповещения.FormattingEnabled = true;
-            this.cBШаблонОповещения.Location = new System.Drawing.Point(176, 29);
+            this.cBШаблонОповещения.Location = new System.Drawing.Point(446, 28);
             this.cBШаблонОповещения.Name = "cBШаблонОповещения";
             this.cBШаблонОповещения.Size = new System.Drawing.Size(469, 28);
             this.cBШаблонОповещения.TabIndex = 53;
             // 
             // btnДобавитьШаблон
             // 
-            this.btnДобавитьШаблон.Location = new System.Drawing.Point(651, 27);
+            this.btnДобавитьШаблон.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnДобавитьШаблон.Location = new System.Drawing.Point(921, 27);
             this.btnДобавитьШаблон.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btnДобавитьШаблон.Name = "btnДобавитьШаблон";
             this.btnДобавитьШаблон.Size = new System.Drawing.Size(41, 30);
@@ -703,7 +697,7 @@
             this.btnАвтогенерацияШаблонов.Location = new System.Drawing.Point(13, 24);
             this.btnАвтогенерацияШаблонов.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btnАвтогенерацияШаблонов.Name = "btnАвтогенерацияШаблонов";
-            this.btnАвтогенерацияШаблонов.Size = new System.Drawing.Size(109, 37);
+            this.btnАвтогенерацияШаблонов.Size = new System.Drawing.Size(127, 37);
             this.btnАвтогенерацияШаблонов.TabIndex = 63;
             this.btnАвтогенерацияШаблонов.Text = "Авто";
             this.btnАвтогенерацияШаблонов.UseVisualStyleBackColor = false;
@@ -752,9 +746,9 @@
             this.gbРежимРаботы.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.gbРежимРаботы.Controls.Add(this.rB_РежРабРучной);
             this.gbРежимРаботы.Controls.Add(this.rB_РежРабАвтомат);
-            this.gbРежимРаботы.Location = new System.Drawing.Point(1120, 404);
+            this.gbРежимРаботы.Location = new System.Drawing.Point(398, 834);
             this.gbРежимРаботы.Name = "gbРежимРаботы";
-            this.gbРежимРаботы.Size = new System.Drawing.Size(270, 59);
+            this.gbРежимРаботы.Size = new System.Drawing.Size(221, 53);
             this.gbРежимРаботы.TabIndex = 57;
             this.gbРежимРаботы.TabStop = false;
             this.gbРежимРаботы.Text = "Режим работы";
@@ -763,7 +757,7 @@
             // 
             this.rB_РежРабРучной.AutoSize = true;
             this.rB_РежРабРучной.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rB_РежРабРучной.Location = new System.Drawing.Point(155, 25);
+            this.rB_РежРабРучной.Location = new System.Drawing.Point(119, 20);
             this.rB_РежРабРучной.Name = "rB_РежРабРучной";
             this.rB_РежРабРучной.Size = new System.Drawing.Size(94, 24);
             this.rB_РежРабРучной.TabIndex = 61;
@@ -774,7 +768,7 @@
             // 
             this.rB_РежРабАвтомат.AutoSize = true;
             this.rB_РежРабАвтомат.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rB_РежРабАвтомат.Location = new System.Drawing.Point(21, 25);
+            this.rB_РежРабАвтомат.Location = new System.Drawing.Point(9, 21);
             this.rB_РежРабАвтомат.Name = "rB_РежРабАвтомат";
             this.rB_РежРабАвтомат.Size = new System.Drawing.Size(103, 24);
             this.rB_РежРабАвтомат.TabIndex = 60;
@@ -871,7 +865,7 @@
             // 
             this.chBox_сменнаяНумерация.AutoSize = true;
             this.chBox_сменнаяНумерация.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic);
-            this.chBox_сменнаяНумерация.Location = new System.Drawing.Point(580, 363);
+            this.chBox_сменнаяНумерация.Location = new System.Drawing.Point(13, 64);
             this.chBox_сменнаяНумерация.Name = "chBox_сменнаяНумерация";
             this.chBox_сменнаяНумерация.Size = new System.Drawing.Size(180, 24);
             this.chBox_сменнаяНумерация.TabIndex = 61;
@@ -883,7 +877,7 @@
             this.chBoxВыводНаТабло.AutoSize = true;
             this.chBoxВыводНаТабло.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.chBoxВыводНаТабло.ForeColor = System.Drawing.Color.DarkGreen;
-            this.chBoxВыводНаТабло.Location = new System.Drawing.Point(7, 26);
+            this.chBoxВыводНаТабло.Location = new System.Drawing.Point(9, 22);
             this.chBoxВыводНаТабло.Name = "chBoxВыводНаТабло";
             this.chBoxВыводНаТабло.Size = new System.Drawing.Size(107, 24);
             this.chBoxВыводНаТабло.TabIndex = 62;
@@ -895,9 +889,9 @@
             this.groupBox1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.groupBox1.Controls.Add(this.chBoxВыводЗвука);
             this.groupBox1.Controls.Add(this.chBoxВыводНаТабло);
-            this.groupBox1.Location = new System.Drawing.Point(1120, 472);
+            this.groupBox1.Location = new System.Drawing.Point(625, 835);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(270, 58);
+            this.groupBox1.Size = new System.Drawing.Size(221, 52);
             this.groupBox1.TabIndex = 63;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Вывод информаци";
@@ -907,7 +901,7 @@
             this.chBoxВыводЗвука.AutoSize = true;
             this.chBoxВыводЗвука.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.chBoxВыводЗвука.ForeColor = System.Drawing.Color.DarkGreen;
-            this.chBoxВыводЗвука.Location = new System.Drawing.Point(121, 26);
+            this.chBoxВыводЗвука.Location = new System.Drawing.Point(132, 23);
             this.chBoxВыводЗвука.Name = "chBoxВыводЗвука";
             this.chBoxВыводЗвука.Size = new System.Drawing.Size(67, 24);
             this.chBoxВыводЗвука.TabIndex = 63;
@@ -926,14 +920,25 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.cBОтсчетВагонов);
+            this.groupBox3.Controls.Add(this.chBox_сменнаяНумерация);
+            this.groupBox3.Location = new System.Drawing.Point(14, 357);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(238, 102);
+            this.groupBox3.TabIndex = 65;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Нумерация вагонов";
+            // 
             // EditTrainTableRecForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1395, 759);
+            this.ClientSize = new System.Drawing.Size(1386, 892);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.tb_Category);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.chBox_сменнаяНумерация);
             this.Controls.Add(this.gb_ПутьПоУмолчанию);
             this.Controls.Add(this.tBНомерПоездаДоп);
             this.Controls.Add(this.label12);
@@ -946,8 +951,6 @@
             this.Controls.Add(this.cBБлокировка);
             this.Controls.Add(this.gBДниСледования);
             this.Controls.Add(this.gBОстановки);
-            this.Controls.Add(this.cBОтсчетВагонов);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.cBТипПоезда);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tBНомерПоезда);
@@ -980,6 +983,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1004,7 +1009,6 @@
         private System.Windows.Forms.ComboBox cBТипПоезда;
         private System.Windows.Forms.ComboBox cBПутьПоУмолчанию;
         private System.Windows.Forms.ComboBox cBОтсчетВагонов;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox gBОстановки;
         private System.Windows.Forms.ListView lVСписокСтанций;
         private System.Windows.Forms.RadioButton rBСОстановкамиКроме;
@@ -1061,5 +1065,7 @@
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private DevExpress.XtraGrid.GridControl gridCtrl_ActionTrains;
         private DevExpress.XtraGrid.Views.Grid.GridView gv_ActionTrains;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

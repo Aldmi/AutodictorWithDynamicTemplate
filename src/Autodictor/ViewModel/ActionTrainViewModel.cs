@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+
+
 namespace MainExample.ViewModel
 {
     public enum ActionTypeViewModel
     {
-      [Display(Name = "Id")]
+      [Display(Name = "НЕТ")]
       None,
 
       [Display(Name = "ПРИБ.")]
@@ -20,6 +22,9 @@ namespace MainExample.ViewModel
     {
         #region prop
 
+        [Display(AutoGenerateField = false)]      //Не отображать в таблице
+        public int IdTrainType { get; set; }     //IdTrainType
+
         [Display(Name = "Id")]
         [Editable(false)]
         public int Id { get; set; }              //Id
@@ -28,12 +33,9 @@ namespace MainExample.ViewModel
         [Editable(false)]
         public string Name { get; set; }         //Имя
 
-        [Display(Name = "Время циклического повтора")]
-        public int? ActionTimeCycle { get; set; }      //Время циклическго повтора
-
-        [Display(Name = "Временная дельта")]
-        [Required(ErrorMessage = "Требуется поле Временная дельта")]
-        public int? ActionTimeDelta { get; set; }      //Дельта времени
+        [Display(Name = "дельта T (мин.)")]
+        [Required(ErrorMessage = "Требуется поле дельта T")]
+        public string ActionTimeDelta { get; set; }      //Дельта времени
 
         [Display(Name = "Тип поезда")]
         [Required(ErrorMessage = "Требуется поле Тип поезда")]

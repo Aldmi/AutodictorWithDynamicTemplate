@@ -82,24 +82,20 @@ namespace DAL.XmlRaw.Repository
                                 (string)lang.Attribute("SoundEnd")));
                         }
 
-                        //для каждого "Time" указанного через зяпятую, создается копия шаблона (т.е. у кахждого шаблона одно время, циклическое или обычное)
+                        //Добавим ActionTrain
                         var times = (string)act.Attribute("Time");
                         if (!string.IsNullOrEmpty(times))
                         {
-                            var deltaTimes = times.Split(',').ToList();
-                            foreach (var deltaTime in deltaTimes)
-                            {
-                                listActs.Add(new ActionTrain(
-                                    (string)act.Attribute("Id"),
-                                    (string)act.Attribute("Name"),
-                                    (string)act.Attribute("Type"),
-                                    (string)act.Attribute("Priority"),
-                                    (string)act.Attribute("Repeat"),
-                                    (string)act.Attribute("Transit"),
-                                    (string)act.Attribute("Emergency"),
-                                    deltaTime,
-                                    listLangs));
-                            }
+                            listActs.Add(new ActionTrain(
+                                (string)act.Attribute("Id"),
+                                (string)act.Attribute("Name"),
+                                (string)act.Attribute("Type"),
+                                (string)act.Attribute("Priority"),
+                                (string)act.Attribute("Repeat"),
+                                (string)act.Attribute("Transit"),
+                                (string)act.Attribute("Emergency"),
+                                (string)act.Attribute("Time"),
+                                listLangs));            
                         }
                     }
 

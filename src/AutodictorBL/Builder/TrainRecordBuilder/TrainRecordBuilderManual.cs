@@ -56,15 +56,15 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             //DEBUG------------------------------------------------------------------------------------------------------------
             var templateStr = string.Empty;//@"Начало посадки на пассажирский поезд:10:1:Начало посадки на скорый поезд:15:0";
 
-            foreach (var act in rule.ActionTrains)
-            {
-                if (act.Time != null)
-                {
-                    templateStr += act.Name + ":";
-                    templateStr += act.Time.DeltaTime + ":";
-                    templateStr += act.ActionType == ActionType.Arrival ? 1 : 0;
-                }
-            }
+            //foreach (var act in rule.ActionTrains)
+            //{
+            //    if (act.Time != null)
+            //    {
+            //        templateStr += act.Name + ":";
+            //        templateStr += act.Time.DeltaTime + ":";
+            //        templateStr += act.ActionType == ActionType.Arrival ? 1 : 0;
+            //    }
+            //}
 
             TrainTableRecord.SoundTemplates = templateStr;
         }

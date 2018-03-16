@@ -12,7 +12,10 @@ using AutodictorBL.Factory.TrainRecordFactory;
 using Autofac;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
+using DevExpress.Utils;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using MainExample.Entites;
 using MainExample.Utils;
 using MainExample.ViewModel;
@@ -37,7 +40,7 @@ namespace MainExample
         private readonly TrainRecService _trainRecService;
         private string[] SelectedDestinationStations { get; set; } = new string[0];
 
-        private List<ActionTrainViewModel> ActionTrainsVm { get; set; } = new List<ActionTrainViewModel>();
+        private List<ActionTrainViewModel> ActionTrainsVm { get; } = new List<ActionTrainViewModel>();
 
         #endregion
 
@@ -52,10 +55,11 @@ namespace MainExample
             TrainRec = trainRec;
 
             InitializeComponent();
-            SettingUi();
         }
 
         #endregion
+
+
 
 
 
@@ -69,6 +73,7 @@ namespace MainExample
             }
 
             Model2Ui();
+            SettingUi();
             base.OnLoad(e);
         }
 
@@ -89,8 +94,15 @@ namespace MainExample
             gv_ActionTrains.OptionsBehavior.Editable = true;
             // Prevent the focused cell from being highlighted.
             gv_ActionTrains.OptionsSelection.EnableAppearanceFocusedCell = false;
-            //// Draw a dotted focus rectangle around the entire row.
             gv_ActionTrains.FocusRectStyle = DrawFocusRectStyle.RowFullFocus;
+
+            //Выравнивание в ячейках по центру.
+            foreach (GridColumn column in gv_ActionTrains.Columns)
+            {
+               column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
+               column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+            }
+            gv_ActionTrains.BestFitColumns();
         }
 
 
@@ -181,8 +193,6 @@ namespace MainExample
             rB_РежРабАвтомат.Checked = TrainRec.Автомат;
             rB_РежРабРучной.Checked = !TrainRec.Автомат;
 
-            // ОтобразитьШаблоныОповещания(trainRec.SoundTemplates);
-
             if (TrainRec.ArrivalTime.HasValue && TrainRec.DepartureTime.HasValue)
             {
                 rBТранзит.Checked = true;
@@ -237,31 +247,56 @@ namespace MainExample
                 rBНеОповещать.Checked = true;
             }
 
-
             //Заполнение списка шаблонов
-            foreach (var trRec in TrainRec.ActionTrains)
-            {
-                ActionTrainsVm.Add(MapActionTrain2ViewModel(trRec));
-            }
-            gridCtrl_ActionTrains.DataSource = ActionTrainsVm;
+            ActionTrainsVm.AddRange(TrainRec.ActionTrains.Select(MapActionTrain2ViewModel));
+            gridCtrl_ActionTrains.DataSource= ActionTrainsVm;
         }
 
 
 
         private ActionTrainViewModel MapActionTrain2ViewModel(ActionTrain actionTrain)
         {
+            var time = string.Empty;
+            if (actionTrain.Time != null)
+            {
+                if (actionTrain.Time.CycleTime.HasValue)
+                {
+                    time= "~" + actionTrain.Time.CycleTime;
+                }
+                else
+                {
+                    time= actionTrain.Time.DeltaTimes.Aggregate(string.Empty, (current, deltaTime) => current + deltaTime + ", ").TrimEnd(',');
+                }
+            }
+
             return new ActionTrainViewModel
             {
+                IdTrainType= TrainRec.TrainTypeByRyle.Id,
                 Id = actionTrain.Id,
-                Name = actionTrain.Name,
-                ActionTimeCycle = actionTrain.Time.CycleTime,
-                ActionTimeDelta = actionTrain.Time.DeltaTime,
+                Name= actionTrain.Name,
+                ActionTimeDelta = time,
                 ActionTypeViewModel = (ActionTypeViewModel) actionTrain.ActionType,
-                Priority = actionTrain.Priority,
-                Repeat = actionTrain.Repeat,
-                Langs = actionTrain.Langs.Select(lang => new LangViewModel { Id = lang.Id, Name = lang.Name, IsEnable = lang.IsEnable }).ToList()
+                Priority= actionTrain.Priority,
+                Repeat= actionTrain.Repeat,
+                Langs= actionTrain.Langs?.Select(lang => new LangViewModel { Id = lang.Id, Name = lang.Name, IsEnable = lang.IsEnable }).ToList()
             };
         }
+
+
+        private ActionTrain MapViewModel2ActionTrain(ActionTrainViewModel actionTrainVm)
+        {
+            return new ActionTrain
+            {
+                Id = actionTrainVm.Id,
+                Name = actionTrainVm.Name,
+                //Time = new ActionTime { CycleTime = actionTrainVm.ActionTimeCycle, DeltaTime = actionTrainVm.ActionTimeDelta},
+                ActionType = (ActionType)actionTrainVm.ActionTypeViewModel,
+                Priority = actionTrainVm.Priority,
+                Repeat = actionTrainVm.Repeat,
+                //Langs = actionTrainVm.Langs.Select(lang=> new Lang {})
+            };
+        }
+
 
 
 
@@ -306,12 +341,10 @@ namespace MainExample
 
 
             TrainRec.Direction = Program.DirectionService.GetByName(cBНаправ.Text);
-            TrainRec.StationDepart =
-                TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBОткуда.Text); //TODO: Искать по id
-            TrainRec.StationArrival =
-                TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBКуда.Text); //TODO: Искать по id 
+            TrainRec.StationDepart= TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBОткуда.Text); //TODO: Искать по id
+            TrainRec.StationArrival= TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBКуда.Text); //TODO: Искать по id 
 
-
+      
             if (rBВремяДействияС.Checked == true)
             {
                 TrainRec.ВремяНачалаДействияРасписания = dTPВремяДействияС.Value;
@@ -334,8 +367,6 @@ namespace MainExample
             }
 
             TrainRec.Active = !cBБлокировка.Checked;
-            //TrainRec.SoundTemplates = ПолучитьШаблоныОповещения();
-
             SavePathValues(TrainRec);
 
             TrainRec.WagonsNumbering = (WagonsNumbering) cBОтсчетВагонов.SelectedIndex;
@@ -411,6 +442,10 @@ namespace MainExample
             }
 
             TrainRec.DaysAlias = tb_ДниСледованияAlias.Text;
+
+            //Сохранить шаблоны
+            TrainRec.ActionTrains.Clear();
+            TrainRec.ActionTrains.AddRange(ActionTrainsVm.Select(MapViewModel2ActionTrain));
         }
 
 
@@ -611,11 +646,12 @@ namespace MainExample
         {
             try
             {
-                var rule = TrainRec.TrainTypeByRyle;
+                ActionTrainsVm.Clear();
+                ActionTrainsVm.AddRange(TrainRec.TrainTypeByRyle.ActionTrains.Select(MapActionTrain2ViewModel));
+                gv_ActionTrains.RefreshData();
                 //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
                 //var factory = new TrainRecordFactoryManual(builder);
                 //TrainRec = factory.Construct();
-
                 //ОтобразитьШаблоныОповещания(TrainRec.SoundTemplates);
             }
             catch (Exception ex)
@@ -679,8 +715,7 @@ namespace MainExample
                 dgv_ПутиПоДнямНедели.Rows.Add(row);
 
                 // Выставить значения путей 
-                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value =
-                    string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
+                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
                 dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Tag = path.Key;
                 rowNumber++;
             }

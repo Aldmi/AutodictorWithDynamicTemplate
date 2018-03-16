@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 
 namespace DAL.Abstract.Entitys
 {
@@ -80,7 +81,7 @@ namespace DAL.Abstract.Entitys
     {
         #region prop
 
-        public int Id { get; }                    //Id действия
+        public int Id { get; set; }                    //Id действия
         public string Name { get; set; }
         public ActionType ActionType { get; set; }
         public int Priority { get; set; }
@@ -88,7 +89,7 @@ namespace DAL.Abstract.Entitys
         public bool Transit { get; set; }
         public Emergency Emergency { get; set; }
         public ActionTime Time { get; set; }
-        public List<Lang> Langs { get; set; }      //Шаблоны на разных языках
+        public List<Lang> Langs { get; set; }         //Шаблоны на разных языках
 
         #endregion
 
@@ -96,6 +97,10 @@ namespace DAL.Abstract.Entitys
 
 
         #region ctor
+
+        public ActionTrain()
+        {            
+        }
 
         public ActionTrain(string id, string name, string actionType, string priority, string repeat, string transit, string emergency, string times, List<Lang> langs)
         {
@@ -154,13 +159,15 @@ namespace DAL.Abstract.Entitys
 
     /// <summary>
     /// Время воспроизведенния для шаблона.
+    /// Если CycleTime == null, то указанн список временных дельт DeltaTimes.
+    /// Если CycleTime != null, то указано циклическое время CycleTime.
     /// </summary>
     public class ActionTime
     {
         #region
 
-        public int? CycleTime { get; }     // Если стоит CycleTime, то DeltaTime игнорируется
-        public int? DeltaTime { get; }     // Если стоит DeltaTime, то CycleTime игнорируется
+        public int? CycleTime { get; set; }
+        public List<int> DeltaTimes { get; set; }
 
         #endregion
 
@@ -169,6 +176,12 @@ namespace DAL.Abstract.Entitys
 
         #region ctor
 
+        public ActionTime()
+        {
+            
+        }
+
+
         public ActionTime(string time)
         {
             if (string.IsNullOrEmpty(time))
@@ -176,13 +189,19 @@ namespace DAL.Abstract.Entitys
 
             if (time.StartsWith("~"))
             {
-                DeltaTime = null;
+                DeltaTimes = null;
                 CycleTime = int.Parse(time.Remove(0, 1));
             }
             else
             {
-                CycleTime = null;
-                DeltaTime = int.Parse(time);
+                CycleTime= null;
+                DeltaTimes= new List<int>();
+
+                var deltaTimes= time.Split(',').ToList();
+                foreach (var dt in deltaTimes)
+                {
+                    DeltaTimes.Add(int.Parse(dt));
+                }
             }
         }
 
@@ -198,12 +217,12 @@ namespace DAL.Abstract.Entitys
     {
         #region prop
 
-        public int Id { get; }              //Id языка
+        public int Id { get; set; }              //Id языка
         public string Name { get; set; }
         public bool IsEnable { get; set; }  // Вкл/Выкл язык
-        public List<string> TemplateSoundStart { get; }
-        public List<string> TemplateSoundBody { get; }
-        public List<string> TemplateSoundEnd { get; }
+        public List<string> TemplateSoundStart { get; set; }
+        public List<string> TemplateSoundBody { get; set; }
+        public List<string> TemplateSoundEnd { get; set; }
 
         #endregion
 
@@ -211,6 +230,11 @@ namespace DAL.Abstract.Entitys
 
 
         #region ctor
+
+        public Lang()
+        {
+            
+        }
 
         public Lang(string id, string name, string templateSoundStart, string templateSoundBody, string templateSoundEnd)
         {
