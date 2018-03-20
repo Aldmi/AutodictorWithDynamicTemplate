@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.AccessControl;
 
@@ -185,7 +186,7 @@ namespace DAL.Abstract.Entitys
         public ActionTime(string time)
         {
             if (string.IsNullOrEmpty(time))
-                return;
+                throw new ArgumentNullException(nameof(time));
 
             if (time.StartsWith("~"))
             {

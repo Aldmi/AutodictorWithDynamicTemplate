@@ -31,7 +31,7 @@ namespace DAL.Abstract.Entitys
         public string DaysAlias;          //дни следования (строка заполняется в ручную)
         public DateTime ВремяНачалаДействияРасписания;
         public DateTime ВремяОкончанияДействияРасписания;
-        public bool Active;               //активность, отмека галочкой
+        public bool Active;               //активность, отметка галочкой
         public WagonsNumbering WagonsNumbering;   //Нумерация вагонов
         public bool? ChangeTrainPathDirection;      //смена направления (для транзитов)
         public Dictionary<WeekDays, Pathway> TrainPathNumber;      //Пути по дням недели или постоянно

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -13,7 +14,9 @@ using Autofac;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DevExpress.Utils;
+using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using MainExample.Entites;
@@ -102,7 +105,6 @@ namespace MainExample
                column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
                column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
             }
-            gv_ActionTrains.BestFitColumns();
         }
 
 
@@ -175,8 +177,7 @@ namespace MainExample
                 rBВремяДействияПо.Checked = true;
             }
 
-            ПланРасписанияПоезда ТекущийПланРасписанияПоезда =
-                ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
+            ПланРасписанияПоезда ТекущийПланРасписанияПоезда =ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
             Расписание расписание = new Расписание(ТекущийПланРасписанияПоезда);
             tBОписаниеДнейСледования.Text =
                 расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
@@ -247,7 +248,16 @@ namespace MainExample
                 rBНеОповещать.Checked = true;
             }
 
-            //Заполнение списка шаблонов
+            //Заполнение списка выбора из всех шаблонов
+            var ollActionTrains = _trainRecService.GetTrainTypeByRyles()
+                .Select(trainType => trainType.ActionTrains)
+                .SelectMany(l => l.ToList()).
+                Select(MapActionTrain2ViewModel).ToList();
+            cBШаблонОповещения.DataSource = ollActionTrains;
+            cBШаблонОповещения.DisplayMember = "Name";
+            cBШаблонОповещения.ValueMember = "Name";
+
+            //Заполнение таблицы шаблонов
             ActionTrainsVm.AddRange(TrainRec.ActionTrains.Select(MapActionTrain2ViewModel));
             gridCtrl_ActionTrains.DataSource= ActionTrainsVm;
         }
@@ -265,7 +275,7 @@ namespace MainExample
                 }
                 else
                 {
-                    time= actionTrain.Time.DeltaTimes.Aggregate(string.Empty, (current, deltaTime) => current + deltaTime + ", ").TrimEnd(',');
+                    time= actionTrain.Time.DeltaTimes.Aggregate(string.Empty, (current, deltaTime) => current + deltaTime + ", ").TrimEnd(',', ' ');
                 }
             }
 
@@ -278,22 +288,41 @@ namespace MainExample
                 ActionTypeViewModel = (ActionTypeViewModel) actionTrain.ActionType,
                 Priority= actionTrain.Priority,
                 Repeat= actionTrain.Repeat,
-                Langs= actionTrain.Langs?.Select(lang => new LangViewModel { Id = lang.Id, Name = lang.Name, IsEnable = lang.IsEnable }).ToList()
+                Transit= actionTrain.Transit,
+                Langs= actionTrain.Langs?.Select(lang => new LangViewModel
+                {
+                    Id= lang.Id,
+                    Name= lang.Name,
+                    IsEnable= lang.IsEnable,
+                    TemplateSoundBody= lang.TemplateSoundBody,
+                    TemplateSoundStart= lang.TemplateSoundStart,
+                    TemplateSoundEnd= lang.TemplateSoundEnd
+                }).ToList()
             };
         }
 
 
         private ActionTrain MapViewModel2ActionTrain(ActionTrainViewModel actionTrainVm)
         {
+            var timeAction = new ActionTime(actionTrainVm.ActionTimeDelta);
             return new ActionTrain
             {
                 Id = actionTrainVm.Id,
                 Name = actionTrainVm.Name,
-                //Time = new ActionTime { CycleTime = actionTrainVm.ActionTimeCycle, DeltaTime = actionTrainVm.ActionTimeDelta},
+                Time = timeAction,
                 ActionType = (ActionType)actionTrainVm.ActionTypeViewModel,
                 Priority = actionTrainVm.Priority,
                 Repeat = actionTrainVm.Repeat,
-                //Langs = actionTrainVm.Langs.Select(lang=> new Lang {})
+                Transit = actionTrainVm.Transit,
+                Langs = actionTrainVm.Langs.Select(lang=> new Lang
+                {
+                    Id = lang.Id,
+                    Name = lang.Name,
+                    IsEnable = lang.IsEnable,
+                    TemplateSoundBody = lang.TemplateSoundBody,
+                    TemplateSoundStart = lang.TemplateSoundStart,
+                    TemplateSoundEnd = lang.TemplateSoundEnd
+                }).ToList()
             };
         }
 
@@ -374,8 +403,7 @@ namespace MainExample
             //TODO: использовать TrainTypeByRyleService
             //TrainRec.ТипПоезда = (ТипПоезда)cBТипПоезда.SelectedIndex;
             var listTypeTrains = _trainRecService.GetTrainTypeByRyles().ToList();
-            TrainRec.TrainTypeByRyle =
-                (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
+            TrainRec.TrainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
 
             TrainRec.ChangeTrainPathDirection = chBox_сменнаяНумерация.Checked;
             TrainRec.IsScoreBoardOutput = chBoxВыводНаТабло.Checked;
@@ -447,59 +475,6 @@ namespace MainExample
             TrainRec.ActionTrains.Clear();
             TrainRec.ActionTrains.AddRange(ActionTrainsVm.Select(MapViewModel2ActionTrain));
         }
-
-
-        //public string ПолучитьШаблоныОповещения()
-        //{
-        //    string РезультирующийШаблонОповещения = "";
-
-        //    for (int item = 0; item < this.lVШаблоныОповещения.Items.Count; item++)
-        //    {
-        //        РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[0].Text + ":";
-        //        РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[1].Text + ":";
-        //        РезультирующийШаблонОповещения +=
-        //            (this.lVШаблоныОповещения.Items[item].SubItems[2].Text == "Отправление") ? "1:" : "0:";
-        //    }
-
-        //    if (РезультирующийШаблонОповещения.Length > 0)
-        //        if (РезультирующийШаблонОповещения[РезультирующийШаблонОповещения.Length - 1] == ':')
-        //            РезультирующийШаблонОповещения =
-        //                РезультирующийШаблонОповещения.Remove(РезультирующийШаблонОповещения.Length - 1);
-
-        //    return РезультирующийШаблонОповещения;
-        //}
-
-
-        //private void ОтобразитьШаблоныОповещания(string soundTemplates)
-        //{
-        //    cBШаблонОповещения.Items.Add("Блокировка");
-
-        //    foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
-        //        cBШаблонОповещения.Items.Add(Item.Name);
-
-
-        //    string[] шаблонОповещения = soundTemplates.Split(':');
-        //    if ((шаблонОповещения.Length % 3) == 0)
-        //    {
-        //        for (int i = 0; i < шаблонОповещения.Length / 3; i++)
-        //        {
-        //            if (cBШаблонОповещения.Items.Contains(шаблонОповещения[3 * i + 0]))
-        //            {
-        //                int типОповещенияПути;
-        //                int.TryParse(шаблонОповещения[3 * i + 2], out типОповещенияПути);
-        //                типОповещенияПути %= 2;
-        //                ListViewItem lvi = new ListViewItem(new string[]
-        //                {
-        //                    шаблонОповещения[3 * i + 0], шаблонОповещения[3 * i + 1],
-        //                    Program.ТипыВремени[типОповещенияПути]
-        //                });
-        //                this.lVШаблоныОповещения.Items.Add(lvi);
-        //            }
-        //        }
-        //    }
-
-        //    cBВремяОповещения.SelectedIndex = 0;
-        //}
 
 
         private void rBОтправление_CheckedChanged(object sender, EventArgs e)
@@ -582,12 +557,11 @@ namespace MainExample
 
         private void btnДниСледования_Click(object sender, EventArgs e)
         {
-            ПланРасписанияПоезда ТекущийПланРасписанияПоезда =
-                ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
-            ТекущийПланРасписанияПоезда.УстановитьНомерПоезда(this.TrainRec.Num);
-            ТекущийПланРасписанияПоезда.УстановитьНазваниеПоезда(this.TrainRec.Name);
+            ПланРасписанияПоезда текущийПланРасписанияПоезда= ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
+            текущийПланРасписанияПоезда.УстановитьНомерПоезда(this.TrainRec.Num);
+            текущийПланРасписанияПоезда.УстановитьНазваниеПоезда(this.TrainRec.Name);
 
-            Расписание расписание = new Расписание(ТекущийПланРасписанияПоезда);
+            Расписание расписание = new Расписание(текущийПланРасписанияПоезда);
 
 
             string ВремяДействия = "";
@@ -596,48 +570,33 @@ namespace MainExample
             else if (rBВремяДействияПо.Checked)
                 ВремяДействия = "по " + dTPВремяДействияПо.Value.ToString("dd.MM.yyyy");
             else if (rBВремяДействияСПо.Checked)
-                ВремяДействия = "c " + dTPВремяДействияС2.Value.ToString("dd.MM.yyyy") + " по " +
-                                dTPВремяДействияПо2.Value.ToString("dd.MM.yyyy");
+                ВремяДействия = "c " + dTPВремяДействияС2.Value.ToString("dd.MM.yyyy") + " по " + dTPВремяДействияПо2.Value.ToString("dd.MM.yyyy");
             else
                 ВремяДействия = "постоянно";
 
             расписание.УстановитьВремяДействия(ВремяДействия);
             расписание.ShowDialog();
-            if (расписание.DialogResult == System.Windows.Forms.DialogResult.OK)
+            if (расписание.DialogResult == DialogResult.OK)
             {
                 this.TrainRec.Days = расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуРасписания();
-                tBОписаниеДнейСледования.Text =
-                    расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
+                tBОписаниеДнейСледования.Text = расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
             }
         }
 
 
         private void btnДобавитьШаблон_Click(object sender, EventArgs e)
         {
-            //if (cBШаблонОповещения.SelectedIndex >= 0)
-            //{
-            //    string ВремяОповещения = tBВремяОповещения.Text.Replace(" ", "");
-            //    string[] Времена = ВремяОповещения.Split(',');
-
-            //    int TempInt = 0;
-            //    bool Result = true;
-
-            //    foreach (var ВременнойИнтервал in Времена)
-            //        Result &= int.TryParse(ВременнойИнтервал, out TempInt);
-
-            //    if (Result == true)
-            //    {
-            //        ListViewItem lvi = new ListViewItem(new string[]
-            //            {cBШаблонОповещения.Text, tBВремяОповещения.Text, cBВремяОповещения.Text});
-            //        this.lVШаблоныОповещения.Items.Add(lvi);
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show(this,
-            //            "Строка должна содержать время смещения шаблона оповещения, разделенного запятыми",
-            //            "Внимание !!!");
-            //    }
-            //}
+            if (cBШаблонОповещения.SelectedIndex >= 0)
+            {
+              var selectedItem=  cBШаблонОповещения.SelectedItem as ActionTrainViewModel;
+              if (selectedItem != null)
+              {
+                  var maxId= ActionTrainsVm.Max(actionTrain=> actionTrain.Id);
+                  selectedItem.Id = ++maxId;
+                  ActionTrainsVm.Add(selectedItem);
+                  gv_ActionTrains.RefreshData();
+              }
+            }
         }
 
 
@@ -646,9 +605,18 @@ namespace MainExample
         {
             try
             {
+                var listTypeTrains = _trainRecService.GetTrainTypeByRyles().ToList();
+                var trainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
+                if (trainTypeByRyle == null)
+                {
+                    MessageBox.Show(@"У выбранного типа поезда нет Шаблонов обовещениея");
+                    return;
+                }
+
                 ActionTrainsVm.Clear();
-                ActionTrainsVm.AddRange(TrainRec.TrainTypeByRyle.ActionTrains.Select(MapActionTrain2ViewModel));
+                ActionTrainsVm.AddRange(trainTypeByRyle.ActionTrains.Select(MapActionTrain2ViewModel));
                 gv_ActionTrains.RefreshData();
+                gv_ActionTrains.BestFitColumns();//DEBUG
                 //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
                 //var factory = new TrainRecordFactoryManual(builder);
                 //TrainRec = factory.Construct();
@@ -873,6 +841,86 @@ namespace MainExample
         private void groupBox2_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void gridCtrl_ActionTrains_ProcessGridKey(object sender, KeyEventArgs e)
+        {
+            var grid = sender as GridControl;
+            var view = grid?.FocusedView as GridView;
+            if (e.KeyData == Keys.Delete)
+            {
+                if (MessageBox.Show(@"Удалить строку", @"Confirmation", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    return;
+
+                view?.DeleteSelectedRows();
+                e.Handled = true;
+            }
+        }
+
+
+        /// <summary>
+        /// Вадидация введенных данных
+        /// </summary>
+        private void gv_ActionTrains_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            ColumnView view = sender as ColumnView;
+            GridColumn column = (e as EditFormValidateEditorEventArgs)?.Column ?? view?.FocusedColumn;
+            if(column == null)
+                return;
+
+            int outValue;
+            var value = e.Value.ToString();
+            switch (column.FieldName)
+            {
+                case "ActionTimeDelta":
+                    try
+                    {
+                        var timeAction = new ActionTime(value);
+                        e.Valid = true;
+                    }
+                    catch (Exception)
+                    {
+                        e.ErrorText = "Формат времени: \"~10\" - Циклическое оповещение раз в 10 мин.   \"-10, 15\" - Оповестить за 10 мин до события и после события через 15 мин";
+                        e.Valid= false;
+                    }
+                    break;
+
+                case "Priority":
+                    if (!int.TryParse(value, out outValue))
+                    {
+                        e.Valid = false;
+                        e.ErrorText = "приоритет должен быть числом";
+                        return;
+                    }
+                    if (outValue < 0 || outValue > 10)
+                    {
+                        e.Valid = false;
+                        e.ErrorText = "приоритет Должен быть в диапазоне 0...10";
+                        return;
+                    }
+                    e.Valid= true;
+                    break;
+
+                case "Repeat":
+                    if (!int.TryParse(value, out outValue))
+                    {
+                        e.Valid = false;
+                        e.ErrorText = "Кол-во повторов должно быть числом";
+                        return;
+                    }
+                    if (outValue < 0 || outValue > 5)
+                    {
+                        e.Valid = false;
+                        e.ErrorText = "приоритет Должен быть в диапазоне 0...10";
+                        return;
+                    }
+                    e.Valid = true;
+                    break;
+
+                default:
+                    e.Valid = true;
+                    return;
+            }
         }
     }
 }

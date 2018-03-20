@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -23,7 +24,7 @@ namespace MainExample.ViewModel
         #region prop
 
         [Display(AutoGenerateField = false)]      //Не отображать в таблице
-        public int IdTrainType { get; set; }     //IdTrainType
+        public int IdTrainType { get; set; }      //IdTrainType
 
         [Display(Name = "Id")]
         [Editable(false)]
@@ -35,12 +36,11 @@ namespace MainExample.ViewModel
 
         [Display(Name = "дельта T (мин.)")]
         [Required(ErrorMessage = "Требуется поле дельта T")]
-        public string ActionTimeDelta { get; set; }      //Дельта времени
+        public string ActionTimeDelta { get; set; }      //Дельта времени  (строковое представление ActionTime)
 
         [Display(Name = "Тип поезда")]
         [Required(ErrorMessage = "Требуется поле Тип поезда")]
         public ActionTypeViewModel ActionTypeViewModel { get; set; }         //тип действия относительно которого отсчитывается ActionTimeDelta
-
 
         [Display(Name = "Приоритет")]
         [Required(ErrorMessage = "Требуется поле Приоритет")]
@@ -50,8 +50,13 @@ namespace MainExample.ViewModel
         [Required(ErrorMessage = "Требуется поле Кол-во повторов")]
         public int Repeat { get; set; }         //Кол-во повторов
 
-        [Display(Name = "Параметры оповещения")]
+        [Display(AutoGenerateField = false)]    //Не отображать в таблице
+        public bool Transit { get; set; }
+
+        [DisplayName("Шаблоны")]
         public List<LangViewModel> Langs { get; set; }      //Шаблоны на разных языках
+
+       // public Emergency Emergency { get; set; }
 
         #endregion
     }
@@ -71,6 +76,15 @@ namespace MainExample.ViewModel
 
         [Display(Name = "Разрешение")]
         public bool IsEnable { get; set; }     // Вкл/Выкл язык
+
+        [DisplayName("НАЧАЛО")]
+        public List<string> TemplateSoundStart { get; set; }
+
+        [DisplayName("ТЕЛО")]       
+        public List<string> TemplateSoundBody { get; set; }
+
+        [DisplayName("КОНЕЦ")]
+        public List<string> TemplateSoundEnd { get; set; }
 
         #endregion
     }

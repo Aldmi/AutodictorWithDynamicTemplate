@@ -650,11 +650,13 @@
             this.gridCtrl_ActionTrains.TabIndex = 65;
             this.gridCtrl_ActionTrains.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gv_ActionTrains});
+            this.gridCtrl_ActionTrains.ProcessGridKey += new System.Windows.Forms.KeyEventHandler(this.gridCtrl_ActionTrains_ProcessGridKey);
             // 
             // gv_ActionTrains
             // 
             this.gv_ActionTrains.GridControl = this.gridCtrl_ActionTrains;
             this.gv_ActionTrains.Name = "gv_ActionTrains";
+            this.gv_ActionTrains.ValidatingEditor += new DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventHandler(this.gv_ActionTrains_ValidatingEditor);
             // 
             // groupBox2
             // 
