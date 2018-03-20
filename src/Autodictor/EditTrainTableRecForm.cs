@@ -123,7 +123,7 @@ namespace MainExample
             chBoxВыводНаТабло.Checked = this.TrainRec.IsScoreBoardOutput;
             chBoxВыводЗвука.Checked = this.TrainRec.IsSoundOutput;
 
-            var directions = Program.DirectionService.GetAll().ToList();
+            var directions = _trainRecService.GetDirections().ToList();
             if (directions.Any())
             {
                 string[] directionNames = directions.Select(d => d.Name).ToArray();
@@ -281,7 +281,7 @@ namespace MainExample
 
             return new ActionTrainViewModel
             {
-                IdTrainType= TrainRec.TrainTypeByRyle.Id,
+                IdTrainType= TrainRec.TrainTypeByRyle?.Id ?? -1,
                 Id = actionTrain.Id,
                 Name= actionTrain.Name,
                 ActionTimeDelta = time,
@@ -369,9 +369,9 @@ namespace MainExample
                 TrainRec.Name = cBКуда.Text;
 
 
-            TrainRec.Direction = Program.DirectionService.GetByName(cBНаправ.Text);
-            TrainRec.StationDepart= TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBОткуда.Text); //TODO: Искать по id
-            TrainRec.StationArrival= TrainRec.Direction?.Stations.FirstOrDefault(st => st.NameRu == cBКуда.Text); //TODO: Искать по id 
+            TrainRec.Direction = _trainRecService.GetDirectionByName(cBНаправ.Text);
+            TrainRec.StationDepart= _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBОткуда.Text);
+            TrainRec.StationArrival= _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBКуда.Text);
 
       
             if (rBВремяДействияС.Checked == true)
@@ -747,7 +747,7 @@ namespace MainExample
                 if (selectedIndex < 0)
                     return;
 
-                var directions = Program.DirectionService.GetAll().ToList();
+                var directions = _trainRecService.GetDirections().ToList();
                 if (directions.Any())
                 {
                     SelectedDestinationStations = directions[selectedIndex].Stations?.Select(st => st.NameRu).ToArray();

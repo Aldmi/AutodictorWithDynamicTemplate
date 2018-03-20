@@ -116,6 +116,11 @@ namespace AutodictorBL.DataAccess
             return predicate == null ? _directionService.GetAll() : _directionService.GetAllByFilter(predicate);
         }
 
+        public Direction GetDirectionByName(string name)
+        {
+            return _directionService.GetByName(name);
+        }
+
         public IEnumerable<Station> GetStationsInDirectionByName(string directionName)
         {
            return _directionService.GetStationsInDirectionByName(directionName);
