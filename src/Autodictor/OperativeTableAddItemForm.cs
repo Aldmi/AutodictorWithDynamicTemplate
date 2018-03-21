@@ -296,23 +296,23 @@ namespace MainExample
 
         private void lVШаблоныОповещения_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lVШаблоныОповещения.SelectedItems.Count > 0)
-            {
-                string шаблон = lVШаблоныОповещения.SelectedItems[0].SubItems[0].Text;
-                foreach (var item in DynamicSoundForm.DynamicSoundRecords)
-                {
-                    if (item.Name == шаблон)
-                    {
-                        var soundRec = Mapper.MapTrainTableRecord2SoundRecord(TableRec, DateTime.Now, 1);
-                        var key = soundRec.Время.ToString();
+            //if (lVШаблоныОповещения.SelectedItems.Count > 0)
+            //{
+            //    string шаблон = lVШаблоныОповещения.SelectedItems[0].SubItems[0].Text;
+            //    foreach (var item in DynamicSoundForm.DynamicSoundRecords)
+            //    {
+            //        if (item.Name == шаблон)
+            //        {
+            //            var soundRec = Mapper.MapTrainTableRecord2SoundRecord(TableRec, DateTime.Now, 1);
+            //            var key = soundRec.Время.ToString();
 
-                        КарточкаДвиженияПоезда карточка= new КарточкаДвиженияПоезда(soundRec, key);
-                        СостояниеФормируемогоСообщенияИШаблон? сообшение = soundRec.СписокФормируемыхСообщений.FirstOrDefault(t => t.НазваниеШаблона == шаблон);
-                        карточка.ОтобразитьШаблонОповещенияНаRichTb(item.Message, ref сообшение, rTB_Сообщение);
-                        break;
-                    }
-                }
-            }
+            //            КарточкаДвиженияПоезда карточка= new КарточкаДвиженияПоезда(soundRec, key);
+            //            СостояниеФормируемогоСообщенияИШаблон? сообшение = soundRec.СписокФормируемыхСообщений.FirstOrDefault(t => t.НазваниеШаблона == шаблон);
+            //            карточка.ОтобразитьШаблонОповещенияНаRichTb(item.Message, ref сообшение, rTB_Сообщение);
+            //            break;
+            //        }
+            //    }
+            //}
         }
 
 

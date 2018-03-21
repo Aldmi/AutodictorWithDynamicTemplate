@@ -71,7 +71,7 @@ namespace MainExample.Mappers
 
 
 
-        public static SoundRecord MapTrainTableRecord2SoundRecord(TrainTableRecord config, DateTime day, int id)
+        public static SoundRecord MapTrainTableRecord2SoundRecord(TrainTableRec config, DateTime day, int id)
         {
             var record = new SoundRecord();
             record.ID = id;
@@ -85,18 +85,18 @@ namespace MainExample.Mappers
                 ["звук"] = config.ИспользоватьДополнение["звук"],
                 ["табло"] = config.ИспользоватьДополнение["табло"]
             };
-            record.Направление = config.Direction;
+            record.Направление = config.Direction?.Name;
             record.СтанцияОтправления = "";
             record.СтанцияНазначения = "";
             record.ДниСледования = config.Days;
             record.ДниСледованияAlias = config.DaysAlias;
             record.Активность = config.Active;
             record.Автомат = config.Автомат;
-            record.ШаблонВоспроизведенияСообщений = config.SoundTemplates;
-            record.НомерПути = ПолучитьНомерПутиПоДнямНедели(config);
+            record.ШаблонВоспроизведенияСообщений = String.Empty;//config.SoundTemplates;
+            record.НомерПути = ПолучитьНомерПутиПоДнямНедели(config)?.ToString() ?? string.Empty;
             record.НомерПутиБезАвтосброса = record.НомерПути;
-            record.НумерацияПоезда = config.TrainPathDirection;
-            record.СменнаяНумерацияПоезда = config.ChangeTrainPathDirection;
+            record.НумерацияПоезда = (byte)config.WagonsNumbering;
+            record.СменнаяНумерацияПоезда = config.ChangeTrainPathDirection ?? false ;
             record.Примечание = config.Примечание;
             record.ТипПоезда = config.TrainTypeByRyle;
             record.Состояние = SoundRecordStatus.ОжиданиеВоспроизведения;
@@ -113,8 +113,8 @@ namespace MainExample.Mappers
             record.ФиксированноеВремяПрибытия = null;
             record.ФиксированноеВремяОтправления = null;
 
-            record.СтанцияОтправления = config.StationDepart;
-            record.СтанцияНазначения = config.StationArrival;
+            record.СтанцияОтправления = config.StationDepart != null ? config.StationDepart.NameRu : string.Empty;
+            record.СтанцияНазначения = config.StationArrival != null ? config.StationArrival.NameRu : string.Empty;
 
             record.ВыводНаТабло = config.IsScoreBoardOutput;
             record.ВыводЗвука= config.IsSoundOutput;
@@ -343,7 +343,7 @@ namespace MainExample.Mappers
                 Event = eventPars(t.ArrivalTime, t.DepartureTime),
                 TypeTrain = t.TrainTypeByRyle.NameRu,
                 Note = t.Примечание, //C остановками: ...
-                PathNumber = ПолучитьНомерПутиПоДнямНедели(t),
+                //PathNumber = ПолучитьНомерПутиПоДнямНедели(t),                    //TODO:  ?????
                 VagonDirection = (VagonDirection)t.TrainPathDirection,
                 NumberOfTrain = t.Num,
                 Stations = t.Name,
@@ -376,11 +376,11 @@ namespace MainExample.Mappers
 
 
 
-        public static string ПолучитьНомерПутиПоДнямНедели(TrainTableRecord record)
+        public static Pathway ПолучитьНомерПутиПоДнямНедели(TrainTableRec record)
         {
             if (!record.PathWeekDayes)
             {
-                return record.TrainPathNumber[WeekDays.Постоянно] == "Не определен" ? string.Empty : record.TrainPathNumber[WeekDays.Постоянно];
+                return record.TrainPathNumber[WeekDays.Постоянно];
             }
 
             DayOfWeek dayOfWeek= DateTime.Now.DayOfWeek;
@@ -439,7 +439,7 @@ namespace MainExample.Mappers
                     return record.TrainPathNumber[WeekDays.Вс];
             }
 
-            return String.Empty;
+            return null;
         }
 
 

@@ -8,10 +8,9 @@ namespace MainExample.Services
 {
     public class SchedulingPipelineService
     {
-        public bool CheckTrainActuality(ref TrainTableRecord config, DateTime dateCheck, Func<int, bool> limitationTime, byte workWithNumberOfDays)
+        public bool CheckTrainActuality(TrainTableRec config, DateTime dateCheck, Func<int, bool> limitationTime, byte workWithNumberOfDays)
         {
             var планРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(config.Days, config.ВремяНачалаДействияРасписания, config.ВремяОкончанияДействияРасписания);
-            //if ((workWithNumberOfDays == 7) || (планРасписанияПоезда.ПолучитьРежимРасписания() != РежимРасписанияДвиженияПоезда.ПоДням) || (config.ТипПоезда == ТипПоезда.Пассажирский) || (config.ТипПоезда == ТипПоезда.Скоростной) || (config.ТипПоезда == ТипПоезда.Скорый))
             if ((workWithNumberOfDays == 7) || (планРасписанияПоезда.ПолучитьРежимРасписания() != РежимРасписанияДвиженияПоезда.ПоДням))// TODO: добавить || для всех дальних
             {
                 var активностьНаДень = планРасписанияПоезда.ПолучитьАктивностьДняДвижения((byte)(dateCheck.Month - 1), (byte)(dateCheck.Day - 1), dateCheck);
@@ -20,27 +19,27 @@ namespace MainExample.Services
 
                 if (limitationTime != null)
                 {
-                    DateTime времяПрибытия;
-                    DateTime времяОтправления;
+                    var времяПрибытия = config.ArrivalTime;
+                    var времяОтправления = config.DepartureTime;
 
-                    bool приб = DateTime.TryParse(config.ArrivalTime, out времяПрибытия);
-                    bool отпр = DateTime.TryParse(config.DepartureTime, out времяОтправления);
+                    bool приб = config.ArrivalTime.HasValue;
+                    bool отпр = config.DepartureTime.HasValue;
 
                     if (приб && отпр) //ТРАНЗИТ
                     {
-                        if (!limitationTime(времяОтправления.Hour))
+                        if (!limitationTime(времяОтправления.Value.Hour))
                             return false;
                     }
                     else
                     if (приб)
                     {
-                        if (!limitationTime(времяПрибытия.Hour))
+                        if (!limitationTime(времяПрибытия.Value.Hour))
                             return false;
                     }
                     else
                     if (отпр)
                     {
-                        if (!limitationTime(времяОтправления.Hour))
+                        if (!limitationTime(времяОтправления.Value.Hour))
                             return false;
                     }
                 }

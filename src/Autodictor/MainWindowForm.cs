@@ -11,6 +11,7 @@ using System.Media;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Entites;
 using AutodictorBL.Services;
 using AutodictorBL.Sound;
@@ -49,6 +50,8 @@ namespace MainExample
         private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> _staticSoundCardFormFactory;
         private readonly IAuthentificationService _authentificationService;
         private readonly IUsersRepository _usersRepository;
+        private readonly TrainRecService _trainRecService;
+
         private const int ВремяЗадержкиВоспроизведенныхСобытий = 20;  //сек
 
 
@@ -206,7 +209,8 @@ namespace MainExample
         public MainWindowForm(ExchangeModel exchangeModel,
                               Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
                               IAuthentificationService authentificationService,
-                              IUsersRepository usersRepository)
+                              IUsersRepository usersRepository,
+                              TrainRecService trainRecService)
         {
             if (myMainForm != null)
                 return;
@@ -216,6 +220,7 @@ namespace MainExample
             _staticSoundCardFormFactory = staticSoundCardFormFactory;
             _authentificationService = authentificationService;
             _usersRepository = usersRepository;
+            _trainRecService = trainRecService;
 
             InitializeComponent();
 
@@ -699,33 +704,25 @@ namespace MainExample
 
 
             //Добавим весь список Оперативного расписания
-            СозданиеЗвуковыхФайловРасписанияЖдТранспорта(TrainTableOperative.TrainTableRecords, DateTime.Now, null, ref id);                                         // на тек. сутки
-            СозданиеЗвуковыхФайловРасписанияЖдТранспорта(TrainTableOperative.TrainTableRecords, DateTime.Now.AddDays(1), hour => (hour >= 0 && hour <= 11), ref id); // на след. сутки на 2 первых часа
+            //СозданиеЗвуковыхФайловРасписанияЖдТранспорта(TrainTableOperative.TrainTableRecords, DateTime.Now, null, ref id);                                         // на тек. сутки
+            //СозданиеЗвуковыхФайловРасписанияЖдТранспорта(TrainTableOperative.TrainTableRecords, DateTime.Now.AddDays(1), hour => (hour >= 0 && hour <= 11), ref id); // на след. сутки на 2 первых часа
 
             //Вычтем из Главного расписания элементы оперативного расписания, уже добавленные к списку.
-            //var differences = TrainSheduleTable.TrainTableRecords.Where(l2 =>
-            //      !SoundRecords.Values.Any(l1 =>
-            //      l1.НомерПоезда == l2.Num &&
-            //      l1.НомерПоезда2 == l2.Num2 &&
-            //      l1.Направление == l2.Direction
-            //      )).ToList();
+            var mainTrainTableRec= _trainRecService.GetAll(); //TrainSheduleTable.TrainTableRecords
+            var differences = mainTrainTableRec.Where(l2 =>!SoundRecords.Values.Any(l1 => l1.IdTrain.ScheduleId == l2.Id)).ToList();
 
-            var differences = TrainSheduleTable.TrainTableRecords.Where(l2 =>
-                !SoundRecords.Values.Any(l1 =>
-                    l1.IdTrain.ScheduleId == l2.Id 
-                )).ToList();
 
             //Добавим оставшиеся записи
             СозданиеЗвуковыхФайловРасписанияЖдТранспорта(differences, DateTime.Now, null, ref id);                                         // на тек. сутки
             СозданиеЗвуковыхФайловРасписанияЖдТранспорта(differences, DateTime.Now.AddDays(1), hour => (hour >= 0 && hour <= 11), ref id); // на след. сутки на 2 первых часа
 
             //Корректировка записей по изменениям
-            КорректировкаЗаписейПоИзменениям();
+            //КорректировкаЗаписейПоИзменениям();
         }
 
 
 
-        private void СозданиеЗвуковыхФайловРасписанияЖдТранспорта(IList<TrainTableRecord> trainTableRecords, DateTime день, Func<int, bool> ограничениеВремениПоЧасам, ref int id)
+        private void СозданиеЗвуковыхФайловРасписанияЖдТранспорта(IList<TrainTableRec> trainTableRecords, DateTime день, Func<int, bool> ограничениеВремениПоЧасам, ref int id)
         {
             var pipelineService = new SchedulingPipelineService();
             for (var index = 0; index < trainTableRecords.Count; index++)
@@ -735,7 +732,7 @@ namespace MainExample
                 if (config.Active == false && Program.Настройки.РазрешениеДобавленияЗаблокированныхПоездовВСписок == false)
                     continue;
 
-                if (!pipelineService.CheckTrainActuality(ref config, день, ограничениеВремениПоЧасам, РаботаПоНомеруДняНедели))
+                if (!pipelineService.CheckTrainActuality(config, день, ограничениеВремениПоЧасам, РаботаПоНомеруДняНедели))
                     continue;
 
                 var newId = id++;
