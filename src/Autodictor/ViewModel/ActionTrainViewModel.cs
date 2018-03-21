@@ -46,10 +46,6 @@ namespace MainExample.ViewModel
         [Required(ErrorMessage = "Требуется поле Приоритет")]
         public int Priority { get; set; }        //Приоритет
 
-        [Display(Name = "Кол-во повторов")]
-        [Required(ErrorMessage = "Требуется поле Кол-во повторов")]
-        public int Repeat { get; set; }         //Кол-во повторов
-
         [Display(AutoGenerateField = false)]    //Не отображать в таблице
         public bool Transit { get; set; }
 
@@ -76,6 +72,9 @@ namespace MainExample.ViewModel
 
         [Display(Name = "Разрешение")]
         public bool IsEnable { get; set; }     // Вкл/Выкл язык
+
+        [Display(Name = "Повторы ТЕЛА")]
+        public int RepeatSoundBody { get; set; }     // кол-во повторов для Тела
 
         [DisplayName("НАЧАЛО")]
         public List<string> TemplateSoundStart { get; set; }

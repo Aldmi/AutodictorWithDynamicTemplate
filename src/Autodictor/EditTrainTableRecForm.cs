@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,9 +19,6 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraGrid.Views.Grid.ViewInfo;
-using MainExample.Entites;
-using MainExample.Utils;
 using MainExample.ViewModel;
 
 
@@ -65,34 +63,27 @@ namespace MainExample
 
 
 
+        #region Methode
 
         protected override void OnLoad(EventArgs e)
         {
-            //загрузка настроек грида
-            var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
-            if (File.Exists(path2Setting))
-            {
-                gv_ActionTrains.RestoreLayoutFromXml(path2Setting);
-            }
-
             Model2Ui();
-            SettingUi();
+            SettingUiInitialization();
             base.OnLoad(e);
         }
 
 
         protected override void OnClosed(EventArgs e)
         {
-            //Сохранение настроек грида
-            var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
-            gv_ActionTrains.SaveLayoutToXml(path2Setting);  
-            
+            SettingUiLoad();
             base.Close();   
         }
 
 
-        private void SettingUi()
+        private void SettingUiInitialization()
         {
+            gv_ActionTrains.MasterRowExpanded+= Gv_ActionTrains_MasterRowExpanded;
+
             // Make the grid read-only.
             gv_ActionTrains.OptionsBehavior.Editable = true;
             // Prevent the focused cell from being highlighted.
@@ -102,11 +93,28 @@ namespace MainExample
             //Выравнивание в ячейках по центру.
             foreach (GridColumn column in gv_ActionTrains.Columns)
             {
-               column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
-               column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+                column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
+                column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+            }
+
+            //загрузка настроек грида-----------------------------------
+            var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
+            if (File.Exists(path2Setting))
+            {
+                gv_ActionTrains.RestoreLayoutFromXml(path2Setting);
             }
         }
 
+
+        private void SettingUiLoad()
+        {
+            //Сохранение настроек грида
+            var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
+            if (File.Exists(path2Setting))
+            {
+                gv_ActionTrains.SaveLayoutToXml(path2Setting);
+            }
+        }
 
 
         private void Model2Ui()
@@ -263,7 +271,6 @@ namespace MainExample
         }
 
 
-
         private ActionTrainViewModel MapActionTrain2ViewModel(ActionTrain actionTrain)
         {
             var time = string.Empty;
@@ -287,14 +294,14 @@ namespace MainExample
                 ActionTimeDelta = time,
                 ActionTypeViewModel = (ActionTypeViewModel) actionTrain.ActionType,
                 Priority= actionTrain.Priority,
-                Repeat= actionTrain.Repeat,
                 Transit= actionTrain.Transit,
                 Langs= actionTrain.Langs?.Select(lang => new LangViewModel
                 {
                     Id= lang.Id,
                     Name= lang.Name,
                     IsEnable= lang.IsEnable,
-                    TemplateSoundBody= lang.TemplateSoundBody,
+                    RepeatSoundBody = lang.RepeatSoundBody,
+                    TemplateSoundBody = lang.TemplateSoundBody,
                     TemplateSoundStart= lang.TemplateSoundStart,
                     TemplateSoundEnd= lang.TemplateSoundEnd
                 }).ToList()
@@ -312,43 +319,18 @@ namespace MainExample
                 Time = timeAction,
                 ActionType = (ActionType)actionTrainVm.ActionTypeViewModel,
                 Priority = actionTrainVm.Priority,
-                Repeat = actionTrainVm.Repeat,
                 Transit = actionTrainVm.Transit,
                 Langs = actionTrainVm.Langs.Select(lang=> new Lang
                 {
                     Id = lang.Id,
                     Name = lang.Name,
                     IsEnable = lang.IsEnable,
+                    RepeatSoundBody = lang.RepeatSoundBody,
                     TemplateSoundBody = lang.TemplateSoundBody,
                     TemplateSoundStart = lang.TemplateSoundStart,
                     TemplateSoundEnd = lang.TemplateSoundEnd
                 }).ToList()
             };
-        }
-
-
-
-
-
-        private void btnПрименить_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(tBНомерПоезда.Text) ||
-                string.IsNullOrEmpty(cBТипПоезда.Text) ||
-                string.IsNullOrEmpty(cBНаправ.Text) ||
-                (string.IsNullOrEmpty(cBОткуда.Text) && string.IsNullOrEmpty(cBКуда.Text)))
-            {
-                MessageBox.Show(@"Обязательные поля не заполнены !!!");
-                return;
-            }
-
-            ApplyChangedUi2Model();
-            DialogResult = DialogResult.OK;
-        }
-
-
-        private void btnОтмена_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
         }
 
 
@@ -370,10 +352,10 @@ namespace MainExample
 
 
             TrainRec.Direction = _trainRecService.GetDirectionByName(cBНаправ.Text);
-            TrainRec.StationDepart= _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBОткуда.Text);
-            TrainRec.StationArrival= _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBКуда.Text);
+            TrainRec.StationDepart = _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBОткуда.Text);
+            TrainRec.StationArrival = _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBКуда.Text);
 
-      
+
             if (rBВремяДействияС.Checked == true)
             {
                 TrainRec.ВремяНачалаДействияРасписания = dTPВремяДействияС.Value;
@@ -398,7 +380,7 @@ namespace MainExample
             TrainRec.Active = !cBБлокировка.Checked;
             SavePathValues(TrainRec);
 
-            TrainRec.WagonsNumbering = (WagonsNumbering) cBОтсчетВагонов.SelectedIndex;
+            TrainRec.WagonsNumbering = (WagonsNumbering)cBОтсчетВагонов.SelectedIndex;
 
             //TODO: использовать TrainTypeByRyleService
             //TrainRec.ТипПоезда = (ТипПоезда)cBТипПоезда.SelectedIndex;
@@ -474,6 +456,121 @@ namespace MainExample
             //Сохранить шаблоны
             TrainRec.ActionTrains.Clear();
             TrainRec.ActionTrains.AddRange(ActionTrainsVm.Select(MapViewModel2ActionTrain));
+        }
+
+
+        private void InitializePathValues(TrainTableRec rec)
+        {
+            if (!rec.PathWeekDayes)
+            {
+                dgv_ПутиПоДнямНедели.Enabled = false;
+                cBПутьПоУмолчанию.Enabled = true;
+                cBПутьПоУмолчанию.Text = TrainRec.TrainPathNumber[WeekDays.Постоянно]?.Name ?? string.Empty;
+                rb_Постоянно.Checked = true;
+            }
+            else
+            {
+                rb_ПоДнямНедели.Checked = true;
+                dgv_ПутиПоДнямНедели.Enabled = true;
+                cBПутьПоУмолчанию.Enabled = false;
+            }
+
+            DataGridViewComboBoxColumn cmb = (DataGridViewComboBoxColumn)dgv_ПутиПоДнямНедели.Columns[1];
+            foreach (var путь in _trainRecService.GetPathways().Select(p => p.Name))
+            {
+                cmb.Items.Add(путь);
+            }
+
+            int rowNumber = 0;
+            foreach (var path in rec.TrainPathNumber)
+            {
+                if (path.Key == WeekDays.Постоянно)
+                    continue;
+
+                object[] row = { path.Key.ToString() };
+                dgv_ПутиПоДнямНедели.Rows.Add(row);
+
+                // Выставить значения путей 
+                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
+                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Tag = path.Key;
+                rowNumber++;
+            }
+        }
+
+
+        private void ChangePathValues(TrainTableRec rec)
+        {
+            if (!rec.PathWeekDayes)
+            {
+                dgv_ПутиПоДнямНедели.Enabled = false;
+                cBПутьПоУмолчанию.Enabled = true;
+                rb_Постоянно.Checked = true;
+                cBПутьПоУмолчанию.Text = this.TrainRec.TrainPathNumber[WeekDays.Постоянно]?.Name ?? string.Empty;
+            }
+            else
+            {
+                if (dgv_ПутиПоДнямНедели.Rows.Count == 0)
+                    return;
+
+                rb_ПоДнямНедели.Checked = true;
+                dgv_ПутиПоДнямНедели.Enabled = true;
+                cBПутьПоУмолчанию.Enabled = false;
+
+                int rowNumber = 0;
+                foreach (var path in rec.TrainPathNumber)
+                {
+                    if (path.Key == WeekDays.Постоянно)
+                        continue;
+
+                    // Выставить значения путей
+                    dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
+                    rowNumber++;
+                }
+            }
+        }
+
+
+        private void SavePathValues(TrainTableRec rec)
+        {
+            var pathName = cBПутьПоУмолчанию.Text;
+            var path = _trainRecService.GetPathByName(pathName);
+            rec.TrainPathNumber[WeekDays.Постоянно] = path;
+
+            for (int i = 0; i < dgv_ПутиПоДнямНедели.Rows.Count; i++)
+            {
+                pathName = (string)dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Value ?? string.Empty;
+                path = _trainRecService.GetPathByName(pathName);
+                var key = (WeekDays)dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Tag;
+                rec.TrainPathNumber[key] = path;
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region EventHandler
+
+        private void btnПрименить_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(tBНомерПоезда.Text) ||
+                string.IsNullOrEmpty(cBТипПоезда.Text) ||
+                string.IsNullOrEmpty(cBНаправ.Text) ||
+                (string.IsNullOrEmpty(cBОткуда.Text) && string.IsNullOrEmpty(cBКуда.Text)))
+            {
+                MessageBox.Show(@"Обязательные поля не заполнены !!!");
+                return;
+            }
+
+            ApplyChangedUi2Model();
+            DialogResult = DialogResult.OK;
+        }
+
+
+        private void btnОтмена_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
 
 
@@ -600,7 +697,6 @@ namespace MainExample
         }
 
 
-
         private void btnАвтогенерацияШаблонов_Click(object sender, EventArgs e)
         {
             try
@@ -650,94 +746,7 @@ namespace MainExample
             }
         }
 
-
-        private void InitializePathValues(TrainTableRec rec)
-        {
-            if (!rec.PathWeekDayes)
-            {
-                dgv_ПутиПоДнямНедели.Enabled = false;
-                cBПутьПоУмолчанию.Enabled = true;
-                cBПутьПоУмолчанию.Text = TrainRec.TrainPathNumber[WeekDays.Постоянно]?.Name ?? string.Empty;
-                rb_Постоянно.Checked = true;
-            }
-            else
-            {
-                rb_ПоДнямНедели.Checked = true;
-                dgv_ПутиПоДнямНедели.Enabled = true;
-                cBПутьПоУмолчанию.Enabled = false;
-            }
-
-            DataGridViewComboBoxColumn cmb = (DataGridViewComboBoxColumn) dgv_ПутиПоДнямНедели.Columns[1];
-            foreach (var путь in _trainRecService.GetPathways().Select(p => p.Name))
-            {
-                cmb.Items.Add(путь);
-            }
-
-            int rowNumber = 0;
-            foreach (var path in rec.TrainPathNumber)
-            {
-                if (path.Key == WeekDays.Постоянно)
-                    continue;
-
-                object[] row = {path.Key.ToString()};
-                dgv_ПутиПоДнямНедели.Rows.Add(row);
-
-                // Выставить значения путей 
-                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
-                dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Tag = path.Key;
-                rowNumber++;
-            }
-        }
-
-
-        private void ChangePathValues(TrainTableRec rec)
-        {
-            if (!rec.PathWeekDayes)
-            {
-                dgv_ПутиПоДнямНедели.Enabled = false;
-                cBПутьПоУмолчанию.Enabled = true;
-                rb_Постоянно.Checked = true;
-                cBПутьПоУмолчанию.Text = this.TrainRec.TrainPathNumber[WeekDays.Постоянно]?.Name ?? string.Empty;
-            }
-            else
-            {
-                if (dgv_ПутиПоДнямНедели.Rows.Count == 0)
-                    return;
-
-                rb_ПоДнямНедели.Checked = true;
-                dgv_ПутиПоДнямНедели.Enabled = true;
-                cBПутьПоУмолчанию.Enabled = false;
-
-                int rowNumber = 0;
-                foreach (var path in rec.TrainPathNumber)
-                {
-                    if (path.Key == WeekDays.Постоянно)
-                        continue;
-
-                    // Выставить значения путей
-                    dgv_ПутиПоДнямНедели.Rows[rowNumber].Cells["cmb_Путь"].Value = string.IsNullOrEmpty(path.Value?.Name) ? string.Empty : path.Value.Name;
-                    rowNumber++;
-                }
-            }
-        }
-
-
-        private void SavePathValues(TrainTableRec rec)
-        {
-            var pathName = cBПутьПоУмолчанию.Text;
-            var path = _trainRecService.GetPathByName(pathName);
-            rec.TrainPathNumber[WeekDays.Постоянно] = path;
-
-            for (int i = 0; i < dgv_ПутиПоДнямНедели.Rows.Count; i++)
-            {
-                pathName= (string)dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Value ?? string.Empty;
-                path = _trainRecService.GetPathByName(pathName);
-                var key = (WeekDays)dgv_ПутиПоДнямНедели.Rows[i].Cells["cmb_Путь"].Tag;
-                rec.TrainPathNumber[key] = path;
-            }
-        }
-
-
+  
         private void cBНаправ_SelectedIndexChanged(object sender, EventArgs e)
         {
             var comboBox = sender as ComboBox;
@@ -778,6 +787,7 @@ namespace MainExample
             }
         }
 
+
         private void rBВремяДействияПо_CheckedChanged(object sender, EventArgs e)
         {
             var radioBtn = sender as RadioButton;
@@ -790,6 +800,7 @@ namespace MainExample
             }
         }
 
+
         private void rBВремяДействияСПо_CheckedChanged(object sender, EventArgs e)
         {
             var radioBtn = sender as RadioButton;
@@ -801,6 +812,7 @@ namespace MainExample
                 }
             }
         }
+
 
         private void rBВремяДействияПостоянно_CheckedChanged(object sender, EventArgs e)
         {
@@ -838,11 +850,10 @@ namespace MainExample
             }
         }
 
-        private void groupBox2_Enter(object sender, EventArgs e)
-        {
 
-        }
-
+        /// <summary>
+        /// Удалить строку
+        /// </summary>
         private void gridCtrl_ActionTrains_ProcessGridKey(object sender, KeyEventArgs e)
         {
             var grid = sender as GridControl;
@@ -859,7 +870,18 @@ namespace MainExample
 
 
         /// <summary>
-        /// Вадидация введенных данных
+        /// Событие разворачивания первого уровня вложенности
+        /// </summary>
+        private void Gv_ActionTrains_MasterRowExpanded(object sender, CustomMasterRowEventArgs e)
+        {
+            GridView master = sender as GridView;
+            GridView gridViewLevel1 = master.GetDetailView(e.RowHandle, e.RelationIndex) as GridView;
+            gridViewLevel1.ValidatingEditor += gv_ActionTrains_ValidatingEditor;
+        }
+
+
+        /// <summary>
+        /// Вадидация введенных данных (На разных уровнях вложенности таблиц)
         /// </summary>
         private void gv_ActionTrains_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
         {
@@ -901,17 +923,17 @@ namespace MainExample
                     e.Valid= true;
                     break;
 
-                case "Repeat":
+                case "RepeatSoundBody":
                     if (!int.TryParse(value, out outValue))
                     {
                         e.Valid = false;
                         e.ErrorText = "Кол-во повторов должно быть числом";
                         return;
                     }
-                    if (outValue < 0 || outValue > 5)
+                    if (outValue < 1 || outValue > 5)
                     {
                         e.Valid = false;
-                        e.ErrorText = "приоритет Должен быть в диапазоне 0...10";
+                        e.ErrorText = "приоритет Должен быть в диапазоне 1...5";
                         return;
                     }
                     e.Valid = true;
@@ -922,5 +944,7 @@ namespace MainExample
                     return;
             }
         }
+
+        #endregion
     }
 }

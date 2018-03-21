@@ -77,6 +77,7 @@ namespace DAL.XmlRaw.Repository
                             listLangs.Add(new Lang(
                                 (string)lang.Attribute("Id"),
                                 (string)lang.Attribute("Name"),
+                                (string)lang.Attribute("RepeatSoundBody"),
                                 (string)lang.Attribute("SoundStart"),
                                 (string)lang.Attribute("SoundBody"),
                                 (string)lang.Attribute("SoundEnd")));

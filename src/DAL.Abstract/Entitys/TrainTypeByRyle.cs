@@ -86,7 +86,6 @@ namespace DAL.Abstract.Entitys
         public string Name { get; set; }
         public ActionType ActionType { get; set; }
         public int Priority { get; set; }
-        public int Repeat { get; set; }
         public bool Transit { get; set; }
         public Emergency Emergency { get; set; }
         public ActionTime Time { get; set; }
@@ -124,7 +123,7 @@ namespace DAL.Abstract.Entitys
             }
 
             Priority = int.Parse(priority);
-            Repeat = int.Parse(repeat);
+        
             Transit = bool.Parse(transit);
 
             switch (emergency)
@@ -221,6 +220,7 @@ namespace DAL.Abstract.Entitys
         public int Id { get; set; }              //Id языка
         public string Name { get; set; }
         public bool IsEnable { get; set; }  // Вкл/Выкл язык
+        public int RepeatSoundBody { get; set; }   
         public List<string> TemplateSoundStart { get; set; }
         public List<string> TemplateSoundBody { get; set; }
         public List<string> TemplateSoundEnd { get; set; }
@@ -237,10 +237,11 @@ namespace DAL.Abstract.Entitys
             
         }
 
-        public Lang(string id, string name, string templateSoundStart, string templateSoundBody, string templateSoundEnd)
+        public Lang(string id, string name, string repeatSoundBody, string templateSoundStart, string templateSoundBody, string templateSoundEnd)
         {
             Id = int.Parse(id);
             Name = name;
+            RepeatSoundBody = int.Parse(repeatSoundBody);
             TemplateSoundStart = string.IsNullOrEmpty(templateSoundStart) ? null : templateSoundStart.Split('|').ToList();
             TemplateSoundBody = string.IsNullOrEmpty(templateSoundBody) ? null : templateSoundBody.Split('|').ToList();
             TemplateSoundEnd = string.IsNullOrEmpty(templateSoundEnd) ? null : templateSoundEnd.Split('|').ToList();
