@@ -84,6 +84,7 @@ namespace DAL.Abstract.Entitys
 
         public int Id { get; set; }                    //Id действия
         public string Name { get; set; }
+        public bool IsActiveBase { get; set; }        //Базовая активность шаблона, задается в XML файле    
         public ActionType ActionType { get; set; }
         public int Priority { get; set; }
         public bool Transit { get; set; }
@@ -102,9 +103,10 @@ namespace DAL.Abstract.Entitys
         {            
         }
 
-        public ActionTrain(string id, string name, string actionType, string priority, string repeat, string transit, string emergency, string times, List<Lang> langs)
+        public ActionTrain(string id, string enable, string name, string actionType, string priority, string transit, string emergency, string times, List<Lang> langs)
         {
             Id = int.Parse(id);
+            IsActiveBase = bool.Parse(enable);
             Name = name;
 
             switch (actionType)
@@ -164,10 +166,41 @@ namespace DAL.Abstract.Entitys
     /// </summary>
     public class ActionTime
     {
+        #region field
+
+        private int? _cycleTime;
+        private List<int> _deltaTimes;
+
+        #endregion
+
+
+
+
         #region
 
-        public int? CycleTime { get; set; }
-        public List<int> DeltaTimes { get; set; }
+        public bool IsDeltaTimes => (_deltaTimes != null && _cycleTime == null);
+
+
+        public int? CycleTime
+        {
+            get { return _cycleTime; }
+            set
+            {
+                _cycleTime = value;
+                _deltaTimes = null;
+            }
+        }
+
+
+        public List<int> DeltaTimes
+        {
+            get { return _deltaTimes; }
+            set
+            {
+                _cycleTime = null;
+                _deltaTimes = value;
+            }
+        }
 
         #endregion
 
@@ -189,18 +222,18 @@ namespace DAL.Abstract.Entitys
 
             if (time.StartsWith("~"))
             {
-                DeltaTimes = null;
-                CycleTime = int.Parse(time.Remove(0, 1));
+                _deltaTimes = null;
+                _cycleTime = int.Parse(time.Remove(0, 1));
             }
             else
             {
-                CycleTime= null;
-                DeltaTimes= new List<int>();
+                _cycleTime = null;
+                _deltaTimes = new List<int>();
 
                 var deltaTimes= time.Split(',').ToList();
                 foreach (var dt in deltaTimes)
                 {
-                    DeltaTimes.Add(int.Parse(dt));
+                    _deltaTimes.Add(int.Parse(dt));
                 }
             }
         }
@@ -233,9 +266,9 @@ namespace DAL.Abstract.Entitys
         #region ctor
 
         public Lang()
-        {
-            
+        { 
         }
+
 
         public Lang(string id, string name, string repeatSoundBody, string templateSoundStart, string templateSoundBody, string templateSoundEnd)
         {

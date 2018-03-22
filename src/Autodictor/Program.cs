@@ -94,7 +94,7 @@ namespace MainExample
                     StopTime = null,
                     DepartureTime = null,
                     FollowingTime = null,
-                    Days = "",
+                    Days = "Еж:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:0:0",
                     DaysAlias = "",
                     Active = true,
                     WagonsNumbering = WagonsNumbering.None,

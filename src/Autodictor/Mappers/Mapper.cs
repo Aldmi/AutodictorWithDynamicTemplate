@@ -120,8 +120,6 @@ namespace MainExample.Mappers
             record.ВыводЗвука= config.IsSoundOutput;
 
 
-            int часы = 0;
-            int минуты = 0;
             DateTime времяПрибытия = new DateTime(2000, 1, 1, 0, 0, 0);
             DateTime времяОтправления = new DateTime(2000, 1, 1, 0, 0, 0);
             record.ВремяПрибытия = DateTime.Now;
@@ -131,60 +129,39 @@ namespace MainExample.Mappers
             record.ВремяЗадержки = null;
             byte номерСписка = 0x00;
 
-
-            if (config.ArrivalTime != "")
+            if (config.ArrivalTime.HasValue)
             {
-                string[] subStrings = config.ArrivalTime.Split(':');
-                if (int.TryParse(subStrings[0], out часы) && int.TryParse(subStrings[1], out минуты))
-                {
-                    времяПрибытия = new DateTime(day.Year, day.Month, day.Day, часы, минуты, 0);
-                    record.ВремяПрибытия = времяПрибытия;
-                    record.ОжидаемоеВремя = времяПрибытия;
-                    номерСписка |= 0x04;
-                }
+                времяПрибытия = config.ArrivalTime.Value;
+                record.ВремяПрибытия = времяПрибытия;
+                record.ОжидаемоеВремя = времяПрибытия;
+                номерСписка |= 0x04;
             }
 
-            if (config.DepartureTime != "")
+            if (config.DepartureTime.HasValue)
             {
-                string[] subStrings = config.DepartureTime.Split(':');
-                if (int.TryParse(subStrings[0], out часы) && int.TryParse(subStrings[1], out минуты))
-                {
-                    времяОтправления = new DateTime(day.Year, day.Month, day.Day, часы, минуты, 0);
-                    record.ВремяОтправления = времяОтправления;
-                    record.ОжидаемоеВремя = времяОтправления;
-                    номерСписка |= 0x10;
-                }
+                времяОтправления = config.DepartureTime.Value;
+                record.ВремяОтправления = времяОтправления;
+                record.ОжидаемоеВремя = времяОтправления;
+                номерСписка |= 0x10;
             }
-
-            if (!string.IsNullOrEmpty(config.FollowingTime))
-            {
-                string[] subStrings = config.FollowingTime.Split(':');
-                if (int.TryParse(subStrings[0], out часы) && int.TryParse(subStrings[1], out минуты))
-                {
-                    record.ВремяСледования = new DateTime(day.Year, day.Month, day.Day, часы, минуты, 0);
-                }
-            }
-
-
+   
+            record.ВремяСледования = config.FollowingTime;
+                
+            
             //ТРАНЗИТ
             record.ВремяСтоянки = null;
             if (номерСписка == 0x14)
             {
-                if (времяОтправления < времяПрибытия)                              //??????????????
+                if (времяОтправления < времяПрибытия)          
                 {
                     record.ВремяПрибытия = времяПрибытия.AddDays(-1);
                     record.IdTrain.ДеньПрибытия = record.ВремяПрибытия.Date;
                 }
-
-                TimeSpan времяСтоянки;
-                if (TimeSpan.TryParse(config.StopTime, out времяСтоянки))
-                {
-                    record.ВремяСтоянки = времяСтоянки;
-                }
-                номерСписка |= 0x08;                                              //TODO: ???
+                record.ВремяСтоянки = config.StopTime;
+                номерСписка |= 0x08;                          
             }
 
-            //DEBUG транзиты по ОТПР-------------------
+            //транзиты по ОТПР-------------------
             if ((номерСписка & 0x10) == 0x10 ||
                 (номерСписка & 0x14) == 0x14)
             {
@@ -197,14 +174,56 @@ namespace MainExample.Mappers
                 record.ОжидаемоеВремя = record.ВремяПрибытия;
             }
 
-
             record.БитыАктивностиПолей = номерСписка;
             record.БитыАктивностиПолей |= 0x03;                                   //TODO: ???
 
 
 
             // Шаблоны оповещения
-            record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();
+            record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();//УБРАТЬ
+
+
+            int idActDyn = 1;
+            record.ActionTrainDynamiсList = new List<ActionTrainDynamic>();
+            foreach (var actionTrain in config.ActionTrains)
+            {
+                if (actionTrain.Time.DeltaTimes != null) //Указанны временные смещения
+                {
+                    foreach (var time in actionTrain.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
+                    {
+                        var newActionTrain = actionTrain; //COPY
+                        newActionTrain.Time.DeltaTimes = new List<int>(time);
+                        var actDyn= new ActionTrainDynamic
+                        {
+                            Id = idActDyn++,
+                            SoundRecordId = record.ID,
+                            Activity = true,
+                            PriorityMain = Priority.Midlle,
+                            SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
+                            ActionTrain = newActionTrain
+                        };
+                        record.ActionTrainDynamiсList.Add(actDyn);
+                    }
+                }
+                else                                   //Указан циклический повтор
+                {
+                    var newActionTrain = actionTrain; //COPY
+                    var actDyn = new ActionTrainDynamic
+                    {
+                        Id = idActDyn++,
+                        SoundRecordId = record.ID,
+                        Activity = true,
+                        PriorityMain = Priority.Midlle,
+                        SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
+                        ActionTrain = newActionTrain
+                    };
+                    record.ActionTrainDynamiсList.Add(actDyn);
+                }
+            }
+
+
+
+
             string[] шаблонОповещения = record.ШаблонВоспроизведенияСообщений.Split(':');
             if ((шаблонОповещения.Length % 3) == 0)
             {

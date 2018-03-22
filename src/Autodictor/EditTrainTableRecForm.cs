@@ -144,10 +144,9 @@ namespace MainExample
             var listTypeTrains = _trainRecService.GetTrainTypeByRyles().ToList();
             if (listTypeTrains.Any())
             {
-                var typeTrainNames = listTypeTrains.Select(d => d.NameRu).ToArray();
-                cBТипПоезда.Items.AddRange(typeTrainNames);
-                var selectedIndex = _trainRecService.GetIndexOfRule(TrainRec.TrainTypeByRyle);
-                cBТипПоезда.SelectedIndex = selectedIndex;
+                cBТипПоезда.DataSource = listTypeTrains;
+                cBТипПоезда.DisplayMember = "NameRu";
+                cBТипПоезда.SelectedItem = TrainRec.TrainTypeByRyle;
             }
 
             string[] станции = TrainRec.Name.Split('-');
@@ -256,18 +255,18 @@ namespace MainExample
                 rBНеОповещать.Checked = true;
             }
 
-            //Заполнение списка выбора из всех шаблонов
-            var ollActionTrains = _trainRecService.GetTrainTypeByRyles()
-                .Select(trainType => trainType.ActionTrains)
-                .SelectMany(l => l.ToList()).
-                Select(MapActionTrain2ViewModel).ToList();
-            cBШаблонОповещения.DataSource = ollActionTrains;
-            cBШаблонОповещения.DisplayMember = "Name";
-            cBШаблонОповещения.ValueMember = "Name";
-
             //Заполнение таблицы шаблонов
             ActionTrainsVm.AddRange(TrainRec.ActionTrains.Select(MapActionTrain2ViewModel));
             gridCtrl_ActionTrains.DataSource= ActionTrainsVm;
+
+            //Заполнение списка выбора шаблонов выбранного типа. (Шаблоны типа за исключением уже добавелнных в таблицу)
+            var actionTrains = TrainRec.TrainTypeByRyle?.ActionTrains
+                .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
+                .Select(MapActionTrain2ViewModel).ToList();
+
+            cBШаблонОповещения.DataSource = actionTrains;
+            cBШаблонОповещения.DisplayMember = "Name";
+            cBШаблонОповещения.ValueMember = "Name";
         }
 
 
@@ -380,12 +379,8 @@ namespace MainExample
             TrainRec.Active = !cBБлокировка.Checked;
             SavePathValues(TrainRec);
 
-            TrainRec.WagonsNumbering = (WagonsNumbering)cBОтсчетВагонов.SelectedIndex;
-
-            //TODO: использовать TrainTypeByRyleService
-            //TrainRec.ТипПоезда = (ТипПоезда)cBТипПоезда.SelectedIndex;
-            var listTypeTrains = _trainRecService.GetTrainTypeByRyles().ToList();
-            TrainRec.TrainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
+            TrainRec.WagonsNumbering = (WagonsNumbering) cBОтсчетВагонов.SelectedIndex;
+            TrainRec.TrainTypeByRyle = cBТипПоезда.SelectedItem as TrainTypeByRyle;
 
             TrainRec.ChangeTrainPathDirection = chBox_сменнаяНумерация.Checked;
             TrainRec.IsScoreBoardOutput = chBoxВыводНаТабло.Checked;
@@ -688,11 +683,21 @@ namespace MainExample
               var selectedItem=  cBШаблонОповещения.SelectedItem as ActionTrainViewModel;
               if (selectedItem != null)
               {
-                  var maxId= ActionTrainsVm.Max(actionTrain=> actionTrain.Id);
-                  selectedItem.Id = ++maxId;
                   ActionTrainsVm.Add(selectedItem);
                   gv_ActionTrains.RefreshData();
-              }
+
+                  //Скоректируем список выбора.
+                  var trainTypeSelected= cBТипПоезда.SelectedItem as TrainTypeByRyle;
+                  if (trainTypeSelected == null)
+                      return;
+
+                var actionTrains = trainTypeSelected.ActionTrains
+                    .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
+                    .Select(MapActionTrain2ViewModel).ToList();
+                    
+                  cBШаблонОповещения.DataSource = actionTrains;
+                  cBШаблонОповещения.Refresh();
+                }
             }
         }
 
@@ -701,22 +706,34 @@ namespace MainExample
         {
             try
             {
-                var listTypeTrains = _trainRecService.GetTrainTypeByRyles().ToList();
-                var trainTypeByRyle = (cBТипПоезда.SelectedIndex == -1) ? null : listTypeTrains[cBТипПоезда.SelectedIndex];
-                if (trainTypeByRyle == null)
+               var trainTypeSelected= cBТипПоезда.SelectedItem as TrainTypeByRyle;
+               if (trainTypeSelected == null)
+                    return;
+               
+                if (trainTypeSelected.ActionTrains == null)
                 {
                     MessageBox.Show(@"У выбранного типа поезда нет Шаблонов обовещениея");
                     return;
                 }
-
+                
+                var actionTrains = trainTypeSelected.ActionTrains
+                    .Where(at => at.IsActiveBase)
+                    .Select(MapActionTrain2ViewModel).ToList();
                 ActionTrainsVm.Clear();
-                ActionTrainsVm.AddRange(trainTypeByRyle.ActionTrains.Select(MapActionTrain2ViewModel));
+                ActionTrainsVm.AddRange(actionTrains);
                 gv_ActionTrains.RefreshData();
-                gv_ActionTrains.BestFitColumns();//DEBUG
+                gv_ActionTrains.BestFitColumns();
+
                 //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
                 //var factory = new TrainRecordFactoryManual(builder);
                 //TrainRec = factory.Construct();
-                //ОтобразитьШаблоныОповещания(TrainRec.SoundTemplates);
+
+                //Скорректируем список выбора.-----------------------
+                 actionTrains = trainTypeSelected.ActionTrains
+                    .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
+                    .Select(MapActionTrain2ViewModel).ToList();
+                cBШаблонОповещения.DataSource = actionTrains;
+                cBШаблонОповещения.Refresh();
             }
             catch (Exception ex)
             {
@@ -826,18 +843,17 @@ namespace MainExample
             }
         }
 
+
         /// <summary>
         /// Изменяя тип поезда обновляем его категорию
         /// </summary>
         private void cBТипПоезда_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var имяТипаПоезда = (string) cBТипПоезда.SelectedItem;
-            var listTypeTrains = _trainRecService.GetTrainTypeByRyles();
-            var выбранныйТип = listTypeTrains.FirstOrDefault(t => t.NameRu == имяТипаПоезда);
-            if (выбранныйТип != null)
+            var selectedItem = cBТипПоезда.SelectedItem as TrainTypeByRyle;
+            if (selectedItem != null)
             {
                 var categoryText = "Не определенн";
-                switch (выбранныйТип.CategoryTrain)
+                switch (selectedItem.CategoryTrain)
                 {
                     case CategoryTrain.Suburb:
                         categoryText = "Пригород";
@@ -846,7 +862,7 @@ namespace MainExample
                         categoryText = "Дальнего след.";
                         break;
                 }
-                tb_Category.Text = categoryText;
+                tb_Category.Text= categoryText;
             }
         }
 
@@ -865,6 +881,13 @@ namespace MainExample
 
                 view?.DeleteSelectedRows();
                 e.Handled = true;
+
+                //Заполнение списка выбора шаблонов выбранного типа. (Шаблоны типа за исключением уже добавелнных в таблицу)
+                var actionTrains = TrainRec.TrainTypeByRyle?.ActionTrains
+                    .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
+                    .Select(MapActionTrain2ViewModel).ToList();
+
+                cBШаблонОповещения.DataSource = actionTrains;
             }
         }
 
@@ -876,6 +899,13 @@ namespace MainExample
         {
             GridView master = sender as GridView;
             GridView gridViewLevel1 = master.GetDetailView(e.RowHandle, e.RelationIndex) as GridView;
+            gridViewLevel1.BestFitColumns();
+            foreach (GridColumn column in gridViewLevel1.Columns)            //Выравнивание в ячейках по центру.
+            {
+                column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
+                column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+            }
+
             gridViewLevel1.ValidatingEditor += gv_ActionTrains_ValidatingEditor;
         }
 

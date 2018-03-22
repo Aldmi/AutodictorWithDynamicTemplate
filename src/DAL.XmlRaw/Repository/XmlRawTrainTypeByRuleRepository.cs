@@ -89,10 +89,10 @@ namespace DAL.XmlRaw.Repository
                         {
                             listActs.Add(new ActionTrain(
                                 (string)act.Attribute("Id"),
+                                (string)act.Attribute("Enable"),
                                 (string)act.Attribute("Name"),
                                 (string)act.Attribute("Type"),
                                 (string)act.Attribute("Priority"),
-                                (string)act.Attribute("Repeat"),
                                 (string)act.Attribute("Transit"),
                                 (string)act.Attribute("Emergency"),
                                 (string)act.Attribute("Time"),

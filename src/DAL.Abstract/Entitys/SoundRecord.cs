@@ -44,7 +44,10 @@ namespace DAL.Abstract.Entitys
         public PathPermissionType РазрешениеНаОтображениеПути;
         public string[] ИменаФайлов;
         public byte КоличествоПовторений;
+
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;
+        public List<ActionTrainDynamic> ActionTrainDynamiсList;
+
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокНештатныхСообщений;
         public byte СостояниеКарточки;
         public string ОписаниеСостоянияКарточки;
@@ -107,6 +110,18 @@ namespace DAL.Abstract.Entitys
         public string Шаблон;
         public List<NotificationLanguage> ЯзыкиОповещения;
     };
+
+    //ВМЕСТО "СостояниеФормируемогоСообщенияИШаблон"
+    public class ActionTrainDynamic
+    {
+        public int Id { get; set; }                                       // Id шаблона
+        public int SoundRecordId { get; set; }                            // Id строки расписания к которой принадлежит данный шаблон
+        public bool Activity { get; set; }                                // Разрешение работы всего шаблона
+        public Priority PriorityMain { get; set; }                        // Проритет данного типа шаблонов
+        public SoundRecordStatus SoundRecordStatus { get; set; }
+        public ActionTrain ActionTrain { get; set; }                      //Действие
+    };
+
 
     public struct СтатическоеСообщение
     {
