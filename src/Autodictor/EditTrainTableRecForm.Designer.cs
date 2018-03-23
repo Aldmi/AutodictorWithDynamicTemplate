@@ -656,6 +656,7 @@
             // 
             this.gv_ActionTrains.GridControl = this.gridCtrl_ActionTrains;
             this.gv_ActionTrains.Name = "gv_ActionTrains";
+            this.gv_ActionTrains.RowStyle += new DevExpress.XtraGrid.Views.Grid.RowStyleEventHandler(this.gv_ActionTrains_RowStyle);
             this.gv_ActionTrains.ValidatingEditor += new DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventHandler(this.gv_ActionTrains_ValidatingEditor);
             // 
             // groupBox2

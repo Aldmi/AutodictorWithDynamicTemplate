@@ -288,6 +288,7 @@ namespace MainExample
             return new ActionTrainViewModel
             {
                 IdTrainType= TrainRec.TrainTypeByRyle?.Id ?? -1,
+                IsActiveBase = actionTrain.IsActiveBase,
                 Id = actionTrain.Id,
                 Name= actionTrain.Name,
                 ActionTimeDelta = time,
@@ -314,6 +315,7 @@ namespace MainExample
             return new ActionTrain
             {
                 Id = actionTrainVm.Id,
+                IsActiveBase = actionTrainVm.IsActiveBase,
                 Name = actionTrainVm.Name,
                 Time = timeAction,
                 ActionType = (ActionType)actionTrainVm.ActionTypeViewModel,
@@ -716,20 +718,23 @@ namespace MainExample
                     return;
                 }
                 
-                var actionTrains = trainTypeSelected.ActionTrains
-                    .Where(at => at.IsActiveBase)
-                    .Select(MapActionTrain2ViewModel).ToList();
+                var actionTrains = trainTypeSelected.ActionTrains.Where(at => at.IsActiveBase).Select(MapActionTrain2ViewModel).ToList();
                 ActionTrainsVm.Clear();
                 ActionTrainsVm.AddRange(actionTrains);
                 gv_ActionTrains.RefreshData();
                 gv_ActionTrains.BestFitColumns();
 
-                //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
-                //var factory = new TrainRecordFactoryManual(builder);
-                //TrainRec = factory.Construct();
+                for (int i = 0; i < gv_ActionTrains.RowCount; i++)
+                {
+                  //  gv_ActionTrains.GetRow(i)
+                }
 
-                //Скорректируем список выбора.-----------------------
-                 actionTrains = trainTypeSelected.ActionTrains
+                //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
+                    //var factory = new TrainRecordFactoryManual(builder);
+                    //TrainRec = factory.Construct();
+
+                    //Скорректируем список выбора.-----------------------
+                    actionTrains = trainTypeSelected.ActionTrains
                     .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
                     .Select(MapActionTrain2ViewModel).ToList();
                 cBШаблонОповещения.DataSource = actionTrains;
@@ -847,11 +852,35 @@ namespace MainExample
         /// <summary>
         /// Изменяя тип поезда обновляем его категорию
         /// </summary>
+        int _selIndex = -1;
         private void cBТипПоезда_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectedItem = cBТипПоезда.SelectedItem as TrainTypeByRyle;
             if (selectedItem != null)
             {
+                if (cBТипПоезда.SelectedIndex == _selIndex)
+                    return;
+
+                var actionTrainsVmAny= ActionTrainsVm.Any();
+                if (actionTrainsVmAny && MessageBox.Show(@"При изменени типа поезда таблица шаблонов будет очищена", @"Предупреждение", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    cBТипПоезда.SelectedIndex = _selIndex;
+                    return;
+                }
+                _selIndex= cBТипПоезда.SelectedIndex;
+
+
+                //Очистить текущий список шаблонов------------------
+                ActionTrainsVm.Clear();
+                gv_ActionTrains.RefreshData();
+
+                //Скорректируем список выбора.-----------------------
+                var trainTypeSelected = cBТипПоезда.SelectedItem as TrainTypeByRyle;
+                var actionTrains = trainTypeSelected.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
+                cBШаблонОповещения.DataSource= actionTrains;
+                cBШаблонОповещения.Refresh();
+
+                //Заполнение списка выбора шаблонов выбранного типа. (Шаблоны типа)
                 var categoryText = "Не определенн";
                 switch (selectedItem.CategoryTrain)
                 {
@@ -976,5 +1005,26 @@ namespace MainExample
         }
 
         #endregion
+
+
+        /// <summary>
+        /// Раскрасить в списке строки где IsActiveBase = fale
+        /// Срабатывает при Изменении коллекции привязанной к DataSource
+        /// </summary>
+        private void gv_ActionTrains_RowStyle(object sender, RowStyleEventArgs e)
+        {
+            GridView view = sender as GridView;
+            var celId = view?.GetRowCellValue(e.RowHandle, "Id");
+            if (celId == null)
+                return;
+
+            var id = (int) celId;
+            var action = ActionTrainsVm.FirstOrDefault(at => at.Id == id);
+            if (action != null)
+            {
+                if (!action.IsActiveBase)
+                    e.Appearance.BackColor = Color.Pink;
+            }
+        }
     }
 }

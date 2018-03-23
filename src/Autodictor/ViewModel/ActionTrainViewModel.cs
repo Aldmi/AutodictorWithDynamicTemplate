@@ -26,6 +26,9 @@ namespace MainExample.ViewModel
         [Display(AutoGenerateField = false)]      //Не отображать в таблице
         public int IdTrainType { get; set; }      //IdTrainType
 
+        [Display(AutoGenerateField = false)]      //Не отображать в таблице
+        public bool IsActiveBase { get; set; }    //Базовая активность шаблона
+
         [Display(Name = "Id")]
         [Editable(false)]
         public int Id { get; set; }              //Id
