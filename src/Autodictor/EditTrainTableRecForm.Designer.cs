@@ -673,12 +673,14 @@
             // 
             // cBШаблонОповещения
             // 
+            this.cBШаблонОповещения.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.cBШаблонОповещения.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBШаблонОповещения.FormattingEnabled = true;
             this.cBШаблонОповещения.Location = new System.Drawing.Point(446, 28);
             this.cBШаблонОповещения.Name = "cBШаблонОповещения";
-            this.cBШаблонОповещения.Size = new System.Drawing.Size(469, 28);
+            this.cBШаблонОповещения.Size = new System.Drawing.Size(469, 27);
             this.cBШаблонОповещения.TabIndex = 53;
+            this.cBШаблонОповещения.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.cBШаблонОповещения_DrawItem);
             // 
             // btnДобавитьШаблон
             // 

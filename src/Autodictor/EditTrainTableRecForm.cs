@@ -42,6 +42,7 @@ namespace MainExample
         private string[] SelectedDestinationStations { get; set; } = new string[0];
 
         private List<ActionTrainViewModel> ActionTrainsVm { get; } = new List<ActionTrainViewModel>();
+        private List<ActionTrainViewModel> ActionTrainsSelectedTypeVm { get; set; } = new List<ActionTrainViewModel>();
 
         #endregion
 
@@ -260,13 +261,13 @@ namespace MainExample
             gridCtrl_ActionTrains.DataSource= ActionTrainsVm;
 
             //Заполнение списка выбора шаблонов выбранного типа. (Шаблоны типа за исключением уже добавелнных в таблицу)
-            var actionTrains = TrainRec.TrainTypeByRyle?.ActionTrains
-                .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
-                .Select(MapActionTrain2ViewModel).ToList();
-
+            var actionTrains = TrainRec.TrainTypeByRyle?.ActionTrains.Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id)).Select(MapActionTrain2ViewModel).ToList();
             cBШаблонОповещения.DataSource = actionTrains;
             cBШаблонОповещения.DisplayMember = "Name";
             cBШаблонОповещения.ValueMember = "Name";
+
+            //DEBUG
+            ActionTrainsSelectedTypeVm = TrainRec.TrainTypeByRyle?.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
         }
 
 
@@ -351,11 +352,9 @@ namespace MainExample
             else
                 TrainRec.Name = cBКуда.Text;
 
-
             TrainRec.Direction = _trainRecService.GetDirectionByName(cBНаправ.Text);
             TrainRec.StationDepart = _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBОткуда.Text);
             TrainRec.StationArrival = _trainRecService.GetStationInDirectionByNameStation(cBНаправ.Text, cBКуда.Text);
-
 
             if (rBВремяДействияС.Checked == true)
             {
@@ -657,7 +656,6 @@ namespace MainExample
 
             Расписание расписание = new Расписание(текущийПланРасписанияПоезда);
 
-
             string ВремяДействия = "";
             if (rBВремяДействияС.Checked)
                 ВремяДействия = "c " + dTPВремяДействияС.Value.ToString("dd.MM.yyyy");
@@ -724,19 +722,12 @@ namespace MainExample
                 gv_ActionTrains.RefreshData();
                 gv_ActionTrains.BestFitColumns();
 
-                for (int i = 0; i < gv_ActionTrains.RowCount; i++)
-                {
-                  //  gv_ActionTrains.GetRow(i)
-                }
-
                 //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
-                    //var factory = new TrainRecordFactoryManual(builder);
-                    //TrainRec = factory.Construct();
+                //var factory = new TrainRecordFactoryManual(builder);
+                //TrainRec = factory.Construct();
 
-                    //Скорректируем список выбора.-----------------------
-                    actionTrains = trainTypeSelected.ActionTrains
-                    .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
-                    .Select(MapActionTrain2ViewModel).ToList();
+                //Скорректируем список выбора.-----------------------
+                actionTrains = trainTypeSelected.ActionTrains.Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id)).Select(MapActionTrain2ViewModel).ToList();
                 cBШаблонОповещения.DataSource = actionTrains;
                 cBШаблонОповещения.Refresh();
             }
@@ -875,9 +866,8 @@ namespace MainExample
                 gv_ActionTrains.RefreshData();
 
                 //Скорректируем список выбора.-----------------------
-                var trainTypeSelected = cBТипПоезда.SelectedItem as TrainTypeByRyle;
-                var actionTrains = trainTypeSelected.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
-                cBШаблонОповещения.DataSource= actionTrains;
+                ActionTrainsSelectedTypeVm = selectedItem.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
+                cBШаблонОповещения.DataSource= ActionTrainsSelectedTypeVm;
                 cBШаблонОповещения.Refresh();
 
                 //Заполнение списка выбора шаблонов выбранного типа. (Шаблоны типа)
@@ -912,10 +902,7 @@ namespace MainExample
                 e.Handled = true;
 
                 //Заполнение списка выбора шаблонов выбранного типа. (Шаблоны типа за исключением уже добавелнных в таблицу)
-                var actionTrains = TrainRec.TrainTypeByRyle?.ActionTrains
-                    .Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id))
-                    .Select(MapActionTrain2ViewModel).ToList();
-
+                var actionTrains = ActionTrainsSelectedTypeVm.Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id)).ToList();
                 cBШаблонОповещения.DataSource = actionTrains;
             }
         }
@@ -1004,7 +991,6 @@ namespace MainExample
             }
         }
 
-        #endregion
 
 
         /// <summary>
@@ -1018,13 +1004,35 @@ namespace MainExample
             if (celId == null)
                 return;
 
-            var id = (int) celId;
+            var id = (int)celId;
             var action = ActionTrainsVm.FirstOrDefault(at => at.Id == id);
             if (action != null)
             {
                 if (!action.IsActiveBase)
-                    e.Appearance.BackColor = Color.Pink;
+                    e.Appearance.BackColor = Color.DarkOrange;
             }
         }
+
+
+        /// <summary>
+        /// Раскрасить в выпадающем списке выбора шаблона строки где IsActiveBase = false
+        /// Срабатывает при Изменении перересовке коллекции
+        /// </summary>
+        private void cBШаблонОповещения_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            var item = ((ComboBox)sender).Items[e.Index] as ActionTrainViewModel;
+            if (item == null)
+                return;
+
+            // Нарисовать текст
+            string text = item.Name;
+            var brush = item.IsActiveBase ? Brushes.Black : Brushes.DarkOrange;
+            e.DrawBackground();
+            e.Graphics.DrawString(text, ((Control)sender).Font, brush, e.Bounds.X, e.Bounds.Y);
+        }
+
+        #endregion
+
+
     }
 }
