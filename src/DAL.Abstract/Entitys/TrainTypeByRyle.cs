@@ -168,8 +168,8 @@ namespace DAL.Abstract.Entitys
     {
         #region field
 
-        private int? _cycleTime;
-        private List<int> _deltaTimes;
+        private int? _cycleTime; //{ get; set; }
+        private List<int> _deltaTimes; //{ get; set; }
 
         #endregion
 

@@ -118,8 +118,8 @@ namespace DAL.Abstract.Entitys
         public int SoundRecordId { get; set; }                            // Id строки расписания к которой принадлежит данный шаблон
         public bool Activity { get; set; }                                // Разрешение работы всего шаблона
         public Priority PriorityMain { get; set; }                        // Проритет данного типа шаблонов
-        public SoundRecordStatus SoundRecordStatus { get; set; }
-        public ActionTrain ActionTrain { get; set; }                      //Действие
+        public SoundRecordStatus SoundRecordStatus { get; set; }          // Статус воспроизведения
+        public ActionTrain ActionTrain { get; set; }                      // Действие (Шаблоны)
     };
 
 

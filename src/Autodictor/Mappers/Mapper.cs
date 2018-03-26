@@ -4,6 +4,7 @@ using System.Linq;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Model;
 using DAL.Abstract.Entitys;
+using Force.DeepCloner;
 using MainExample.Entites;
 
 
@@ -187,11 +188,11 @@ namespace MainExample.Mappers
             record.ActionTrainDynamiсList = new List<ActionTrainDynamic>();
             foreach (var actionTrain in config.ActionTrains)
             {
-                if (actionTrain.Time.DeltaTimes != null) //Указанны временные смещения
+                if (actionTrain.Time.IsDeltaTimes) //Указанны временные смещения
                 {
                     foreach (var time in actionTrain.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
                     {
-                        var newActionTrain = actionTrain; //COPY
+                        var newActionTrain= actionTrain.DeepClone(); //COPY
                         newActionTrain.Time.DeltaTimes = new List<int>(time);
                         var actDyn= new ActionTrainDynamic
                         {
@@ -207,7 +208,7 @@ namespace MainExample.Mappers
                 }
                 else                                   //Указан циклический повтор
                 {
-                    var newActionTrain = actionTrain; //COPY
+                    var newActionTrain= actionTrain.DeepClone(); //COPY
                     var actDyn = new ActionTrainDynamic
                     {
                         Id = idActDyn++,

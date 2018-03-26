@@ -202,6 +202,10 @@ namespace MainExample
             rB_РежРабАвтомат.Checked = TrainRec.Автомат;
             rB_РежРабРучной.Checked = !TrainRec.Автомат;
 
+            dTPПрибытие.Value= DateTime.Parse("00:00");
+            dTPОтправление.Value = DateTime.Parse("00:00");
+            dTPСледования.Value = DateTime.Parse("00:00");
+
             if (TrainRec.ArrivalTime.HasValue && TrainRec.DepartureTime.HasValue)
             {
                 rBТранзит.Checked = true;
@@ -1020,6 +1024,9 @@ namespace MainExample
         /// </summary>
         private void cBШаблонОповещения_DrawItem(object sender, DrawItemEventArgs e)
         {
+            if(e.Index < 0)
+                return;
+
             var item = ((ComboBox)sender).Items[e.Index] as ActionTrainViewModel;
             if (item == null)
                 return;
