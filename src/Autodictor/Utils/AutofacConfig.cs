@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
+using AutodictorBL.Services.SoundRecordServices;
 using Autofac;
 using Autofac.Core;
 using Autofac.Features.OwnedInstances;
@@ -111,6 +112,7 @@ namespace MainExample.Utils
             builder.RegisterType<TrainTypeByRyleService>().SingleInstance(); //TODO: удалить
             builder.RegisterType<UserService>().InstancePerDependency();
             builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
+            builder.RegisterType<SoundReсordWorkerService>().As<ISoundReсordWorkerService>().InstancePerLifetimeScope();
             builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repLocalMain")),
@@ -119,6 +121,8 @@ namespace MainExample.Utils
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repRemoteCis")),
                         (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis))
                 }).SingleInstance();
+
+
 
 
             //ФОРМЫ----------------------------------------------------------------------------------

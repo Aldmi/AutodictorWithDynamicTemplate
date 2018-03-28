@@ -62,7 +62,7 @@ namespace MainExample.Services
 
     public class SoundRecordPreprocessingChangeTrainPathDirection4Transit : ISoundRecordPreprocessing
     {
-        private readonly СостояниеФормируемогоСообщенияИШаблон? _шаблон;
+        private readonly ActionTrain _шаблон;
 
 
 
@@ -70,7 +70,7 @@ namespace MainExample.Services
         {
             if (option.ContainsKey("формируемоеСообщение"))
             {
-                _шаблон = (СостояниеФормируемогоСообщенияИШаблон?) option["формируемоеСообщение"];
+                _шаблон = (ActionTrain)option["формируемоеСообщение"];
             }
         }
 
@@ -86,19 +86,19 @@ namespace MainExample.Services
             if ((rec.БитыАктивностиПолей & 0x1F) != 0x00)
             {
                 // var привязкаКВремени = _шаблон.Value.ПривязкаКВремени;
-                var шаблонОтпр  =_шаблон.Value.НазваниеШаблона.StartsWith("[ОТПР]");
-                if (rec.СменнаяНумерацияПоезда && шаблонОтпр)
-                {
-                    switch (rec.НумерацияПоезда)
-                    {
-                        case 1:
-                            rec.НумерацияПоезда = 2;
-                            break;
-                        case 2:
-                            rec.НумерацияПоезда = 1;
-                            break;
-                    }
-                }
+                //var шаблонОтпр  =_шаблон.Value.НазваниеШаблона.StartsWith("[ОТПР]");
+                //if (rec.СменнаяНумерацияПоезда && шаблонОтпр)
+                //{
+                //    switch (rec.НумерацияПоезда)
+                //    {
+                //        case 1:
+                //            rec.НумерацияПоезда = 2;
+                //            break;
+                //        case 2:
+                //            rec.НумерацияПоезда = 1;
+                //            break;
+                //    }
+                //}
             }
         }
     }

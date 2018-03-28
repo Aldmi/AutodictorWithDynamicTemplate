@@ -81,6 +81,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Services\IAuthentificationService.cs" />
+    <Compile Include="Services\SoundRecordServices\ISoundReсordWorkerService.cs" />
+    <Compile Include="Services\SoundRecordServices\SoundReсordWorkerService.cs" />
     <Compile Include="Settings\XmlSettingFactory.cs" />
     <Compile Include="Settings\XmlSound\XmlSoundPlayerSettings.cs" />
     <Compile Include="Sound\Converters\IFileNameConverter.cs" />
