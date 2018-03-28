@@ -99,7 +99,7 @@
             this.rb_Постоянно = new System.Windows.Forms.RadioButton();
             this.chBox_сменнаяНумерация = new System.Windows.Forms.CheckBox();
             this.chBoxВыводНаТабло = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.gbВыводИнформации = new System.Windows.Forms.GroupBox();
             this.chBoxВыводЗвука = new System.Windows.Forms.CheckBox();
             this.tb_Category = new System.Windows.Forms.TextBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
@@ -116,7 +116,7 @@
             this.gbРежимРаботы.SuspendLayout();
             this.gb_ПутьПоУмолчанию.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_ПутиПоДнямНедели)).BeginInit();
-            this.groupBox1.SuspendLayout();
+            this.gbВыводИнформации.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -367,9 +367,9 @@
             this.gBОстановки.Controls.Add(this.rBБезОстановок);
             this.gBОстановки.Controls.Add(this.rBСоВсемиОстановками);
             this.gBОстановки.Controls.Add(this.rBНеОповещать);
-            this.gBОстановки.Location = new System.Drawing.Point(581, 56);
+            this.gBОстановки.Location = new System.Drawing.Point(567, 56);
             this.gBОстановки.Name = "gBОстановки";
-            this.gBОстановки.Size = new System.Drawing.Size(533, 293);
+            this.gBОстановки.Size = new System.Drawing.Size(547, 293);
             this.gBОстановки.TabIndex = 49;
             this.gBОстановки.TabStop = false;
             this.gBОстановки.Text = "Остановки";
@@ -393,7 +393,7 @@
             this.lVСписокСтанций.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lVСписокСтанций.Location = new System.Drawing.Point(213, 14);
             this.lVСписокСтанций.Name = "lVСписокСтанций";
-            this.lVСписокСтанций.Size = new System.Drawing.Size(308, 270);
+            this.lVСписокСтанций.Size = new System.Drawing.Size(328, 270);
             this.lVСписокСтанций.TabIndex = 49;
             this.lVСписокСтанций.UseCompatibleStateImageBehavior = false;
             this.lVСписокСтанций.View = System.Windows.Forms.View.Details;
@@ -888,17 +888,17 @@
             this.chBoxВыводНаТабло.Text = "На табло";
             this.chBoxВыводНаТабло.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // gbВыводИнформации
             // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.groupBox1.Controls.Add(this.chBoxВыводЗвука);
-            this.groupBox1.Controls.Add(this.chBoxВыводНаТабло);
-            this.groupBox1.Location = new System.Drawing.Point(625, 835);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(221, 52);
-            this.groupBox1.TabIndex = 63;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Вывод информаци";
+            this.gbВыводИнформации.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.gbВыводИнформации.Controls.Add(this.chBoxВыводЗвука);
+            this.gbВыводИнформации.Controls.Add(this.chBoxВыводНаТабло);
+            this.gbВыводИнформации.Location = new System.Drawing.Point(625, 835);
+            this.gbВыводИнформации.Name = "gbВыводИнформации";
+            this.gbВыводИнформации.Size = new System.Drawing.Size(221, 52);
+            this.gbВыводИнформации.TabIndex = 63;
+            this.gbВыводИнформации.TabStop = false;
+            this.gbВыводИнформации.Text = "Вывод информаци";
             // 
             // chBoxВыводЗвука
             // 
@@ -942,7 +942,7 @@
             this.ClientSize = new System.Drawing.Size(1386, 892);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.tb_Category);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.gbВыводИнформации);
             this.Controls.Add(this.gb_ПутьПоУмолчанию);
             this.Controls.Add(this.tBНомерПоездаДоп);
             this.Controls.Add(this.label12);
@@ -984,8 +984,8 @@
             this.gb_ПутьПоУмолчанию.ResumeLayout(false);
             this.gb_ПутьПоУмолчанию.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_ПутиПоДнямНедели)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gbВыводИнформации.ResumeLayout(false);
+            this.gbВыводИнформации.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -1061,7 +1061,7 @@
         private System.Windows.Forms.CheckBox chBox_сменнаяНумерация;
         private System.Windows.Forms.GroupBox grbВремяДействия;
         public System.Windows.Forms.CheckBox chBoxВыводНаТабло;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox gbВыводИнформации;
         public System.Windows.Forms.CheckBox chBoxВыводЗвука;
         private System.Windows.Forms.Button btnАвтогенерацияШаблонов;
         private System.Windows.Forms.TextBox tb_Category;

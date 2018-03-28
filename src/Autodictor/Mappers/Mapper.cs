@@ -75,7 +75,7 @@ namespace MainExample.Mappers
         public static SoundRecord MapTrainTableRecord2SoundRecord(TrainTableRec config, DateTime day, int id)
         {
             var record = new SoundRecord();
-            record.ID = id;
+            record.Id = id;
             record.IdTrain = new IdTrain(config.Id);
             record.НомерПоезда = config.Num;
             record.НомерПоезда2 = config.Num2;
@@ -87,17 +87,16 @@ namespace MainExample.Mappers
                 ["табло"] = config.ИспользоватьДополнение["табло"]
             };
             record.Направление = config.Direction?.Name;
-            record.СтанцияОтправления = "";
-            record.СтанцияНазначения = "";
             record.ДниСледования = config.Days;
             record.ДниСледованияAlias = config.DaysAlias;
             record.Активность = config.Active;
             record.Автомат = config.Автомат;
             record.ШаблонВоспроизведенияСообщений = String.Empty;//config.SoundTemplates;
-            record.НомерПути = ПолучитьНомерПутиПоДнямНедели(config)?.ToString() ?? string.Empty;
+            record.Pathway = ПолучитьНомерПутиПоДнямНедели(config).DeepClone();
+            record.НомерПути = ПолучитьНомерПутиПоДнямНедели(config)?.Name ?? string.Empty;
             record.НомерПутиБезАвтосброса = record.НомерПути;
             record.НумерацияПоезда = (byte)config.WagonsNumbering;
-            record.СменнаяНумерацияПоезда = config.ChangeTrainPathDirection ?? false ;
+            record.СменнаяНумерацияПоезда = config.ChangeTrainPathDirection ?? false;
             record.Примечание = config.Примечание;
             record.ТипПоезда = config.TrainTypeByRyle;
             record.Состояние = SoundRecordStatus.ОжиданиеВоспроизведения;
@@ -193,11 +192,11 @@ namespace MainExample.Mappers
                     foreach (var time in actionTrain.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
                     {
                         var newActionTrain= actionTrain.DeepClone(); //COPY
-                        newActionTrain.Time.DeltaTimes = new List<int>(time);
+                        newActionTrain.Time.DeltaTimes = new List<int> {time};
                         var actDyn= new ActionTrainDynamic
                         {
                             Id = idActDyn++,
-                            SoundRecordId = record.ID,
+                            SoundRecordId = record.Id,
                             Activity = true,
                             PriorityMain = Priority.Midlle,
                             SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
@@ -212,7 +211,7 @@ namespace MainExample.Mappers
                     var actDyn = new ActionTrainDynamic
                     {
                         Id = idActDyn++,
-                        SoundRecordId = record.ID,
+                        SoundRecordId = record.Id,
                         Activity = true,
                         PriorityMain = Priority.Midlle,
                         SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
@@ -264,7 +263,7 @@ namespace MainExample.Mappers
                             {
                                 СостояниеФормируемогоСообщенияИШаблон новыйШаблон;
                                 новыйШаблон.Id = indexШаблона++;
-                                новыйШаблон.SoundRecordId = record.ID;
+                                новыйШаблон.SoundRecordId = record.Id;
                                 новыйШаблон.Активность = активностьШаблоновДанногоПоезда;
                                 новыйШаблон.ПриоритетГлавный = Priority.Midlle;
                                 новыйШаблон.ПриоритетВторостепенный = приоритетШаблона;
@@ -537,7 +536,7 @@ namespace MainExample.Mappers
             {
                 mapData = new UniversalInputType
                 {
-                    Id = data.ID,
+                    Id = data.Id,
                     ScheduleId = data.IdTrain.ScheduleId,
                     IsActive = data.Активность,
                     NumberOfTrain = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? номерПоезда : "   ",
@@ -571,7 +570,7 @@ namespace MainExample.Mappers
             {
                 mapData = new UniversalInputType
                 {
-                    Id = data.ID,
+                    Id = data.Id,
                     ScheduleId = data.IdTrain.ScheduleId,
                     IsActive = data.Активность,
                     NumberOfTrain = номерПоезда,
@@ -610,7 +609,7 @@ namespace MainExample.Mappers
         {
             return new SoundRecordDb
             {
-                Id = data.ID,
+                Id = data.Id,
                 Автомат = data.Автомат,
                 Активность = data.Активность,
                 БитыАктивностиПолей = data.БитыАктивностиПолей,
@@ -662,7 +661,7 @@ namespace MainExample.Mappers
         {
             return new SoundRecord
             {
-                ID = data.Id,
+                Id = data.Id,
                 Автомат = data.Автомат,
                 Активность = data.Активность,
                 БитыАктивностиПолей = data.БитыАктивностиПолей,

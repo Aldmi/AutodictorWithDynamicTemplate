@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Entites;
 using DAL.Abstract.Entitys;
 using MainExample.Entites;
@@ -13,11 +14,12 @@ using MainExample.Services.FactoryServices;
 
 namespace MainExample
 {
-    public partial class КарточкаДвиженияПоезда : Form
+    public partial class КарточкаДвиженияПоездаForm : Form
     {
+        private readonly PathwaysService _pathwaysService;
+        private readonly DirectionService _directionService;
         private SoundRecord _record;
         private readonly SoundRecord _recordOld;
-        private readonly string _key;
 
         public bool ПрименитьКоВсемСообщениям = true;
         private bool _сделаныИзменения = false;
@@ -31,13 +33,13 @@ namespace MainExample
 
         #region ctor
 
-        public КарточкаДвиженияПоезда(SoundRecord record, string key)
+        public КарточкаДвиженияПоездаForm(PathwaysService pathwaysService, DirectionService directionService, SoundRecord record)
         {
+            _pathwaysService = pathwaysService;
+            _directionService = directionService;
             _record = record;
             _record.ИспользоватьДополнение = new Dictionary<string, bool>(record.ИспользоватьДополнение);//ссылочные переменные копируются по ссылке, т.е. их нужно создать заново
-
             _recordOld = record;
-            _key = key;
             СтанцииВыбранногоНаправления = Program.ПолучитьСтанцииНаправления(record.Направление)?.Select(st => st.NameRu).ToList() ?? new List<string>();
             НомераПутей = Program.PathwaysService.GetAll().ToList();
 
@@ -55,6 +57,21 @@ namespace MainExample
 
         private void Model2UiControls(SoundRecord record)
         {
+            tb_typeTrain.Text = record.ТипПоезда.NameRu;
+            var categoryText = "Не определенн";
+            switch (record.ТипПоезда.CategoryTrain)
+            {
+                case CategoryTrain.Suburb:
+                    categoryText = "Пригород";
+                    break;
+                case CategoryTrain.LongDist:
+                    categoryText = "Дальнего след.";
+                    break;
+            }
+            tb_Category.Text = categoryText;
+
+
+
             cBОтменен.Checked = !record.Активность;
 
             cBПрибытие.Checked = ((record.БитыАктивностиПолей & 0x04) != 0x00) ? true : false;
@@ -1096,7 +1113,7 @@ namespace MainExample
                 {
                     Id = 2000,
                     ПриоритетГлавный = Priority.Hight,
-                    SoundRecordId = _record.ID,
+                    SoundRecordId = _record.Id,
                     Шаблон = ФормируемоеСообщение,
                     ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Ru, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
                     НазваниеШаблона = "Авария"

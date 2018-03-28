@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class КарточкаДвиженияПоезда
+    partial class КарточкаДвиженияПоездаForm
     {
         /// <summary>
         /// Required designer variable.
@@ -91,6 +91,9 @@
             this.cBПрибытиеЗадерживается = new System.Windows.Forms.CheckBox();
             this.cBПоездОтменен = new System.Windows.Forms.CheckBox();
             this.gBНастройкиПоезда = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.tb_Category = new System.Windows.Forms.TextBox();
+            this.tb_typeTrain = new System.Windows.Forms.TextBox();
             this.txb_НомерПоезда2 = new System.Windows.Forms.TextBox();
             this.txb_НомерПоезда = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -103,9 +106,6 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.chBoxВыводЗвука = new System.Windows.Forms.CheckBox();
             this.chBoxВыводНаТабло = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.gB_НумерацияПоезда.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gB_Прибытие.SuspendLayout();
@@ -828,8 +828,8 @@
             // gBНастройкиПоезда
             // 
             this.gBНастройкиПоезда.Controls.Add(this.label11);
-            this.gBНастройкиПоезда.Controls.Add(this.textBox2);
-            this.gBНастройкиПоезда.Controls.Add(this.textBox1);
+            this.gBНастройкиПоезда.Controls.Add(this.tb_Category);
+            this.gBНастройкиПоезда.Controls.Add(this.tb_typeTrain);
             this.gBНастройкиПоезда.Controls.Add(this.txb_НомерПоезда2);
             this.gBНастройкиПоезда.Controls.Add(this.txb_НомерПоезда);
             this.gBНастройкиПоезда.Controls.Add(this.label9);
@@ -854,6 +854,36 @@
             this.gBНастройкиПоезда.TabIndex = 48;
             this.gBНастройкиПоезда.TabStop = false;
             this.gBНастройкиПоезда.Text = "Настроки поезда";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label11.Location = new System.Drawing.Point(22, 54);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(83, 21);
+            this.label11.TabIndex = 56;
+            this.label11.Text = "Категория";
+            // 
+            // tb_Category
+            // 
+            this.tb_Category.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_Category.Location = new System.Drawing.Point(446, 53);
+            this.tb_Category.Name = "tb_Category";
+            this.tb_Category.ReadOnly = true;
+            this.tb_Category.Size = new System.Drawing.Size(219, 26);
+            this.tb_Category.TabIndex = 55;
+            this.tb_Category.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tb_typeTrain
+            // 
+            this.tb_typeTrain.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tb_typeTrain.Location = new System.Drawing.Point(116, 53);
+            this.tb_typeTrain.Name = "tb_typeTrain";
+            this.tb_typeTrain.ReadOnly = true;
+            this.tb_typeTrain.Size = new System.Drawing.Size(322, 26);
+            this.tb_typeTrain.TabIndex = 54;
+            this.tb_typeTrain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txb_НомерПоезда2
             // 
@@ -983,36 +1013,6 @@
             this.chBoxВыводНаТабло.Text = "На табло";
             this.chBoxВыводНаТабло.UseVisualStyleBackColor = true;
             // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(116, 53);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(322, 26);
-            this.textBox1.TabIndex = 54;
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox2.Location = new System.Drawing.Point(446, 53);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(219, 26);
-            this.textBox2.TabIndex = 55;
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label11.Location = new System.Drawing.Point(22, 54);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(90, 21);
-            this.label11.TabIndex = 56;
-            this.label11.Text = "Тип поезда";
-            // 
             // КарточкаДвиженияПоезда
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1028,7 +1028,7 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
-            this.Name = "КарточкаДвиженияПоезда";
+            this.Name = "КарточкаДвиженияПоездаForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Карточка звукового сообщения";
             this.Load += new System.EventHandler(this.КарточкаДвиженияПоезда_Load);
@@ -1130,7 +1130,7 @@
         private System.Windows.Forms.CheckBox chBoxВыводЗвука;
         private System.Windows.Forms.CheckBox chBoxВыводНаТабло;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tb_Category;
+        private System.Windows.Forms.TextBox tb_typeTrain;
     }
 }

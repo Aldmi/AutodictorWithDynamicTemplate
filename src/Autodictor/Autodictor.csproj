@@ -276,17 +276,17 @@
     </Compile>
     <Compile Include="Utils\AutofacConfig.cs" />
     <Compile Include="ViewModel\ActionTrainViewModel.cs" />
-    <Compile Include="КарточкаСтатическогоЗвуковогоСообщения.cs">
+    <Compile Include="КарточкаСтатическогоЗвуковогоСообщенияForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="КарточкаСтатическогоЗвуковогоСообщения.Designer.cs">
-      <DependentUpon>КарточкаСтатическогоЗвуковогоСообщения.cs</DependentUpon>
+    <Compile Include="КарточкаСтатическогоЗвуковогоСообщенияForm.Designer.cs">
+      <DependentUpon>КарточкаСтатическогоЗвуковогоСообщенияForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="КарточкаДвиженияПоезда.cs">
+    <Compile Include="КарточкаДвиженияПоездаForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="КарточкаДвиженияПоезда.Designer.cs">
-      <DependentUpon>КарточкаДвиженияПоезда.cs</DependentUpon>
+    <Compile Include="КарточкаДвиженияПоездаForm.Designer.cs">
+      <DependentUpon>КарточкаДвиженияПоездаForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ОкноАрхиваИзменений.cs">
       <SubType>Form</SubType>
@@ -418,11 +418,11 @@
     <EmbeddedResource Include="TrainTableOperative.resx">
       <DependentUpon>TrainTableOperative.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="КарточкаСтатическогоЗвуковогоСообщения.resx">
-      <DependentUpon>КарточкаСтатическогоЗвуковогоСообщения.cs</DependentUpon>
+    <EmbeddedResource Include="КарточкаСтатическогоЗвуковогоСообщенияForm.resx">
+      <DependentUpon>КарточкаСтатическогоЗвуковогоСообщенияForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="КарточкаДвиженияПоезда.resx">
-      <DependentUpon>КарточкаДвиженияПоезда.cs</DependentUpon>
+    <EmbeddedResource Include="КарточкаДвиженияПоездаForm.resx">
+      <DependentUpon>КарточкаДвиженияПоездаForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ОкноАрхиваИзменений.resx">
       <DependentUpon>ОкноАрхиваИзменений.cs</DependentUpon>

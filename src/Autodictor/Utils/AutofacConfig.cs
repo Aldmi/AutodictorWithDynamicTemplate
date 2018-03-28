@@ -128,10 +128,11 @@ namespace MainExample.Utils
             builder.RegisterType<MainWindowForm>().InstancePerDependency();
             builder.RegisterType<StaticDisplayForm>().InstancePerDependency();
             builder.RegisterType<StaticSoundForm>().InstancePerDependency();
-            builder.RegisterType<КарточкаСтатическогоЗвуковогоСообщения>().InstancePerDependency();
+            builder.RegisterType<КарточкаСтатическогоЗвуковогоСообщенияForm>().InstancePerDependency();
             builder.RegisterType<TrainTableGridForm>().InstancePerDependency();
             builder.RegisterType<EditTrainTableRecForm>().InstancePerDependency();
-            
+            builder.RegisterType<КарточкаДвиженияПоездаForm>().InstancePerDependency();
+
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()
             //    .WithParameter(new ResolvedParameter(

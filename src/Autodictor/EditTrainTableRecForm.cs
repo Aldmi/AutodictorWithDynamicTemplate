@@ -150,6 +150,8 @@ namespace MainExample
                 cBТипПоезда.SelectedItem = TrainRec.TrainTypeByRyle;
             }
 
+           // gBОстановки.Enabled= TrainRec.TrainTypeByRyle.CategoryTrain == CategoryTrain.Suburb;
+     
             string[] станции = TrainRec.Name.Split('-');
             if (станции.Length == 2)
             {
@@ -270,7 +272,6 @@ namespace MainExample
             cBШаблонОповещения.DisplayMember = "Name";
             cBШаблонОповещения.ValueMember = "Name";
 
-            //DEBUG
             ActionTrainsSelectedTypeVm = TrainRec.TrainTypeByRyle?.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
         }
 
@@ -625,9 +626,14 @@ namespace MainExample
 
         private void cBБлокировка_CheckedChanged(object sender, EventArgs e)
         {
+            var selectedItem = cBТипПоезда.SelectedItem as TrainTypeByRyle;
             if (cBБлокировка.Checked)
             {
                 tBНомерПоезда.Enabled = false;
+                tBНомерПоездаДоп.Enabled = false;
+                tb_Дополнение.Enabled = false;
+                cb_Дополнение_Табло.Enabled = false;
+                cb_Дополнение_Звук.Enabled = false;
                 cBТипПоезда.Enabled = false;
                 gBНаправление.Enabled = false;
                 gBОстановки.Enabled = false;
@@ -636,18 +642,28 @@ namespace MainExample
                 cBОтсчетВагонов.Enabled = false;
                 gBШаблонОповещения.Enabled = false;
                 chBox_сменнаяНумерация.Enabled = false;
+                gbРежимРаботы.Enabled = false;
+                gbВыводИнформации.Enabled = false;
+                gb_ПутьПоУмолчанию.Enabled = false;
             }
             else
             {
                 tBНомерПоезда.Enabled = true;
+                tBНомерПоездаДоп.Enabled = true;
+                tb_Дополнение.Enabled = true;
+                cb_Дополнение_Табло.Enabled = true;
+                cb_Дополнение_Звук.Enabled = true;
                 cBТипПоезда.Enabled = true;
                 gBНаправление.Enabled = true;
-                gBОстановки.Enabled = true;
+                gBОстановки.Enabled = (selectedItem != null && selectedItem.CategoryTrain == CategoryTrain.Suburb);
                 gBДниСледования.Enabled = true;
                 cBПутьПоУмолчанию.Enabled = true;
                 cBОтсчетВагонов.Enabled = true;
                 gBШаблонОповещения.Enabled = true;
                 chBox_сменнаяНумерация.Enabled = true;
+                gbРежимРаботы.Enabled = true;
+                gbВыводИнформации.Enabled = true;
+                gb_ПутьПоУмолчанию.Enabled = true;
             }
         }
 
@@ -879,9 +895,11 @@ namespace MainExample
                 switch (selectedItem.CategoryTrain)
                 {
                     case CategoryTrain.Suburb:
+                        gBОстановки.Enabled = true;
                         categoryText = "Пригород";
                         break;
                     case CategoryTrain.LongDist:
+                        gBОстановки.Enabled = false;
                         categoryText = "Дальнего след.";
                         break;
                 }

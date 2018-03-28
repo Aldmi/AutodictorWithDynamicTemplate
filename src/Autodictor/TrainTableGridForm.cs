@@ -530,7 +530,7 @@ namespace MainExample
             item.FollowingTime = null;
             item.Days = "";
             item.DaysAlias = "";
-            item.Active = true;
+            item.Active = false;
             item.WagonsNumbering = WagonsNumbering.None;
             item.ChangeTrainPathDirection = false;
             item.TrainPathNumber = new Dictionary<WeekDays, Pathway>

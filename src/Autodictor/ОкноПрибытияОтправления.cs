@@ -121,7 +121,7 @@ namespace MainExample
                         k++;
                     }
 
-                    ListViewItem lvi = new ListViewItem(new string[] { Данные.Value.ID.ToString(), Данные.Value.Время.ToString("HH:mm:ss"), "00:00", Данные.Value.НомерПоезда + Данные.Value.Описание });
+                    ListViewItem lvi = new ListViewItem(new string[] { Данные.Value.Id.ToString(), Данные.Value.Время.ToString("HH:mm:ss"), "00:00", Данные.Value.НомерПоезда + Данные.Value.Описание });
                 }
 
 

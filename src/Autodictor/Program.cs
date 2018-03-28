@@ -2,26 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Threading;
-using System.Threading.Tasks;
 using AutodictorBL;
 using AutodictorBL.DataAccess;
-using AutodictorBL.Services;
-using AutodictorBL.Sound;
 using Autofac;
-using Autofac.Core;
-using Communication.Annotations;
 using DAL.Abstract.Abstract;
-using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
 using DAL.NoSqlLiteDb.Repository;
 using Library.Logs;
-using Library.Xml;
-using MainExample.Services;
 using MainExample.Utils;
 
 
@@ -96,7 +86,7 @@ namespace MainExample
                     FollowingTime = null,
                     Days = "Еж:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:2147483647:0:0",
                     DaysAlias = "",
-                    Active = true,
+                    Active = false,
                     WagonsNumbering = WagonsNumbering.None,
                     ChangeTrainPathDirection = false,
                     TrainPathNumber = new Dictionary<WeekDays, Pathway>
@@ -142,7 +132,7 @@ namespace MainExample
                     FollowingTime = null,
                     Days = "",
                     DaysAlias = "",
-                    Active = true,
+                    Active = false,
                     WagonsNumbering = WagonsNumbering.None,
                     ChangeTrainPathDirection = false,
                     TrainPathNumber = new Dictionary<WeekDays, Pathway>
@@ -188,7 +178,7 @@ namespace MainExample
                     FollowingTime = null,
                     Days = "",
                     DaysAlias = "",
-                    Active = true,
+                    Active = false,
                     WagonsNumbering = WagonsNumbering.None,
                     ChangeTrainPathDirection = false,
                     TrainPathNumber = new Dictionary<WeekDays, Pathway>

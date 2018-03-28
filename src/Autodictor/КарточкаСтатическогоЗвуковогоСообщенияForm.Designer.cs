@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class КарточкаСтатическогоЗвуковогоСообщения
+    partial class КарточкаСтатическогоЗвуковогоСообщенияForm
     {
         /// <summary>
         /// Required designer variable.
@@ -176,7 +176,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.Name = "КарточкаСтатическогоЗвуковогоСообщения";
+            this.Name = "КарточкаСтатическогоЗвуковогоСообщенияForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Карточка звукового сообщения";
             this.groupBox2.ResumeLayout(false);

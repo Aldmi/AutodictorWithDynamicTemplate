@@ -12,14 +12,14 @@ using MainExample.Entites;
 
 namespace MainExample
 {
-    public partial class КарточкаСтатическогоЗвуковогоСообщения : Form
+    public partial class КарточкаСтатическогоЗвуковогоСообщенияForm : Form
     {
         private СтатическоеСообщение _record;
         private readonly IAuthentificationService _authentificationService;
 
 
 
-        public КарточкаСтатическогоЗвуковогоСообщения(СтатическоеСообщение record, IAuthentificationService authentificationService)
+        public КарточкаСтатическогоЗвуковогоСообщенияForm(СтатическоеСообщение record, IAuthentificationService authentificationService)
         {
             this._record = record;
             _authentificationService = authentificationService;

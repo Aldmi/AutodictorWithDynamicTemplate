@@ -47,7 +47,8 @@ namespace MainExample
 
     public partial class MainWindowForm : Form
     {
-        private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> _staticSoundCardFormFactory;
+        private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> _staticSoundCardFormFactory;
+        private readonly Func<SoundRecord, КарточкаДвиженияПоездаForm> _trafficCardFormFactory;
         private readonly IAuthentificationService _authentificationService;
         private readonly IUsersRepository _usersRepository;
         private readonly TrainRecService _trainRecService;
@@ -207,7 +208,8 @@ namespace MainExample
 
 
         public MainWindowForm(ExchangeModel exchangeModel,
-                              Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
+                              Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> staticSoundCardFormFactory,
+                              Func<SoundRecord, КарточкаДвиженияПоездаForm> trafficCardFormFactory,
                               IAuthentificationService authentificationService,
                               IUsersRepository usersRepository,
                               TrainRecService trainRecService)
@@ -218,6 +220,7 @@ namespace MainExample
             myMainForm = this;
 
             _staticSoundCardFormFactory = staticSoundCardFormFactory;
+            _trafficCardFormFactory = trafficCardFormFactory;
             _authentificationService = authentificationService;
             _usersRepository = usersRepository;
             _trainRecService = trainRecService;
@@ -474,8 +477,8 @@ namespace MainExample
             //ШАБЛОН технического сообщения
             if (templateChangeValue.SoundMessage.ТипСообщения == ТипСообщения.ДинамическоеТехническое)
             {
-                var soundRecordTech = TechnicalMessageForm.SoundRecords.FirstOrDefault(rec => rec.ID == templateChangeValue.Template.SoundRecordId);
-                if (soundRecordTech.ID > 0)
+                var soundRecordTech = TechnicalMessageForm.SoundRecords.FirstOrDefault(rec => rec.Id == templateChangeValue.Template.SoundRecordId);
+                if (soundRecordTech.Id > 0)
                 {
                     int index = TechnicalMessageForm.SoundRecords.IndexOf(soundRecordTech);
                     var template = soundRecordTech.СписокФормируемыхСообщений.FirstOrDefault(i => i.Id == templateChangeValue.Template.Id);
@@ -496,7 +499,7 @@ namespace MainExample
             }
 
 
-            var soundRecord = SoundRecords.FirstOrDefault(rec => rec.Value.ID == templateChangeValue.Template.SoundRecordId);
+            var soundRecord = SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.Template.SoundRecordId);
             //шаблон АВАРИЯ
             if (templateChangeValue.SoundMessage.ТипСообщения == ТипСообщения.ДинамическоеАварийное)
             {
@@ -728,7 +731,6 @@ namespace MainExample
             for (var index = 0; index < trainTableRecords.Count; index++)
             {
                 var config = trainTableRecords[index];
-
                 if (config.Active == false && Program.Настройки.РазрешениеДобавленияЗаблокированныхПоездовВСписок == false)
                     continue;
 
@@ -918,7 +920,7 @@ namespace MainExample
                                                                        ВремяОтправления,
                                                                        Данные.Value.Примечание,
                                                                        Данные.Value.ИспользоватьДополнение["звук"] ? Данные.Value.Дополнение : String.Empty});
-                    lvi1.Tag = Данные.Value.ID;
+                    lvi1.Tag = Данные.Value.Id;
                     lvi1.Checked = Данные.Value.Состояние != SoundRecordStatus.Выключена;
                     this.listView1.Items.Add(lvi1);
 
@@ -930,7 +932,7 @@ namespace MainExample
                                                                        ВремяПрибытия,
                                                                        Данные.Value.НазваниеПоезда,
                                                                        Данные.Value.ИспользоватьДополнение["звук"] ? Данные.Value.Дополнение : String.Empty});
-                        lvi2.Tag = Данные.Value.ID;
+                        lvi2.Tag = Данные.Value.Id;
                         lvi2.Checked = Данные.Value.Состояние != SoundRecordStatus.Выключена;
                         this.lVПрибытие.Items.Add(lvi2);
                     }
@@ -944,7 +946,7 @@ namespace MainExample
                                                                        ВремяОтправления,
                                                                        Данные.Value.НазваниеПоезда,
                                                                        Данные.Value.ИспользоватьДополнение["звук"] ? Данные.Value.Дополнение : String.Empty});
-                        lvi3.Tag = Данные.Value.ID;
+                        lvi3.Tag = Данные.Value.Id;
                         lvi3.Checked = Данные.Value.Состояние != SoundRecordStatus.Выключена;
                         this.lVТранзит.Items.Add(lvi3);
                     }
@@ -957,7 +959,7 @@ namespace MainExample
                                                                        ВремяОтправления,
                                                                        Данные.Value.НазваниеПоезда,
                                                                        Данные.Value.Дополнение});
-                        lvi4.Tag = Данные.Value.ID;
+                        lvi4.Tag = Данные.Value.Id;
                         lvi4.Checked = Данные.Value.Состояние != SoundRecordStatus.Выключена;
                         this.lVОтправление.Items.Add(lvi4);
                     }
@@ -1428,7 +1430,7 @@ namespace MainExample
                                         }
                                         else if (DateTime.Now >= времяСобытия.AddSeconds(1))
                                         {
-                                            if (QueueSound.FindItem(Данные.ID, нештатноеСообщение.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
+                                            if (QueueSound.FindItem(Данные.Id, нештатноеСообщение.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
                                             {
                                                 if (нештатноеСообщение.СостояниеВоспроизведения != SoundRecordStatus.Воспроизведена)
                                                 {
@@ -1452,7 +1454,7 @@ namespace MainExample
                                                     СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон
                                                     {
                                                         Id = нештатноеСообщение.Id,
-                                                        SoundRecordId = Данные.ID,
+                                                        SoundRecordId = Данные.Id,
                                                         ПриоритетГлавный = Priority.Midlle,
                                                         Шаблон = нештатноеСообщение.Шаблон,
                                                         ЯзыкиОповещения =
@@ -1655,7 +1657,7 @@ namespace MainExample
                                     }
                                     else if (DateTime.Now >= времяСобытия.AddSeconds(1))
                                     {
-                                        if (QueueSound.FindItem(Данные.ID, формируемоеСообщение.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
+                                        if (QueueSound.FindItem(Данные.Id, формируемоеСообщение.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
                                         {
                                             if (формируемоеСообщение.СостояниеВоспроизведения != SoundRecordStatus.Воспроизведена)
                                             {
@@ -2297,10 +2299,10 @@ namespace MainExample
                         if (СтатическиеЗвуковыеСообщения.Keys.Contains(Key) == true)
                         {
                             СтатическоеСообщение Данные = СтатическиеЗвуковыеСообщения[Key];
-                            КарточкаСтатическогоЗвуковогоСообщения окноСообщения = _staticSoundCardFormFactory(Данные);
-                            if (окноСообщения.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            КарточкаСтатическогоЗвуковогоСообщенияForm окноСообщенияForm = _staticSoundCardFormFactory(Данные);
+                            if (окноСообщенияForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                Данные = окноСообщения.ПолучитьИзмененнуюКарточку();
+                                Данные = окноСообщенияForm.ПолучитьИзмененнуюКарточку();
 
                                 string Key2 = Данные.Время.ToString("yy.MM.dd  HH:mm:ss");
                                 string[] SubKeys = Key.Split(':');
@@ -2368,7 +2370,7 @@ namespace MainExample
                         if (SoundRecords.Keys.Contains(key) == true)
                         {
                             SoundRecord данные = SoundRecords[key];
-                            КарточкаДвиженияПоезда карточка = new КарточкаДвиженияПоезда(данные, key);
+                            КарточкаДвиженияПоездаForm карточка = _trafficCardFormFactory(данные);
                             if (карточка.ShowDialog() == DialogResult.OK)
                             {
                                 SoundRecord старыеДанные = данные;
@@ -2550,7 +2552,7 @@ namespace MainExample
             {
                 СостояниеФормируемогоСообщенияИШаблон новыйШаблон;
                 новыйШаблон.Id = indexШаблона++;
-                новыйШаблон.SoundRecordId = данные.ID;
+                новыйШаблон.SoundRecordId = данные.Id;
                 новыйШаблон.Активность = данные.Активность;
                 новыйШаблон.ПриоритетГлавный = Priority.Midlle;
                 новыйШаблон.ПриоритетВторостепенный = PriorityPrecise.One;
@@ -3639,7 +3641,7 @@ namespace MainExample
                     if (subtaitles.ШаблонИлиСообщение != currentPlayingTemplate)
                     {
                         currentPlayingTemplate = subtaitles.ШаблонИлиСообщение;
-                        var card = new КарточкаДвиженияПоезда(SoundRecords[subtaitles.Ключ], subtaitles.Ключ);
+                        var card = _trafficCardFormFactory(SoundRecords[subtaitles.Ключ]);
                         СостояниеФормируемогоСообщенияИШаблон? сообшение = null;
                         card.ОтобразитьШаблонОповещенияНаRichTb(currentPlayingTemplate, ref сообшение, rtb_subtaitles);
                     }
@@ -3668,10 +3670,10 @@ namespace MainExample
                         if (СтатическиеЗвуковыеСообщения.Keys.Contains(Key))
                         {
                             СтатическоеСообщение Данные = СтатическиеЗвуковыеСообщения[Key];
-                            КарточкаСтатическогоЗвуковогоСообщения окноСообщения = _staticSoundCardFormFactory(Данные);
-                            if (окноСообщения.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            КарточкаСтатическогоЗвуковогоСообщенияForm окноСообщенияForm = _staticSoundCardFormFactory(Данные);
+                            if (окноСообщенияForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             {
-                                Данные = окноСообщения.ПолучитьИзмененнуюКарточку();
+                                Данные = окноСообщенияForm.ПолучитьИзмененнуюКарточку();
 
                                 string Key2 = Данные.Время.ToString("yy.MM.dd  HH:mm:ss");
                                 string[] SubKeys = Key.Split(':');
@@ -3721,13 +3723,13 @@ namespace MainExample
                         Key = данныеСтроки.Ключ;
                         if (SoundRecords.Keys.Contains(Key) == true)
                         {
-                            SoundRecord Данные = SoundRecords[Key];
-                            КарточкаДвиженияПоезда Карточка = new КарточкаДвиженияПоезда(Данные, Key);
-                            if (Карточка.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            SoundRecord данные = SoundRecords[Key];
+                            var card = _trafficCardFormFactory(данные);
+                            if (card.ShowDialog() == DialogResult.OK)
                             {
-                                SoundRecord СтарыеДанные = Данные;
-                                Данные = Карточка.ПолучитьИзмененнуюКарточку();
-                                ИзменениеДанныхВКарточке(СтарыеДанные, Данные, Key);
+                                SoundRecord СтарыеДанные = данные;
+                                данные = card.ПолучитьИзмененнуюКарточку();
+                                ИзменениеДанныхВКарточке(СтарыеДанные, данные, Key);
                                 ОбновитьСостояниеЗаписейТаблицы();
                             }
                         }
@@ -3874,7 +3876,7 @@ namespace MainExample
 
                 if (формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ДобавленВОчередьРучное || формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ВоспроизведениеРучное)
                 {
-                    if (QueueSound.FindItem(Данные.ID, формируемоеСообщение.Id) == null)
+                    if (QueueSound.FindItem(Данные.Id, формируемоеСообщение.Id) == null)
                         continue;
 
                     byte состояниеСтроки = 0;

@@ -121,7 +121,7 @@ namespace MainExample
         {
             SoundRecord record = new SoundRecord
             {
-                ID = soundRecordId,
+                Id = soundRecordId,
                 НомерПоезда = "xxx",
                 НомерПути = pathNumber,
                 Время = DateTime.Now,
@@ -165,7 +165,7 @@ namespace MainExample
             }
 
             //на каждое сообщение создается новый SoundRecord (поезд) с одним шаблоном.
-            var newId = SoundRecords.Any() ? SoundRecords.Max(rec => rec.ID) + 1 : 1;
+            var newId = SoundRecords.Any() ? SoundRecords.Max(rec => rec.Id) + 1 : 1;
             var формируемоеСообщение = СоздатьСостояниеФормируемогоСообщенияИШаблон(newId, template);
             var record = СоздатьSoundRecord(newId, pathNumber, формируемоеСообщение);
 

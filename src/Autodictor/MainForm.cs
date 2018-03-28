@@ -42,7 +42,7 @@ namespace MainExample
         private readonly Func<ExchangeModel, MainWindowForm> _mainWindowFormFactory;
         private readonly Func<ICollection<IBinding2StaticFormBehavior>, StaticDisplayForm> _staticDisplayFormFactory;
         private readonly Func<ISoundPlayer, StaticSoundForm> _staticSoundFormFactory;
-        private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> _staticSoundCardFormFactory;
+        private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> _staticSoundCardFormFactory;
         private readonly Func<TrainTableGridForm> _trainTableGridFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
@@ -85,7 +85,7 @@ namespace MainExample
                         Func<ExchangeModel, MainWindowForm> mainWindowFormFactory,
                         Func<ICollection<IBinding2StaticFormBehavior>, StaticDisplayForm> staticDisplayFormFactory,
                         Func<ISoundPlayer, StaticSoundForm> staticSoundFormFactory,
-                        Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
+                        Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> staticSoundCardFormFactory,
                         Func<TrainTableGridForm> trainTableGridFormFactory,
                         Owned<IAuthentificationService> authentificationService)
         {
@@ -470,10 +470,10 @@ namespace MainExample
             сообщение.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
            // КарточкаСтатическогоЗвуковогоСообщения ОкноСообщения = new КарточкаСтатическогоЗвуковогоСообщения(Сообщение);
 
-            КарточкаСтатическогоЗвуковогоСообщения окноСообщения = _staticSoundCardFormFactory(сообщение);
-            if (окноСообщения.ShowDialog() == DialogResult.OK)
+            КарточкаСтатическогоЗвуковогоСообщенияForm окноСообщенияForm = _staticSoundCardFormFactory(сообщение);
+            if (окноСообщенияForm.ShowDialog() == DialogResult.OK)
             {
-                сообщение = окноСообщения.ПолучитьИзмененнуюКарточку();
+                сообщение = окноСообщенияForm.ПолучитьИзмененнуюКарточку();
 
                 int ПопыткиВставитьСообщение = 5;
                 while (ПопыткиВставитьСообщение-- > 0)
@@ -578,7 +578,7 @@ namespace MainExample
                 return;
             }
 
-            var newRecId = MainWindowForm.SoundRecords.Max(rec => rec.Value.ID) + 1;
+            var newRecId = MainWindowForm.SoundRecords.Max(rec => rec.Value.Id) + 1;
             ОкноДобавленияПоезда окно = new ОкноДобавленияПоезда(newRecId);
             if (окно.ShowDialog() == DialogResult.OK)
             {

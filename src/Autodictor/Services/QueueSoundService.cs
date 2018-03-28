@@ -443,7 +443,7 @@ namespace MainExample.Services
             //шаблон ДИНАМИКИ
             if (soundMessage.ParentId.HasValue && soundMessage.ТипСообщения == ТипСообщения.Динамическое)
             {
-                var soundRecord = MainWindowForm.SoundRecords.FirstOrDefault(rec => rec.Value.ID == soundMessage.RootId).Value;
+                var soundRecord = MainWindowForm.SoundRecords.FirstOrDefault(rec => rec.Value.Id == soundMessage.RootId).Value;
                 if (soundRecord.СписокФормируемыхСообщений != null && soundRecord.СписокФормируемыхСообщений.Any())
                 {
                     var template = soundRecord.СписокФормируемыхСообщений.FirstOrDefault(sm => sm.Id == soundMessage.ParentId.Value);
@@ -502,8 +502,8 @@ namespace MainExample.Services
             //шаблон ДИНАМИКИ
             if (soundMessage.ParentId.HasValue && soundMessage.ТипСообщения == ТипСообщения.Динамическое)
             {
-                var soundRecord = MainWindowForm.SoundRecords.FirstOrDefault(rec => rec.Value.ID == soundMessage.RootId).Value;
-                if ((soundRecord.ID) > 0 && (soundMessage.ParentId.HasValue))
+                var soundRecord = MainWindowForm.SoundRecords.FirstOrDefault(rec => rec.Value.Id == soundMessage.RootId).Value;
+                if ((soundRecord.Id) > 0 && (soundMessage.ParentId.HasValue))
                 {
                     var template = soundRecord.СписокФормируемыхСообщений.FirstOrDefault(sm => sm.Id == soundMessage.ParentId.Value);
                     if (!string.IsNullOrEmpty(template.НазваниеШаблона))

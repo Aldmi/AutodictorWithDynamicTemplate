@@ -33,7 +33,7 @@ namespace MainExample
 
             RecordId = recordId;
 
-            Record.ID = 1;
+            Record.Id = 1;
             Record.Активность = true;
             Record.Автомат = true;
             Record.БитыАктивностиПолей = 0x00;
@@ -104,7 +104,7 @@ namespace MainExample
 
         private void btnДобавить_Click(object sender, EventArgs e)
         {
-            Record.ID = RecordId;
+            Record.Id = RecordId;
             Record.ШаблонВоспроизведенияСообщений = ПолучитьШаблоныОповещения();
 
             // Шаблоны оповещения
@@ -150,7 +150,7 @@ namespace MainExample
                                     СостояниеФормируемогоСообщенияИШаблон НовыйШаблон;
 
                                     НовыйШаблон.Id = indexШаблона++;
-                                    НовыйШаблон.SoundRecordId = Record.ID;
+                                    НовыйШаблон.SoundRecordId = Record.Id;
                                     НовыйШаблон.Активность = АктивностьШаблоновДанногоПоезда;
                                     НовыйШаблон.ПриоритетГлавный = Priority.Midlle;
                                     НовыйШаблон.ПриоритетВторостепенный= PriorityPrecise.One;
@@ -658,7 +658,7 @@ namespace MainExample
                             Record.БитыАктивностиПолей = НомерСписка;
                             Record.БитыАктивностиПолей |= 0x03;
 
-                            Record.ID = ID++;
+                            Record.Id = ID++;
 
                             Record.НазванияТабло = Record.НомерПути != "0" ? MainWindowForm.Binding2PathBehaviors.Select(beh => beh.GetDevicesName4Path(Record.НомерПути)).Where(str => str != null).ToArray() : null;
                             Record.СостояниеОтображения = TableRecordStatus.Выключена;

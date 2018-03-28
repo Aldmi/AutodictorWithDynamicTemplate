@@ -5,47 +5,67 @@ namespace DAL.Abstract.Entitys
 {
     public struct SoundRecord
     {
-        public int ID;
+        public int Id;
         public IdTrain IdTrain;
+        public bool Активность;
         public string НомерПоезда;
         public string НомерПоезда2;
         public string НазваниеПоезда;
+
         public string Направление;
+        public Direction Direction { get; set; }             // NEW Направление (readonly)
+
         public string СтанцияОтправления;
+        public Station StationDepart { get; set; }           // NEW станция отправления (not Copy. not Edit). 
+
         public string СтанцияНазначения;
+        public Station StationArrival { get; set; }          // NEW станция прибытия (not Copy. not Edit). 
+
         public DateTime Время;
         public DateTime ВремяПрибытия;
         public DateTime ВремяОтправления;
+
+        public Classification Classification { get; set; }   // NEW Классификация поезда (readonly)
+
         public DateTime? ВремяЗадержки;                      //время задержки в мин. относительно времени прибытия или отправелния
         public DateTime ОжидаемоеВремя;                      //вычисляется ВремяПрибытия или ВремяОтправления + ВремяЗадержки
         public DateTime? ВремяСледования;                    //время в пути
         public TimeSpan? ВремяСтоянки;                       //вычисляется для танзитов (ВремяОтправления - ВремяПрибытия)
         public DateTime? ФиксированноеВремяПрибытия;         // фиксированное время
         public DateTime? ФиксированноеВремяОтправления;      // фиксированное время + время стоянки
+
         public string Дополнение;                            //свободная переменная для ввода  
         public Dictionary<string, bool> ИспользоватьДополнение; //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
         public string ДниСледования;
         public string ДниСледованияAlias;                    // дни следования записанные в ручную
-        public bool Активность;
+
         public bool Автомат;                                 // true - поезд обрабатывается в автомате.
         public string ШаблонВоспроизведенияСообщений;
+
         public byte НумерацияПоезда;                         // 1 - с головы,  2 - с хвоста
+        public WagonsNumbering WagonsNumbering { get; set; }  //NEW (Copy. Edit).
         public bool СменнаяНумерацияПоезда;                  // для транзитов
+
         public string НомерПути;
         public string НомерПутиБезАвтосброса;                //выставленные пути не обнуляются через определенное время
+        public Pathway Pathway;                              //NEW Выставленный Путь
+
         public TrainTypeByRyle ТипПоезда;                    //TODO: при переходе SoundRecord на class, ТипПоезда сделать readOnly
         public string Примечание;                            //С остановками....
         public string Описание;
-        public SoundRecordStatus Состояние;
-        public SoundRecordType ТипСообщения;
-        public byte БитыАктивностиПолей;
-        public string[] НазванияТабло;
-        public TableRecordStatus СостояниеОтображения;
+        public SoundRecordStatus Состояние;                  //????
+        public SoundRecordType ТипСообщения;                 //????
+        public byte БитыАктивностиПолей;                     //???? Убрать
+
+        public string[] НазванияТабло;                       //Сделать тип 
+        public TableRecordStatus СостояниеОтображения;      
+
+
         public PathPermissionType РазрешениеНаОтображениеПути;
         public string[] ИменаФайлов;
         public byte КоличествоПовторений;
 
-        public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;
+        public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;  //УДАЛИТЬ
         public List<ActionTrainDynamic> ActionTrainDynamiсList;
 
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокНештатныхСообщений;
