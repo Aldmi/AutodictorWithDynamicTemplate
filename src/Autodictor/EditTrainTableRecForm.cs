@@ -125,7 +125,7 @@ namespace MainExample
                 cBПутьПоУмолчанию.Items.Add(путь);
 
             cBПутьПоУмолчанию.Text = this.TrainRec.TrainPathNumber[WeekDays.Постоянно]?.Name ?? string.Empty;
-            InitializePathValues(TrainRec);
+            InitializePathValuesControls(TrainRec);
 
             cBОтсчетВагонов.SelectedIndex = (int)this.TrainRec.WagonsNumbering;
             chBox_сменнаяНумерация.Checked = TrainRec.ChangeTrainPathDirection ?? false;
@@ -460,7 +460,7 @@ namespace MainExample
         }
 
 
-        private void InitializePathValues(TrainTableRec rec)
+        private void InitializePathValuesControls(TrainTableRec rec)
         {
             if (!rec.PathWeekDayes)
             {
@@ -1057,7 +1057,5 @@ namespace MainExample
         }
 
         #endregion
-
-
     }
 }

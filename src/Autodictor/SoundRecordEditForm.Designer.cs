@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class КарточкаДвиженияПоездаForm
+    partial class SoundRecordEditForm
     {
         /// <summary>
         /// Required designer variable.
@@ -1028,7 +1028,7 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
-            this.Name = "КарточкаДвиженияПоездаForm";
+            this.Name = "SoundRecordEditForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Карточка звукового сообщения";
             this.Load += new System.EventHandler(this.КарточкаДвиженияПоезда_Load);

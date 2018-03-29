@@ -9,5 +9,8 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// Вычислить время сработки шаблона с учетом смещения.
         /// </summary>
         DateTime CalcTimeWithShift(ref SoundRecord rec, ActionTrainDynamic actionTrainDyn);
+
+
+        TextFragment ОтобразитьШаблонОповещенияНаRichTb2(ref SoundRecord rec, ActionTrain actionTrain);
     }
 }

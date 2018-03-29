@@ -282,11 +282,11 @@
     <Compile Include="КарточкаСтатическогоЗвуковогоСообщенияForm.Designer.cs">
       <DependentUpon>КарточкаСтатическогоЗвуковогоСообщенияForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="КарточкаДвиженияПоездаForm.cs">
+    <Compile Include="SoundRecordEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="КарточкаДвиженияПоездаForm.Designer.cs">
-      <DependentUpon>КарточкаДвиженияПоездаForm.cs</DependentUpon>
+    <Compile Include="SoundRecordEditForm.Designer.cs">
+      <DependentUpon>SoundRecordEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ОкноАрхиваИзменений.cs">
       <SubType>Form</SubType>
@@ -421,8 +421,8 @@
     <EmbeddedResource Include="КарточкаСтатическогоЗвуковогоСообщенияForm.resx">
       <DependentUpon>КарточкаСтатическогоЗвуковогоСообщенияForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="КарточкаДвиженияПоездаForm.resx">
-      <DependentUpon>КарточкаДвиженияПоездаForm.cs</DependentUpon>
+    <EmbeddedResource Include="SoundRecordEditForm.resx">
+      <DependentUpon>SoundRecordEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ОкноАрхиваИзменений.resx">
       <DependentUpon>ОкноАрхиваИзменений.cs</DependentUpon>
