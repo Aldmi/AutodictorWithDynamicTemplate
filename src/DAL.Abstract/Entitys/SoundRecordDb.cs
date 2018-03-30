@@ -10,7 +10,7 @@ namespace DAL.Abstract.Entitys
     public enum Priority { Low = 0, Midlle, Hight, VeryHight };
     public enum PriorityPrecise {Zero = 0, One, Two, Three, Four, Five, Six, Seven, Eight, Nine };
 
-    public enum NotificationLanguage { Ru, Eng };
+    public enum NotificationLanguage { Rus, Eng, Fin, Ch };
 
     public enum ТипПоезда
     {

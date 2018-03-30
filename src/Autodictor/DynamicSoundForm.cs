@@ -427,7 +427,7 @@ namespace MainExample
                         var soundMessage = new ВоспроизводимоеСообщение
                         {
                             ИмяВоспроизводимогоФайла = nextfile,
-                            Язык = NotificationLanguage.Ru
+                            Язык = NotificationLanguage.Rus
                         };
                         _soundPlayer.PlayFile(soundMessage);  //PlayerDirectX.PlayFile(nextfile);
                         return;
@@ -460,7 +460,7 @@ namespace MainExample
                     var soundMessage = new ВоспроизводимоеСообщение
                     {
                         ИмяВоспроизводимогоФайла = filename,
-                        Язык = NotificationLanguage.Ru
+                        Язык = NotificationLanguage.Rus
                     };
                     _soundPlayer.PlayFile(soundMessage);         // PlayerDirectX.PlayFile(filename);
                     ОбщаяДлительностьЗвучания += _soundPlayer.GetDuration();//PlayerDirectX.GetDuration();
@@ -478,7 +478,7 @@ namespace MainExample
                     var soundMessage = new ВоспроизводимоеСообщение
                     {
                         ИмяВоспроизводимогоФайла = filename,
-                        Язык = NotificationLanguage.Ru
+                        Язык = NotificationLanguage.Rus
                     };
                     _soundPlayer.PlayFile(soundMessage);     //PlayerDirectX.PlayFile(filename);   
                     CurrentPlayList++;

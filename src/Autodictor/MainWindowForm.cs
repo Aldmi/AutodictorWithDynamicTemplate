@@ -14,6 +14,7 @@ using System.Windows.Input;
 using AutodictorBL.DataAccess;
 using AutodictorBL.Entites;
 using AutodictorBL.Services;
+using AutodictorBL.Services.SoundRecordServices;
 using AutodictorBL.Sound;
 using CommunicationDevices.Behavior.BindingBehavior.ToChange;
 using CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule;
@@ -51,6 +52,7 @@ namespace MainExample
         private readonly Func<SoundRecord, SoundRecordEditForm> _trafficCardFormFactory;
         private readonly IAuthentificationService _authentificationService;
         private readonly IUsersRepository _usersRepository;
+        private static ISoundReсordWorkerService _soundReсordWorkerService; //DEL
         private readonly TrainRecService _trainRecService;
 
         private const int ВремяЗадержкиВоспроизведенныхСобытий = 20;  //сек
@@ -212,6 +214,7 @@ namespace MainExample
                               Func<SoundRecord, SoundRecordEditForm> trafficCardFormFactory,
                               IAuthentificationService authentificationService,
                               IUsersRepository usersRepository,
+                              ISoundReсordWorkerService soundReсordWorkerService,
                               TrainRecService trainRecService)
         {
             if (myMainForm != null)
@@ -223,6 +226,7 @@ namespace MainExample
             _trafficCardFormFactory = trafficCardFormFactory;
             _authentificationService = authentificationService;
             _usersRepository = usersRepository;
+            _soundReсordWorkerService = soundReсordWorkerService;
             _trainRecService = trainRecService;
 
             InitializeComponent();
@@ -1299,7 +1303,7 @@ namespace MainExample
                                         ИмяВоспроизводимогоФайла = Sound.Name,
                                         ПриоритетГлавный = Priority.Low,
                                         ПриоритетВторостепенный = PriorityPrecise.Zero,
-                                        Язык = NotificationLanguage.Ru,
+                                        Язык = NotificationLanguage.Rus,
                                         ОчередьШаблона = null
                                     };
                                     QueueSound.AddItem(воспроизводимоеСообщение);
@@ -1460,7 +1464,7 @@ namespace MainExample
                                                         ЯзыкиОповещения =
                                                             new List<NotificationLanguage>
                                                             {
-                                                                NotificationLanguage.Ru,
+                                                                NotificationLanguage.Rus,
                                                                 NotificationLanguage.Eng
                                                             },
                                                         //TODO: вычислять языки оповещения 
@@ -2562,7 +2566,7 @@ namespace MainExample
                 новыйШаблон.НазваниеШаблона = String.Empty;
                 новыйШаблон.Шаблон = String.Empty;
                 новыйШаблон.ПривязкаКВремени = ((данные.БитыАктивностиПолей & 0x04) != 0x00) ? 0 : 1;
-                новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Ru, NotificationLanguage.Eng };
+                новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };
 
                 if ((данные.БитыНештатныхСитуаций & 0x01) != 0x00)
                 {
@@ -2746,9 +2750,9 @@ namespace MainExample
         }
 
 
-        public static void ВоспроизвестиШаблонОповещения2(string названиеСообщения, SoundRecord record, ActionTrainDynamic actionTrainDynamic, ТипСообщения типСообщения)
+        public static void ВоспроизвестиШаблонОповещения2(string названиеСообщения, SoundRecord rec, ActionTrainDynamic actionTrainDynamic, ТипСообщения типСообщения)
         {
-            if (!record.ВыводЗвука)
+            if (!rec.ВыводЗвука)
                 return;
 
             string logMessage = "";
@@ -2773,6 +2777,7 @@ namespace MainExample
             string[] названиеФайловНумерацииПутей = new string[] { "", "Нумерация с головы", "Нумерация с хвоста" };
 
 
+            //TODO: нужен ISoundReсordWorkerService.CalcTimeWithShift
             //сервис с препроцессором корректировки времени по часовому поясу.
             //var option = new Dictionary<string, dynamic>
             //{
@@ -2794,584 +2799,378 @@ namespace MainExample
             //    формируемоеСообщение.ЯзыкиОповещения.Remove(NotificationLanguage.Eng);
             //}
 
-            var воспроизводимыеСообщения = new List<ВоспроизводимоеСообщение>();
-
-            var номераПутей = Program.PathwaysService.GetAll().ToList();
-            var путь = номераПутей.FirstOrDefault(p => p.Name == record.НомерПути);
-
+            var воспроизводимыеСообщения= new List<ВоспроизводимоеСообщение>();
             string eof = "X";
-            Numeric2ListStringConverter numeric2ListStringConverter = new Numeric2ListStringConverter("X");
-
-            //string[] элементыШаблона = формируемоеСообщение.Шаблон.Split('|');
-            //foreach (var язык in формируемоеСообщение.ЯзыкиОповещения)
-            //{
-            //    foreach (string шаблон in элементыШаблона)
-            //    {
-            //        string текстПодстановки = String.Empty;
-
-            //        string text;
-            //        DateTime времяUtc;
-            //        switch (шаблон)
-            //        {
-            //            case "НА НОМЕР ПУТЬ":
-            //            case "НА НОМЕРом ПУТИ":
-            //            case "С НОМЕРого ПУТИ":
-            //                if (путь == null)
-            //                    break;
-            //                if (шаблон == "НА НОМЕР ПУТЬ") текстПодстановки = путь.НаНомерПуть;
-            //                if (шаблон == "НА НОМЕРом ПУТИ") текстПодстановки = путь.НаНомерОмПути;
-            //                if (шаблон == "С НОМЕРого ПУТИ") текстПодстановки = путь.СНомерОгоПути;
-
-            //                text = текстПодстановки;
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = text,
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                break;
-
-            //            case "ПУТЬ ДОПОЛНЕНИЕ":
-            //                if (путь?.Addition == null)
-            //                    break;
-
-            //                text = путь.Addition;
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = text,
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                break;
-
-            //            case "ПУТЬ ДОПОЛНЕНИЕ2":
-            //                if (путь?.Addition2 == null)
-            //                    break;
-
-            //                text = путь.Addition2;
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = text,
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                break;
-
-            //            case "СТ.ОТПРАВЛЕНИЯ":
-            //                text = record.СтанцияОтправления;
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = text,
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                break;
+            //TODO: Внедрять в конструктор
+            var numeric2ListStringConverter = new Numeric2ListStringConverter(eof);
 
 
-            //            case "НОМЕР ПОЕЗДА":
-            //                text = record.НомерПоезда;
-            //                logMessage += text + " ";
+            // var templateItems= _soundReсordWorkerService.CalcTemplateItems(actionTrain, new List<string> {"Rus", "Eng", "Fin"});
+            var actionTrain = actionTrainDynamic.ActionTrain;
+            foreach (var lang in actionTrain.Langs)
+            {
+                var templateItems= _soundReсordWorkerService.CalcTemplateItemsByLang(lang);
+                foreach (var item in templateItems)
+                {
+                    var template = item.Template;
+                    var txt = string.Empty;
+                    DateTime времяUtc;
+                    var notificationLang = (NotificationLanguage)Enum.Parse(typeof(NotificationLanguage), item.NameLang); //TODO: NotificationLanguage заменить на string
+                    var воспроизводимоеСообщение = new ВоспроизводимоеСообщение
+                    {
+                        ТипСообщения = типСообщения,
+                        Язык = notificationLang,
+                        ParentId = actionTrainDynamic.Id,
+                        RootId = actionTrainDynamic.SoundRecordId,
+                        ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                    };
 
-            //                var fileNames = numeric2ListStringConverter.Convert(text)?.Where(f => f != "0" && f != "0" + eof).ToList();
-            //                if (fileNames != null && fileNames.Any())
-            //                {
-            //                    foreach (var fileName in fileNames)
-            //                    {
-            //                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                        {
-            //                            ИмяВоспроизводимогоФайла = "numeric_" + fileName,
-            //                            ТипСообщения = типСообщения,
-            //                            Язык = язык,
-            //                            ParentId = формируемоеСообщение.Id,
-            //                            RootId = формируемоеСообщение.SoundRecordId,
-            //                            ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                        });
-            //                    }
-            //                }
-            //                break;
+                    switch (item.Template)
+                    {
+                        case "НА НОМЕР ПУТЬ":
+                        case "НА НОМЕРом ПУТИ":
+                        case "С НОМЕРого ПУТИ":
+                            if (rec.Pathway == null)
+                                break;
+                            if (template == "НА НОМЕР ПУТЬ") txt = rec.Pathway.НаНомерПуть;
+                            if (template == "НА НОМЕРом ПУТИ") txt = rec.Pathway.НаНомерОмПути;
+                            if (template == "С НОМЕРого ПУТИ") txt = rec.Pathway.СНомерОгоПути;
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = txt;
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            logMessage += txt + " ";
+                            break;
 
+                        case "ПУТЬ ДОПОЛНЕНИЕ":
+                            if (rec.Pathway?.Addition == null)
+                                break;
+                            txt = rec.Pathway.Addition;
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = txt;
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            logMessage += txt + " ";
+                            break;
 
-            //            case "НОМЕР ПОЕЗДА ТРАНЗИТ ОТПР":
-            //                if (!string.IsNullOrEmpty(record.НомерПоезда2))
-            //                {
-            //                    text = record.НомерПоезда2;
-            //                    logMessage += text + " ";
+                        case "ПУТЬ ДОПОЛНЕНИЕ2":
+                            if (rec.Pathway?.Addition2 == null)
+                                break;
+                            txt = rec.Pathway.Addition2;
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = txt;
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            logMessage += txt + " ";
+                            break;
 
-            //                    fileNames = numeric2ListStringConverter.Convert(text)?.Where(f => f != "0" && f != "0" + eof).ToList();
-            //                    if (fileNames != null && fileNames.Any())
-            //                    {
-            //                        foreach (var fileName in fileNames)
-            //                        {
-            //                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                            {
-            //                                ИмяВоспроизводимогоФайла = "numeric_" + fileName,
-            //                                ТипСообщения = типСообщения,
-            //                                Язык = язык,
-            //                                ParentId = формируемоеСообщение.Id,
-            //                                RootId = формируемоеСообщение.SoundRecordId,
-            //                                ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                            });
-            //                        }
-            //                    }
-            //                }
-            //                break;
+                        case "СТ.ОТПРАВЛЕНИЯ":
+                            txt = rec.СтанцияОтправления;
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = txt;
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            logMessage += txt + " ";
+                            break;
 
+                        case "СТ.ПРИБЫТИЯ":
+                            txt = rec.СтанцияНазначения;
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = txt;
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            logMessage += txt + " ";
+                            break;
 
-            //            case "ДОПОЛНЕНИЕ":
-            //                if (record.ИспользоватьДополнение["звук"])
-            //                {
-            //                    text = record.Дополнение;
-            //                    logMessage += text + " ";
-            //                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                    {
-            //                        ИмяВоспроизводимогоФайла = text,
-            //                        ТипСообщения = типСообщения,
-            //                        Язык = язык,
-            //                        ParentId = формируемоеСообщение.Id,
-            //                        RootId = формируемоеСообщение.SoundRecordId,
-            //                        ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                    });
-            //                }
-            //                break;
+                        case "НОМЕР ПОЕЗДА":
+                            txt = rec.НомерПоезда;
+                            var fileNames = numeric2ListStringConverter.Convert(txt)?.Where(f => f != "0" && f != "0" + eof).ToList();
+                            if (fileNames != null && fileNames.Any())
+                            {
+                                foreach (var fileName in fileNames)
+                                {
+                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "numeric_" + fileName;
+                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                }
+                                logMessage += txt + " ";
+                            }
+                            break;
 
+                        case "НОМЕР ПОЕЗДА ТРАНЗИТ ОТПР":
+                            if (!string.IsNullOrEmpty(rec.НомерПоезда2))
+                            {
+                                txt = rec.НомерПоезда2;
+                                fileNames = numeric2ListStringConverter.Convert(txt)?.Where(f => f != "0" && f != "0" + eof).ToList();
+                                if (fileNames != null && fileNames.Any())
+                                {
+                                    foreach (var fileName in fileNames)
+                                    {
+                                        воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "numeric_" + fileName;
+                                        воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                    }
+                                    logMessage += txt + " ";
+                                }
+                            }
+                            break;
 
-            //            case "СТ.ПРИБЫТИЯ":
-            //                text = record.СтанцияНазначения;
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = text,
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                break;
+                        case "ДОПОЛНЕНИЕ":
+                            if (rec.ИспользоватьДополнение["звук"])
+                            {
+                                txt = rec.Дополнение;
+                                воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = txt;
+                                воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                logMessage += txt + " ";
+                            }
+                            break;
 
+                        case "ВРЕМЯ ПРИБЫТИЯ":
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[rec.ВремяПрибытия.Hour];
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                            {
+                                ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяПрибытия.Minute],
+                                ТипСообщения = типСообщения,
+                                Язык = notificationLang,
+                                ParentId = actionTrainDynamic.Id,
+                                RootId = actionTrainDynamic.SoundRecordId,
+                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                            });
+                            logMessage += "Время прибытия: " + rec.ВремяПрибытия.ToString("HH:mm") + " ";
+                            break;
 
-            //            case "ВРЕМЯ ПРИБЫТИЯ":
-            //                logMessage += "Время прибытия: ";
-            //                text = record.ВремяПрибытия.ToString("HH:mm");
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ВремяПрибытия.Hour],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяПрибытия.Minute],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                continue;
+                        case "ВРЕМЯ ПРИБЫТИЯ UTC":
+                            времяUtc = rec.ВремяПрибытия.AddMinutes(Program.Настройки.UTC);
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[времяUtc.Hour];
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                            {
+                                ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
+                                ТипСообщения = типСообщения,
+                                Язык = notificationLang,
+                                ParentId = actionTrainDynamic.Id,
+                                RootId = actionTrainDynamic.SoundRecordId,
+                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                            });
+                            logMessage += "Время прибытия UTC: " + времяUtc.ToString("HH:mm") + " ";
+                            break;
 
+                        case "ВРЕМЯ СТОЯНКИ":
+                            if (rec.ВремяСтоянки.HasValue)
+                            {
+                                if (rec.ВремяСтоянки.Value.Hours > 0)
+                                {
+                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасов[rec.ВремяСтоянки.Value.Hours];
+                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                }
+                                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                {
+                                    ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяСтоянки.Value.Minutes],
+                                    ТипСообщения = типСообщения,
+                                    Язык = notificationLang,
+                                    ParentId = actionTrainDynamic.Id,
+                                    RootId = actionTrainDynamic.SoundRecordId,
+                                    ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                });
+                                logMessage += "Стоянка: " + rec.ВремяСтоянки.Value.Hours.ToString("D2") + ":" + rec.ВремяСтоянки.Value.Minutes.ToString("D2") + " минут" + " ";
+                            }
+                            else
+                            if (rec.БитыАктивностиПолей == 31) //У трнзита нет времени стоянки, занчит стоит галочка "будет измененно"
+                            {
+                                воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "Будет изменено";
+                                воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                logMessage += "Стоянка: будет измененно";
+                            }
+                            break;
 
-            //            case "ВРЕМЯ ПРИБЫТИЯ UTC":
-            //                logMessage += "Время прибытия: ";
-            //                времяUtc = record.ВремяПрибытия.AddMinutes(Program.Настройки.UTC);
-            //                text = времяUtc.ToString("HH:mm");
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[времяUtc.Hour],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                continue;
-
-
-            //            case "ВРЕМЯ СТОЯНКИ":
-            //                if (record.ВремяСтоянки.HasValue)
-            //                {
-            //                    logMessage += "Стоянка: ";
-            //                    text = record.ВремяСтоянки.Value.Hours.ToString("D2") + ":" + record.ВремяСтоянки.Value.Minutes.ToString("D2") + " минут";
-            //                    logMessage += text + " ";
-
-            //                    if (record.ВремяСтоянки.Value.Hours > 0)
-            //                    {
-            //                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                        {
-            //                            ИмяВоспроизводимогоФайла = файлыЧасов[record.ВремяСтоянки.Value.Hours],
-            //                            ТипСообщения = типСообщения,
-            //                            Язык = язык,
-            //                            ParentId = формируемоеСообщение.Id,
-            //                            RootId = формируемоеСообщение.SoundRecordId,
-            //                            ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                        });
-            //                    }
-            //                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                    {
-            //                        ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяСтоянки.Value.Minutes],
-            //                        ТипСообщения = типСообщения,
-            //                        Язык = язык,
-            //                        ParentId = формируемоеСообщение.Id,
-            //                        RootId = формируемоеСообщение.SoundRecordId,
-            //                        ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                    });
-            //                }
-            //                else
-            //                if (record.БитыАктивностиПолей == 31) //У трнзита нет времени стоянки, занчит стоит галочка "будет измененно"
-            //                {
-            //                    logMessage += "Стоянка: будет измененно";
-            //                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                    {
-            //                        ИмяВоспроизводимогоФайла = "Будет изменено",
-            //                        ТипСообщения = типСообщения,
-            //                        Язык = язык,
-            //                        ParentId = формируемоеСообщение.Id,
-            //                        RootId = формируемоеСообщение.SoundRecordId,
-            //                        ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                    });
-            //                }
-            //                continue;
-
-
-
-            //            case "ВРЕМЯ ОТПРАВЛЕНИЯ":
-            //                logMessage += "Время отправления: ";
-            //                text = record.ВремяОтправления.ToString("HH:mm");
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ВремяОтправления.Hour],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяОтправления.Minute],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                continue;
+                        case "ВРЕМЯ ОТПРАВЛЕНИЯ":
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[rec.ВремяОтправления.Hour];
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                            {
+                                ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяОтправления.Minute],
+                                ТипСообщения = типСообщения,
+                                Язык = notificationLang,
+                                ParentId = actionTrainDynamic.Id,
+                                RootId = actionTrainDynamic.SoundRecordId,
+                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                            });
+                            logMessage += "Время отправления: " + rec.ВремяОтправления.ToString("HH:mm") + " ";
+                            break;
 
 
-            //            case "ВРЕМЯ ОТПРАВЛЕНИЯ UTC":
-            //                logMessage += "Время отправления UTC: ";
-            //                времяUtc = record.ВремяОтправления.AddMinutes(Program.Настройки.UTC);
-            //                text = времяUtc.ToString("HH:mm");
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[времяUtc.Hour],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                continue;
+                        case "ВРЕМЯ ОТПРАВЛЕНИЯ UTC":
+                            времяUtc = rec.ВремяОтправления.AddMinutes(Program.Настройки.UTC);
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[времяUtc.Hour];
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                            {
+                                ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
+                                ТипСообщения = типСообщения,
+                                Язык = notificationLang,
+                                ParentId = actionTrainDynamic.Id,
+                                RootId = actionTrainDynamic.SoundRecordId,
+                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                            });
+                            logMessage += "Время отправления UTC: " + времяUtc.ToString("HH:mm") + " ";
+                            break;
 
+                        case "ВРЕМЯ ЗАДЕРЖКИ":
+                            if (rec.ВремяЗадержки != null)
+                            {
+                                if (rec.ВремяЗадержки.Value.Hour > 0)
+                                {
+                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[rec.ВремяЗадержки.Value.Hour];
+                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                }
+                                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                {
+                                    ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяЗадержки.Value.Minute],
+                                    ТипСообщения = типСообщения,
+                                    Язык = notificationLang,
+                                    ParentId = actionTrainDynamic.Id,
+                                    RootId = actionTrainDynamic.SoundRecordId,
+                                    ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                });
+                                logMessage += "Время задержки: " + rec.ВремяЗадержки.Value.ToString("HH:mm") + " ";
+                            }
+                            break;
 
-            //            case "ВРЕМЯ ЗАДЕРЖКИ":
-            //                if (record.ВремяЗадержки != null)
-            //                {
-            //                    logMessage += "Время задержки: ";
-            //                    text = record.ВремяЗадержки.Value.ToString("HH:mm");
-            //                    logMessage += text + " ";
+                        case "ОЖИДАЕМОЕ ВРЕМЯ":
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[rec.ОжидаемоеВремя.Hour];
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                            {
+                                ИмяВоспроизводимогоФайла = файлыМинут[rec.ОжидаемоеВремя.Minute],
+                                ТипСообщения = типСообщения,
+                                Язык = notificationLang,
+                                ParentId = actionTrainDynamic.Id,
+                                RootId = actionTrainDynamic.SoundRecordId,
+                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                            });
+                            logMessage += "Ожидаемое время: " + rec.ОжидаемоеВремя.ToString("HH:mm") + " ";
+                            break;
 
-            //                    if (record.ВремяЗадержки.Value.Hour > 0)
-            //                    {
-            //                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                        {
-            //                            ИмяВоспроизводимогоФайла = файлыЧасов[record.ВремяЗадержки.Value.Hour],
-            //                            ТипСообщения = типСообщения,
-            //                            Язык = язык,
-            //                            ParentId = формируемоеСообщение.Id,
-            //                            RootId = формируемоеСообщение.SoundRecordId,
-            //                            ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                        });
-            //                    }
-            //                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                    {
-            //                        ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяЗадержки.Value.Minute],
-            //                        ТипСообщения = типСообщения,
-            //                        Язык = язык,
-            //                        ParentId = формируемоеСообщение.Id,
-            //                        RootId = формируемоеСообщение.SoundRecordId,
-            //                        ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                    });
-            //                }
-            //                continue;
+                        case "ВРЕМЯ СЛЕДОВАНИЯ":
+                            if (!rec.ВремяСледования.HasValue)
+                                continue;
 
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[rec.ВремяСледования.Value.Hour];
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                            {
+                                ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяСледования.Value.Minute],
+                                ТипСообщения = типСообщения,
+                                Язык = notificationLang,
+                                ParentId = actionTrainDynamic.Id,
+                                RootId = actionTrainDynamic.SoundRecordId,
+                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                            });
+                            logMessage += "Время следования: " + rec.ВремяСледования.Value.ToString("HH:mm") + " ";
+                            break;
 
-            //            case "ОЖИДАЕМОЕ ВРЕМЯ":
-            //                logMessage += "Ожидаемое время: ";
-            //                text = record.ОжидаемоеВремя.ToString("HH:mm");
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ОжидаемоеВремя.Hour],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыМинут[record.ОжидаемоеВремя.Minute],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                continue;
+                        case "НУМЕРАЦИЯ СОСТАВА":
+                            if ((rec.НумерацияПоезда > 0) && (rec.НумерацияПоезда <= 2))
+                            {
+                                //для транзитов
+                                txt = названиеФайловНумерацииПутей[rec.НумерацияПоезда];
+                                воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = txt;
+                                воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                logMessage += txt + " ";
+                            }
+                            break;
 
+                        case "СТАНЦИИ":
+                            if ((rec.ТипПоезда.CategoryTrain == CategoryTrain.Suburb))
+                            {
+                                var списокСтанцийParse = rec.Примечание.Substring(rec.Примечание.IndexOf(":", StringComparison.Ordinal) + 1).Split(',').Select(st => st.Trim()).ToList();
+                                if (!списокСтанцийParse.Any())
+                                    break;
 
-            //            case "ВРЕМЯ СЛЕДОВАНИЯ":
-            //                if (!record.ВремяСледования.HasValue)
-            //                    continue;
+                                if (rec.Примечание.Contains("Со всеми остановками"))
+                                {
+                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СоВсемиОстановками";
+                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                    logMessage += "Электропоезд движется со всеми остановками ";
+                                }
+                                else
+                                if (rec.Примечание.Contains("С остановк"))
+                                {
+                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СОстановками";
+                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                    foreach (var станция in списокСтанцийParse)
+                                    {
+                                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                        {
+                                            ИмяВоспроизводимогоФайла = станция,
+                                            ТипСообщения = типСообщения,
+                                            Язык = notificationLang,
+                                            ParentId = actionTrainDynamic.Id,
+                                            RootId = actionTrainDynamic.SoundRecordId,
+                                            ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                        });
+                                    }
+                                    logMessage += "Электропоезд движется с остановками на станциях: ";
+                                    logMessage = списокСтанцийParse.Aggregate(logMessage, (current, станция) => current + (станция + " "));
+                                }
+                                else
+                                if (rec.Примечание.Contains("Кроме"))
+                                {
+                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СОстановкамиКроме";
+                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                    foreach (var станция in списокСтанцийParse)
+                                    {
+                                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                        {
+                                            ИмяВоспроизводимогоФайла = станция,
+                                            ТипСообщения = типСообщения,
+                                            Язык = notificationLang,
+                                            ParentId = actionTrainDynamic.Id,
+                                            RootId = actionTrainDynamic.SoundRecordId,
+                                            ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                        });
+                                    }
+                                    logMessage += "Электропоезд движется с остановками кроме станций: ";
+                                    logMessage = списокСтанцийParse.Aggregate(logMessage, (current, станция) => current + (станция + " "));
+                                }
+                            }
+                            break;
 
-            //                logMessage += "Время следования: ";
-            //                text = record.ВремяСледования.Value.ToString("HH:mm");
-            //                logMessage += text + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ВремяСледования.Value.Hour],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяСледования.Value.Minute],
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                continue;
+                        default:
+                            воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = template;
+                            воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                            logMessage += template + " ";
+                            break;
+                    }
 
+                    //Пауза между языками
+                    if (actionTrain.Langs.Count > 1)
+                    {
+                        if (actionTrain.Langs.LastOrDefault() == lang) // Текущий добавленный язык последний, после него паузу не делаем
+                            break;
 
-            //            case "НУМЕРАЦИЯ СОСТАВА":
-            //                if ((record.НумерацияПоезда > 0) && (record.НумерацияПоезда <= 2))
-            //                {
-            //                    //для транзитов
-            //                    var нумерацияПоезда = record.НумерацияПоезда;
-            //                    text = названиеФайловНумерацииПутей[нумерацияПоезда];
-            //                    logMessage += text + " ";
-            //                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                    {
-            //                        ИмяВоспроизводимогоФайла = text,
-            //                        ТипСообщения = типСообщения,
-            //                        Язык = язык,
-            //                        ParentId = формируемоеСообщение.Id,
-            //                        RootId = формируемоеСообщение.SoundRecordId,
-            //                        ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                    });
-            //                }
-            //                break;
+                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                        {
+                            ИмяВоспроизводимогоФайла = "СТОП ",
+                            ТипСообщения = типСообщения,
+                            Язык = notificationLang,
+                            ParentId = actionTrainDynamic.Id,
+                            RootId = actionTrainDynamic.SoundRecordId,
+                            ПриоритетГлавный = actionTrainDynamic.PriorityMain,
+                            ВремяПаузы = (int)(Program.Настройки.ЗадержкаМеждуЗвуковымиСообщениями * 10.0)
+                        });
+                    }
+                }
+            }
 
+            var сообщениеШаблона = new ВоспроизводимоеСообщение
+            {
+                ИмяВоспроизводимогоФайла = $"Шаблон: \"{actionTrain.Name}\"",
+                ТипСообщения = типСообщения,
+                ParentId = (int?)(actionTrainDynamic.Id >= 0 ? (ValueType)actionTrainDynamic.Id : null),
+                RootId = actionTrainDynamic.SoundRecordId,
+                ПриоритетГлавный = actionTrainDynamic.PriorityMain,
+                ПриоритетВторостепенный = (PriorityPrecise) actionTrain.Priority,
+                ОчередьШаблона = new Queue<ВоспроизводимоеСообщение>(воспроизводимыеСообщения)
+            };
 
-            //            case "СТАНЦИИ":
-            //                if ((record.ТипПоезда.CategoryTrain == CategoryTrain.Suburb))
-            //                {
-            //                    var списокСтанцийНаправления = Program.ПолучитьСтанцииНаправления(record.Направление)?.Select(st => st.NameRu).ToList();
-            //                    var списокСтанцийParse = record.Примечание.Substring(record.Примечание.IndexOf(":", StringComparison.Ordinal) + 1).Split(',').Select(st => st.Trim()).ToList();
+            for (int i = 0; i < rec.КоличествоПовторений; i++)
+            {
+                QueueSound.AddItem(сообщениеШаблона);
+            }
 
-            //                    if (списокСтанцийНаправления == null || !списокСтанцийНаправления.Any())
-            //                        break;
-
-            //                    if (!списокСтанцийParse.Any())
-            //                        break;
-
-            //                    if (record.Примечание.Contains("Со всеми остановками"))
-            //                    {
-            //                        logMessage += "Электропоезд движется со всеми остановками ";
-            //                        if (Program.FilesFolder.Contains("СоВсемиОстановками"))
-            //                        {
-            //                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                            {
-            //                                ИмяВоспроизводимогоФайла = "СоВсемиОстановками",
-            //                                ТипСообщения = типСообщения,
-            //                                Язык = язык,
-            //                                ParentId = формируемоеСообщение.Id,
-            //                                RootId = формируемоеСообщение.SoundRecordId,
-            //                                ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                            });
-            //                        }
-            //                    }
-            //                    else if (record.Примечание.Contains("С остановк"))
-            //                    {
-            //                        logMessage += "Электропоезд движется с остановками на станциях: ";
-            //                        foreach (var станция in списокСтанцийНаправления)
-            //                            if (списокСтанцийParse.Contains(станция))
-            //                                logMessage += станция + " ";
-
-            //                        if (Program.FilesFolder.Contains("СОстановками"))
-            //                        {
-            //                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                            {
-            //                                ИмяВоспроизводимогоФайла = "СОстановками",
-            //                                ТипСообщения = типСообщения,
-            //                                Язык = язык,
-            //                                ParentId = формируемоеСообщение.Id,
-            //                                RootId = формируемоеСообщение.SoundRecordId,
-            //                                ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                            });
-            //                        }
-
-            //                        foreach (var станция in списокСтанцийНаправления)
-            //                            if (списокСтанцийParse.Contains(станция))
-            //                                if (Program.FilesFolder.Contains(станция))
-            //                                {
-            //                                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                                    {
-            //                                        ИмяВоспроизводимогоФайла = станция,
-            //                                        ТипСообщения = типСообщения,
-            //                                        Язык = язык,
-            //                                        ParentId = формируемоеСообщение.Id,
-            //                                        RootId = формируемоеСообщение.SoundRecordId,
-            //                                        ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                                    });
-            //                                }
-            //                    }
-            //                    else if (record.Примечание.Contains("Кроме"))
-            //                    {
-            //                        logMessage += "Электропоезд движется с остановками кроме станций: ";
-            //                        foreach (var станция in списокСтанцийНаправления)
-            //                            if (списокСтанцийParse.Contains(станция))
-            //                                logMessage += станция + " ";
-
-            //                        if (Program.FilesFolder.Contains("СОстановкамиКроме"))
-            //                        {
-            //                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                            {
-            //                                ИмяВоспроизводимогоФайла = "СОстановкамиКроме",
-            //                                ТипСообщения = типСообщения,
-            //                                Язык = язык,
-            //                                ParentId = формируемоеСообщение.Id,
-            //                                RootId = формируемоеСообщение.SoundRecordId,
-            //                                ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                            });
-            //                        }
-
-            //                        foreach (var станция in списокСтанцийНаправления)
-            //                            if (списокСтанцийParse.Contains(станция))
-            //                                if (Program.FilesFolder.Contains(станция))
-            //                                {
-            //                                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                                    {
-            //                                        ИмяВоспроизводимогоФайла = станция,
-            //                                        ТипСообщения = типСообщения,
-            //                                        Язык = язык,
-            //                                        ParentId = формируемоеСообщение.Id,
-            //                                        RootId = формируемоеСообщение.SoundRecordId,
-            //                                        ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                                    });
-            //                                }
-            //                    }
-            //                }
-            //                break;
-
-
-            //            default:
-            //                logMessage += шаблон + " ";
-            //                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //                {
-            //                    ИмяВоспроизводимогоФайла = шаблон,
-            //                    ТипСообщения = типСообщения,
-            //                    Язык = язык,
-            //                    ParentId = формируемоеСообщение.Id,
-            //                    RootId = формируемоеСообщение.SoundRecordId,
-            //                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-            //                });
-            //                break;
-            //        }
-            //    }
-
-            //    //Пауза между языками
-            //    if ((формируемоеСообщение.ЯзыкиОповещения.Count > 1) && язык == NotificationLanguage.Ru)
-            //    {
-            //        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-            //        {
-            //            ИмяВоспроизводимогоФайла = "СТОП ",
-            //            ТипСообщения = типСообщения,
-            //            Язык = язык,
-            //            ParentId = формируемоеСообщение.Id,
-            //            RootId = формируемоеСообщение.SoundRecordId,
-            //            ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный,
-            //            ВремяПаузы = (int)(Program.Настройки.ЗадержкаМеждуЗвуковымиСообщениями * 10.0)
-            //        });
-            //    }
-            //}
-
-            //var сообщениеШаблона = new ВоспроизводимоеСообщение
-            //{
-            //    ИмяВоспроизводимогоФайла = $"Шаблон: \"{формируемоеСообщение.НазваниеШаблона}\"",
-            //    ТипСообщения = типСообщения,
-            //    ParentId = (int?)((формируемоеСообщение.Id >= 0) ? (ValueType)формируемоеСообщение.Id : null),
-            //    RootId = формируемоеСообщение.SoundRecordId,
-            //    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный,
-            //    ПриоритетВторостепенный = формируемоеСообщение.ПриоритетВторостепенный,
-            //    ОчередьШаблона = new Queue<ВоспроизводимоеСообщение>(воспроизводимыеСообщения)
-            //};
-
-            //for (int i = 0; i < record.КоличествоПовторений; i++)
-            //{
-            //    QueueSound.AddItem(сообщениеШаблона);
-            //}
-
-            //var логНомерПоезда = string.IsNullOrEmpty(record.НомерПоезда2) ? record.НомерПоезда : record.НомерПоезда + "/" + record.НомерПоезда2;
-            //var логНазваниеПоезда = record.НазваниеПоезда;
-            //Program.ЗаписьЛога(названиеСообщения, $"Формирование звукового сообщения для поезда \"№{логНомерПоезда}  {логНазваниеПоезда}\": " + logMessage + ". Повтор " + record.КоличествоПовторений + " раз.", _authentificationService.CurrentUser);
+            //var логНомерПоезда = string.IsNullOrEmpty(rec.НомерПоезда2) ? rec.НомерПоезда : rec.НомерПоезда + "/" + rec.НомерПоезда2;
+            //var логНазваниеПоезда = rec.НазваниеПоезда;
+            //Program.ЗаписьЛога(названиеСообщения, $"Формирование звукового сообщения для поезда \"№{логНомерПоезда}  {логНазваниеПоезда}\": " + logMessage + ". Повтор " + rec.КоличествоПовторений + " раз.", _authentificationService.CurrentUser);
         }
 
 
@@ -3970,7 +3769,7 @@ namespace MainExample
                 }
 
                 //Пауза между языками
-                if ((формируемоеСообщение.ЯзыкиОповещения.Count > 1) && язык == NotificationLanguage.Ru)
+                if ((формируемоеСообщение.ЯзыкиОповещения.Count > 1) && язык == NotificationLanguage.Rus)
                 {
                     воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                     {
@@ -4044,7 +3843,7 @@ namespace MainExample
                                         RootId = Данные.ID,
                                         ИмяВоспроизводимогоФайла = Sound.Name,
                                         ПриоритетГлавный = Priority.Low,
-                                        Язык = NotificationLanguage.Ru,
+                                        Язык = NotificationLanguage.Rus,
                                         ОчередьШаблона = null
                                     };
                                     break;

@@ -225,8 +225,7 @@ namespace MainExample
                 dTPОтправление.Value = TrainRec.DepartureTime.Value;
             }
 
-            dTPСледования.Value = TrainRec.FollowingTime ??
-                                  new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            dTPСледования.Value = TrainRec.FollowingTime ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
             cBБлокировка.Checked = !TrainRec.Active;
 

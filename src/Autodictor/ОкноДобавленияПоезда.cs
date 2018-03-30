@@ -160,7 +160,7 @@ namespace MainExample
                                     НовыйШаблон.НазваниеШаблона = ШаблонОповещения[3 * i + 0];
                                     НовыйШаблон.Шаблон = Шаблон;
                                     НовыйШаблон.ПривязкаКВремени = ПривязкаВремени;
-                                    НовыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Ru, NotificationLanguage.Eng };
+                                    НовыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };
 
                                     Record.СписокФормируемыхСообщений.Add(НовыйШаблон);
                                 }

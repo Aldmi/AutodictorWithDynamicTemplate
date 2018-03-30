@@ -32,11 +32,11 @@ namespace AutodictorBL.Services.SoundRecordServices
 
 
 
-        public TextFragment ОтобразитьШаблонОповещенияНаRichTb2(ref SoundRecord rec, ActionTrain actionTrain)
+        public TextFragment CalcTextFragment(ref SoundRecord rec, ActionTrain actionTrain)
         {
             string[] названиеФайловНумерацииПутей = { "", "Нумерация поезда с головы состава", "Нумерация поезда с хвоста состава" };
             Color color= Color.Red;
-            string str = String.Empty;
+            string str = string.Empty;
             TextFragment txtFrag = new TextFragment();
 
             var langRutemplate= actionTrain.Langs.FirstOrDefault(lang => lang.Name == "Rus");
@@ -46,7 +46,7 @@ namespace AutodictorBL.Services.SoundRecordServices
             var fullTemplate= langRutemplate.TemplateSoundStart.Concat(langRutemplate.TemplateSoundBody).Concat(langRutemplate.TemplateSoundEnd).ToList();
             foreach (string шаблон in fullTemplate)
             {
-                string текстПодстановки = String.Empty;
+                string текстПодстановки = string.Empty;
                 switch (шаблон)
                 {
                     case "НА НОМЕР ПУТЬ":
@@ -184,7 +184,58 @@ namespace AutodictorBL.Services.SoundRecordServices
             }
             return txtFrag;
         }
+
+
+        /// <summary>
+        /// Возвращает список элементов шаблона
+        /// </summary>
+        /// <param name="actionTrain"></param>
+        /// <param name="allowedLang">список разрещенных языков</param>
+        public List<TemplateItem> CalcTemplateItems(ActionTrain actionTrain, List<string> allowedLang)
+        {
+            var templateItems= new List<TemplateItem>();
+            foreach (var lang in actionTrain.Langs)
+            {
+                if(!allowedLang.Contains(lang.Name))
+                continue;
+
+                if (!lang.IsEnable)
+                continue;
+
+                templateItems.AddRange(lang.TemplateSoundStart.Select(tmp=> new TemplateItem {Template = tmp, NameLang = lang.Name}));
+                for (int i = 0; i < lang.RepeatSoundBody; i++)
+                {
+                    templateItems.AddRange(lang.TemplateSoundBody.Select(tmp=> new TemplateItem { Template = tmp, NameLang = lang.Name }));
+                }
+                templateItems.AddRange(lang.TemplateSoundEnd.Select(tmp=> new TemplateItem { Template = tmp, NameLang = lang.Name }));
+            }
+
+            return templateItems;
+        }
+
+
+        /// <summary>
+        /// Возвращает список элементов шаблона для указанного языка
+        /// </summary>
+        /// <param name="lang">язык</param>
+        /// <returns></returns>
+        public List<TemplateItem> CalcTemplateItemsByLang(Lang lang)
+        {
+            if (!lang.IsEnable)
+                return null;
+
+            var templateItems = new List<TemplateItem>();
+            templateItems.AddRange(lang.TemplateSoundStart.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
+            for (int i = 0; i < lang.RepeatSoundBody; i++)
+            {
+                templateItems.AddRange(lang.TemplateSoundBody.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
+            }
+            templateItems.AddRange(lang.TemplateSoundEnd.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
+
+            return templateItems;
+        }
     }
+
 
     /// <summary>
     /// хранит строку текста в которой выделенны цветом разные слова.
@@ -207,11 +258,20 @@ namespace AutodictorBL.Services.SoundRecordServices
         }
     }
 
-
     public class FragmentOption
     {
         public int StartIndex { get; set; }
         public int Lenght { get; set; }
         public Color Color { get; set; }
+    }
+
+
+    /// <summary>
+    /// Элемент шаблона с указанием языка
+    /// </summary>
+    public class TemplateItem
+    {
+        public string Template { get; set; }
+        public string NameLang { get; set; }
     }
 }

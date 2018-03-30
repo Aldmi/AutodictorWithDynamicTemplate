@@ -1140,7 +1140,7 @@ namespace MainExample
             {
                 var recCopy= _record;
                 UiControls2Model(ref recCopy);
-                var textFragments= _soundReсordWorkerService.ОтобразитьШаблонОповещенияНаRichTb2(ref recCopy, selectedActionTrainDyn.ActionTrain);
+                var textFragments= _soundReсordWorkerService.CalcTextFragment(ref recCopy, selectedActionTrainDyn.ActionTrain);
                 ОтобразитьШаблонОповещенияНаRichTb(textFragments, rTB_Сообщение);
             }
         }
@@ -1258,7 +1258,7 @@ namespace MainExample
                     ПриоритетГлавный = Priority.Hight,
                     SoundRecordId = _record.Id,
                     Шаблон = ФормируемоеСообщение,
-                    ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Ru, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
+                    ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
                     НазваниеШаблона = "Авария"
                 };
 

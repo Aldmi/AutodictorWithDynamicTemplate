@@ -104,7 +104,7 @@ namespace MainExample
                 return;
             }
 
-            var soundMessage = new ВоспроизводимоеСообщение { ИмяВоспроизводимогоФайла = tb_FileName.Text, Язык = NotificationLanguage.Ru };
+            var soundMessage = new ВоспроизводимоеСообщение { ИмяВоспроизводимогоФайла = tb_FileName.Text, Язык = NotificationLanguage.Rus };
             SoundPlayer.PlayFile(soundMessage);
         }
 

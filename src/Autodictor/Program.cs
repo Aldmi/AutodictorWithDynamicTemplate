@@ -326,7 +326,7 @@ namespace MainExample
 
 
 
-        public static string GetFileName(string track, NotificationLanguage lang = NotificationLanguage.Ru)
+        public static string GetFileName(string track, NotificationLanguage lang = NotificationLanguage.Rus)
         {
             string langPostfix = String.Empty;
             switch (lang)

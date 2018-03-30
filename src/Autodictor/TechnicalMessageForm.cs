@@ -110,7 +110,7 @@ namespace MainExample
             новыйШаблон.НазваниеШаблона = template.Name;
             новыйШаблон.Шаблон = template.Message;
             новыйШаблон.ПривязкаКВремени = 0;
-            новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Ru, NotificationLanguage.Eng };
+            новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };
 
             return новыйШаблон;
         }

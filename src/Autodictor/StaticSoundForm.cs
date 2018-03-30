@@ -257,7 +257,7 @@ namespace MainExample
                 var soundMessage = new ВоспроизводимоеСообщение
                 {
                     ИмяВоспроизводимогоФайла = this.textBox_Path.Text,
-                    Язык = NotificationLanguage.Ru
+                    Язык = NotificationLanguage.Rus
                 };
                 _soundPlayer.PlayFile(soundMessage);       // PlayerDirectX.PlayFile(this.textBox_Path.Text);
                 return;

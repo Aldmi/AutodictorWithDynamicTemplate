@@ -273,7 +273,7 @@ namespace MainExample.Mappers
                                 новыйШаблон.НазваниеШаблона = шаблонОповещения[3 * i + 0];
                                 новыйШаблон.Шаблон = шаблон;
                                 новыйШаблон.ПривязкаКВремени = привязкаВремени;
-                                новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Ru, NotificationLanguage.Eng };  //TODO:Брать из ШаблонОповещения полученого из TrainTable.
+                                новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };  //TODO:Брать из ШаблонОповещения полученого из TrainTable.
 
                                 record.СписокФормируемыхСообщений.Add(новыйШаблон);
                             }
