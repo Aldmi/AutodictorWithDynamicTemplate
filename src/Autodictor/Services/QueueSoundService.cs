@@ -28,7 +28,7 @@ namespace MainExample.Services
     public class TemplateChangeValue
     {
         public StatusPlaying StatusPlaying { get; set; }
-        public СостояниеФормируемогоСообщенияИШаблон Template { get; set; }
+       // public СостояниеФормируемогоСообщенияИШаблон Template { get; set; }
         public ВоспроизводимоеСообщение SoundMessage { get; set; }
     }
 
@@ -48,24 +48,17 @@ namespace MainExample.Services
 
         #region prop
 
-        private Queue<ВоспроизводимоеСообщение> Queue { get; set; } = new Queue<ВоспроизводимоеСообщение>();
+        private Queue<ВоспроизводимоеСообщение> Queue { get; } = new Queue<ВоспроизводимоеСообщение>();
         public IEnumerable<ВоспроизводимоеСообщение> GetElements => Queue;
         public int Count => Queue.Count;
+        public bool IsStaticSoundPlaying => (CurrentSoundMessagePlaying != null) &&
+                                            (CurrentSoundMessagePlaying.ТипСообщения == ТипСообщения.Статическое);
 
-        public bool IsStaticSoundPlaying => (MainWindowForm.QueueSound.CurrentTemplatePlaying == null) &&
-                                            (MainWindowForm.QueueSound.CurrentSoundMessagePlaying != null);
-
-
-        public ВоспроизводимоеСообщение CurrentSoundMessagePlaying { get; private set; }
-        public СостояниеФормируемогоСообщенияИШаблон? CurrentTemplatePlaying { get; private set; }
-
-
-        public ВоспроизводимоеСообщение LastSoundMessagePlayed { get; private set; }
-        //последнее проигранное звуковое сообщение
-
+        public ВоспроизводимоеСообщение CurrentSoundMessagePlaying { get; private set; }  //текущее воспроизводимое звуковое сообщение
+        public ВоспроизводимоеСообщение LastSoundMessagePlayed { get; private set; } //последнее проигранное звуковое сообщение
+       
         private List<ВоспроизводимоеСообщение> ElementsOnTemplatePlaying { get; set; }
         public IEnumerable<ВоспроизводимоеСообщение> GetElementsOnTemplatePlaying => ElementsOnTemplatePlaying;
-
 
         public IEnumerable<ВоспроизводимоеСообщение> GetElementsWithFirstElem
         {
@@ -89,9 +82,7 @@ namespace MainExample.Services
             }
         }
 
-
         public bool IsWorking { get; private set; }
-
         public bool IsPlayedCurrentMessage { get; private set; }  //доиграть последнее сообщение и остановить очередь
 
         #endregion
@@ -106,7 +97,6 @@ namespace MainExample.Services
             _soundPlayer = soundPlayer;
         }
 
-
         #endregion
 
 
@@ -114,14 +104,10 @@ namespace MainExample.Services
 
         #region Rx
 
-        public Subject<StatusPlaying> QueueChangeRx { get; } = new Subject<StatusPlaying>();
-        //Событие определния начала/конца проигрывания ОЧЕРЕДИ
-        public Subject<StatusPlaying> SoundMessageChangeRx { get; } = new Subject<StatusPlaying>();
-        //Событие определния начала/конца проигрывания ФАЙЛА
-        public Subject<TemplateChangeValue> TemplateChangeRx { get; } = new Subject<TemplateChangeValue>();
-        //Событие определния начала/конца проигрывания динамического ШАБЛОНА
-        public Subject<StaticChangeValue> StaticChangeRx { get; } = new Subject<StaticChangeValue>();
-        //Событие определния начала/конца проигрывания  статического ФАЙЛА
+        public Subject<StatusPlaying> QueueChangeRx { get; } = new Subject<StatusPlaying>();               //Событие определния начала/конца проигрывания ОЧЕРЕДИ
+        public Subject<StatusPlaying> SoundMessageChangeRx { get; } = new Subject<StatusPlaying>();         //Событие определния начала/конца проигрывания ФАЙЛА
+        public Subject<TemplateChangeValue> TemplateChangeRx { get; } = new Subject<TemplateChangeValue>();  //Событие определния начала/конца проигрывания динамического ШАБЛОНА
+        public Subject<StaticChangeValue> StaticChangeRx { get; } = new Subject<StaticChangeValue>();        //Событие определния начала/конца проигрывания  статического ФАЙЛА
 
         #endregion
 
@@ -154,9 +140,6 @@ namespace MainExample.Services
             IsPlayedCurrentMessage = true;
         }
     
-
-
-
 
         /// <summary>
         /// Добавить элемент в очередь
@@ -201,7 +184,6 @@ namespace MainExample.Services
         }
 
 
-
         /// <summary>
         /// Очистить очередь
         /// </summary>
@@ -209,10 +191,8 @@ namespace MainExample.Services
         {
             Queue?.Clear();
             ElementsOnTemplatePlaying?.Clear();
-            CurrentTemplatePlaying = null;
             CurrentSoundMessagePlaying = null;
         }
-
 
 
         public ВоспроизводимоеСообщение FindItem(int rootId, int? parentId)
@@ -224,7 +204,6 @@ namespace MainExample.Services
         }
 
 
-
         public void PausePlayer()
         {
             StopQueue();
@@ -232,13 +211,11 @@ namespace MainExample.Services
         }
 
 
-
         public void PlayPlayer()
         {
             StartQueue();
             _soundPlayer.Play();
         }
-
 
 
         public void Erase()
@@ -288,8 +265,6 @@ namespace MainExample.Services
 
                 _isAnyOldQueue = Queue.Any();
 
-
-
                 //Разматывание очереди. Определение проигрываемого файла-----------------------------------------------------------------------------
                 if (status != SoundPlayerStatus.Playing)
                 {
@@ -331,8 +306,7 @@ namespace MainExample.Services
                             }
                         }
 
-
-                        //Проигрывание фалйла-----------------------------------------------------------------------------------------------------------
+                        //Проигрывание файла-----------------------------------------------------------------------------------------------------------
                         if (CurrentSoundMessagePlaying == null)
                             return;
 
@@ -365,12 +339,9 @@ namespace MainExample.Services
             var firstElem= Queue.Peek();
             LastSoundMessagePlayed = (firstElem.ОчередьШаблона == null || !firstElem.ОчередьШаблона.Any()) ? firstElem : firstElem.ОчередьШаблона.FirstOrDefault(); //DEBUG
             //Debug.WriteLine($"EventStartPlayingQueue: {LastSoundMessagePlayed.ИмяВоспроизводимогоФайла}");//DEBUG  //ТолькоПоВнутреннемуКаналу={LastSoundMessagePlayed.НастройкиВыводаЗвука.ТолькоПоВнутреннемуКаналу}
-
-
             //Debug.WriteLine("НАЧАЛО ПРОИГРЫВАНИЯ ОЧЕРЕДИ *********************");//DEBUG
             QueueChangeRx.OnNext(StatusPlaying.Start);
         }
-
 
 
         /// <summary>
@@ -380,11 +351,9 @@ namespace MainExample.Services
         private void EventEndPlayingQueue()
         {
             //Debug.WriteLine($"EventEndPlayingQueue: {LastSoundMessagePlayed.ИмяВоспроизводимогоФайла}");//DEBUG   ТолькоПоВнутреннемуКаналу={LastSoundMessagePlayed.НастройкиВыводаЗвука.ТолькоПоВнутреннемуКаналу}
-
             //Debug.WriteLine("КОНЕЦ ПРОИГРЫВАНИЯ ОЧЕРЕДИ *********************");//DEBUG
             QueueChangeRx.OnNext(StatusPlaying.Stop);
         }
-
 
 
         /// <summary>
@@ -400,7 +369,6 @@ namespace MainExample.Services
             //Log.log.Fatal($"начало проигрывания файла: {soundMessage.ИмяВоспроизводимогоФайла}");//DEBUG
             // Debug.WriteLine($"начало проигрывания файла: {soundMessage.ИмяВоспроизводимогоФайла}");//DEBUG
         }
-
 
 
         /// <summary>
@@ -419,60 +387,13 @@ namespace MainExample.Services
         }
 
 
-
         /// <summary>
         /// Событие НАЧАЛА проигрывания шаблона.
         /// </summary>
         private void EventStartPlayingTemplate(ВоспроизводимоеСообщение soundMessage)
         {
-            //шаблон АВАРИЯ
-            if (soundMessage.ParentId.HasValue && soundMessage.ТипСообщения == ТипСообщения.ДинамическоеАварийное)
-            {
-                СостояниеФормируемогоСообщенияИШаблон шаблон = new СостояниеФормируемогоСообщенияИШаблон();
-                шаблон.Id = soundMessage.ParentId.Value;
-                шаблон.SoundRecordId = soundMessage.RootId;
-                шаблон.НазваниеШаблона = soundMessage.ИмяВоспроизводимогоФайла;
-                шаблон.ПриоритетГлавный = soundMessage.ПриоритетГлавный;
-
-                CurrentTemplatePlaying = шаблон;
-                TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Start, Template = шаблон, SoundMessage = soundMessage });
-                //Debug.WriteLine($"-------------НАЧАЛО проигрывания ШАБЛОНА: НазваниеШаблона= {шаблон.НазваниеШаблона}-----------------");//DEBUG
-                return;
-            }
-
-            //шаблон ДИНАМИКИ
-            if (soundMessage.ParentId.HasValue && soundMessage.ТипСообщения == ТипСообщения.Динамическое)
-            {
-                var soundRecord = MainWindowForm.SoundRecords.FirstOrDefault(rec => rec.Value.Id == soundMessage.RootId).Value;
-                if (soundRecord.СписокФормируемыхСообщений != null && soundRecord.СписокФормируемыхСообщений.Any())
-                {
-                    var template = soundRecord.СписокФормируемыхСообщений.FirstOrDefault(sm => sm.Id == soundMessage.ParentId.Value);
-                    if (!string.IsNullOrEmpty(template.НазваниеШаблона))
-                    {
-                        CurrentTemplatePlaying = template;
-                        TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Start, Template = template, SoundMessage = soundMessage});
-                        //Debug.WriteLine($"-------------НАЧАЛО проигрывания ШАБЛОНА: НазваниеШаблона= {template.НазваниеШаблона}-----------------");//DEBUG
-                    }
-                }
-                return;
-            }
-
-            //шаблон ДИНАМИКИ техническое сообщение
-            if (soundMessage.ParentId.HasValue && soundMessage.ТипСообщения == ТипСообщения.ДинамическоеТехническое)
-            {
-                СостояниеФормируемогоСообщенияИШаблон шаблон = new СостояниеФормируемогоСообщенияИШаблон();
-                шаблон.Id = soundMessage.ParentId.Value;
-                шаблон.SoundRecordId = soundMessage.RootId;
-                шаблон.НазваниеШаблона = soundMessage.ИмяВоспроизводимогоФайла;
-                шаблон.ПриоритетГлавный = soundMessage.ПриоритетГлавный;
-
-                CurrentTemplatePlaying = шаблон;
-                TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Start, Template = шаблон, SoundMessage = soundMessage });
-               // Debug.WriteLine($"-------------НАЧАЛО проигрывания ШАБЛОНА: НазваниеШаблона= {шаблон.НазваниеШаблона}-----------------");//DEBUG
-                return;
-            }
+            TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Start, SoundMessage = soundMessage });
         }
-
 
 
         /// <summary>
@@ -483,57 +404,8 @@ namespace MainExample.Services
             if (IsPlayedCurrentMessage)
                 Erase();               //Очистить очередь после проигрывания
 
-            //шаблон АВАРИЯ (Id сообщения > 1000)
-            if ((soundMessage.RootId > 0) && (soundMessage.ParentId.HasValue) && (soundMessage.ТипСообщения == ТипСообщения.ДинамическоеАварийное))
-            {
-                СостояниеФормируемогоСообщенияИШаблон шаблон = new СостояниеФормируемогоСообщенияИШаблон();
-                шаблон.Id = soundMessage.ParentId.Value;
-                шаблон.SoundRecordId = soundMessage.RootId;
-                шаблон.НазваниеШаблона = soundMessage.ИмяВоспроизводимогоФайла;
-                шаблон.ПриоритетГлавный = soundMessage.ПриоритетГлавный;
-
-                CurrentTemplatePlaying = шаблон;
-                TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Stop, Template = шаблон, SoundMessage = soundMessage});
-                //Debug.WriteLine($"-------------НАЧАЛО проигрывания ШАБЛОНА: НазваниеШаблона= {шаблон.НазваниеШаблона}-----------------");//DEBUG
-                CurrentTemplatePlaying = null;
-                return;
-            }
-
-            //шаблон ДИНАМИКИ
-            if (soundMessage.ParentId.HasValue && soundMessage.ТипСообщения == ТипСообщения.Динамическое)
-            {
-                var soundRecord = MainWindowForm.SoundRecords.FirstOrDefault(rec => rec.Value.Id == soundMessage.RootId).Value;
-                if ((soundRecord.Id) > 0 && (soundMessage.ParentId.HasValue))
-                {
-                    var template = soundRecord.СписокФормируемыхСообщений.FirstOrDefault(sm => sm.Id == soundMessage.ParentId.Value);
-                    if (!string.IsNullOrEmpty(template.НазваниеШаблона))
-                    {
-                        CurrentTemplatePlaying = null;
-                        TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Stop, Template = template, SoundMessage = soundMessage });
-                        //Debug.WriteLine($"--------------КОНЕЦ проигрывания ШАБЛОНА: НазваниеШаблона= {template.НазваниеШаблона}-----------------");//DEBUG
-                    }
-                }
-                CurrentTemplatePlaying = null;
-                return;
-            }
-
-            //шаблон ДИНАМИКИ техническое сообщение
-            if (soundMessage.ParentId.HasValue && soundMessage.ТипСообщения == ТипСообщения.ДинамическоеТехническое)
-            {
-                СостояниеФормируемогоСообщенияИШаблон шаблон = new СостояниеФормируемогоСообщенияИШаблон();
-                шаблон.Id = soundMessage.ParentId.Value;
-                шаблон.SoundRecordId = soundMessage.RootId;
-                шаблон.НазваниеШаблона = soundMessage.ИмяВоспроизводимогоФайла;
-                шаблон.ПриоритетГлавный = soundMessage.ПриоритетГлавный;
-
-                CurrentTemplatePlaying = шаблон;
-                TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Stop, Template = шаблон, SoundMessage = soundMessage });
-                //Debug.WriteLine($"-------------КОНЕЦ проигрывания ШАБЛОНА: НазваниеШаблона= {шаблон.НазваниеШаблона}-----------------");//DEBUG
-                CurrentTemplatePlaying = null;
-                return;
-            }   
+            TemplateChangeRx.OnNext(new TemplateChangeValue { StatusPlaying = StatusPlaying.Stop, SoundMessage = soundMessage });
         }
-
 
 
         /// <summary>
@@ -544,7 +416,6 @@ namespace MainExample.Services
              StaticChangeRx.OnNext(new StaticChangeValue {StatusPlaying = StatusPlaying.Start, SoundMessage = soundMessage});
              //Debug.WriteLine($"^^^^^^^^^^^СТАТИКА НАЧАЛО {soundMessage.ИмяВоспроизводимогоФайла}");//DEBUG
         }
-
 
 
         /// <summary>

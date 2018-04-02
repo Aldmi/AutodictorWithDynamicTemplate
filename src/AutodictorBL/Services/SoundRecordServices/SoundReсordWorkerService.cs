@@ -225,12 +225,21 @@ namespace AutodictorBL.Services.SoundRecordServices
                 return null;
 
             var templateItems = new List<TemplateItem>();
-            templateItems.AddRange(lang.TemplateSoundStart.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
-            for (int i = 0; i < lang.RepeatSoundBody; i++)
+            if (lang.TemplateSoundStart != null && lang.TemplateSoundStart.Any())
             {
-                templateItems.AddRange(lang.TemplateSoundBody.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
+                templateItems.AddRange(lang.TemplateSoundStart.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
             }
-            templateItems.AddRange(lang.TemplateSoundEnd.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
+            if (lang.TemplateSoundBody != null && lang.TemplateSoundBody.Any())
+            {
+                for (int i = 0; i < lang.RepeatSoundBody; i++)
+                {
+                    templateItems.AddRange(lang.TemplateSoundBody.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
+                }
+            }
+            if (lang.TemplateSoundEnd != null && lang.TemplateSoundEnd.Any())
+            {
+                templateItems.AddRange(lang.TemplateSoundEnd.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
+            }
 
             return templateItems;
         }

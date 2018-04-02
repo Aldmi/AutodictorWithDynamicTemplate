@@ -274,6 +274,7 @@ namespace DAL.Abstract.Entitys
         {
             Id = int.Parse(id);
             Name = name;
+            IsEnable = true;
             RepeatSoundBody = int.Parse(repeatSoundBody);
             TemplateSoundStart = string.IsNullOrEmpty(templateSoundStart) ? null : templateSoundStart.Split('|').ToList();
             TemplateSoundBody = string.IsNullOrEmpty(templateSoundBody) ? null : templateSoundBody.Split('|').ToList();

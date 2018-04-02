@@ -478,79 +478,140 @@ namespace MainExample
             }
 
 
-            //ШАБЛОН технического сообщения
-            if (templateChangeValue.SoundMessage.ТипСообщения == ТипСообщения.ДинамическоеТехническое)
+            switch (templateChangeValue.SoundMessage.ТипСообщения)
             {
-                var soundRecordTech = TechnicalMessageForm.SoundRecords.FirstOrDefault(rec => rec.Id == templateChangeValue.Template.SoundRecordId);
-                if (soundRecordTech.Id > 0)
-                {
-                    int index = TechnicalMessageForm.SoundRecords.IndexOf(soundRecordTech);
-                    var template = soundRecordTech.СписокФормируемыхСообщений.FirstOrDefault(i => i.Id == templateChangeValue.Template.Id);
+                case ТипСообщения.Динамическое:
+                    var soundRecordKeyValuePair= SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
+                    var record = soundRecordKeyValuePair.Value;
+                    var template = record.ActionTrainDynamiсList.FirstOrDefault(actDyn => actDyn.Id == templateChangeValue.SoundMessage.ParentId);
+                    if (template == null) return;
                     switch (templateChangeValue.StatusPlaying)
                     {
                         case StatusPlaying.Start:
-                            template.СостояниеВоспроизведения = SoundRecordStatus.ВоспроизведениеРучное;
+                            template.SoundRecordStatus = (template.SoundRecordStatus == SoundRecordStatus.ДобавленВОчередьРучное) ? SoundRecordStatus.ВоспроизведениеРучное : SoundRecordStatus.ВоспроизведениеАвтомат;
                             break;
-
                         case StatusPlaying.Stop:
-                            template.СостояниеВоспроизведения = SoundRecordStatus.Выключена;
+                            template.SoundRecordStatus = SoundRecordStatus.Выключена;
                             break;
                     }
-                    soundRecordTech.СписокФормируемыхСообщений[0] = template;
-                    TechnicalMessageForm.SoundRecords[index] = soundRecordTech;
-                }
-                return;
-            }
+                    break;
 
-
-            var soundRecord = SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.Template.SoundRecordId);
-            //шаблон АВАРИЯ
-            if (templateChangeValue.SoundMessage.ТипСообщения == ТипСообщения.ДинамическоеАварийное)
-            {
-                for (int i = 0; i < soundRecord.Value.СписокНештатныхСообщений.Count; i++)
-                {
-                    if (soundRecord.Value.СписокНештатныхСообщений[i].Id == templateChangeValue.Template.Id)
+                case ТипСообщения.ДинамическоеАварийное:
+                    //TODO: Заменить тип СписокНештатныхСообщений на ActionTrainDynamic
+                    var soundRecord = SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
+                    for (int i = 0; i < soundRecord.Value.СписокНештатныхСообщений.Count; i++)
                     {
-                        var template = soundRecord.Value.СписокНештатныхСообщений[i];
+                        if (soundRecord.Value.СписокНештатныхСообщений[i].Id == templateChangeValue.SoundMessage.ParentId)
+                        {
+                            var templateAlarm = soundRecord.Value.СписокНештатныхСообщений[i];
+                            switch (templateChangeValue.StatusPlaying)
+                            {
+                                case StatusPlaying.Start:
+                                    templateAlarm.СостояниеВоспроизведения = SoundRecordStatus.ВоспроизведениеАвтомат;
+                                    break;
+                                case StatusPlaying.Stop:
+                                    templateAlarm.СостояниеВоспроизведения = SoundRecordStatus.Выключена;
+                                    break;
+                            }
+                            soundRecord.Value.СписокНештатныхСообщений[i] = templateAlarm;
+                        }
+                    }
+                    break;
+
+                case ТипСообщения.ДинамическоеТехническое:
+                    var soundRecordTech = TechnicalMessageForm.SoundRecords.FirstOrDefault(rec => rec.Id == templateChangeValue.SoundMessage.RootId);
+                    if (soundRecordTech.Id > 0) // если найден (в дефолтном значении Id = 0)
+                    {
+                        template = soundRecordTech.ActionTrainDynamiсList.FirstOrDefault(actDyn => actDyn.Id == templateChangeValue.SoundMessage.ParentId);
+                        if (template == null) return;
                         switch (templateChangeValue.StatusPlaying)
                         {
                             case StatusPlaying.Start:
-                                template.СостояниеВоспроизведения = SoundRecordStatus.ВоспроизведениеАвтомат;
+                                template.SoundRecordStatus = SoundRecordStatus.ВоспроизведениеРучное;
                                 break;
-
                             case StatusPlaying.Stop:
-                                template.СостояниеВоспроизведения = SoundRecordStatus.Выключена;
+                                template.SoundRecordStatus = SoundRecordStatus.Выключена;
                                 break;
                         }
-                        soundRecord.Value.СписокНештатныхСообщений[i] = template;
                     }
-                }
-            }
-            //шаблон ДИНАМИКИ
-            else
-            {
-                for (int i = 0; i < soundRecord.Value.СписокФормируемыхСообщений.Count; i++)
-                {
-                    if (soundRecord.Value.СписокФормируемыхСообщений[i].Id == templateChangeValue.Template.Id)
-                    {
-                        var template = soundRecord.Value.СписокФормируемыхСообщений[i];
-                        switch (templateChangeValue.StatusPlaying)
-                        {
-                            case StatusPlaying.Start:
-                                template.СостояниеВоспроизведения = (template.СостояниеВоспроизведения == SoundRecordStatus.ДобавленВОчередьРучное) ? SoundRecordStatus.ВоспроизведениеРучное : SoundRecordStatus.ВоспроизведениеАвтомат;
-                                break;
+                    break;
 
-                            case StatusPlaying.Stop:
-                                template.СостояниеВоспроизведения = SoundRecordStatus.Выключена;
-                                break;
-                        }
-                        soundRecord.Value.СписокФормируемыхСообщений[i] = template;
-                    }
-                }
+                case ТипСообщения.Статическое:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            if (SoundRecords.ContainsKey(soundRecord.Key))
-                SoundRecords[soundRecord.Key] = soundRecord.Value;
+
+
+            ////ШАБЛОН технического сообщения
+            //if (templateChangeValue.SoundMessage.ТипСообщения == ТипСообщения.ДинамическоеТехническое)
+            //{
+            //    var soundRecordTech = TechnicalMessageForm.SoundRecords.FirstOrDefault(rec => rec.Id == templateChangeValue.SoundMessage.RootId);
+            //    if (soundRecordTech.Id > 0) // если найден
+            //    {
+            //        var template = soundRecordTech.ActionTrainDynamiсList.FirstOrDefault(actDyn => actDyn.Id == templateChangeValue.SoundMessage.ParentId);
+            //        if(template == null) return;
+            //        switch (templateChangeValue.StatusPlaying)
+            //        {
+            //            case StatusPlaying.Start:
+            //                template.SoundRecordStatus= SoundRecordStatus.ВоспроизведениеРучное;
+            //                break;
+
+            //            case StatusPlaying.Stop:
+            //                template.SoundRecordStatus = SoundRecordStatus.Выключена;
+            //                break;
+            //        }
+            //    }
+            //    return;
+            //}
+
+            //var soundRecord= SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
+            ////шаблон АВАРИЯ
+            //if (templateChangeValue.SoundMessage.ТипСообщения == ТипСообщения.ДинамическоеАварийное)
+            //{
+            //    for (int i = 0; i < soundRecord.Value.СписокНештатныхСообщений.Count; i++)
+            //    {
+            //        if (soundRecord.Value.СписокНештатныхСообщений[i].Id == templateChangeValue.SoundMessage.ParentId)
+            //        {
+            //            var template = soundRecord.Value.СписокНештатныхСообщений[i];
+            //            switch (templateChangeValue.StatusPlaying)
+            //            {
+            //                case StatusPlaying.Start:
+            //                    template.СостояниеВоспроизведения = SoundRecordStatus.ВоспроизведениеАвтомат;
+            //                    break;
+
+            //                case StatusPlaying.Stop:
+            //                    template.СостояниеВоспроизведения = SoundRecordStatus.Выключена;
+            //                    break;
+            //            }
+            //            soundRecord.Value.СписокНештатныхСообщений[i] = template;
+            //        }
+            //    }
+            //}
+            ////шаблон ДИНАМИКИ
+            //else
+            //{
+            //     for (int i = 0; i < soundRecord.Value.СписокФормируемыхСообщений.Count; i++)
+            //    {
+            //        if (soundRecord.Value.СписокФормируемыхСообщений[i].Id == templateChangeValue.Template.Id)
+            //        {
+            //            var template = soundRecord.Value.СписокФормируемыхСообщений[i];
+            //            switch (templateChangeValue.StatusPlaying)
+            //            {
+            //                case StatusPlaying.Start:
+            //                    template.СостояниеВоспроизведения = (template.СостояниеВоспроизведения == SoundRecordStatus.ДобавленВОчередьРучное) ? SoundRecordStatus.ВоспроизведениеРучное : SoundRecordStatus.ВоспроизведениеАвтомат;
+            //                    break;
+
+            //                case StatusPlaying.Stop:
+            //                    template.СостояниеВоспроизведения = SoundRecordStatus.Выключена;
+            //                    break;
+            //            }
+            //            soundRecord.Value.СписокФормируемыхСообщений[i] = template;
+            //        }
+            //    }
+            //}
+
+            //if (SoundRecords.ContainsKey(soundRecord.Key))
+            //    SoundRecords[soundRecord.Key] = soundRecord.Value;
         }
 
 
@@ -2810,12 +2871,16 @@ namespace MainExample
             foreach (var lang in actionTrain.Langs)
             {
                 var templateItems= _soundReсordWorkerService.CalcTemplateItemsByLang(lang);
+                if(templateItems == null || templateItems.Count == 0)
+                    continue;
+
+                var notificationLang = (NotificationLanguage)Enum.Parse(typeof(NotificationLanguage), lang.Name); //TODO: NotificationLanguage заменить на string
                 foreach (var item in templateItems)
                 {
                     var template = item.Template;
                     var txt = string.Empty;
                     DateTime времяUtc;
-                    var notificationLang = (NotificationLanguage)Enum.Parse(typeof(NotificationLanguage), item.NameLang); //TODO: NotificationLanguage заменить на string
+
                     var воспроизводимоеСообщение = new ВоспроизводимоеСообщение
                     {
                         ТипСообщения = типСообщения,
@@ -2825,7 +2890,7 @@ namespace MainExample
                         ПриоритетГлавный = actionTrainDynamic.PriorityMain
                     };
 
-                    switch (item.Template)
+                    switch (template)
                     {
                         case "НА НОМЕР ПУТЬ":
                         case "НА НОМЕРом ПУТИ":
@@ -2879,8 +2944,15 @@ namespace MainExample
                             {
                                 foreach (var fileName in fileNames)
                                 {
-                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "numeric_" + fileName;
-                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                    {
+                                        ИмяВоспроизводимогоФайла = "numeric_" + fileName,
+                                        ТипСообщения = типСообщения,
+                                        Язык = notificationLang,
+                                        ParentId = actionTrainDynamic.Id,
+                                        RootId = actionTrainDynamic.SoundRecordId,
+                                        ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                    });
                                 }
                                 logMessage += txt + " ";
                             }
@@ -2895,8 +2967,15 @@ namespace MainExample
                                 {
                                     foreach (var fileName in fileNames)
                                     {
-                                        воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "numeric_" + fileName;
-                                        воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                        {
+                                            ИмяВоспроизводимогоФайла = "numeric_" + fileName,
+                                            ТипСообщения = типСообщения,
+                                            Язык = notificationLang,
+                                            ParentId = actionTrainDynamic.Id,
+                                            RootId = actionTrainDynamic.SoundRecordId,
+                                            ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                        });
                                     }
                                     logMessage += txt + " ";
                                 }
@@ -3131,25 +3210,25 @@ namespace MainExample
                             logMessage += template + " ";
                             break;
                     }
-
-                    //Пауза между языками
-                    if (actionTrain.Langs.Count > 1)
-                    {
-                        if (actionTrain.Langs.LastOrDefault() == lang) // Текущий добавленный язык последний, после него паузу не делаем
-                            break;
-
-                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-                        {
-                            ИмяВоспроизводимогоФайла = "СТОП ",
-                            ТипСообщения = типСообщения,
-                            Язык = notificationLang,
-                            ParentId = actionTrainDynamic.Id,
-                            RootId = actionTrainDynamic.SoundRecordId,
-                            ПриоритетГлавный = actionTrainDynamic.PriorityMain,
-                            ВремяПаузы = (int)(Program.Настройки.ЗадержкаМеждуЗвуковымиСообщениями * 10.0)
-                        });
-                    }
                 }
+
+                //Пауза между языками
+                //if (actionTrain.Langs.Count > 1)
+                //{
+                //    if (actionTrain.Langs.LastOrDefault() == lang) // Текущий добавленный язык последний, после него паузу не делаем
+                //        break;
+
+                //    воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                //    {
+                //        ИмяВоспроизводимогоФайла = "СТОП ",
+                //        ТипСообщения = типСообщения,
+                //        Язык = notificationLang,
+                //        ParentId = actionTrainDynamic.Id,
+                //        RootId = actionTrainDynamic.SoundRecordId,
+                //        ПриоритетГлавный = actionTrainDynamic.PriorityMain,
+                //        ВремяПаузы = (int)(Program.Настройки.ЗадержкаМеждуЗвуковымиСообщениями * 10.0)
+                //    });
+                //}
             }
 
             var сообщениеШаблона = new ВоспроизводимоеСообщение
