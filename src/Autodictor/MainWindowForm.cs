@@ -478,9 +478,9 @@ namespace MainExample
             }
 
 
-            switch (templateChangeValue.SoundMessage.ТипСообщения)
+            switch (templateChangeValue.SoundMessage.MessageType)
             {
-                case ТипСообщения.Динамическое:
+                case MessageType.Динамическое:
                     var soundRecordKeyValuePair= SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
                     var record = soundRecordKeyValuePair.Value;
                     var template = record.ActionTrainDynamiсList.FirstOrDefault(actDyn => actDyn.Id == templateChangeValue.SoundMessage.ParentId);
@@ -496,7 +496,7 @@ namespace MainExample
                     }
                     break;
 
-                case ТипСообщения.ДинамическоеАварийное:
+                case MessageType.ДинамическоеАварийное:
                     //TODO: Заменить тип СписокНештатныхСообщений на ActionTrainDynamic
                     var soundRecord = SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
                     for (int i = 0; i < soundRecord.Value.СписокНештатныхСообщений.Count; i++)
@@ -518,7 +518,7 @@ namespace MainExample
                     }
                     break;
 
-                case ТипСообщения.ДинамическоеТехническое:
+                case MessageType.ДинамическоеТехническое:
                     var soundRecordTech = TechnicalMessageForm.SoundRecords.FirstOrDefault(rec => rec.Id == templateChangeValue.SoundMessage.RootId);
                     if (soundRecordTech.Id > 0) // если найден (в дефолтном значении Id = 0)
                     {
@@ -536,7 +536,7 @@ namespace MainExample
                     }
                     break;
 
-                case ТипСообщения.Статическое:
+                case MessageType.Статическое:
                     throw new ArgumentOutOfRangeException();
             }
         }
@@ -1286,7 +1286,7 @@ namespace MainExample
                                     {
                                         ParentId = null,
                                         RootId = Сообщение.ID,
-                                        ТипСообщения = ТипСообщения.Статическое,
+                                        MessageType = MessageType.Статическое,
                                         ИмяВоспроизводимогоФайла = Sound.Name,
                                         ПриоритетГлавный = Priority.Low,
                                         ПриоритетВторостепенный = PriorityPrecise.Zero,
@@ -1308,21 +1308,21 @@ namespace MainExample
                 if (DateTime.Now > Сообщение.Время.AddMinutes(-30) &&
                     !(Сообщение.СостояниеВоспроизведения == SoundRecordStatus.Воспроизведена && DateTime.Now > Сообщение.Время.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий))) //убрать через 5 мин. после воспроизведения
                 {
-                    byte состояниеСтроки = 0;
+                    StateTask состояниеСтроки = StateTask.Disabled;
                     switch (Сообщение.СостояниеВоспроизведения)
                     {
                         case SoundRecordStatus.Воспроизведена:
                         case SoundRecordStatus.Выключена:
-                            состояниеСтроки = 0;
+                            состояниеСтроки = StateTask.Disabled;
                             break;
 
                         case SoundRecordStatus.ДобавленВОчередьАвтомат:
                         case SoundRecordStatus.ОжиданиеВоспроизведения:
-                            состояниеСтроки = 2;
+                            состояниеСтроки = StateTask.Waiting; //2
                             break;
 
                         case SoundRecordStatus.ВоспроизведениеАвтомат:
-                            состояниеСтроки = 4;
+                            состояниеСтроки = StateTask.Enable; //4
                             break;
                     }
 
@@ -1330,17 +1330,16 @@ namespace MainExample
                     //var statSound = StaticSoundForm.StaticSoundRecords.FirstOrDefault(sound => sound.Name == Сообщение.НазваниеКомпозиции);
                     TaskSound taskSound = new TaskSound
                     {
-                        НомерСписка = 1,
-                        СостояниеСтроки = состояниеСтроки,
+                        MessageType = MessageType.Статическое,
+                        StateTask = состояниеСтроки,
                         Описание = Сообщение.НазваниеКомпозиции,
                         Время = Сообщение.Время,
-                        Ключ = Key,
+                        Key = Key,
                         ParentId = null,
-                        //ШаблонИлиСообщение = statSound.Message
                     };
 
                     if (Сообщение.Активность == false)
-                        taskSound.СостояниеСтроки = 0;
+                        taskSound.StateTask = StateTask.Disabled;
 
                     TaskManager.AddItem(taskSound);
                 }
@@ -1455,7 +1454,7 @@ namespace MainExample
                                                         //TODO: вычислять языки оповещения 
                                                         НазваниеШаблона = нештатноеСообщение.НазваниеШаблона,
                                                     };
-                                                    MainWindowForm.ВоспроизвестиШаблонОповещения("Автоматическое воспроизведение сообщения о внештатной ситуации", Данные, шаблонФормируемогоСообщения, ТипСообщения.ДинамическоеАварийное);
+                                                    MainWindowForm.ВоспроизвестиШаблонОповещения("Автоматическое воспроизведение сообщения о внештатной ситуации", Данные, шаблонФормируемогоСообщения, MessageType.ДинамическоеАварийное);
                                                 }
                                             }
                                         }
@@ -1464,33 +1463,32 @@ namespace MainExample
                                         //Добавление СТАТИЧЕСКОГО события ===================================================================
                                         if (DateTime.Now > времяСобытия.AddMinutes(-30) && !(нештатноеСообщение.СостояниеВоспроизведения == SoundRecordStatus.Воспроизведена && DateTime.Now > времяСобытия.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий)))//убрать через 5 мин. после воспроизведения
                                         {
-                                            byte состояниеСтроки = 0;
+                                            StateTask состояниеСтроки = StateTask.Disabled;
                                             switch (нештатноеСообщение.СостояниеВоспроизведения)
                                             {
                                                 case SoundRecordStatus.Воспроизведена:
                                                 case SoundRecordStatus.Выключена:
-                                                    состояниеСтроки = 0;
+                                                    состояниеСтроки = StateTask.Disabled; //0
                                                     break;
 
                                                 case SoundRecordStatus.ДобавленВОчередьАвтомат:
                                                 case SoundRecordStatus.ОжиданиеВоспроизведения:
-                                                    состояниеСтроки = 3;
+                                                    состояниеСтроки = StateTask.Waiting; //3
                                                     break;
 
                                                 case SoundRecordStatus.ВоспроизведениеАвтомат:
-                                                    состояниеСтроки = 4;
+                                                    состояниеСтроки = StateTask.Enable; //4
                                                     break;
                                             }
 
                                             TaskSound taskSound = new TaskSound
                                             {
-                                                НомерСписка = 0,
-                                                СостояниеСтроки = состояниеСтроки,
+                                                MessageType = MessageType.Динамическое,
+                                                StateTask = состояниеСтроки,
                                                 Описание = Данные.НомерПоезда + " " + Данные.НазваниеПоезда + ": " + Данные.ОписаниеСостоянияКарточки,
                                                 Время = времяСобытия,
-                                                Ключ = SoundRecords.ElementAt(i).Key,
-                                                ParentId = нештатноеСообщение.Id,
-                                                ШаблонИлиСообщение = нештатноеСообщение.Шаблон
+                                                Key = SoundRecords.ElementAt(i).Key,
+                                                ParentId = нештатноеСообщение.Id
                                             };
 
                                             TaskManager.AddItem(taskSound);
@@ -1666,7 +1664,7 @@ namespace MainExample
                                             внесеныИзменения = true;
 
                                             if (РазрешениеРаботы == true)
-                                                MainWindowForm.ВоспроизвестиШаблонОповещения("Автоматическое воспроизведение расписания", Данные, формируемоеСообщение, ТипСообщения.Динамическое);
+                                                MainWindowForm.ВоспроизвестиШаблонОповещения("Автоматическое воспроизведение расписания", Данные, формируемоеСообщение, MessageType.Динамическое);
                                         }
                                     }
 
@@ -1675,33 +1673,32 @@ namespace MainExample
                                     //==================================================================================
                                     if (DateTime.Now > времяСобытия.AddMinutes(-30) && !(формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.Воспроизведена && DateTime.Now > времяСобытия.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий)))
                                     {
-                                        byte состояниеСтроки = 0;
+                                        StateTask состояниеСтроки = 0;
                                         switch (формируемоеСообщение.СостояниеВоспроизведения)
                                         {
                                             case SoundRecordStatus.Воспроизведена:
                                             case SoundRecordStatus.Выключена:
-                                                состояниеСтроки = 0;
+                                                состояниеСтроки = StateTask.Disabled;  //0
                                                 break;
 
                                             case SoundRecordStatus.ДобавленВОчередьАвтомат:
                                             case SoundRecordStatus.ОжиданиеВоспроизведения:
-                                                состояниеСтроки = 1;
+                                                состояниеСтроки = StateTask.Waiting; //1
                                                 break;
 
                                             case SoundRecordStatus.ВоспроизведениеАвтомат:
-                                                состояниеСтроки = 4;
+                                                состояниеСтроки = StateTask.Enable; //4
                                                 break;
                                         }
 
                                         TaskSound taskSound = new TaskSound
                                         {
-                                            НомерСписка = 0,
-                                            СостояниеСтроки = состояниеСтроки,
+                                            MessageType =MessageType.Динамическое,
+                                            StateTask = состояниеСтроки,
                                             Описание = Данные.НомерПоезда + " " + Данные.НазваниеПоезда + ": " + формируемоеСообщение.НазваниеШаблона,
                                             Время = времяСобытия,
-                                            Ключ = SoundRecords.ElementAt(i).Key,
-                                            ParentId = формируемоеСообщение.Id,
-                                            ШаблонИлиСообщение = формируемоеСообщение.Шаблон
+                                            Key = SoundRecords.ElementAt(i).Key,
+                                            ParentId = формируемоеСообщение.Id
                                         };
 
                                         TaskManager.AddItem(taskSound);
@@ -1780,29 +1777,27 @@ namespace MainExample
                     if (формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ДобавленВОчередьРучное ||
                         формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ВоспроизведениеРучное)
                     {
-                        byte состояниеСтроки = 0;
+                        StateTask состояниеСтроки = StateTask.Disabled; //0
                         switch (формируемоеСообщение.СостояниеВоспроизведения)
                         {
                             case SoundRecordStatus.ДобавленВОчередьРучное:
-                                состояниеСтроки = 1;
+                                состояниеСтроки = StateTask.Waiting;  //1
                                 break;
 
                             case SoundRecordStatus.ВоспроизведениеРучное:
-                                состояниеСтроки = 4;
+                                состояниеСтроки = StateTask.Enable;  //4
                                 break;
                         }
 
                         TaskSound taskSound = new TaskSound
                         {
-                            НомерСписка = 0,
-                            СостояниеСтроки = состояниеСтроки,
+                            MessageType = MessageType.Динамическое,
+                            StateTask = состояниеСтроки,
                             Описание = формируемоеСообщение.НазваниеШаблона,
                             Время = record.Время,
-                            Ключ = SoundRecords.ElementAt(i).Key,
-                            ParentId = формируемоеСообщение.Id,
-                            ШаблонИлиСообщение = формируемоеСообщение.Шаблон
+                            Key = SoundRecords.ElementAt(i).Key,
+                            ParentId = формируемоеСообщение.Id
                         };
-
                         TaskManager.AddItem(taskSound);
                     }
                     else
@@ -2734,7 +2729,7 @@ namespace MainExample
         }
 
 
-        public static void ВоспроизвестиШаблонОповещения_New(string названиеСообщения, SoundRecord rec, ActionTrainDynamic actionTrainDynamic, ТипСообщения типСообщения)
+        public static void ВоспроизвестиШаблонОповещения_New(string названиеСообщения, SoundRecord rec, ActionTrainDynamic actionTrainDynamic, MessageType messageType)
         {
             if (!rec.ВыводЗвука)
                 return;
@@ -2806,7 +2801,7 @@ namespace MainExample
 
                     var воспроизводимоеСообщение = new ВоспроизводимоеСообщение
                     {
-                        ТипСообщения = типСообщения,
+                        MessageType = messageType,
                         Язык = notificationLang,
                         ParentId = actionTrainDynamic.Id,
                         RootId = actionTrainDynamic.SoundRecordId,
@@ -2870,7 +2865,7 @@ namespace MainExample
                                     воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                     {
                                         ИмяВоспроизводимогоФайла = "numeric_" + fileName,
-                                        ТипСообщения = типСообщения,
+                                        MessageType = messageType,
                                         Язык = notificationLang,
                                         ParentId = actionTrainDynamic.Id,
                                         RootId = actionTrainDynamic.SoundRecordId,
@@ -2893,7 +2888,7 @@ namespace MainExample
                                         воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                         {
                                             ИмяВоспроизводимогоФайла = "numeric_" + fileName,
-                                            ТипСообщения = типСообщения,
+                                            MessageType = messageType,
                                             Язык = notificationLang,
                                             ParentId = actionTrainDynamic.Id,
                                             RootId = actionTrainDynamic.SoundRecordId,
@@ -2921,7 +2916,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяПрибытия.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = notificationLang,
                                 ParentId = actionTrainDynamic.Id,
                                 RootId = actionTrainDynamic.SoundRecordId,
@@ -2937,7 +2932,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = notificationLang,
                                 ParentId = actionTrainDynamic.Id,
                                 RootId = actionTrainDynamic.SoundRecordId,
@@ -2957,7 +2952,7 @@ namespace MainExample
                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                 {
                                     ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяСтоянки.Value.Minutes],
-                                    ТипСообщения = типСообщения,
+                                    MessageType = messageType,
                                     Язык = notificationLang,
                                     ParentId = actionTrainDynamic.Id,
                                     RootId = actionTrainDynamic.SoundRecordId,
@@ -2980,7 +2975,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяОтправления.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = notificationLang,
                                 ParentId = actionTrainDynamic.Id,
                                 RootId = actionTrainDynamic.SoundRecordId,
@@ -2997,7 +2992,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = notificationLang,
                                 ParentId = actionTrainDynamic.Id,
                                 RootId = actionTrainDynamic.SoundRecordId,
@@ -3017,7 +3012,7 @@ namespace MainExample
                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                 {
                                     ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяЗадержки.Value.Minute],
-                                    ТипСообщения = типСообщения,
+                                    MessageType = messageType,
                                     Язык = notificationLang,
                                     ParentId = actionTrainDynamic.Id,
                                     RootId = actionTrainDynamic.SoundRecordId,
@@ -3033,7 +3028,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[rec.ОжидаемоеВремя.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = notificationLang,
                                 ParentId = actionTrainDynamic.Id,
                                 RootId = actionTrainDynamic.SoundRecordId,
@@ -3051,7 +3046,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[rec.ВремяСледования.Value.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = notificationLang,
                                 ParentId = actionTrainDynamic.Id,
                                 RootId = actionTrainDynamic.SoundRecordId,
@@ -3094,7 +3089,7 @@ namespace MainExample
                                         воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                         {
                                             ИмяВоспроизводимогоФайла = станция,
-                                            ТипСообщения = типСообщения,
+                                            MessageType = messageType,
                                             Язык = notificationLang,
                                             ParentId = actionTrainDynamic.Id,
                                             RootId = actionTrainDynamic.SoundRecordId,
@@ -3114,7 +3109,7 @@ namespace MainExample
                                         воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                         {
                                             ИмяВоспроизводимогоФайла = станция,
-                                            ТипСообщения = типСообщения,
+                                            MessageType = messageType,
                                             Язык = notificationLang,
                                             ParentId = actionTrainDynamic.Id,
                                             RootId = actionTrainDynamic.SoundRecordId,
@@ -3157,7 +3152,7 @@ namespace MainExample
             var сообщениеШаблона = new ВоспроизводимоеСообщение
             {
                 ИмяВоспроизводимогоФайла = $"Шаблон: \"{actionTrain.Name}\"",
-                ТипСообщения = типСообщения,
+                MessageType = messageType,
                 ParentId = (int?)(actionTrainDynamic.Id >= 0 ? (ValueType)actionTrainDynamic.Id : null),
                 RootId = actionTrainDynamic.SoundRecordId,
                 ПриоритетГлавный = actionTrainDynamic.PriorityMain,
@@ -3176,7 +3171,7 @@ namespace MainExample
         }
 
 
-        public static void ВоспроизвестиШаблонОповещения(string названиеСообщения, SoundRecord record, СостояниеФормируемогоСообщенияИШаблон формируемоеСообщение, ТипСообщения типСообщения)
+        public static void ВоспроизвестиШаблонОповещения(string названиеСообщения, SoundRecord record, СостояниеФормируемогоСообщенияИШаблон формируемоеСообщение, MessageType messageType)
         {
             if(!record.ВыводЗвука)
                 return;
@@ -3257,7 +3252,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = text,
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3274,7 +3269,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = text,
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3291,7 +3286,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = text,
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3305,7 +3300,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = text,
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3326,7 +3321,7 @@ namespace MainExample
                                     воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                     {
                                         ИмяВоспроизводимогоФайла = "numeric_" + fileName,
-                                        ТипСообщения = типСообщения,
+                                        MessageType = messageType,
                                         Язык = язык,
                                         ParentId = формируемоеСообщение.Id,
                                         RootId = формируемоеСообщение.SoundRecordId,
@@ -3351,7 +3346,7 @@ namespace MainExample
                                         воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                         {
                                             ИмяВоспроизводимогоФайла = "numeric_" + fileName,
-                                            ТипСообщения = типСообщения,
+                                            MessageType = messageType,
                                             Язык = язык,
                                             ParentId = формируемоеСообщение.Id,
                                             RootId = формируемоеСообщение.SoundRecordId,
@@ -3371,7 +3366,7 @@ namespace MainExample
                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                 {
                                     ИмяВоспроизводимогоФайла = text,
-                                    ТипСообщения = типСообщения,
+                                    MessageType = messageType,
                                     Язык = язык,
                                     ParentId = формируемоеСообщение.Id,
                                     RootId = формируемоеСообщение.SoundRecordId,
@@ -3387,7 +3382,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = text,
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3403,7 +3398,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ВремяПрибытия.Hour],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3412,7 +3407,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяПрибытия.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3429,7 +3424,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[времяUtc.Hour],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3438,7 +3433,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3459,7 +3454,7 @@ namespace MainExample
                                     воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                     {
                                         ИмяВоспроизводимогоФайла = файлыЧасов[record.ВремяСтоянки.Value.Hours],
-                                        ТипСообщения = типСообщения,
+                                        MessageType = messageType,
                                         Язык = язык,
                                         ParentId = формируемоеСообщение.Id,
                                         RootId = формируемоеСообщение.SoundRecordId,
@@ -3469,7 +3464,7 @@ namespace MainExample
                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                 {
                                     ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяСтоянки.Value.Minutes],
-                                    ТипСообщения = типСообщения,
+                                    MessageType = messageType,
                                     Язык = язык,
                                     ParentId = формируемоеСообщение.Id,
                                     RootId = формируемоеСообщение.SoundRecordId,
@@ -3483,7 +3478,7 @@ namespace MainExample
                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                 {
                                     ИмяВоспроизводимогоФайла = "Будет изменено",
-                                    ТипСообщения = типСообщения,
+                                    MessageType = messageType,
                                     Язык = язык,
                                     ParentId = формируемоеСообщение.Id,
                                     RootId = формируемоеСообщение.SoundRecordId,
@@ -3501,7 +3496,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ВремяОтправления.Hour],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3510,7 +3505,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяОтправления.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3527,7 +3522,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[времяUtc.Hour],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3536,7 +3531,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[времяUtc.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3557,7 +3552,7 @@ namespace MainExample
                                     воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                     {
                                         ИмяВоспроизводимогоФайла = файлыЧасов[record.ВремяЗадержки.Value.Hour],
-                                        ТипСообщения = типСообщения,
+                                        MessageType = messageType,
                                         Язык = язык,
                                         ParentId = формируемоеСообщение.Id,
                                         RootId = формируемоеСообщение.SoundRecordId,
@@ -3567,7 +3562,7 @@ namespace MainExample
                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                 {
                                     ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяЗадержки.Value.Minute],
-                                    ТипСообщения = типСообщения,
+                                    MessageType = messageType,
                                     Язык = язык,
                                     ParentId = формируемоеСообщение.Id,
                                     RootId = формируемоеСообщение.SoundRecordId,
@@ -3584,7 +3579,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ОжидаемоеВремя.Hour],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3593,7 +3588,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[record.ОжидаемоеВремя.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3612,7 +3607,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыЧасовПрефиксВ[record.ВремяСледования.Value.Hour],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3621,7 +3616,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = файлыМинут[record.ВремяСледования.Value.Minute],
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3640,7 +3635,7 @@ namespace MainExample
                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                 {
                                     ИмяВоспроизводимогоФайла = text,
-                                    ТипСообщения = типСообщения,
+                                    MessageType = messageType,
                                     Язык = язык,
                                     ParentId = формируемоеСообщение.Id,
                                     RootId = формируемоеСообщение.SoundRecordId,
@@ -3670,7 +3665,7 @@ namespace MainExample
                                         воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                         {
                                             ИмяВоспроизводимогоФайла = "СоВсемиОстановками",
-                                            ТипСообщения = типСообщения,
+                                            MessageType = messageType,
                                             Язык = язык,
                                             ParentId = формируемоеСообщение.Id,
                                             RootId = формируемоеСообщение.SoundRecordId,
@@ -3690,7 +3685,7 @@ namespace MainExample
                                         воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                         {
                                             ИмяВоспроизводимогоФайла = "СОстановками",
-                                            ТипСообщения = типСообщения,
+                                            MessageType = messageType,
                                             Язык = язык,
                                             ParentId = формируемоеСообщение.Id,
                                             RootId = формируемоеСообщение.SoundRecordId,
@@ -3705,7 +3700,7 @@ namespace MainExample
                                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                                 {
                                                     ИмяВоспроизводимогоФайла = станция,
-                                                    ТипСообщения = типСообщения,
+                                                    MessageType = messageType,
                                                     Язык = язык,
                                                     ParentId = формируемоеСообщение.Id,
                                                     RootId = формируемоеСообщение.SoundRecordId,
@@ -3725,7 +3720,7 @@ namespace MainExample
                                         воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                         {
                                             ИмяВоспроизводимогоФайла = "СОстановкамиКроме",
-                                            ТипСообщения = типСообщения,
+                                            MessageType = messageType,
                                             Язык = язык,
                                             ParentId = формируемоеСообщение.Id,
                                             RootId = формируемоеСообщение.SoundRecordId,
@@ -3740,7 +3735,7 @@ namespace MainExample
                                                 воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                                 {
                                                     ИмяВоспроизводимогоФайла = станция,
-                                                    ТипСообщения = типСообщения,
+                                                    MessageType = messageType,
                                                     Язык = язык,
                                                     ParentId = формируемоеСообщение.Id,
                                                     RootId = формируемоеСообщение.SoundRecordId,
@@ -3757,7 +3752,7 @@ namespace MainExample
                             воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                             {
                                 ИмяВоспроизводимогоФайла = шаблон,
-                                ТипСообщения = типСообщения,
+                                MessageType = messageType,
                                 Язык = язык,
                                 ParentId = формируемоеСообщение.Id,
                                 RootId = формируемоеСообщение.SoundRecordId,
@@ -3773,7 +3768,7 @@ namespace MainExample
                     воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                     {
                         ИмяВоспроизводимогоФайла = "СТОП ",
-                        ТипСообщения = типСообщения,
+                        MessageType = messageType,
                         Язык = язык,
                         ParentId = формируемоеСообщение.Id,
                         RootId = формируемоеСообщение.SoundRecordId,
@@ -3786,7 +3781,7 @@ namespace MainExample
             var сообщениеШаблона = new ВоспроизводимоеСообщение
             {
                 ИмяВоспроизводимогоФайла = $"Шаблон: \"{формируемоеСообщение.НазваниеШаблона}\"",
-                ТипСообщения = типСообщения,
+                MessageType = messageType,
                 ParentId = (int?)((формируемоеСообщение.Id >= 0) ? (ValueType)формируемоеСообщение.Id : null),
                 RootId = формируемоеСообщение.SoundRecordId,
                 ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный,
@@ -4007,16 +4002,42 @@ namespace MainExample
             int номерСтроки = 0;
             foreach (var taskSound in TaskManager.Tasks)
             {
+                var task = taskSound.Value;
                 if (номерСтроки >= lVСобытия.Items.Count)
                 {
                     ListViewItem lvi1 = new ListViewItem(new string[] { taskSound.Key, taskSound.Value.Описание });
-                    switch (taskSound.Value.СостояниеСтроки)
+                    switch (task.StateTask)
                     {
-                        case 0: lvi1.BackColor = Color.LightGray; break;
-                        case 1: lvi1.BackColor = Color.White; break;
-                        case 2: lvi1.BackColor = Color.LightGreen; break;
-                        case 3: lvi1.BackColor = Color.Orange; break;
-                        case 4: lvi1.BackColor = Color.CadetBlue; break;
+                        //case 0: lvi1.BackColor = Color.LightGray; break;
+                        //case 1: lvi1.BackColor = Color.White; break;
+                        //case 2: lvi1.BackColor = Color.LightGreen; break;
+                        //case 3: lvi1.BackColor = Color.Orange; break;
+                        //case 4: lvi1.BackColor = Color.CadetBlue; break;
+                        case StateTask.Disabled:
+                            lvi1.BackColor = Color.LightGray;
+                            break;
+                            
+                        case StateTask.Enable:
+                            switch (task.MessageType)
+                            {
+                                case MessageType.Статическое:
+                                    lvi1.BackColor = Color.LightGreen;
+                                    break;
+                                case MessageType.Динамическое:
+                                    lvi1.BackColor = Color.CadetBlue;
+                                    break;
+                                case MessageType.ДинамическоеАварийное:
+                                    lvi1.BackColor = Color.Orange;
+                                    break;
+                            }
+                            break;
+
+                        case StateTask.Waiting:
+                            lvi1.BackColor = Color.LightGray;
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                     lVСобытия.Items.Add(lvi1);
                 }
@@ -4028,14 +4049,50 @@ namespace MainExample
                     if (lVСобытия.Items[номерСтроки].SubItems[1].Text != taskSound.Value.Описание)
                         lVСобытия.Items[номерСтроки].SubItems[1].Text = taskSound.Value.Описание;
 
-                    switch (taskSound.Value.СостояниеСтроки)
+                    //switch (taskSound.Value.СостояниеСтроки)
+                    //{
+                    //    case 0: if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGray) lVСобытия.Items[номерСтроки].BackColor = Color.LightGray; break;
+                    //    case 1: if (lVСобытия.Items[номерСтроки].BackColor != Color.White) lVСобытия.Items[номерСтроки].BackColor = Color.White; break;
+                    //    case 2: if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGreen) lVСобытия.Items[номерСтроки].BackColor = Color.LightGreen; break;
+                    //    case 3: if (lVСобытия.Items[номерСтроки].BackColor != Color.Orange) lVСобытия.Items[номерСтроки].BackColor = Color.Orange; break;
+                    //    case 4: if (lVСобытия.Items[номерСтроки].BackColor != Color.CadetBlue) lVСобытия.Items[номерСтроки].BackColor = Color.CadetBlue; break;
+                    //}
+
+                    switch (task.StateTask)
                     {
-                        case 0: if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGray) lVСобытия.Items[номерСтроки].BackColor = Color.LightGray; break;
-                        case 1: if (lVСобытия.Items[номерСтроки].BackColor != Color.White) lVСобытия.Items[номерСтроки].BackColor = Color.White; break;
-                        case 2: if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGreen) lVСобытия.Items[номерСтроки].BackColor = Color.LightGreen; break;
-                        case 3: if (lVСобытия.Items[номерСтроки].BackColor != Color.Orange) lVСобытия.Items[номерСтроки].BackColor = Color.Orange; break;
-                        case 4: if (lVСобытия.Items[номерСтроки].BackColor != Color.CadetBlue) lVСобытия.Items[номерСтроки].BackColor = Color.CadetBlue; break;
+                        //case 0: lvi1.BackColor = Color.LightGray; break;
+                        //case 1: lvi1.BackColor = Color.White; break;
+                        //case 2: lvi1.BackColor = Color.LightGreen; break;
+                        //case 3: lvi1.BackColor = Color.Orange; break;
+                        //case 4: lvi1.BackColor = Color.CadetBlue; break;
+                        case StateTask.Disabled:
+                            if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGray) lVСобытия.Items[номерСтроки].BackColor = Color.LightGray;
+                            break;
+
+                        case StateTask.Enable:
+                            switch (task.MessageType)
+                            {
+                                case MessageType.Статическое:
+                                    if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGreen) lVСобытия.Items[номерСтроки].BackColor = Color.LightGreen;
+                                    break;
+                                case MessageType.Динамическое:
+                                    if (lVСобытия.Items[номерСтроки].BackColor != Color.CadetBlue) lVСобытия.Items[номерСтроки].BackColor = Color.CadetBlue;
+                                    break;
+                                case MessageType.ДинамическоеАварийное:
+                                    if (lVСобытия.Items[номерСтроки].BackColor != Color.Orange) lVСобытия.Items[номерСтроки].BackColor = Color.Orange;
+                                    break;
+                            }
+                            break;
+
+                        case StateTask.Waiting:
+                            if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGray) lVСобытия.Items[номерСтроки].BackColor = Color.LightGray;
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
+
+
                 }
 
                 номерСтроки++;
@@ -4050,7 +4107,7 @@ namespace MainExample
         private TaskSound _currentTaskSound = null; 
         private void ОтобразитьСубтитры()
         {
-            var subtaitle = TaskManager.GetElements.FirstOrDefault(ev => ev.СостояниеСтроки == 4);
+            var subtaitle = TaskManager.GetElements.FirstOrDefault(ev => ev.StateTask == StateTask.Enable);
             if (subtaitle != null)
             {
                 if (_currentTaskSound != null && _currentTaskSound.Описание == subtaitle.Описание)
@@ -4059,29 +4116,43 @@ namespace MainExample
                 }
                 _currentTaskSound = subtaitle;
 
-                if (subtaitle.НомерСписка == 1) //статические звуковые сообщения
+
+                switch (subtaitle.MessageType)
                 {
-                    if (СтатическиеЗвуковыеСообщения.ContainsKey(subtaitle.Ключ))
-                    {
-                      var statSound=  СтатическиеЗвуковыеСообщения[subtaitle.Ключ];
-                      var currentStatSound= StaticSoundForm.StaticSoundRecords.FirstOrDefault(sound => sound.Name == statSound.НазваниеКомпозиции);
-                      rtb_subtaitles.Text = currentStatSound.Message;
-                    }
-                }
-                else
-                if (subtaitle.НомерСписка == 0) //динамические звуковые сообщения
-                {
-                    var rec = SoundRecords[subtaitle.Ключ];
-                    var actionTrainDyn= rec.ActionTrainDynamiсList.FirstOrDefault(atd => atd.Id == subtaitle.ParentId);
-                    var textFragments = _soundReсordWorkerService.CalcTextFragment(ref rec, actionTrainDyn.ActionTrain);
-                    rtb_subtaitles.ShowTextFragment(textFragments);
+                    case MessageType.Статическое:
+                        if (СтатическиеЗвуковыеСообщения.ContainsKey(subtaitle.Key))
+                        {
+                            var statSound= СтатическиеЗвуковыеСообщения[subtaitle.Key];
+                            var currentStatSound = StaticSoundForm.StaticSoundRecords.FirstOrDefault(sound => sound.Name == statSound.НазваниеКомпозиции);
+                            rtb_subtaitles.Text = currentStatSound.Message;
+                        }
+                        break;
+
+                    case MessageType.Динамическое:
+                        if (SoundRecords.ContainsKey(subtaitle.Key))
+                        {
+                            var rec= SoundRecords[subtaitle.Key];
+                            var actionTrainDyn= rec.ActionTrainDynamiсList.FirstOrDefault(atd => atd.Id == subtaitle.ParentId);
+                            if (actionTrainDyn != null)
+                            {
+                                var textFragments =_soundReсordWorkerService.CalcTextFragment(ref rec, actionTrainDyn.ActionTrain);
+                                rtb_subtaitles.ShowTextFragment(textFragments);
+                            }
+                        }
+                        break;
+
+                    case MessageType.ДинамическоеАварийное:
+                        throw new NotImplementedException();
+                      
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             else
             {
                 rtb_subtaitles.Text = string.Empty;
                 _currentTaskSound = null;
-                //_currentTaskSound = null;
             }
         }
 
@@ -4095,9 +4166,9 @@ namespace MainExample
                 if (TaskManager.Tasks.ContainsKey(Key))
                 {
                     var данныеСтроки = TaskManager.Tasks[Key];
-                    if (данныеСтроки.НомерСписка == 1)
+                    if (данныеСтроки.MessageType == MessageType.Статическое)
                     {
-                        Key = данныеСтроки.Ключ;
+                        Key = данныеСтроки.Key;
                         if (СтатическиеЗвуковыеСообщения.Keys.Contains(Key))
                         {
                             СтатическоеСообщение Данные = СтатическиеЗвуковыеСообщения[Key];
@@ -4151,7 +4222,7 @@ namespace MainExample
                     }
                     else // Динамические сообщения
                     {
-                        Key = данныеСтроки.Ключ;
+                        Key = данныеСтроки.Key;
                         if (SoundRecords.Keys.Contains(Key) == true)
                         {
                             SoundRecord данные = SoundRecords[Key];
@@ -4308,27 +4379,26 @@ namespace MainExample
                     if (QueueSound.FindItem(rec.Id, actionTrainDyn.Id) == null)
                         continue;
 
-                    byte состояниеСтроки = 0;
+                    StateTask состояниеСтроки = 0;
                     switch (actionTrainDyn.SoundRecordStatus)
                     {
                         case SoundRecordStatus.ДобавленВОчередьРучное:
-                            состояниеСтроки = 1;
+                            состояниеСтроки = StateTask.Waiting; //1
                             break;
 
                         case SoundRecordStatus.ВоспроизведениеРучное:
-                            состояниеСтроки = 4;
+                            состояниеСтроки = StateTask.Enable; //4
                             break;
                     }
 
                     TaskSound taskSound = new TaskSound
                     {
-                        НомерСписка = 0,
-                        СостояниеСтроки = состояниеСтроки,
+                        MessageType = MessageType.Динамическое,
+                        StateTask = состояниеСтроки,
                         Описание = rec.НомерПоезда + " " + rec.НазваниеПоезда + ": " + actionTrainDyn.ActionTrain.Name,
                         Время = activationTime,
-                        Ключ = key,
-                        ParentId = actionTrainDyn.Id,
-                        ШаблонИлиСообщение = null,
+                        Key = key,
+                        ParentId = actionTrainDyn.Id
                     };
 
                     TaskManager.AddItem(taskSound);

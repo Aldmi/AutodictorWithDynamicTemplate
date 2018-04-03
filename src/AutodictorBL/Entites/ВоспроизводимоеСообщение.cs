@@ -3,7 +3,7 @@ using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.Entites
 {
-    public enum ТипСообщения
+    public enum MessageType
     {
         Статическое, //ищем в списке стат. сообщений
         Динамическое, //ищем в SoundRecord.СписокФормируемыхСообщений
@@ -25,7 +25,7 @@ namespace AutodictorBL.Entites
     {
         public Priority ПриоритетГлавный { get; set; } //ПриоритетГлавный по типу сообщения
         public PriorityPrecise ПриоритетВторостепенный { get; set; } //ПриоритетГлавный внутри групп, разбитых по типу сообщения
-        public ТипСообщения ТипСообщения { get; set; } //Определяет в каком списке искать сообщение.
+        public MessageType MessageType { get; set; } //Определяет в каком списке искать сообщение.
         public НастройкиВыводаЗвука НастройкиВыводаЗвука { get; set; }
 
         public int RootId { get; set; } //Id корня, стастика- СтатическоеСообщение.Id, динамика- SoundRecord.Id

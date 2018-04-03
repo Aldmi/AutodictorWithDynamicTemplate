@@ -170,7 +170,7 @@ namespace MainExample
             var record = СоздатьSoundRecord(newId, pathNumber, формируемоеСообщение);
 
             SoundRecords.Add(record);
-            MainWindowForm.ВоспроизвестиШаблонОповещения("Техническое сообщение", record, формируемоеСообщение, ТипСообщения.ДинамическоеТехническое);
+            MainWindowForm.ВоспроизвестиШаблонОповещения("Техническое сообщение", record, формируемоеСообщение, MessageType.ДинамическоеТехническое);
         }
 
         #endregion

@@ -52,7 +52,7 @@ namespace MainExample.Services
         public IEnumerable<ВоспроизводимоеСообщение> GetElements => Queue;
         public int Count => Queue.Count;
         public bool IsStaticSoundPlaying => (CurrentSoundMessagePlaying != null) &&
-                                            (CurrentSoundMessagePlaying.ТипСообщения == ТипСообщения.Статическое);
+                                            (CurrentSoundMessagePlaying.MessageType == MessageType.Статическое);
 
         public ВоспроизводимоеСообщение CurrentSoundMessagePlaying { get; private set; }  //текущее воспроизводимое звуковое сообщение
         public ВоспроизводимоеСообщение LastSoundMessagePlayed { get; private set; } //последнее проигранное звуковое сообщение

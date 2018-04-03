@@ -6,7 +6,7 @@ using AutodictorBL.Services.SoundRecordServices;
 
 namespace MainExample.Services
 {
-    public enum StateString { Disabled, Enable, Waiting }
+    public enum StateTask { Disabled, Enable, Waiting }
 
     /// <summary>
     /// ТипСообщения- определяет список откуда пришло сообщение
@@ -19,16 +19,13 @@ namespace MainExample.Services
         public DateTime Время;
         public string Описание;
 
-        public byte НомерСписка;                       // 0 - Динамические сообщения, 1 - статические звуковые сообщения, 3 - нештатное сообщение
-        public ТипСообщения ТипСообщения { get; set; } // DELL НомерСписка. Определяет в каком списке искать сообщение.
+        public MessageType MessageType { get; set; } // НомерСписка. Определяет в каком списке искать сообщение.
 
-        public string Ключ;
-        public int? ParentId { get; set; }  //Id родителя, стастика- null, динамика- СостояниеФормируемогоСообщенияИШаблон.Id
+        public string Key;
+        public int? ParentId { get; set; }  //Id родителя, стастика- null, динамика- ActionTrainDynamic.Id
 
-        public byte СостояниеСтроки;        //DELL  0 - Выключена, 1 - движение поезда (динамика), 2 - статическое сообщение, 3 - аварийное сообщение, 4 - воспроизведение
-        public StateString StateString { get; set; }// Убрать СостояниеСтроки.   
-
-        public string ШаблонИлиСообщение;   //DELL текст стат. сообщения, или номер шаблона в динам. сообщении (для Субтитров)
+        //public byte СостояниеСтроки;        //DELL  0 - Выключена, 1 - движение поезда (динамика), 2 - статическое сообщение, 3 - аварийное сообщение, 4 - воспроизведение
+        public StateTask StateTask { get; set; }// Убрать СостояниеСтроки.   
     };
 
 
