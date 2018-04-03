@@ -274,6 +274,7 @@
     <Compile Include="TrainTableOperative.Designer.cs">
       <DependentUpon>TrainTableOperative.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIHelpers\ControlExtensions.cs" />
     <Compile Include="Utils\AutofacConfig.cs" />
     <Compile Include="ViewModel\ActionTrainViewModel.cs" />
     <Compile Include="КарточкаСтатическогоЗвуковогоСообщенияForm.cs">

@@ -41,7 +41,7 @@ using MainExample.Services.FactoryServices;
 using MainExample.Services.GetDataService;
 using MoreLinq;
 using ISoundRecordPreprocessing = MainExample.Services.ISoundRecordPreprocessing;
-
+using MainExample.UIHelpers;
 
 namespace MainExample
 {
@@ -4047,43 +4047,41 @@ namespace MainExample
 
 
 
-        private string _currentPlayingTemplate = string.Empty;  //TODO: заменить на TaskSound
+        private TaskSound _currentTaskSound = null; 
         private void ОтобразитьСубтитры()
         {
-            var subtaitles = TaskManager.GetElements.FirstOrDefault(ev => ev.СостояниеСтроки == 4);
-            if (subtaitles != null)
+            var subtaitle = TaskManager.GetElements.FirstOrDefault(ev => ev.СостояниеСтроки == 4);
+            if (subtaitle != null)
             {
-                if (subtaitles.НомерСписка == 1) //статические звуковые сообщения
+                if (_currentTaskSound != null && _currentTaskSound.Описание == subtaitle.Описание)
                 {
-                    if (СтатическиеЗвуковыеСообщения.ContainsKey(subtaitles.Ключ))
+                  return;
+                }
+                _currentTaskSound = subtaitle;
+
+                if (subtaitle.НомерСписка == 1) //статические звуковые сообщения
+                {
+                    if (СтатическиеЗвуковыеСообщения.ContainsKey(subtaitle.Ключ))
                     {
-                      var statSound=  СтатическиеЗвуковыеСообщения[subtaitles.Ключ];
-                      var currentStatSound = StaticSoundForm.StaticSoundRecords.FirstOrDefault(sound => sound.Name == statSound.НазваниеКомпозиции);
-                      _currentPlayingTemplate = currentStatSound.Message;
-                      rtb_subtaitles.Text = _currentPlayingTemplate;
+                      var statSound=  СтатическиеЗвуковыеСообщения[subtaitle.Ключ];
+                      var currentStatSound= StaticSoundForm.StaticSoundRecords.FirstOrDefault(sound => sound.Name == statSound.НазваниеКомпозиции);
+                      rtb_subtaitles.Text = currentStatSound.Message;
                     }
                 }
                 else
-                if (subtaitles.НомерСписка == 0) //динамические звуковые сообщения
+                if (subtaitle.НомерСписка == 0) //динамические звуковые сообщения
                 {
-                    //if (subtaitles.ШаблонИлиСообщение != currentPlayingTemplate)
-                    {
-                        var rec = SoundRecords[subtaitles.Ключ];
-                        var actionTrainDyn= rec.ActionTrainDynamiсList.FirstOrDefault(atd => atd.Id == subtaitles.ParentId);
-                        var textFragments = _soundReсordWorkerService.CalcTextFragment(ref rec, actionTrainDyn.ActionTrain);
-
-
-                        //_currentPlayingTemplate = subtaitles.ШаблонИлиСообщение;
-                        //var card = _soundRecordEditFormFactory(SoundRecords[subtaitles.Ключ]);
-                        //СостояниеФормируемогоСообщенияИШаблон? сообшение = null;
-                        //card.ОтобразитьШаблонОповещенияНаRichTb(currentPlayingTemplate, ref сообшение, rtb_subtaitles);
-                    }
+                    var rec = SoundRecords[subtaitle.Ключ];
+                    var actionTrainDyn= rec.ActionTrainDynamiсList.FirstOrDefault(atd => atd.Id == subtaitle.ParentId);
+                    var textFragments = _soundReсordWorkerService.CalcTextFragment(ref rec, actionTrainDyn.ActionTrain);
+                    rtb_subtaitles.ShowTextFragment(textFragments);
                 }
             }
             else
             {
                 rtb_subtaitles.Text = string.Empty;
-                _currentPlayingTemplate = string.Empty;
+                _currentTaskSound = null;
+                //_currentTaskSound = null;
             }
         }
 
