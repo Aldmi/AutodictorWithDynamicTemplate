@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DAL.Abstract.Entitys.Authentication;
 
 namespace AutodictorBL.Services
@@ -17,5 +18,7 @@ namespace AutodictorBL.Services
 
         User CreateUser(string login, string password, Role role);
         User CreateObserver();
+
+        Task UsersDbInitialize();
     }
 }

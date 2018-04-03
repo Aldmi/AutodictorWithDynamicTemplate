@@ -395,13 +395,6 @@ namespace MainExample
         }
 
 
-        //TODO: DI. Вынести в DirectionService.
-        public static bool ПроеритьНаличиеСтанцииВНаправлении(string названиеСтанцииRu, string имяНаправления)
-        {
-            var станция = ПолучитьСтанцииНаправления(имяНаправления)?.FirstOrDefault(st => st.NameRu == названиеСтанцииRu);
-            return станция != null;
-        }
-
 
         //TODO: DI.Вынести в DirectionService.
         /// <summary>

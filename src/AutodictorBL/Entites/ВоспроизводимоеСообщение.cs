@@ -24,15 +24,11 @@ namespace AutodictorBL.Entites
     public class ВоспроизводимоеСообщение
     {
         public Priority ПриоритетГлавный { get; set; } //ПриоритетГлавный по типу сообщения
-
         public PriorityPrecise ПриоритетВторостепенный { get; set; } //ПриоритетГлавный внутри групп, разбитых по типу сообщения
-
         public ТипСообщения ТипСообщения { get; set; } //Определяет в каком списке искать сообщение.
-
         public НастройкиВыводаЗвука НастройкиВыводаЗвука { get; set; }
 
         public int RootId { get; set; } //Id корня, стастика- СтатическоеСообщение.Id, динамика- SoundRecord.Id
-
         public int? ParentId { get; set; } //Id родителя, стастика- null, динамика- СостояниеФормируемогоСообщенияИШаблон.Id
 
         public string ИмяВоспроизводимогоФайла { get; set; }

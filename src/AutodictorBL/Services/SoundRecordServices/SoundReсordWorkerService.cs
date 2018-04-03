@@ -255,7 +255,7 @@ namespace AutodictorBL.Services.SoundRecordServices
         public List<FragmentOption> FragmentOptions { get; set; } = new List<FragmentOption>();
 
 
-        public void AddWord(string text, Color color)
+        public void AddWord(string text, Color color = default(Color))
         {
             FragmentOptions.Add(new FragmentOption
             {

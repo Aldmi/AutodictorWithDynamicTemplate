@@ -1165,7 +1165,7 @@ namespace MainExample
             {
                 selectedActionTrainDyn.PriorityMain = Priority.Hight;
                 selectedActionTrainDyn.SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьРучное;
-                MainWindowForm.ВоспроизвестиШаблонОповещения2("Действие оператора", _record, selectedActionTrainDyn, ТипСообщения.Динамическое);
+                MainWindowForm.ВоспроизвестиШаблонОповещения_New("Действие оператора", _record, selectedActionTrainDyn, ТипСообщения.Динамическое);
             }
             ОбновитьСостояниеТаблицыШаблонов();
         }

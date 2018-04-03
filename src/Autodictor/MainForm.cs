@@ -98,7 +98,7 @@ namespace MainExample
             _trainTableGridFormFactory = trainTableGridFormFactory;
             _authentificationService = authentificationService.Value;
             _authentificationServiceOwner = authentificationService;
-
+            _authentificationService.UsersDbInitialize();               //Инициализируем БД Юзеров при загрузки
 
 
             InitializeComponent();
