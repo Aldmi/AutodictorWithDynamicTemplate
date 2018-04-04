@@ -1349,7 +1349,7 @@ namespace MainExample
 
 
             #region Определить композицию для запуска сообщений о движении поездов
-            DateTime ТекущееВремя = DateTime.Now;
+            DateTime текущееВремя = DateTime.Now;
             bool внесеныИзменения = false;
             for (int i = 0; i < SoundRecords.Count; i++)
             {
@@ -1431,7 +1431,7 @@ namespace MainExample
                                         else if (нештатноеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ОжиданиеВоспроизведения)
                                         {
                                             // СРАБОТКА------------------------------------------------------------
-                                            if ((ТекущееВремя.Hour == времяСобытия.Hour) && (ТекущееВремя.Minute == времяСобытия.Minute) && (ТекущееВремя.Second == времяСобытия.Second))
+                                            if ((текущееВремя.Hour == времяСобытия.Hour) && (текущееВремя.Minute == времяСобытия.Minute) && (текущееВремя.Second == времяСобытия.Second))
                                             {
                                                 нештатноеСообщение.СостояниеВоспроизведения = SoundRecordStatus.ДобавленВОчередьАвтомат;
                                                 Данные.СписокНештатныхСообщений[j] = нештатноеСообщение;
@@ -1511,45 +1511,38 @@ namespace MainExample
                             break;
                         }
 
-
                         ОбработкаРучногоВоспроизведенияШаблона(ref Данные, key);
 
-
                         // Проверка на приближения времени оповещения (за 30 минут)
-                        DateTime СамоеРаннееВремя = DateTime.Now, СамоеПозднееВремя = DateTime.Now;
-                        for (int j = 0; j < Данные.СписокФормируемыхСообщений.Count; j++)
+                        DateTime самоеРаннееВремя = DateTime.Now, самоеПозднееВремя = DateTime.Now;
+                        for (int j = 0; j < Данные.ActionTrainDynamiсList.Count; j++)
                         {
-                            var формируемоеСообщение = Данные.СписокФормируемыхСообщений[j];
+                            var actionTrainDyn = Данные.ActionTrainDynamiсList[j];
                             if (!Данные.Автомат)
                             {
-                                if (формируемоеСообщение.НазваниеШаблона.StartsWith("@") &&
-                                   (Данные.ФиксированноеВремяПрибытия == null))
+                                if (actionTrainDyn.ActionTrain.Name.StartsWith("@") && (Данные.ФиксированноеВремяПрибытия == null))
                                 {
                                     continue;
                                 }
                             }
 
-                            var ручноШаблон = формируемоеСообщение.НазваниеШаблона.StartsWith("@");
-                            var времяПриб = (Данные.ФиксированноеВремяПрибытия == null || !ручноШаблон) ? Данные.ВремяПрибытия : Данные.ФиксированноеВремяПрибытия.Value;
-                            var времяОтпр = (Данные.ФиксированноеВремяПрибытия == null || !ручноШаблон) ? Данные.ВремяОтправления : Данные.ФиксированноеВремяОтправления.Value;
-                            DateTime времяСобытия = формируемоеСообщение.ПривязкаКВремени == 0 ? времяПриб : времяОтпр;
-                            времяСобытия = времяСобытия.AddMinutes(формируемоеСообщение.ВремяСмещения);
+                            var activationTime = _soundReсordWorkerService.CalcTimeWithShift(ref Данные, actionTrainDyn);
                             if (j == 0)
                             {
-                                СамоеРаннееВремя = СамоеПозднееВремя = времяСобытия;
+                                самоеРаннееВремя = самоеПозднееВремя = activationTime;
                             }
                             else
                             {
-                                if (времяСобытия < СамоеРаннееВремя)
-                                    СамоеРаннееВремя = времяСобытия;
+                                if (activationTime < самоеРаннееВремя)
+                                    самоеРаннееВремя = activationTime;
 
-                                if (времяСобытия > СамоеПозднееВремя)
-                                    СамоеПозднееВремя = времяСобытия;
+                                if (activationTime > самоеПозднееВремя)
+                                    самоеПозднееВремя = activationTime;
                             }
                         }
 
 
-                        if (DateTime.Now < СамоеРаннееВремя.AddMinutes(Program.Настройки.ОповещениеСамогоРаннегоВремениШаблона))
+                        if (DateTime.Now < самоеРаннееВремя.AddMinutes(Program.Настройки.ОповещениеСамогоРаннегоВремениШаблона))
                         {
                             if (!Данные.Автомат)
                             {
@@ -1567,11 +1560,10 @@ namespace MainExample
                                 Данные.ОписаниеСостоянияКарточки = "Рано";
                                 внесеныИзменения = true;
                             }
-
                             break;
                         }
 
-                        if (DateTime.Now > СамоеПозднееВремя.AddMinutes(3))
+                        if (DateTime.Now > самоеПозднееВремя.AddMinutes(3))
                         {
                             if (Данные.СостояниеКарточки != 0)
                             {
@@ -1579,7 +1571,6 @@ namespace MainExample
                                 Данные.ОписаниеСостоянияКарточки = "Поздно";
                                 внесеныИзменения = true;
                             }
-
                             break;
                         }
 
@@ -1608,76 +1599,67 @@ namespace MainExample
 
 
                         // ОБЛАСТЬ СРАБОТКИ ШАБЛОНОВ
-                        int КоличествоВключенныхГалочек = 0;
-                        for (int j = 0; j < Данные.СписокФормируемыхСообщений.Count; j++)
+                        int количествоВключенныхГалочек = 0;
+                        for (int j = 0; j < Данные.ActionTrainDynamiсList.Count; j++)
                         {
-                            var формируемоеСообщение = Данные.СписокФормируемыхСообщений[j];
+                            var actionTrainDyn = Данные.ActionTrainDynamiсList[j];
                             if (!Данные.Автомат)
                             {
-                                if (формируемоеСообщение.НазваниеШаблона.StartsWith("@") &&
-                                   (Данные.ФиксированноеВремяПрибытия == null))
+                                if (actionTrainDyn.ActionTrain.Name.StartsWith("@") && (Данные.ФиксированноеВремяПрибытия == null))
                                 {
                                     continue;
                                 }
                             }
 
-                            var ручноШаблон = формируемоеСообщение.НазваниеШаблона.StartsWith("@");
-                            var времяПриб = (Данные.ФиксированноеВремяПрибытия == null || !ручноШаблон) ? Данные.ВремяПрибытия : Данные.ФиксированноеВремяПрибытия.Value;
-                            var времяОтпр = (Данные.ФиксированноеВремяПрибытия == null || !ручноШаблон) ? Данные.ВремяОтправления : Данные.ФиксированноеВремяОтправления.Value;
-                            DateTime времяСобытия = формируемоеСообщение.ПривязкаКВремени == 0 ? времяПриб : времяОтпр;
-                            времяСобытия = времяСобытия.AddMinutes(формируемоеСообщение.ВремяСмещения);
-
-                            if (формируемоеСообщение.Активность == true)
+                            var activationTime= _soundReсordWorkerService.CalcTimeWithShift(ref Данные, actionTrainDyn);  //времяСобытия
+                            if (actionTrainDyn.Activity == true)
                             {
-                                КоличествоВключенныхГалочек++;
-                                if (формируемоеСообщение.Воспроизведен == false)
+                                количествоВключенныхГалочек++;
+                                if (actionTrainDyn.SoundRecordStatus != SoundRecordStatus.Воспроизведена)//TODO: не заходит 2 раз после воспроизведения файла!!!!!!
                                 {
-                                    if (DateTime.Now < времяСобытия)
+                                    if (DateTime.Now < activationTime)
                                     {
-                                        if (формируемоеСообщение.СостояниеВоспроизведения != SoundRecordStatus.ОжиданиеВоспроизведения)
+                                        if (actionTrainDyn.SoundRecordStatus != SoundRecordStatus.ОжиданиеВоспроизведения)
                                         {
-                                            формируемоеСообщение.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
-                                            Данные.СписокФормируемыхСообщений[j] = формируемоеСообщение;
+                                            actionTrainDyn.SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения;
                                             внесеныИзменения = true;
                                         }
                                     }
-                                    else if (DateTime.Now >= времяСобытия.AddSeconds(1))
+                                    else if (DateTime.Now >= activationTime.AddSeconds(1))
                                     {
-                                        if (QueueSound.FindItem(Данные.Id, формируемоеСообщение.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
+                                        if (QueueSound.FindItem(Данные.Id, actionTrainDyn.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
                                         {
-                                            if (формируемоеСообщение.СостояниеВоспроизведения != SoundRecordStatus.Воспроизведена)
+                                            if (actionTrainDyn.SoundRecordStatus != SoundRecordStatus.Воспроизведена)
                                             {
-                                                формируемоеСообщение.СостояниеВоспроизведения = SoundRecordStatus.Воспроизведена;
-                                                Данные.СписокФормируемыхСообщений[j] = формируемоеСообщение;
+                                                actionTrainDyn.SoundRecordStatus = SoundRecordStatus.Воспроизведена;
                                                 внесеныИзменения = true;
                                             }
                                         }
                                     }
-                                    else if (формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ОжиданиеВоспроизведения)
+                                    else if (actionTrainDyn.SoundRecordStatus == SoundRecordStatus.ОжиданиеВоспроизведения)
                                     {
                                         //СРАБОТКА-------------------------------
-                                        if ((ТекущееВремя.Hour == времяСобытия.Hour) && (ТекущееВремя.Minute == времяСобытия.Minute) && (ТекущееВремя.Second >= времяСобытия.Second))
+                                        if ((текущееВремя.Hour == activationTime.Hour) && (текущееВремя.Minute == activationTime.Minute) && (текущееВремя.Second >= activationTime.Second))
                                         {
-                                            формируемоеСообщение.СостояниеВоспроизведения = SoundRecordStatus.ДобавленВОчередьАвтомат;
-                                            Данные.СписокФормируемыхСообщений[j] = формируемоеСообщение;
+                                            actionTrainDyn.SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьАвтомат;
                                             внесеныИзменения = true;
 
                                             if (РазрешениеРаботы == true)
-                                                MainWindowForm.ВоспроизвестиШаблонОповещения("Автоматическое воспроизведение расписания", Данные, формируемоеСообщение, MessageType.Динамическое);
+                                                ВоспроизвестиШаблонОповещения_New("Автоматическое воспроизведение расписания", Данные, actionTrainDyn, MessageType.Динамическое);
                                         }
                                     }
 
 
                                     //Динамическое сообщение попадет в список если ФормируемоеСообщение еще не воспроезведенно  и не прошло 1мин с момента попадания в список.
                                     //==================================================================================
-                                    if (DateTime.Now > времяСобытия.AddMinutes(-30) && !(формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.Воспроизведена && DateTime.Now > времяСобытия.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий)))
+                                    if (DateTime.Now > activationTime.AddMinutes(-30) && !(actionTrainDyn.SoundRecordStatus == SoundRecordStatus.Воспроизведена && DateTime.Now > activationTime.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий)))
                                     {
                                         StateTask состояниеСтроки = 0;
-                                        switch (формируемоеСообщение.СостояниеВоспроизведения)
+                                        switch (actionTrainDyn.SoundRecordStatus)
                                         {
                                             case SoundRecordStatus.Воспроизведена:
                                             case SoundRecordStatus.Выключена:
-                                                состояниеСтроки = StateTask.Disabled;  //0
+                                                состояниеСтроки = StateTask.Disabled; //0
                                                 break;
 
                                             case SoundRecordStatus.ДобавленВОчередьАвтомат:
@@ -1692,12 +1674,12 @@ namespace MainExample
 
                                         TaskSound taskSound = new TaskSound
                                         {
-                                            MessageType =MessageType.Динамическое,
+                                            MessageType= MessageType.Динамическое,
                                             StateTask = состояниеСтроки,
-                                            Описание = Данные.НомерПоезда + " " + Данные.НазваниеПоезда + ": " + формируемоеСообщение.НазваниеШаблона,
-                                            Время = времяСобытия,
+                                            Описание = Данные.НомерПоезда + " " + Данные.НазваниеПоезда + ": " + actionTrainDyn.ActionTrain.Name,
+                                            Время = activationTime,
                                             Key = SoundRecords.ElementAt(i).Key,
-                                            ParentId = формируемоеСообщение.Id
+                                            ParentId = actionTrainDyn.Id
                                         };
 
                                         TaskManager.AddItem(taskSound);
@@ -1711,7 +1693,7 @@ namespace MainExample
                             ? Данные.СписокФормируемыхСообщений.Count
                             : Данные.СписокФормируемыхСообщений.Count(s => !s.НазваниеШаблона.StartsWith("@"));
 
-                        if (КоличествоВключенныхГалочек < количествоЭлементов)
+                        if (количествоВключенныхГалочек < количествоЭлементов)
                         {
                             if (Данные.СостояниеКарточки != 4)
                             {
