@@ -1615,11 +1615,11 @@ namespace MainExample
                             if (actionTrainDyn.Activity == true)
                             {
                                 количествоВключенныхГалочек++;
-                                if (actionTrainDyn.SoundRecordStatus != SoundRecordStatus.Воспроизведена)//TODO: не заходит 2 раз после воспроизведения файла!!!!!!
+                                //if (actionTrainDyn.SoundRecordStatus != SoundRecordStatus.Воспроизведена)//TODO: не заходит 2 раз после воспроизведения файла!!!!!!
                                 {
                                     if (DateTime.Now < activationTime)
                                     {
-                                        if (actionTrainDyn.SoundRecordStatus != SoundRecordStatus.ОжиданиеВоспроизведения)
+                                        if (actionTrainDyn.SoundRecordStatus != SoundRecordStatus.ОжиданиеВоспроизведения) //TODO: При ручном воспр. стаатус сразу меняется на ОжиданиеВоспроизведения
                                         {
                                             actionTrainDyn.SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения;
                                             внесеныИзменения = true;
