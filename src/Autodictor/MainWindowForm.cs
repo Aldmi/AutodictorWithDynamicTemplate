@@ -1445,8 +1445,7 @@ namespace MainExample
                                                         SoundRecordId = Данные.Id,
                                                         ПриоритетГлавный = Priority.Midlle,
                                                         Шаблон = нештатноеСообщение.Шаблон,
-                                                        ЯзыкиОповещения =
-                                                            new List<NotificationLanguage>
+                                                        ЯзыкиОповещения = new List<NotificationLanguage>
                                                             {
                                                                 NotificationLanguage.Rus,
                                                                 NotificationLanguage.Eng
@@ -1460,7 +1459,7 @@ namespace MainExample
                                         }
 
 
-                                        //Добавление СТАТИЧЕСКОГО события ===================================================================
+                                        //Добавление НЕШТАТНОГО события ===================================================================
                                         if (DateTime.Now > времяСобытия.AddMinutes(-30) && !(нештатноеСообщение.СостояниеВоспроизведения == SoundRecordStatus.Воспроизведена && DateTime.Now > времяСобытия.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий)))//убрать через 5 мин. после воспроизведения
                                         {
                                             StateTask состояниеСтроки = StateTask.Disabled;
@@ -1483,7 +1482,7 @@ namespace MainExample
 
                                             TaskSound taskSound = new TaskSound
                                             {
-                                                MessageType = MessageType.Динамическое,
+                                                MessageType = MessageType.ДинамическоеАварийное,
                                                 StateTask = состояниеСтроки,
                                                 Описание = Данные.НомерПоезда + " " + Данные.НазваниеПоезда + ": " + Данные.ОписаниеСостоянияКарточки,
                                                 Время = времяСобытия,
@@ -4008,16 +4007,15 @@ namespace MainExample
                     ListViewItem lvi1 = new ListViewItem(new string[] { taskSound.Key, taskSound.Value.Описание });
                     switch (task.StateTask)
                     {
-                        //case 0: lvi1.BackColor = Color.LightGray; break;
-                        //case 1: lvi1.BackColor = Color.White; break;
-                        //case 2: lvi1.BackColor = Color.LightGreen; break;
-                        //case 3: lvi1.BackColor = Color.Orange; break;
-                        //case 4: lvi1.BackColor = Color.CadetBlue; break;
                         case StateTask.Disabled:
                             lvi1.BackColor = Color.LightGray;
                             break;
                             
                         case StateTask.Enable:
+                            lvi1.BackColor = Color.Chartreuse;
+                            break;
+
+                        case StateTask.Waiting:
                             switch (task.MessageType)
                             {
                                 case MessageType.Статическое:
@@ -4030,10 +4028,6 @@ namespace MainExample
                                     lvi1.BackColor = Color.Orange;
                                     break;
                             }
-                            break;
-
-                        case StateTask.Waiting:
-                            lvi1.BackColor = Color.LightGray;
                             break;
 
                         default:
@@ -4049,34 +4043,24 @@ namespace MainExample
                     if (lVСобытия.Items[номерСтроки].SubItems[1].Text != taskSound.Value.Описание)
                         lVСобытия.Items[номерСтроки].SubItems[1].Text = taskSound.Value.Описание;
 
-                    //switch (taskSound.Value.СостояниеСтроки)
-                    //{
-                    //    case 0: if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGray) lVСобытия.Items[номерСтроки].BackColor = Color.LightGray; break;
-                    //    case 1: if (lVСобытия.Items[номерСтроки].BackColor != Color.White) lVСобытия.Items[номерСтроки].BackColor = Color.White; break;
-                    //    case 2: if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGreen) lVСобытия.Items[номерСтроки].BackColor = Color.LightGreen; break;
-                    //    case 3: if (lVСобытия.Items[номерСтроки].BackColor != Color.Orange) lVСобытия.Items[номерСтроки].BackColor = Color.Orange; break;
-                    //    case 4: if (lVСобытия.Items[номерСтроки].BackColor != Color.CadetBlue) lVСобытия.Items[номерСтроки].BackColor = Color.CadetBlue; break;
-                    //}
-
                     switch (task.StateTask)
                     {
-                        //case 0: lvi1.BackColor = Color.LightGray; break;
-                        //case 1: lvi1.BackColor = Color.White; break;
-                        //case 2: lvi1.BackColor = Color.LightGreen; break;
-                        //case 3: lvi1.BackColor = Color.Orange; break;
-                        //case 4: lvi1.BackColor = Color.CadetBlue; break;
                         case StateTask.Disabled:
                             if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGray) lVСобытия.Items[номерСтроки].BackColor = Color.LightGray;
                             break;
 
                         case StateTask.Enable:
+                            if (lVСобытия.Items[номерСтроки].BackColor != Color.Chartreuse) lVСобытия.Items[номерСтроки].BackColor = Color.Chartreuse;
+                            break;
+
+                        case StateTask.Waiting:
                             switch (task.MessageType)
                             {
                                 case MessageType.Статическое:
                                     if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGreen) lVСобытия.Items[номерСтроки].BackColor = Color.LightGreen;
                                     break;
                                 case MessageType.Динамическое:
-                                    if (lVСобытия.Items[номерСтроки].BackColor != Color.CadetBlue) lVСобытия.Items[номерСтроки].BackColor = Color.CadetBlue;
+                                    if (lVСобытия.Items[номерСтроки].BackColor != Color.White) lVСобытия.Items[номерСтроки].BackColor = Color.White;
                                     break;
                                 case MessageType.ДинамическоеАварийное:
                                     if (lVСобытия.Items[номерСтроки].BackColor != Color.Orange) lVСобытия.Items[номерСтроки].BackColor = Color.Orange;
@@ -4084,15 +4068,9 @@ namespace MainExample
                             }
                             break;
 
-                        case StateTask.Waiting:
-                            if (lVСобытия.Items[номерСтроки].BackColor != Color.LightGray) lVСобытия.Items[номерСтроки].BackColor = Color.LightGray;
-                            break;
-
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-
-
                 }
 
                 номерСтроки++;
