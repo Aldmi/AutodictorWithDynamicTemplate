@@ -66,37 +66,81 @@ namespace DAL.XmlRaw.Repository
 
                 foreach (var el in trainTypes)
                 {
-                    var actions = el.Elements("Action").ToList();
-                    var listActs = new List<ActionTrain>();
-                    foreach (var act in actions)
+                    //ПАРСИНГ ШАБЛОНОВ--------------------------------
+                    var listTemplateActs = new List<ActionTrain>();
+                    var templateActions = el.Element("TemplateActions");
+                    if (templateActions != null)
                     {
-                        var langs = act.Elements("Lang").ToList();
-                        var listLangs = new List<Lang>();
-                        foreach (var lang in langs)
+                        var actions = templateActions.Elements("Action").ToList();
+                        foreach (var act in actions)
                         {
-                            listLangs.Add(new Lang(
-                                (string)lang.Attribute("Id"),
-                                (string)lang.Attribute("Name"),
-                                (string)lang.Attribute("RepeatSoundBody"),
-                                (string)lang.Attribute("SoundStart"),
-                                (string)lang.Attribute("SoundBody"),
-                                (string)lang.Attribute("SoundEnd")));
-                        }
+                            var langs = act.Elements("Lang").ToList();
+                            var listLangs = new List<Lang>();
+                            foreach (var lang in langs)
+                            {
+                                listLangs.Add(new Lang(
+                                    (string)lang.Attribute("Id"),
+                                    (string)lang.Attribute("Name"),
+                                    (string)lang.Attribute("RepeatSoundBody"),
+                                    (string)lang.Attribute("SoundStart"),
+                                    (string)lang.Attribute("SoundBody"),
+                                    (string)lang.Attribute("SoundEnd")));
+                            }
 
-                        //Добавим ActionTrain
-                        var times = (string)act.Attribute("Time");
-                        if (!string.IsNullOrEmpty(times))
+                            //Добавим ActionTrain
+                            var times = (string)act.Attribute("Time");
+                            if (!string.IsNullOrEmpty(times))
+                            {
+                                listTemplateActs.Add(new ActionTrain(
+                                    (string)act.Attribute("Id"),
+                                    (string)act.Attribute("Enable"),
+                                    (string)act.Attribute("Name"),
+                                    (string)act.Attribute("Type"),
+                                    (string)act.Attribute("Priority"),
+                                    (string)act.Attribute("Transit"),
+                                    (string)act.Attribute("Emergency"),
+                                    (string)act.Attribute("Time"),
+                                    listLangs));
+                            }
+                        }
+                    }
+
+                    //ПАРСИНГ НЕШТАТОК--------------------------------
+                    var listEmergencyActs = new List<ActionTrain>();
+                    var emergencyActions = el.Element("EmergencyActions");
+                    if (emergencyActions != null)
+                    {
+                        var actions = emergencyActions.Elements("Action").ToList();
+                        foreach (var act in actions)
                         {
-                            listActs.Add(new ActionTrain(
-                                (string)act.Attribute("Id"),
-                                (string)act.Attribute("Enable"),
-                                (string)act.Attribute("Name"),
-                                (string)act.Attribute("Type"),
-                                (string)act.Attribute("Priority"),
-                                (string)act.Attribute("Transit"),
-                                (string)act.Attribute("Emergency"),
-                                (string)act.Attribute("Time"),
-                                listLangs));            
+                            var langs = act.Elements("Lang").ToList();
+                            var listLangs = new List<Lang>();
+                            foreach (var lang in langs)
+                            {
+                                listLangs.Add(new Lang(
+                                    (string)lang.Attribute("Id"),
+                                    (string)lang.Attribute("Name"),
+                                    (string)lang.Attribute("RepeatSoundBody"),
+                                    (string)lang.Attribute("SoundStart"),
+                                    (string)lang.Attribute("SoundBody"),
+                                    (string)lang.Attribute("SoundEnd")));
+                            }
+
+                            //Добавим ActionTrain
+                            var times = (string)act.Attribute("Time");
+                            if (!string.IsNullOrEmpty(times))
+                            {
+                                listEmergencyActs.Add(new ActionTrain(
+                                    (string)act.Attribute("Id"),
+                                    true.ToString(),
+                                    (string)act.Attribute("Name"),
+                                    string.Empty, 
+                                    (string)act.Attribute("Priority"),
+                                    false.ToString(),
+                                    (string)act.Attribute("Emergency"),
+                                    (string)act.Attribute("Time"),
+                                    listLangs));
+                            }
                         }
                     }
 
@@ -111,7 +155,8 @@ namespace DAL.XmlRaw.Repository
                         (string)el.Attribute("AliasCh"),
                         (string)el.Attribute("ShowPathTimer"),
                         (string)el.Attribute("WarningTimer"),
-                        listActs));
+                        listTemplateActs,
+                        listEmergencyActs));
                 }
 
                 return rules;

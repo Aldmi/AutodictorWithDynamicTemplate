@@ -113,7 +113,7 @@ namespace MainExample
                     Автомат = true,
                     IsScoreBoardOutput = false,
                     IsSoundOutput = true,
-                    TrainTypeByRyle = new TrainTypeByRyle("1", null, null, null, null, null, null, null, null, null, null),//null
+                    TrainTypeByRyle = new TrainTypeByRyle("1", null, null, null, null, null, null, null, null, null, null, null),//null
                     ActionTrains = new List<ActionTrain>()
                  },
                 new TrainTableRec

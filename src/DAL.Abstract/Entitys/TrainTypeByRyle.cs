@@ -33,6 +33,7 @@ namespace DAL.Abstract.Entitys
         public int WarningTimer { get; }  //окрашивать в главном окне в жёлтый за X минут до первого события.
 
         public List<ActionTrain> ActionTrains { get; }
+        public List<ActionTrain> EmergencyTrains { get; }
 
         #endregion
 
@@ -41,7 +42,7 @@ namespace DAL.Abstract.Entitys
 
         #region ctor
 
-        public TrainTypeByRyle(string id, string typeTrain, string nameRu, string aliasRu, string nameEng, string aliasEng, string nameCh, string aliasCh, string showPathTimer, string warningTimer, List<ActionTrain> actionTrains)
+        public TrainTypeByRyle(string id, string typeTrain, string nameRu, string aliasRu, string nameEng, string aliasEng, string nameCh, string aliasCh, string showPathTimer, string warningTimer, List<ActionTrain> actionTrains, List<ActionTrain> emergencyTrains)
         {
             int intVal;
             Id = int.Parse(id);
@@ -68,6 +69,7 @@ namespace DAL.Abstract.Entitys
             ShowPathTimer = showPathTimer;
             WarningTimer = int.TryParse(warningTimer, out intVal) ? intVal : 0;
             ActionTrains = actionTrains;
+            EmergencyTrains = emergencyTrains;
         }
 
         #endregion
@@ -87,7 +89,7 @@ namespace DAL.Abstract.Entitys
         public bool IsActiveBase { get; set; }        //Базовая активность шаблона, задается в XML файле    
         public ActionType ActionType { get; set; }
         public int Priority { get; set; }
-        public bool Transit { get; set; }
+        public bool Transit { get; set; }        //?????????
         public Emergency Emergency { get; set; }
         public ActionTime Time { get; set; }
         public List<Lang> Langs { get; set; }         //Шаблоны на разных языках
