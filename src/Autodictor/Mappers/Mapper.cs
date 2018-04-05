@@ -120,28 +120,26 @@ namespace MainExample.Mappers
             record.ВыводЗвука= config.IsSoundOutput;
 
 
-            DateTime времяПрибытия = new DateTime(2000, 1, 1, 0, 0, 0);
-            DateTime времяОтправления = new DateTime(2000, 1, 1, 0, 0, 0);
-            record.ВремяПрибытия = DateTime.Now;
-            record.ВремяОтправления = DateTime.Now;
-            record.ОжидаемоеВремя = DateTime.Now;
+            //DateTime времяПрибытия = new DateTime(2000, 1, 1, 0, 0, 0);
+            //DateTime времяОтправления = new DateTime(2000, 1, 1, 0, 0, 0);
+            record.ВремяПрибытия = day;
+            record.ВремяОтправления = day;
+            record.ОжидаемоеВремя = day;
             record.ВремяСледования = null;
             record.ВремяЗадержки = null;
             byte номерСписка = 0x00;
 
             if (config.ArrivalTime.HasValue)
             {
-                времяПрибытия = config.ArrivalTime.Value;
-                record.ВремяПрибытия = времяПрибытия;
-                record.ОжидаемоеВремя = времяПрибытия;
+                record.ВремяПрибытия = day.Add(config.ArrivalTime.Value.TimeOfDay);
+                record.ОжидаемоеВремя = record.ВремяПрибытия;
                 номерСписка |= 0x04;
             }
 
             if (config.DepartureTime.HasValue)
             {
-                времяОтправления = config.DepartureTime.Value;
-                record.ВремяОтправления = времяОтправления;
-                record.ОжидаемоеВремя = времяОтправления;
+                record.ВремяОтправления = day.Add(config.DepartureTime.Value.TimeOfDay);
+                record.ОжидаемоеВремя = record.ВремяОтправления;
                 номерСписка |= 0x10;
             }
    
@@ -152,9 +150,9 @@ namespace MainExample.Mappers
             record.ВремяСтоянки = null;
             if (номерСписка == 0x14)
             {
-                if (времяОтправления < времяПрибытия)          
+                if (record.ВремяОтправления < record.ВремяПрибытия)          
                 {
-                    record.ВремяПрибытия = времяПрибытия.AddDays(-1);
+                    record.ВремяПрибытия = record.ВремяПрибытия.AddDays(-1);
                     record.IdTrain.ДеньПрибытия = record.ВремяПрибытия.Date;
                 }
                 record.ВремяСтоянки = config.StopTime;
