@@ -639,11 +639,12 @@ namespace MainExample
                 gBДниСледования.Enabled = false;
                 cBПутьПоУмолчанию.Enabled = false;
                 cBОтсчетВагонов.Enabled = false;
-                gBШаблонОповещения.Enabled = false;
                 chBox_сменнаяНумерация.Enabled = false;
                 gbРежимРаботы.Enabled = false;
                 gbВыводИнформации.Enabled = false;
                 gb_ПутьПоУмолчанию.Enabled = false;
+                gb_Генерация.Enabled = false;
+                gridCtrl_ActionTrains.Enabled = false;
             }
             else
             {
@@ -658,11 +659,12 @@ namespace MainExample
                 gBДниСледования.Enabled = true;
                 cBПутьПоУмолчанию.Enabled = true;
                 cBОтсчетВагонов.Enabled = true;
-                gBШаблонОповещения.Enabled = true;
                 chBox_сменнаяНумерация.Enabled = true;
                 gbРежимРаботы.Enabled = true;
                 gbВыводИнформации.Enabled = true;
                 gb_ПутьПоУмолчанию.Enabled = true;
+                gb_Генерация.Enabled = true;
+                gridCtrl_ActionTrains.Enabled = true;
             }
         }
 

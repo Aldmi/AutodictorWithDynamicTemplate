@@ -8,22 +8,9 @@ namespace DAL.Abstract.Entitys
     public enum SoundRecordType { Обычное = 0, ДвижениеПоезда, ДвижениеПоездаНеПодтвержденное, Предупредительное, Важное };
     public enum PathPermissionType { ИзФайлаНастроек = 0, Отображать, НеОтображать };
     public enum Priority { Low = 0, Midlle, Hight, VeryHight };
-    public enum PriorityPrecise {Zero = 0, One, Two, Three, Four, Five, Six, Seven, Eight, Nine };
+    public enum PriorityPrecise { Zero = 0, One, Two, Three, Four, Five, Six, Seven, Eight, Nine };
 
     public enum NotificationLanguage { Rus, Eng, Fin, Ch };
-
-    public enum ТипПоезда
-    {
-        НеОпределен = 0,
-        Пассажирский = 1,
-        Пригородный = 2,
-        Фирменный = 3,
-        Скорый = 4,
-        Скоростной = 5,
-        Ласточка = 6,
-        РЭКС = 7
-    };
-
 
     public class СостояниеФормируемогоСообщенияИШаблонDb : EntityBase
     {
