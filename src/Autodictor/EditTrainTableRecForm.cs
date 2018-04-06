@@ -37,12 +37,16 @@ namespace MainExample
     {
         #region field
 
+        private bool _isLoaded;
+
         public TrainTableRec TrainRec;
         private readonly TrainRecService _trainRecService;
         private string[] SelectedDestinationStations { get; set; } = new string[0];
 
         private List<ActionTrainViewModel> ActionTrainsVm { get; } = new List<ActionTrainViewModel>();
         private List<ActionTrainViewModel> ActionTrainsSelectedTypeVm { get; set; } = new List<ActionTrainViewModel>();
+
+        private List<ActionTrainViewModel> ActionEmergencyVm { get; } = new List<ActionTrainViewModel>();
 
         #endregion
 
@@ -68,9 +72,11 @@ namespace MainExample
 
         protected override void OnLoad(EventArgs e)
         {
+            _isLoaded = false;
             Model2Ui();
             SettingUiInitialization();
             base.OnLoad(e);
+            _isLoaded = true;
         }
 
 
@@ -270,8 +276,11 @@ namespace MainExample
             cBШаблонОповещения.DataSource = actionTrains;
             cBШаблонОповещения.DisplayMember = "Name";
             cBШаблонОповещения.ValueMember = "Name";
-
             ActionTrainsSelectedTypeVm = TrainRec.TrainTypeByRyle?.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
+
+            //Заполнение таблицы НЕШТАТОК
+            ActionEmergencyVm.AddRange(TrainRec.EmergencyTrains.Select(MapActionTrain2ViewModel));
+            gridCtrl_Emergence.DataSource = ActionEmergencyVm;
         }
 
 
@@ -456,6 +465,10 @@ namespace MainExample
             //Сохранить шаблоны
             TrainRec.ActionTrains.Clear();
             TrainRec.ActionTrains.AddRange(ActionTrainsVm.Select(MapViewModel2ActionTrain));
+
+            //Сохранить НЕШТАТКИ
+            TrainRec.EmergencyTrains.Clear();
+            TrainRec.EmergencyTrains.AddRange(ActionEmergencyVm.Select(MapViewModel2ActionTrain));
         }
 
 
@@ -645,6 +658,7 @@ namespace MainExample
                 gb_ПутьПоУмолчанию.Enabled = false;
                 gb_Генерация.Enabled = false;
                 gridCtrl_ActionTrains.Enabled = false;
+                gridCtrl_Emergence.Enabled = false;
             }
             else
             {
@@ -665,6 +679,7 @@ namespace MainExample
                 gb_ПутьПоУмолчанию.Enabled = true;
                 gb_Генерация.Enabled = true;
                 gridCtrl_ActionTrains.Enabled = true;
+                gridCtrl_Emergence.Enabled = true;
             }
         }
 
@@ -677,17 +692,17 @@ namespace MainExample
 
             Расписание расписание = new Расписание(текущийПланРасписанияПоезда);
 
-            string ВремяДействия = "";
+            string времяДействия = "";
             if (rBВремяДействияС.Checked)
-                ВремяДействия = "c " + dTPВремяДействияС.Value.ToString("dd.MM.yyyy");
+                времяДействия = "c " + dTPВремяДействияС.Value.ToString("dd.MM.yyyy");
             else if (rBВремяДействияПо.Checked)
-                ВремяДействия = "по " + dTPВремяДействияПо.Value.ToString("dd.MM.yyyy");
+                времяДействия = "по " + dTPВремяДействияПо.Value.ToString("dd.MM.yyyy");
             else if (rBВремяДействияСПо.Checked)
-                ВремяДействия = "c " + dTPВремяДействияС2.Value.ToString("dd.MM.yyyy") + " по " + dTPВремяДействияПо2.Value.ToString("dd.MM.yyyy");
+                времяДействия = "c " + dTPВремяДействияС2.Value.ToString("dd.MM.yyyy") + " по " + dTPВремяДействияПо2.Value.ToString("dd.MM.yyyy");
             else
-                ВремяДействия = "постоянно";
+                времяДействия = "постоянно";
 
-            расписание.УстановитьВремяДействия(ВремяДействия);
+            расписание.УстановитьВремяДействия(времяДействия);
             расписание.ShowDialog();
             if (расписание.DialogResult == DialogResult.OK)
             {
@@ -867,6 +882,9 @@ namespace MainExample
         int _selIndex = -1;
         private void cBТипПоезда_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if(!_isLoaded)
+                return;
+
             var selectedItem = cBТипПоезда.SelectedItem as TrainTypeByRyle;
             if (selectedItem != null)
             {
@@ -882,16 +900,16 @@ namespace MainExample
                 _selIndex= cBТипПоезда.SelectedIndex;
 
 
-                //Очистить текущий список шаблонов------------------
+                //Очистить текущий список шаблонов----------------------------
                 ActionTrainsVm.Clear();
                 gv_ActionTrains.RefreshData();
 
-                //Скорректируем список выбора.-----------------------
+                //Скорректируем список выбора шаблонов.-----------------------
                 ActionTrainsSelectedTypeVm = selectedItem.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
-                cBШаблонОповещения.DataSource= ActionTrainsSelectedTypeVm;
+                cBШаблонОповещения.DataSource = ActionTrainsSelectedTypeVm;
                 cBШаблонОповещения.Refresh();
 
-                //Заполнение списка выбора шаблонов выбранного типа. (Шаблоны типа)
+                //Изменение категории поезда в зависимости от типа.
                 var categoryText = "Не определенн";
                 switch (selectedItem.CategoryTrain)
                 {
@@ -904,7 +922,14 @@ namespace MainExample
                         categoryText = "Дальнего след.";
                         break;
                 }
-                tb_Category.Text= categoryText;
+                tb_Category.Text = categoryText;
+
+                //Заполнить список НЕШТАТОК из TrainTypeByRyle
+                var actionTrains = selectedItem.EmergencyTrains.Select(MapActionTrain2ViewModel).ToList();
+                ActionEmergencyVm.Clear();
+                ActionEmergencyVm.AddRange(actionTrains);
+                gv_Emergence.RefreshData();
+                gv_Emergence.BestFitColumns();
             }
         }
 

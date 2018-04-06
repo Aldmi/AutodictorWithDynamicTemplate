@@ -11,6 +11,7 @@ using DAL.Abstract.Abstract;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
 using DAL.NoSqlLiteDb.Repository;
+using Force.DeepCloner;
 using Library.Logs;
 using MainExample.Utils;
 
@@ -39,7 +40,7 @@ namespace MainExample
         public static DateTime StartTime { get; } = DateTime.Now;
         public static AutodictorModel AutodictorModel { get; set; }
 
-        public static DirectionService DirectionService; // Направления. 
+        public static DirectionService DirectionService; //Направления. 
         public static PathwaysService PathwaysService;   //Пути.
         public static IEnumerable<TrainTypeByRyle> TrainTypes;
         public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
@@ -66,8 +67,9 @@ namespace MainExample
             //    TrainTypes = listRules;
             //}
 
-
+            //DEBUG--------------------
             var serv = AutofacConfig.Container.Resolve<TrainRecService>();
+            var emergencyByTrainType = serv.GetTrainTypeByRyles().FirstOrDefault()?.EmergencyTrains.DeepClone();
             var items = new List<TrainTableRec>
             {
                 new TrainTableRec
@@ -114,7 +116,8 @@ namespace MainExample
                     IsScoreBoardOutput = false,
                     IsSoundOutput = true,
                     TrainTypeByRyle = new TrainTypeByRyle("1", null, null, null, null, null, null, null, null, null, null, null),//null
-                    ActionTrains = new List<ActionTrain>()
+                    ActionTrains = new List<ActionTrain>(),
+                    EmergencyTrains = emergencyByTrainType
                  },
                 new TrainTableRec
                 {
@@ -160,7 +163,8 @@ namespace MainExample
                     IsScoreBoardOutput = false,
                     IsSoundOutput = true,
                     TrainTypeByRyle = null,
-                    ActionTrains = new List<ActionTrain>()
+                    ActionTrains = new List<ActionTrain>(),
+                    EmergencyTrains =emergencyByTrainType
                 },
                 new TrainTableRec
                 {
@@ -206,7 +210,8 @@ namespace MainExample
                     IsScoreBoardOutput = false,
                     IsSoundOutput = true,
                     TrainTypeByRyle = null,
-                    ActionTrains = new List<ActionTrain>()
+                    ActionTrains = new List<ActionTrain>(),
+                    EmergencyTrains = emergencyByTrainType
                 }
             };
             serv.ReWriteAll(items);

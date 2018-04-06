@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using AutodictorBL.DataAccess;
 using Autofac.Features.OwnedInstances;
 using DAL.Abstract.Entitys;
+using Force.DeepCloner;
 using MainExample.Entites;
 using MainExample.Extension;
 
@@ -559,8 +560,9 @@ namespace MainExample
 
             item.IsScoreBoardOutput = false;
             item.IsSoundOutput = true;
-            item.TrainTypeByRyle = null;
+            item.TrainTypeByRyle = _trainRecService.GetTrainTypeByRyles().FirstOrDefault();  //TODO: сделать фабрику создания типа Manual - 
             item.ActionTrains = new List<ActionTrain>();
+            item.EmergencyTrains = item.TrainTypeByRyle?.EmergencyTrains.DeepClone();
 
             //Добавили в список
             _listRecords.Add(item);

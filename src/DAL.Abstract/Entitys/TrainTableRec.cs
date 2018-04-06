@@ -58,5 +58,6 @@ namespace DAL.Abstract.Entitys
 
         public TrainTypeByRyle TrainTypeByRyle { get; set; }                    // Правила основанные на типе поезда. Содержит список базовых действий поезда.
         public List<ActionTrain> ActionTrains { get; set; }                     // Текущие действия поезда (шаблоны поезда).
+        public List<ActionTrain> EmergencyTrains { get; set; }                  // Текущие список НЕШТАТОК поезда.
     }
 }
