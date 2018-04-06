@@ -37,7 +37,7 @@ namespace MainExample
     {
         #region field
 
-        private bool _isLoaded;
+        private bool _isLoaded;  // флаг полной загрузки формы
 
         public TrainTableRec TrainRec;
         private readonly TrainRecService _trainRecService;
@@ -89,37 +89,58 @@ namespace MainExample
 
         private void SettingUiInitialization()
         {
+            //ШАБЛОНЫ----------------------------
             gv_ActionTrains.MasterRowExpanded+= Gv_ActionTrains_MasterRowExpanded;
-
-            // Make the grid read-only.
             gv_ActionTrains.OptionsBehavior.Editable = true;
-            // Prevent the focused cell from being highlighted.
             gv_ActionTrains.OptionsSelection.EnableAppearanceFocusedCell = false;
             gv_ActionTrains.FocusRectStyle = DrawFocusRectStyle.RowFullFocus;
-
             //Выравнивание в ячейках по центру.
             foreach (GridColumn column in gv_ActionTrains.Columns)
             {
                 column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
                 column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
             }
-
-            //загрузка настроек грида-----------------------------------
+            //загрузка настроек грида шаблолонов-----------------------------------
             var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
             if (File.Exists(path2Setting))
             {
                 gv_ActionTrains.RestoreLayoutFromXml(path2Setting);
+            }
+
+            //НЕШТАТКИ----------------------------
+            gv_Emergence.MasterRowExpanded += Gv_ActionTrains_MasterRowExpanded;
+            gv_Emergence.OptionsBehavior.Editable = true;
+            gv_Emergence.OptionsSelection.EnableAppearanceFocusedCell = false;
+            gv_Emergence.FocusRectStyle = DrawFocusRectStyle.RowFullFocus;
+            //Выравнивание в ячейках по центру.
+            foreach (GridColumn column in gv_Emergence.Columns)
+            {
+                column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
+                column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+            }
+            //загрузка настроек грида шаблолонов-----------------------------------
+            path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionEmergenceSettings.xml");
+            if (File.Exists(path2Setting))
+            {
+                gv_Emergence.RestoreLayoutFromXml(path2Setting);
             }
         }
 
 
         private void SettingUiLoad()
         {
-            //Сохранение настроек грида
+            //Сохранение настроек грида НЕШТАТОК
             var path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionTrainsSettings.xml");
             if (File.Exists(path2Setting))
             {
                 gv_ActionTrains.SaveLayoutToXml(path2Setting);
+            }
+
+            //Сохранение настроек грида ШАБЛОНОВ
+            path2Setting = Path.Combine(Directory.GetCurrentDirectory(), @"UISettings\gridActionEmergenceSettings.xml");
+            if (File.Exists(path2Setting))
+            {
+                gv_Emergence.SaveLayoutToXml(path2Setting);
             }
         }
 
@@ -963,7 +984,7 @@ namespace MainExample
         {
             GridView master = sender as GridView;
             GridView gridViewLevel1 = master.GetDetailView(e.RowHandle, e.RelationIndex) as GridView;
-            gridViewLevel1.BestFitColumns();
+            gridViewLevel1?.BestFitColumns();
             foreach (GridColumn column in gridViewLevel1.Columns)            //Выравнивание в ячейках по центру.
             {
                 column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
