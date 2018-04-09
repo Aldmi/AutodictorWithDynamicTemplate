@@ -997,45 +997,50 @@ namespace MainExample
             if (MessageBox.Show("Вы точно хотите воспроизвести данное сообщение в эфир?", "Внимание !!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
-            ActionTrainDynamic emergency = null;
+            ActionTrain emergency = null;
             switch ((sender as Button).Name)
             {
                 case "btnОтменаПоезда":
-                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.Cancel);
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.Emergency == Emergency.Cancel);
                     break;
 
                 case "btnЗадержкаПрибытия":
-                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.DelayedArrival);
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.Emergency == Emergency.DelayedArrival);
                     break;
 
                 case "btnЗадержкаОтправления":
-                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.DelayedDeparture);
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.Emergency == Emergency.DelayedDeparture);
                     break;
 
                 case "btnОтправлениеПоГотовности":
-                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.DispatchOnReadiness);
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.Emergency == Emergency.DispatchOnReadiness);
                     break;
             }
 
-
             if (emergency != null)
             {
-                emergency.Id = 2000;
-                emergency.PriorityMain = Priority.Hight;
-                emergency.SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьРучное;
-                MainWindowForm.ВоспроизвестиШаблонОповещения_New("Действие оператора нештатная ситуация", _record, emergency, MessageType.ДинамическоеАварийное);
+                var emergencyDyn = new ActionTrainDynamic
+                {
+                    Id = 2000,
+                    PriorityMain = Priority.Hight,
+                    SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьРучное,
+                    ActionTrain=  emergency
+                };
+                MainWindowForm.ВоспроизвестиШаблонОповещения_New("Действие оператора нештатная ситуация", _record, emergencyDyn, MessageType.ДинамическоеАварийное);
 
-                //СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон
-                //{
-                //    Id = 2000,
-                //    ПриоритетГлавный = Priority.Hight,
-                //    SoundRecordId = _record.Id,
-                //    Шаблон = ФормируемоеСообщение,
-                //    ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
-                //    НазваниеШаблона = "Авария"
-                //};
-                //MainWindowForm.ВоспроизвестиШаблонОповещения("Действие оператора нештатная ситуация", _record, шаблонФормируемогоСообщения, MessageType.ДинамическоеАварийное);
             }
+
+            //СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон
+            //{
+            //    Id = 2000,
+            //    ПриоритетГлавный = Priority.Hight,
+            //    SoundRecordId = _record.Id,
+            //    Шаблон = ФормируемоеСообщение,
+            //    ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
+            //    НазваниеШаблона = "Авария"
+            //};
+            //MainWindowForm.ВоспроизвестиШаблонОповещения("Действие оператора нештатная ситуация", _record, шаблонФормируемогоСообщения, MessageType.ДинамическоеАварийное);
+        
         }
 
 

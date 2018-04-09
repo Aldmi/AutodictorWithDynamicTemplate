@@ -67,7 +67,7 @@ namespace DAL.Abstract.Entitys
 
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;  //УДАЛИТЬ
         public List<ActionTrainDynamic> ActionTrainDynamiсList;    //Шаблоны поезда
-        public List<ActionTrainDynamic> EmergencyTrainStaticList;  //4 нештатных шаблона взятых из TrainTypeByRyle и отредактированных для данного поезда
+        public List<ActionTrain> EmergencyTrainStaticList { get; set; }  //4 нештатных шаблона взятых из TrainTypeByRyle и отредактированных для данного поезда
         public List<ActionTrainDynamic> EmergencyTrainDynamiсList; //N нештатных шаблона, сгенерированных при АКТИВНОЙ нештатной ситуации.
 
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокНештатныхСообщений;

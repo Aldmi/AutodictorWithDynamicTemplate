@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using DAL.Abstract.Entitys;
+using Force.DeepCloner;
 
 namespace AutodictorBL.Services.SoundRecordServices
 {
@@ -28,6 +29,53 @@ namespace AutodictorBL.Services.SoundRecordServices
                 : departTime.AddMinutes(timeSift);
 
             return activationTime;
+        }
+
+
+        /// <summary>
+        /// Возвращает список дианмических шаблонов на базе ActionTrain.
+        /// Учитывается Время активации шаблона.
+        /// </summary>
+        public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions)
+        {
+            var dynamiсLists = new List<ActionTrainDynamic>();
+            var idActDyn = 1;
+            foreach (var action in actions)
+            {
+                if (action.Time.IsDeltaTimes) //Указанны временные смещения
+                {
+                    foreach (var time in action.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
+                    {
+                        var newActionTrain = action.DeepClone();
+                        newActionTrain.Time.DeltaTimes = new List<int> { time };
+                        var actDyn = new ActionTrainDynamic
+                        {
+                            Id = idActDyn++,
+                            SoundRecordId = record.Id,
+                            Activity = true,
+                            PriorityMain = Priority.Midlle,
+                            SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
+                            ActionTrain = newActionTrain,
+                        };
+                        dynamiсLists.Add(actDyn);
+                    }
+                }
+                else                                   //Указан циклический повтор
+                {
+                    var newActionTrain = action.DeepClone(); //COPY
+                    var actDyn = new ActionTrainDynamic
+                    {
+                        Id = idActDyn++,
+                        SoundRecordId = record.Id,
+                        Activity = true,
+                        PriorityMain = Priority.Midlle,
+                        SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
+                        ActionTrain = newActionTrain
+                    };
+                    dynamiсLists.Add(actDyn);
+                }
+            }
+            return dynamiсLists;
         }
 
 

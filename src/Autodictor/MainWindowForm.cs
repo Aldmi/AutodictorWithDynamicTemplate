@@ -731,7 +731,7 @@ namespace MainExample
                     continue;
 
                 var newId = id++;
-                SoundRecord record = Mapper.MapTrainTableRecord2SoundRecord(config, день, newId);
+                SoundRecord record = Mapper.MapTrainTableRecord2SoundRecord(config, _soundReсordWorkerService, день, newId);
 
 
                 //выдать список привязанных табло
@@ -2493,36 +2493,36 @@ namespace MainExample
             if (данные.Emergency == Emergency.None)
                 return данные;
 
-            var emergency = данные.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == данные.Emergency);
-            if(emergency == null)
-                return данные;
+            //var emergency = данные.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == данные.Emergency);
+            //if(emergency == null)
+            //    return данные;
 
-            DateTime временноеВремяСобытия = (данные.Classification == Classification.Arrival) ? данные.ВремяПрибытия : данные.ВремяОтправления;
-            string формируемоеСообщение = "";
+            //DateTime временноеВремяСобытия = (данные.Classification == Classification.Arrival) ? данные.ВремяПрибытия : данные.ВремяОтправления;
+            //string формируемоеСообщение = "";
 
-            //Сформируем список нештатных сообщений--------------------------------------
-            var startDate = временноеВремяСобытия.AddHours(-10);
-            var endDate = временноеВремяСобытия.AddHours(27 - DateTime.Now.Hour); //часы до конца суток  +3 часа
-            List<ActionTrainDynamic> текущийСписокНештатныхСообщений = new List<ActionTrainDynamic>();
-
-
-            int interval = 0;
-            if (!emergency.ActionTrain.Time.IsDeltaTimes)
-            {
-                interval = emergency.ActionTrain.Time.CycleTime.Value;
-            }
-
-            int indexШаблона = 1000;              //нештатные сообшения индексируются от 1000
-            for (var date = startDate; date < endDate; date += new TimeSpan(0, 0, (int) (interval * 60.0)))
-            {
-                ActionTrainDynamic emergencyDynamic = emergency.DeepClone();
-                emergencyDynamic.Id = indexШаблона++;
-                emergencyDynamic.ActionTrain.Time = new ActionTime {};
-            }
+            ////Сформируем список нештатных сообщений--------------------------------------
+            //var startDate = временноеВремяСобытия.AddHours(-10);
+            //var endDate = временноеВремяСобытия.AddHours(27 - DateTime.Now.Hour); //часы до конца суток  +3 часа
+            //List<ActionTrainDynamic> текущийСписокНештатныхСообщений = new List<ActionTrainDynamic>();
 
 
+            //int interval = 0;
+            //if (!emergency.ActionTrain.Time.IsDeltaTimes)
+            //{
+            //    interval = emergency.ActionTrain.Time.CycleTime.Value;
+            //}
+
+            //int indexШаблона = 1000;              //нештатные сообшения индексируются от 1000
+            //for (var date = startDate; date < endDate; date += new TimeSpan(0, 0, (int) (interval * 60.0)))
+            //{
+            //    ActionTrainDynamic emergencyDynamic = emergency.DeepClone();
+            //    emergencyDynamic.Id = indexШаблона++;
+            //    emergencyDynamic.ActionTrain.Time = new ActionTime {};
+            //}
 
 
+
+            //----------------------------------------
             //    СостояниеФормируемогоСообщенияИШаблон новыйШаблон;
             //    новыйШаблон.Id = indexШаблона++;
             //    новыйШаблон.SoundRecordId = данные.Id;

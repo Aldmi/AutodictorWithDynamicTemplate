@@ -14,6 +14,12 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// Возвращает шаблон (actionTrain) в оболочке TextFragment, в которой слова выделены цветом.
         /// </summary>
         TextFragment CalcTextFragment(ref SoundRecord rec, ActionTrain actionTrain);
+        /// <summary>
+        /// Возвращает список дианмических шаблонов на базе ActionTrain.
+        /// Учитывается Время активации шаблона.
+        /// </summary>
+        List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions);
+
         List<TemplateItem> CalcTemplateItems(ActionTrain actionTrain, List<string> allowedLang);
         List<TemplateItem> CalcTemplateItemsByLang(Lang lang);
     }

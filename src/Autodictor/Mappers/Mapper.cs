@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutodictorBL.Services.SoundRecordServices;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Model;
 using DAL.Abstract.Entitys;
@@ -72,7 +73,7 @@ namespace MainExample.Mappers
 
 
 
-        public static SoundRecord MapTrainTableRecord2SoundRecord(TrainTableRec config, DateTime day, int id)
+        public static SoundRecord MapTrainTableRecord2SoundRecord(TrainTableRec config, ISoundReсordWorkerService soundReсordWorkerService, DateTime day, int id)
         {
             var record = new SoundRecord();
             record.Id = id;
@@ -177,52 +178,15 @@ namespace MainExample.Mappers
             record.БитыАктивностиПолей = номерСписка;
             record.БитыАктивностиПолей |= 0x03;                                   //TODO: ???
 
+
+
+
             // Шаблоны оповещения
-            Func<List<ActionTrain>, List<ActionTrainDynamic>> createActionTrainDynamicFunc= actions =>
-            {
-                var  dynamiсLists = new List<ActionTrainDynamic>();
-                var idActDyn = 1;
-                foreach (var action in actions)
-                {
-                    if (action.Time.IsDeltaTimes) //Указанны временные смещения
-                    {
-                        foreach (var time in action.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
-                        {
-                            var newActionTrain = action.DeepClone();
-                            newActionTrain.Time.DeltaTimes = new List<int> { time };
-                            var actDyn = new ActionTrainDynamic
-                            {
-                                Id = idActDyn++,
-                                SoundRecordId = record.Id,
-                                Activity = true,
-                                PriorityMain = Priority.Midlle,
-                                SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
-                                ActionTrain = newActionTrain,
-                            };
-                            dynamiсLists.Add(actDyn);
-                        }
-                    }
-                    else                                   //Указан циклический повтор
-                    {
-                        var newActionTrain = action.DeepClone(); //COPY
-                        var actDyn = new ActionTrainDynamic
-                        {
-                            Id = idActDyn++,
-                            SoundRecordId = record.Id,
-                            Activity = true,
-                            PriorityMain = Priority.Midlle,
-                            SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
-                            ActionTrain = newActionTrain
-                        };
-                        dynamiсLists.Add(actDyn);
-                    }
-                }
-                return dynamiсLists;
-            };
-            record.ActionTrainDynamiсList= createActionTrainDynamicFunc(config.ActionTrains);
-            record.EmergencyTrainStaticList = createActionTrainDynamicFunc(config.EmergencyTrains);
+            record.ActionTrainDynamiсList= soundReсordWorkerService.СreateActionTrainDynamic(record, config.ActionTrains);
+            record.EmergencyTrainStaticList = config.EmergencyTrains.DeepClone();
             record.Emergency = Emergency.None;
 
+            //TODO:УБРАТЬ
             record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();//УБРАТЬ
             string[] шаблонОповещения = record.ШаблонВоспроизведенияСообщений.Split(':');
             if ((шаблонОповещения.Length % 3) == 0)
