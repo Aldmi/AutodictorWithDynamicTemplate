@@ -129,6 +129,8 @@ namespace MainExample.Mappers
             record.ВремяЗадержки = null;
             byte номерСписка = 0x00;
 
+            record.Classification = config.Classification;
+
             if (config.ArrivalTime.HasValue)
             {
                 record.ВремяПрибытия = day.Add(config.ArrivalTime.Value.TimeOfDay);
