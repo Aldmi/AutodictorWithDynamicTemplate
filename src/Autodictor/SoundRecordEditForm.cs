@@ -8,7 +8,6 @@ using AutodictorBL.DataAccess;
 using AutodictorBL.Entites;
 using AutodictorBL.Services.SoundRecordServices;
 using DAL.Abstract.Entitys;
-using MainExample.Services.FactoryServices;
 using MainExample.UIHelpers;
 
 namespace MainExample
@@ -44,12 +43,10 @@ namespace MainExample
             _record = record;
             _record.ИспользоватьДополнение = new Dictionary<string, bool>(record.ИспользоватьДополнение);//ссылочные переменные копируются по ссылке, т.е. их нужно создать заново
             _recordOld = record;
-            СтанцииВыбранногоНаправления = Program.ПолучитьСтанцииНаправления(record.Направление)?.Select(st => st.NameRu).ToList() ?? new List<string>();
-            НомераПутей = Program.PathwaysService.GetAll().ToList();
+            СтанцииВыбранногоНаправления= _directionService.GetStationsInDirectionByName(record.Направление)?.Select(st => st.NameRu).ToList();
+            НомераПутей= _pathwaysService.GetAll().ToList();
 
             InitializeComponent();
-
-            Model2UiControls(_record);
         }
 
         #endregion
@@ -141,20 +138,13 @@ namespace MainExample
             txb_НомерПоезда.Text = record.НомерПоезда;
             txb_НомерПоезда2.Text = record.НомерПоезда2;
 
-
-            var directions = Program.DirectionService.GetAll().ToList();
-            if (directions.Any())
+            if (СтанцииВыбранногоНаправления != null && СтанцииВыбранногоНаправления.Any())
             {
-                var stationsNames = directions.FirstOrDefault(d => d.Name == record.Направление)?.Stations?.Select(st => st.NameRu).ToArray();
-                if (stationsNames != null && stationsNames.Any())
-                {
-                    cBОткуда.Items.Clear();
-                    cBКуда.Items.Clear();
-                    cBОткуда.Items.AddRange(stationsNames);
-                    cBКуда.Items.AddRange(stationsNames);
-                }
+                cBОткуда.Items.Clear();
+                cBКуда.Items.Clear();
+                cBОткуда.Items.AddRange(СтанцииВыбранногоНаправления.ToArray());
+                cBКуда.Items.AddRange(СтанцииВыбранногоНаправления.ToArray());
             }
-
             cBОткуда.Text = record.СтанцияОтправления;
             cBКуда.Text = record.СтанцияНазначения;
 
@@ -711,8 +701,14 @@ namespace MainExample
 
 
 
-
         #region EventHandler
+
+        protected override void OnLoad(EventArgs e)
+        {
+            Model2UiControls(_record);
+            base.OnLoad(e);
+        }
+
 
         private void cB_НомерПути_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -786,11 +782,7 @@ namespace MainExample
             for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
                 СписокВыбранныхСтанций += lB_ПоСтанциям.Items[i] + ",";
 
-            var direction = Program.DirectionService.GetAll().FirstOrDefault(d => d.Name == _record.Направление);
-            var станцииНаправления = direction?.Stations.Select(st => st.NameRu).ToArray();
-
-            СписокСтанций списокСтанций = new СписокСтанций(СписокВыбранныхСтанций, станцииНаправления);
-
+            СписокСтанций списокСтанций = new СписокСтанций(СписокВыбранныхСтанций, СтанцииВыбранногоНаправления.ToArray());
             if (списокСтанций.ShowDialog() == DialogResult.OK)
             {
                 List<string> РезультирующиеСтанции = списокСтанций.ПолучитьСписокВыбранныхСтанций();

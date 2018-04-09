@@ -1611,6 +1611,13 @@ namespace MainExample
                                 }
                             }
 
+                            if (actionTrainDyn.SoundRecordStatus == SoundRecordStatus.ДобавленВОчередьРучное ||
+                                actionTrainDyn.SoundRecordStatus == SoundRecordStatus.ВоспроизведениеРучное)
+                            {
+                                continue;
+                            }
+
+
                             var activationTime= _soundReсordWorkerService.CalcTimeWithShift(ref данные, actionTrainDyn);  //времяСобытия
                             if (actionTrainDyn.Activity == true)
                             {

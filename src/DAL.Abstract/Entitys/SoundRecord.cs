@@ -67,6 +67,7 @@ namespace DAL.Abstract.Entitys
 
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;  //УДАЛИТЬ
         public List<ActionTrainDynamic> ActionTrainDynamiсList;
+        public List<ActionTrainDynamic> EmergencyTrainDynamiсList;
 
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокНештатныхСообщений;
         public byte СостояниеКарточки;

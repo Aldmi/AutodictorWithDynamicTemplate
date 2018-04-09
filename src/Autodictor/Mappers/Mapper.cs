@@ -175,23 +175,35 @@ namespace MainExample.Mappers
             record.БитыАктивностиПолей = номерСписка;
             record.БитыАктивностиПолей |= 0x03;                                   //TODO: ???
 
-
-
             // Шаблоны оповещения
-            record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();//УБРАТЬ
-
-
-            int idActDyn = 1;
-            record.ActionTrainDynamiсList = new List<ActionTrainDynamic>();
-            foreach (var actionTrain in config.ActionTrains)
+            Func<List<ActionTrain>, List<ActionTrainDynamic>> createActionTrainDynamicFunc= actions =>
             {
-                if (actionTrain.Time.IsDeltaTimes) //Указанны временные смещения
+                var  dynamiсLists = new List<ActionTrainDynamic>();
+                var idActDyn = 1;
+                foreach (var action in actions)
                 {
-                    foreach (var time in actionTrain.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
+                    if (action.Time.IsDeltaTimes) //Указанны временные смещения
                     {
-                        var newActionTrain= actionTrain.DeepClone(); //COPY
-                        newActionTrain.Time.DeltaTimes = new List<int> {time};
-                        var actDyn= new ActionTrainDynamic
+                        foreach (var time in action.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
+                        {
+                            var newActionTrain = action.DeepClone();
+                            newActionTrain.Time.DeltaTimes = new List<int> { time };
+                            var actDyn = new ActionTrainDynamic
+                            {
+                                Id = idActDyn++,
+                                SoundRecordId = record.Id,
+                                Activity = true,
+                                PriorityMain = Priority.Midlle,
+                                SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
+                                ActionTrain = newActionTrain
+                            };
+                            dynamiсLists.Add(actDyn);
+                        }
+                    }
+                    else                                   //Указан циклический повтор
+                    {
+                        var newActionTrain = action.DeepClone(); //COPY
+                        var actDyn = new ActionTrainDynamic
                         {
                             Id = idActDyn++,
                             SoundRecordId = record.Id,
@@ -200,28 +212,15 @@ namespace MainExample.Mappers
                             SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
                             ActionTrain = newActionTrain
                         };
-                        record.ActionTrainDynamiсList.Add(actDyn);
+                        dynamiсLists.Add(actDyn);
                     }
                 }
-                else                                   //Указан циклический повтор
-                {
-                    var newActionTrain= actionTrain.DeepClone(); //COPY
-                    var actDyn = new ActionTrainDynamic
-                    {
-                        Id = idActDyn++,
-                        SoundRecordId = record.Id,
-                        Activity = true,
-                        PriorityMain = Priority.Midlle,
-                        SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
-                        ActionTrain = newActionTrain
-                    };
-                    record.ActionTrainDynamiсList.Add(actDyn);
-                }
-            }
+                return dynamiсLists;
+            };
+            record.ActionTrainDynamiсList= createActionTrainDynamicFunc(config.ActionTrains);
+            record.EmergencyTrainDynamiсList = createActionTrainDynamicFunc(config.EmergencyTrains);
 
-
-
-
+            record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();//УБРАТЬ
             string[] шаблонОповещения = record.ШаблонВоспроизведенияСообщений.Split(':');
             if ((шаблонОповещения.Length % 3) == 0)
             {

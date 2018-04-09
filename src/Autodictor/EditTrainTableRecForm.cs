@@ -176,9 +176,21 @@ namespace MainExample
                 cBТипПоезда.DisplayMember = "NameRu";
                 cBТипПоезда.SelectedItem = TrainRec.TrainTypeByRyle;
             }
+            //Изменение категории поезда в зависимости от типа.
+            var categoryText = "Не определенн";
+            switch (TrainRec.TrainTypeByRyle.CategoryTrain)
+            {
+                case CategoryTrain.Suburb:
+                    gBОстановки.Enabled = true;
+                    categoryText = "Пригород";
+                    break;
+                case CategoryTrain.LongDist:
+                    gBОстановки.Enabled = false;
+                    categoryText = "Дальнего след.";
+                    break;
+            }
+            tb_Category.Text = categoryText;
 
-           // gBОстановки.Enabled= TrainRec.TrainTypeByRyle.CategoryTrain == CategoryTrain.Suburb;
-     
             string[] станции = TrainRec.Name.Split('-');
             if (станции.Length == 2)
             {
@@ -189,7 +201,6 @@ namespace MainExample
             {
                 cBКуда.Text = TrainRec.Name.Trim(new char[] { ' ' });
             }
-
 
             if ((TrainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
                 (TrainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
@@ -216,8 +227,7 @@ namespace MainExample
 
             ПланРасписанияПоезда ТекущийПланРасписанияПоезда =ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(this.TrainRec.Days);
             Расписание расписание = new Расписание(ТекущийПланРасписанияПоезда);
-            tBОписаниеДнейСледования.Text =
-                расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
+            tBОписаниеДнейСледования.Text = расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуОписанияРасписания();
             tb_ДниСледованияAlias.Text = TrainRec.DaysAlias;
 
             this.Text = "Расписание движения для поезда: " + TrainRec.Num + " - " + TrainRec.Name;

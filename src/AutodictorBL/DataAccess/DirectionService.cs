@@ -49,7 +49,7 @@ namespace AutodictorBL.DataAccess
 
         public IEnumerable<Station> GetStationsInDirectionByName(string directionName)
         {
-            return GetByName(directionName).Stations;
+            return GetByName(directionName)?.Stations;
         }
 
         public IEnumerable<Station> GetStationsInDirectionById(int directionId)
