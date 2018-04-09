@@ -69,7 +69,7 @@ namespace MainExample
 
             //DEBUG--------------------
             var serv = AutofacConfig.Container.Resolve<TrainRecService>();
-            var emergencyByTrainType = serv.GetTrainTypeByRyles().FirstOrDefault()?.EmergencyTrains.DeepClone();
+            var emergencyByTrainType = serv.GetTrainTypeByRyles().FirstOrDefault()?.EmergencyTrains;
             var items = new List<TrainTableRec>
             {
                 new TrainTableRec
@@ -117,7 +117,7 @@ namespace MainExample
                     IsSoundOutput = true,
                     TrainTypeByRyle = new TrainTypeByRyle("1", null, null, null, null, null, null, null, null, null, null, null),//null
                     ActionTrains = new List<ActionTrain>(),
-                    EmergencyTrains = emergencyByTrainType
+                    EmergencyTrains = emergencyByTrainType.DeepClone()
                  },
                 new TrainTableRec
                 {
@@ -164,7 +164,7 @@ namespace MainExample
                     IsSoundOutput = true,
                     TrainTypeByRyle = null,
                     ActionTrains = new List<ActionTrain>(),
-                    EmergencyTrains =emergencyByTrainType
+                    EmergencyTrains = emergencyByTrainType.DeepClone()
                 },
                 new TrainTableRec
                 {
@@ -211,7 +211,7 @@ namespace MainExample
                     IsSoundOutput = true,
                     TrainTypeByRyle = null,
                     ActionTrains = new List<ActionTrain>(),
-                    EmergencyTrains = emergencyByTrainType
+                    EmergencyTrains = emergencyByTrainType.DeepClone()
                 }
             };
             serv.ReWriteAll(items);

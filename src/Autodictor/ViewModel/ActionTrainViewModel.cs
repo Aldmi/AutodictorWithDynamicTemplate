@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
+using DAL.Abstract.Entitys;
 
 
 namespace MainExample.ViewModel
@@ -55,7 +55,8 @@ namespace MainExample.ViewModel
         [DisplayName("Шаблоны")]
         public List<LangViewModel> Langs { get; set; }      //Шаблоны на разных языках
 
-       // public Emergency Emergency { get; set; }
+        [Display(AutoGenerateField = false)]      //Не отображать в таблице
+        public Emergency Emergency { get; set; }
 
         #endregion
     }

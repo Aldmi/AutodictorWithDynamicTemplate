@@ -45,7 +45,6 @@ namespace MainExample
 
         private List<ActionTrainViewModel> ActionTrainsVm { get; } = new List<ActionTrainViewModel>();
         private List<ActionTrainViewModel> ActionTrainsSelectedTypeVm { get; set; } = new List<ActionTrainViewModel>();
-
         private List<ActionTrainViewModel> ActionEmergencyVm { get; } = new List<ActionTrainViewModel>();
 
         #endregion
@@ -178,16 +177,19 @@ namespace MainExample
             }
             //Изменение категории поезда в зависимости от типа.
             var categoryText = "Не определенн";
-            switch (TrainRec.TrainTypeByRyle.CategoryTrain)
+            if (TrainRec.TrainTypeByRyle != null)
             {
-                case CategoryTrain.Suburb:
-                    gBОстановки.Enabled = true;
-                    categoryText = "Пригород";
-                    break;
-                case CategoryTrain.LongDist:
-                    gBОстановки.Enabled = false;
-                    categoryText = "Дальнего след.";
-                    break;
+                switch (TrainRec.TrainTypeByRyle.CategoryTrain)
+                {
+                    case CategoryTrain.Suburb:
+                        gBОстановки.Enabled = true;
+                        categoryText = "Пригород";
+                        break;
+                    case CategoryTrain.LongDist:
+                        gBОстановки.Enabled = false;
+                        categoryText = "Дальнего след.";
+                        break;
+                }
             }
             tb_Category.Text = categoryText;
 
@@ -245,25 +247,32 @@ namespace MainExample
             dTPОтправление.Value = DateTime.Parse("00:00");
             dTPСледования.Value = DateTime.Parse("00:00");
 
-            if (TrainRec.ArrivalTime.HasValue && TrainRec.DepartureTime.HasValue)
+            switch (TrainRec.Classification)
             {
-                rBТранзит.Checked = true;
-                dTPПрибытие.Value = TrainRec.ArrivalTime.Value;
-                dTPОтправление.Value = TrainRec.DepartureTime.Value;
-            }
-            else if (TrainRec.ArrivalTime.HasValue)
-            {
-                rBПрибытие.Checked = true;
-                dTPПрибытие.Value = TrainRec.ArrivalTime.Value;
-            }
-            else if (TrainRec.DepartureTime.HasValue)
-            {
-                rBОтправление.Checked = true;
-                dTPОтправление.Value = TrainRec.DepartureTime.Value;
+                case Classification.None:
+                case Classification.Arrival:
+                    rBПрибытие.Checked = true;
+                    if (TrainRec.ArrivalTime.HasValue)
+                        dTPПрибытие.Value = TrainRec.ArrivalTime.Value;
+                    break;
+
+                case Classification.Departure:
+                    rBОтправление.Checked = true;
+                    if (TrainRec.DepartureTime.HasValue)
+                        dTPОтправление.Value = TrainRec.DepartureTime.Value;
+                    break;
+
+                case Classification.Transit:
+                    rBТранзит.Checked = true;
+                    if (TrainRec.ArrivalTime.HasValue && TrainRec.DepartureTime.HasValue)
+                    {
+                        dTPПрибытие.Value = TrainRec.ArrivalTime.Value;
+                        dTPОтправление.Value = TrainRec.DepartureTime.Value;
+                    }
+                    break;
             }
 
             dTPСледования.Value = TrainRec.FollowingTime ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-
             cBБлокировка.Checked = !TrainRec.Active;
 
             //TODO:trainRec.Примечание Сделать классом "StopTheTrain"
@@ -340,6 +349,7 @@ namespace MainExample
                 ActionTypeViewModel = (ActionTypeViewModel) actionTrain.ActionType,
                 Priority= actionTrain.Priority,
                 Transit= actionTrain.Transit,
+                Emergency = actionTrain.Emergency,
                 Langs= actionTrain.Langs?.Select(lang => new LangViewModel
                 {
                     Id= lang.Id,
@@ -366,6 +376,7 @@ namespace MainExample
                 ActionType = (ActionType)actionTrainVm.ActionTypeViewModel,
                 Priority = actionTrainVm.Priority,
                 Transit = actionTrainVm.Transit,
+                Emergency = actionTrainVm.Emergency,
                 Langs = actionTrainVm.Langs.Select(lang=> new Lang
                 {
                     Id = lang.Id,
@@ -433,18 +444,21 @@ namespace MainExample
 
             if (rBПрибытие.Checked == true)
             {
+                TrainRec.Classification = Classification.Arrival;
                 TrainRec.ArrivalTime = dTPПрибытие.Value;
                 TrainRec.DepartureTime = null;
                 TrainRec.StopTime = null;
             }
             else if (rBОтправление.Checked == true)
             {
+                TrainRec.Classification = Classification.Departure;
                 TrainRec.DepartureTime = dTPОтправление.Value;
                 TrainRec.ArrivalTime = null;
                 TrainRec.StopTime = null;
             }
             else
             {
+                TrainRec.Classification = Classification.Transit;
                 var времяПрибытия = dTPПрибытие.Value;
                 if (dTPОтправление.Value > времяПрибытия)
                 {

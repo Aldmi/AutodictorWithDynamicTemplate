@@ -196,10 +196,21 @@ namespace MainExample
             cBПрибытиеЗадерживается.Checked = false;
             cBОтправлениеЗадерживается.Checked = false;
             cBОтправлениеПоГотовности.Checked = false;
-            if ((record.БитыНештатныхСитуаций & 0x01) != 0x00) cBПоездОтменен.Checked = true;
-            else if ((record.БитыНештатныхСитуаций & 0x02) != 0x00) cBПрибытиеЗадерживается.Checked = true;
-            else if ((record.БитыНештатныхСитуаций & 0x04) != 0x00) cBОтправлениеЗадерживается.Checked = true;
-            else if ((record.БитыНештатныхСитуаций & 0x08) != 0x00) cBОтправлениеПоГотовности.Checked = true;
+            switch (record.Emergency)
+            {
+                case Emergency.DelayedArrival:
+                    cBПрибытиеЗадерживается.Checked = true;
+                    break;
+                case Emergency.DelayedDeparture:
+                    cBОтправлениеЗадерживается.Checked = true;
+                    break;
+                case Emergency.Cancel:
+                    cBПоездОтменен.Checked = true;
+                    break;
+                case Emergency.DispatchOnReadiness:
+                    cBОтправлениеПоГотовности.Checked = true;
+                    break;
+            }
 
             if (record.Автомат)
             {
@@ -515,24 +526,29 @@ namespace MainExample
 
             //Применение битов нештатных ситуаций------------------------------
             _record.БитыНештатныхСитуаций &= 0x00;
+            _record.Emergency = Emergency.None;
             if (cBПоездОтменен.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x01;
+                _record.Emergency = Emergency.Cancel;
             }
             else
             if (cBПрибытиеЗадерживается.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x02;
+                _record.Emergency = Emergency.DelayedArrival;
             }
             else
             if (cBОтправлениеЗадерживается.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x04;
+                _record.Emergency = Emergency.DelayedDeparture;
             }
             else
             if (cBОтправлениеПоГотовности.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x08;
+                _record.Emergency = Emergency.DispatchOnReadiness;
             }
 
 
@@ -646,24 +662,29 @@ namespace MainExample
 
             //Применение битов нештатных ситуаций------------------------------
             _record.БитыНештатныхСитуаций &= 0x00;
+            _record.Emergency = Emergency.None;
             if (cBПоездОтменен.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x01;
+                _record.Emergency = Emergency.Cancel;
             }
             else
             if (cBПрибытиеЗадерживается.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x02;
+                _record.Emergency = Emergency.DelayedArrival;
             }
             else
             if (cBОтправлениеЗадерживается.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x04;
+                _record.Emergency = Emergency.DelayedDeparture;
             }
             else
             if (cBОтправлениеПоГотовности.Checked)
             {
                 _record.БитыНештатныхСитуаций |= 0x08;
+                _record.Emergency = Emergency.DispatchOnReadiness;
             }
 
 
@@ -976,51 +997,44 @@ namespace MainExample
             if (MessageBox.Show("Вы точно хотите воспроизвести данное сообщение в эфир?", "Внимание !!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
-            string ФормируемоеСообщение = "";
-            int ТипПоезда = 0;//(int)_record.ТипПоезда;
-
+            ActionTrainDynamic emergency = null;
             switch ((sender as Button).Name)
             {
                 case "btnОтменаПоезда":
-                    ФормируемоеСообщение = Program.ШаблонОповещенияОбОтменеПоезда[ТипПоезда];
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.Cancel);
                     break;
 
                 case "btnЗадержкаПрибытия":
-                    ФормируемоеСообщение = Program.ШаблонОповещенияОЗадержкеПрибытияПоезда[ТипПоезда];
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.DelayedArrival);
                     break;
 
                 case "btnЗадержкаОтправления":
-                    ФормируемоеСообщение = Program.ШаблонОповещенияОЗадержкеОтправленияПоезда[ТипПоезда];
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.DelayedDeparture);
                     break;
 
                 case "btnОтправлениеПоГотовности":
-                    ФормируемоеСообщение = Program.ШаблонОповещенияООтправлениеПоГотовностиПоезда[ТипПоезда];
+                    emergency = _record.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == Emergency.DispatchOnReadiness);
                     break;
             }
 
-            bool НаличиеШаблона = false;
-            foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
-                if (Item.Name == ФормируемоеСообщение)
-                {
-                    НаличиеШаблона = true;
-                    ФормируемоеСообщение = Item.Message;
-                    break;
-                }
 
-
-            if (НаличиеШаблона == true)
+            if (emergency != null)
             {
-                СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон
-                {
-                    Id = 2000,
-                    ПриоритетГлавный = Priority.Hight,
-                    SoundRecordId = _record.Id,
-                    Шаблон = ФормируемоеСообщение,
-                    ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
-                    НазваниеШаблона = "Авария"
-                };
+                emergency.Id = 2000;
+                emergency.PriorityMain = Priority.Hight;
+                emergency.SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьРучное;
+                MainWindowForm.ВоспроизвестиШаблонОповещения_New("Действие оператора нештатная ситуация", _record, emergency, MessageType.ДинамическоеАварийное);
 
-                MainWindowForm.ВоспроизвестиШаблонОповещения("Действие оператора нештатная ситуация", _record, шаблонФормируемогоСообщения, MessageType.ДинамическоеАварийное);
+                //СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон
+                //{
+                //    Id = 2000,
+                //    ПриоритетГлавный = Priority.Hight,
+                //    SoundRecordId = _record.Id,
+                //    Шаблон = ФормируемоеСообщение,
+                //    ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
+                //    НазваниеШаблона = "Авария"
+                //};
+                //MainWindowForm.ВоспроизвестиШаблонОповещения("Действие оператора нештатная ситуация", _record, шаблонФормируемогоСообщения, MessageType.ДинамическоеАварийное);
             }
         }
 
@@ -1070,7 +1084,6 @@ namespace MainExample
                                 cBОтправлениеЗадерживается.Checked = false;
                             break;
                     }
-                    //ОбновитьТекстВОкне();
                 }
                 ОбновитьТекстВОкне();
             }

@@ -195,7 +195,7 @@ namespace MainExample.Mappers
                                 Activity = true,
                                 PriorityMain = Priority.Midlle,
                                 SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
-                                ActionTrain = newActionTrain
+                                ActionTrain = newActionTrain,
                             };
                             dynamiсLists.Add(actDyn);
                         }
@@ -218,7 +218,8 @@ namespace MainExample.Mappers
                 return dynamiсLists;
             };
             record.ActionTrainDynamiсList= createActionTrainDynamicFunc(config.ActionTrains);
-            record.EmergencyTrainDynamiсList = createActionTrainDynamicFunc(config.EmergencyTrains);
+            record.EmergencyTrainStaticList = createActionTrainDynamicFunc(config.EmergencyTrains);
+            record.Emergency = Emergency.None;
 
             record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();//УБРАТЬ
             string[] шаблонОповещения = record.ШаблонВоспроизведенияСообщений.Split(':');

@@ -66,13 +66,17 @@ namespace DAL.Abstract.Entitys
         public byte КоличествоПовторений;
 
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;  //УДАЛИТЬ
-        public List<ActionTrainDynamic> ActionTrainDynamiсList;
-        public List<ActionTrainDynamic> EmergencyTrainDynamiсList;
+        public List<ActionTrainDynamic> ActionTrainDynamiсList;    //Шаблоны поезда
+        public List<ActionTrainDynamic> EmergencyTrainStaticList;  //4 нештатных шаблона взятых из TrainTypeByRyle и отредактированных для данного поезда
+        public List<ActionTrainDynamic> EmergencyTrainDynamiсList; //N нештатных шаблона, сгенерированных при АКТИВНОЙ нештатной ситуации.
 
         public List<СостояниеФормируемогоСообщенияИШаблон> СписокНештатныхСообщений;
         public byte СостояниеКарточки;
         public string ОписаниеСостоянияКарточки;
-        public byte БитыНештатныхСитуаций; // бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности
+
+        public byte БитыНештатныхСитуаций; //Убрать!!  бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности
+        public Emergency Emergency { get; set; } // Текущая нештатная ситуация
+
         public uint ТаймерПовторения;
 
         public bool ВыводНаТабло;     // Работает только при наличии Contrains "SendingDataLimit".
