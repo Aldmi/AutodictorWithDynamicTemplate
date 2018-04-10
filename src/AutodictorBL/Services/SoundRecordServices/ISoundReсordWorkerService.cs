@@ -18,7 +18,7 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// Возвращает список дианмических шаблонов на базе ActionTrain.
         /// Учитывается Время активации шаблона.
         /// </summary>
-        List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions);
+        List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, DateTime? startDate4Cycle = null, DateTime? endDate4Cycle = null);
 
         List<TemplateItem> CalcTemplateItems(ActionTrain actionTrain, List<string> allowedLang);
         List<TemplateItem> CalcTemplateItemsByLang(Lang lang);

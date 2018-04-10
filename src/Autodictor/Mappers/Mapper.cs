@@ -179,8 +179,6 @@ namespace MainExample.Mappers
             record.БитыАктивностиПолей |= 0x03;                                   //TODO: ???
 
 
-
-
             // Шаблоны оповещения
             record.ActionTrainDynamiсList= soundReсordWorkerService.СreateActionTrainDynamic(record, config.ActionTrains);
             record.EmergencyTrainStaticList = config.EmergencyTrains.DeepClone();

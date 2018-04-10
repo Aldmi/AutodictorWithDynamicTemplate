@@ -35,14 +35,17 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// <summary>
         /// Возвращает список дианмических шаблонов на базе ActionTrain.
         /// Учитывается Время активации шаблона.
+        /// Для Нештатных шаблонов "Тек. времени" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
+        /// Для Обычных шаблонов "Время относительно которого заданн шаблон" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
         /// </summary>
-        public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions)
+        public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, DateTime? startDate4Cycle=null, DateTime? endDate4Cycle=null)
         {
             var dynamiсLists = new List<ActionTrainDynamic>();
             var idActDyn = 1;
+
             foreach (var action in actions)
             {
-                if (action.Time.IsDeltaTimes) //Указанны временные смещения
+                if (action.Time.IsDeltaTimes)      //Указанны временные смещения
                 {
                     foreach (var time in action.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
                     {
@@ -55,24 +58,41 @@ namespace AutodictorBL.Services.SoundRecordServices
                             Activity = true,
                             PriorityMain = Priority.Midlle,
                             SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
-                            ActionTrain = newActionTrain,
+                            ActionTrain = newActionTrain
                         };
                         dynamiсLists.Add(actDyn);
                     }
                 }
                 else                                   //Указан циклический повтор
                 {
-                    var newActionTrain = action.DeepClone(); //COPY
-                    var actDyn = new ActionTrainDynamic
+                    DateTime eventTime;
+                    if (record.Emergency == Emergency.None)
                     {
-                        Id = idActDyn++,
-                        SoundRecordId = record.Id,
-                        Activity = true,
-                        PriorityMain = Priority.Midlle,
-                        SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
-                        ActionTrain = newActionTrain
-                    };
-                    dynamiсLists.Add(actDyn);
+                        eventTime = (action.ActionType == ActionType.Arrival) ? record.ВремяПрибытия : record.ВремяОтправления;
+                    }
+                    else
+                    {
+                        eventTime = DateTime.Now;
+                    }
+                    startDate4Cycle = startDate4Cycle ?? eventTime;              //startDate4Cycle ?? eventTime.AddHours(-10);
+                    endDate4Cycle = endDate4Cycle ?? eventTime.AddHours(27 - eventTime.Hour); //часы до конца суток  +3 часа;
+                    var interval = action.Time.CycleTime.Value;
+                    for (var date = startDate4Cycle.Value; date < endDate4Cycle.Value; date += new TimeSpan(0, interval, 0))
+                    {
+                        var time = (((eventTime - date).Hours * 60) + (eventTime - date).Minutes) * -1;
+                        var newActionTrain= action.DeepClone();
+                        newActionTrain.Time.DeltaTimes = new List<int> { time };
+                        var actDyn = new ActionTrainDynamic
+                        {
+                            Id = idActDyn++,
+                            SoundRecordId = record.Id,
+                            Activity = true,
+                            PriorityMain = Priority.Midlle,
+                            SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения,
+                            ActionTrain = newActionTrain
+                        };
+                        dynamiсLists.Add(actDyn);
+                    }
                 }
             }
             return dynamiсLists;

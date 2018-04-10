@@ -833,10 +833,8 @@ namespace MainExample
 
 
             //Заполнение СписокНештатныхСообщений.
-            if (rec.Emergency != Emergency.None)
-            {
-                rec= ЗаполнениеСпискаНештатныхСитуаций(rec, null);
-            }
+            rec= ЗаполнениеСпискаНештатныхСитуаций(ref rec, null);
+            
 
             rec.AplyIdTrain();
 
@@ -2417,16 +2415,15 @@ namespace MainExample
                         break;
                 }
 
-                if (данные.БитыНештатныхСитуаций != старыеДанные.БитыНештатныхСитуаций)
-                {
-                    данные = ЗаполнениеСпискаНештатныхСитуаций(данные, key);
-                }
+            
+               данные = ЗаполнениеСпискаНештатныхСитуаций(ref данные, key);
+                
 
                 //Обновить Время ПРИБ
                 var actStr = "";
                 if (((данные.БитыАктивностиПолей & 0x04) != 0x00) && (старыеДанные.ВремяПрибытия != данные.ВремяПрибытия))
                 {
-                    данные = ЗаполнениеСпискаНештатныхСитуаций(данные, key);
+                    данные = ЗаполнениеСпискаНештатныхСитуаций(ref данные, key);
                     actStr = данные.ВремяПрибытия.ToString("HH:mm");
                     switch (listView.Name)
                     {
@@ -2446,7 +2443,7 @@ namespace MainExample
                 //Обновить Время ОТПР
                 if (((данные.БитыАктивностиПолей & 0x10) != 0x00) && (старыеДанные.ВремяОтправления != данные.ВремяОтправления))
                 {
-                    данные = ЗаполнениеСпискаНештатныхСитуаций(данные, key);
+                    данные = ЗаполнениеСпискаНештатныхСитуаций(ref данные, key);
                     actStr = данные.ВремяОтправления.ToString("HH:mm");
                     switch (listView.Name)
                     {
@@ -2488,97 +2485,27 @@ namespace MainExample
 
 
 
-        private SoundRecord ЗаполнениеСпискаНештатныхСитуаций(SoundRecord данные, string key)
+        private SoundRecord ЗаполнениеСпискаНештатныхСитуаций(ref SoundRecord record, string key)
         {
-            if (данные.Emergency == Emergency.None)
-                return данные;
+            if (record.Emergency == Emergency.None)
+            {
+                record.EmergencyTrainDynamiсList= null;
+                return record;
+            }
+            var currentEmergency = record.Emergency;
+            var emergency = record.EmergencyTrainStaticList.FirstOrDefault(t => t.Emergency == currentEmergency);
+            if (emergency == null)
+                return record;
 
-            //var emergency = данные.EmergencyTrainStaticList.FirstOrDefault(t => t.ActionTrain.Emergency == данные.Emergency);
-            //if(emergency == null)
-            //    return данные;
+            //Сформируем список нештатных сообщений--------------------------------------------------------------------------------------------
+            record.EmergencyTrainDynamiсList = _soundReсordWorkerService.СreateActionTrainDynamic(record, new List<ActionTrain> {emergency});
+            record.EmergencyTrainDynamiсList.ForEach(em=> em.Id+=1000);
 
-            //DateTime временноеВремяСобытия = (данные.Classification == Classification.Arrival) ? данные.ВремяПрибытия : данные.ВремяОтправления;
-            //string формируемоеСообщение = "";
-
-            ////Сформируем список нештатных сообщений--------------------------------------
-            //var startDate = временноеВремяСобытия.AddHours(-10);
-            //var endDate = временноеВремяСобытия.AddHours(27 - DateTime.Now.Hour); //часы до конца суток  +3 часа
-            //List<ActionTrainDynamic> текущийСписокНештатныхСообщений = new List<ActionTrainDynamic>();
-
-
-            //int interval = 0;
-            //if (!emergency.ActionTrain.Time.IsDeltaTimes)
-            //{
-            //    interval = emergency.ActionTrain.Time.CycleTime.Value;
-            //}
-
-            //int indexШаблона = 1000;              //нештатные сообшения индексируются от 1000
-            //for (var date = startDate; date < endDate; date += new TimeSpan(0, 0, (int) (interval * 60.0)))
-            //{
-            //    ActionTrainDynamic emergencyDynamic = emergency.DeepClone();
-            //    emergencyDynamic.Id = indexШаблона++;
-            //    emergencyDynamic.ActionTrain.Time = new ActionTime {};
-            //}
-
-
-
-            //----------------------------------------
-            //    СостояниеФормируемогоСообщенияИШаблон новыйШаблон;
-            //    новыйШаблон.Id = indexШаблона++;
-            //    новыйШаблон.SoundRecordId = данные.Id;
-            //    новыйШаблон.Активность = данные.Активность;
-            //    новыйШаблон.ПриоритетГлавный = Priority.Midlle;
-            //    новыйШаблон.ПриоритетВторостепенный = PriorityPrecise.One;
-            //    новыйШаблон.Воспроизведен = false;
-            //    новыйШаблон.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
-            //    новыйШаблон.ВремяСмещения = (((временноеВремяСобытия - date).Hours * 60) + (временноеВремяСобытия - date).Minutes) * -1;
-            //    новыйШаблон.НазваниеШаблона = String.Empty;
-            //    новыйШаблон.Шаблон = String.Empty;
-            //    новыйШаблон.ПривязкаКВремени = ((данные.БитыАктивностиПолей & 0x04) != 0x00) ? 0 : 1;
-            //    новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };
-
-            //    if ((данные.БитыНештатныхСитуаций & 0x01) != 0x00)
-            //    {
-            //        новыйШаблон.НазваниеШаблона = "Авария:Отмена";
-            //        формируемоеСообщение = Program.ШаблонОповещенияОбОтменеПоезда[типПоезда];
-            //    }
-            //    else if ((данные.БитыНештатныхСитуаций & 0x02) != 0x00)
-            //    {
-            //        новыйШаблон.НазваниеШаблона = "Авария:ЗадержкаПрибытия";
-            //        формируемоеСообщение = Program.ШаблонОповещенияОЗадержкеПрибытияПоезда[типПоезда];
-            //    }
-            //    else if ((данные.БитыНештатныхСитуаций & 0x04) != 0x00)
-            //    {
-            //        новыйШаблон.НазваниеШаблона = "Авария:ЗадержкаОтправления";
-            //        формируемоеСообщение = Program.ШаблонОповещенияОЗадержкеОтправленияПоезда[типПоезда];
-            //    }
-            //    else if ((данные.БитыНештатныхСитуаций & 0x08) != 0x00)
-            //    {
-            //        новыйШаблон.НазваниеШаблона = "Авария:ОтправлениеПоГотов.";
-            //        формируемоеСообщение = Program.ШаблонОповещенияООтправлениеПоГотовностиПоезда[типПоезда];
-            //    }
-
-            //    if (формируемоеСообщение != "")
-            //    {
-            //        foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
-            //            if (Item.Name == формируемоеСообщение)
-            //            {
-            //                новыйШаблон.Шаблон = Item.Message;
-            //                break;
-            //            }
-            //    }
-
-            //    текущийСписокНештатныхСообщений.Add(новыйШаблон);
-            //}
-
-            //данные.СписокНештатныхСообщений = текущийСписокНештатныхСообщений;
-
-            //if (!string.IsNullOrEmpty(key))
-            //{
-            //    SoundRecords[key] = данные;
-            //}
-
-            return данные;
+            if (!string.IsNullOrEmpty(key))
+            {
+                SoundRecords[key] = record;
+            }
+            return record;
         }
 
 
@@ -2754,19 +2681,6 @@ namespace MainExample
             //};
             //var soundRecordPreprocessingService = PreprocessingOutputFactory.CreateSoundRecordPreprocessingService(option);
             //soundRecordPreprocessingService.StartPreprocessing(ref record);
-
-            //TODO: Язык произношения должен быть отмечен галочкой для каждого шаблона (при добавлении поезда).
-            //удалить англ. язык, если запрешенно произношения на аннглийском для данного типа поезда.
-            //if (!((record.ТипПоезда == ТипПоезда.Пассажирский && Program.Настройки.EngСообщНаПассажирскийПоезд) ||
-            //    (record.ТипПоезда == ТипПоезда.Пригородный && Program.Настройки.EngСообщНаПригородныйЭлектропоезд) ||
-            //    (record.ТипПоезда == ТипПоезда.Скоростной && Program.Настройки.EngСообщНаСкоростнойПоезд) ||
-            //    (record.ТипПоезда == ТипПоезда.Скорый && Program.Настройки.EngСообщНаСкорыйПоезд) ||
-            //    (record.ТипПоезда == ТипПоезда.Ласточка && Program.Настройки.EngСообщНаЛасточку) ||
-            //    (record.ТипПоезда == ТипПоезда.Фирменный && Program.Настройки.EngСообщНаФирменный) ||
-            //    (record.ТипПоезда == ТипПоезда.РЭКС && Program.Настройки.EngСообщНаРЭКС)))
-            //{
-            //    формируемоеСообщение.ЯзыкиОповещения.Remove(NotificationLanguage.Eng);
-            //}
 
             var воспроизводимыеСообщения= new List<ВоспроизводимоеСообщение>();
             string eof = "X";
