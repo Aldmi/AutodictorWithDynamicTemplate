@@ -2468,6 +2468,7 @@ namespace MainExample
                 record.EmergencyTrainDynamiсList= null;
                 return record;
             }
+
             var currentEmergency = record.Emergency;
             var emergency = record.EmergencyTrainStaticList.FirstOrDefault(t => t.Emergency == currentEmergency);
             if (emergency == null)

@@ -19,15 +19,21 @@ namespace AutodictorBL.Services.SoundRecordServices
                 ? actionTrainDyn.ActionTrain.Time.DeltaTimes[0]
                 : actionTrainDyn.ActionTrain.Time.CycleTime.Value;
 
+            DateTime activationTime;
+            if (rec.Emergency == Emergency.None)
+            {
+                var manualTemplate= actionTrainDyn.ActionTrain.Name.StartsWith("@");
+                var arrivalTime= (rec.ФиксированноеВремяПрибытия == null || !manualTemplate) ? rec.ВремяПрибытия : rec.ФиксированноеВремяПрибытия.Value;
+                var departTime= (rec.ФиксированноеВремяОтправления == null || !manualTemplate) ? rec.ВремяОтправления : rec.ФиксированноеВремяОтправления.Value;
 
-            var manualTemplate = actionTrainDyn.ActionTrain.Name.StartsWith("@");
-            var arrivalTime = (rec.ФиксированноеВремяПрибытия == null || !manualTemplate) ? rec.ВремяПрибытия : rec.ФиксированноеВремяПрибытия.Value;
-            var departTime = (rec.ФиксированноеВремяОтправления == null || !manualTemplate) ? rec.ВремяОтправления : rec.ФиксированноеВремяОтправления.Value;
-
-            var activationTime = actionTrainDyn.ActionTrain.ActionType == ActionType.Arrival
-                ? arrivalTime.AddMinutes(timeSift)
-                : departTime.AddMinutes(timeSift);
-
+                activationTime= (actionTrainDyn.ActionTrain.ActionType == ActionType.Arrival)
+                    ? arrivalTime.AddMinutes(timeSift)
+                    : departTime.AddMinutes(timeSift);
+            }
+            else
+            {
+                activationTime= DateTime.Now.AddMinutes(timeSift);
+            }
             return activationTime;
         }
 
