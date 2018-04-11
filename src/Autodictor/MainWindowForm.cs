@@ -496,26 +496,20 @@ namespace MainExample
                             break;
                     }
                     break;
-
+                    
                 case MessageType.ДинамическоеАварийное:
-                    //TODO: Заменить тип СписокНештатныхСообщений на ActionTrainDynamic
-                    var soundRecord = SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
-                    for (int i = 0; i < soundRecord.Value.СписокНештатныхСообщений.Count; i++)
+                   soundRecordKeyValuePair = SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
+                   record = soundRecordKeyValuePair.Value;
+                   template = record.EmergencyTrainDynamiсList.FirstOrDefault(actDyn => actDyn.Id == templateChangeValue.SoundMessage.ParentId);
+                    if (template == null) return;
+                    switch (templateChangeValue.StatusPlaying)
                     {
-                        if (soundRecord.Value.СписокНештатныхСообщений[i].Id == templateChangeValue.SoundMessage.ParentId)
-                        {
-                            var templateAlarm = soundRecord.Value.СписокНештатныхСообщений[i];
-                            switch (templateChangeValue.StatusPlaying)
-                            {
-                                case StatusPlaying.Start:
-                                    templateAlarm.СостояниеВоспроизведения = SoundRecordStatus.ВоспроизведениеАвтомат;
-                                    break;
-                                case StatusPlaying.Stop:
-                                    templateAlarm.СостояниеВоспроизведения = SoundRecordStatus.Выключена;
-                                    break;
-                            }
-                            soundRecord.Value.СписокНештатныхСообщений[i] = templateAlarm;
-                        }
+                        case StatusPlaying.Start:
+                            template.SoundRecordStatus = (template.SoundRecordStatus == SoundRecordStatus.ДобавленВОчередьРучное) ? SoundRecordStatus.ВоспроизведениеРучное : SoundRecordStatus.ВоспроизведениеАвтомат;
+                            break;
+                        case StatusPlaying.Stop:
+                            template.SoundRecordStatus = SoundRecordStatus.Выключена;
+                            break;
                     }
                     break;
 
@@ -1358,36 +1352,34 @@ namespace MainExample
 
                 while (true)
                 {
-                    if (данные.Активность == true)
+                    if (данные.Активность)
                     {
-                        if ((данные.БитыНештатныхСитуаций & 0x0F) == 0x00)
-                            данные.СписокНештатныхСообщений.Clear();
-
                         // Проверка на нештатные ситуации
-                        if ((данные.БитыНештатныхСитуаций & 0x0F) != 0x00)
+                        if (данные.Emergency != Emergency.None)  //(данные.БитыНештатныхСитуаций & 0x0F) != 0x00
                         {
-                            if (данные.СостояниеКарточки != 6 && (данные.БитыНештатныхСитуаций & 0x01) != 0x00)
+                            //TODO: Зачем if{}else связка ??
+                            if ((данные.СостояниеКарточки != 6) && (данные.Emergency == Emergency.Cancel)) //(данные.СостояниеКарточки != 6 && (данные.БитыНештатныхСитуаций & 0x01) != 0x00)
                             {
                                 данные.ОписаниеСостоянияКарточки = "Поезд отменен";
                                 данные.СостояниеКарточки = 6;
                                 внесеныИзменения = true;
                             }
                             else
-                            if (данные.СостояниеКарточки != 16 && (данные.БитыНештатныхСитуаций & 0x02) != 0x00)
+                            if (данные.СостояниеКарточки != 16 && (данные.Emergency == Emergency.DelayedArrival)) //(данные.СостояниеКарточки != 16 && (данные.БитыНештатныхСитуаций & 0x02) != 0x00)
                             {
                                 данные.ОписаниеСостоянияКарточки = "Задержка прибытия поезда";
                                 данные.СостояниеКарточки = 16;
                                 внесеныИзменения = true;
                             }
                             else
-                            if (данные.СостояниеКарточки != 26 && (данные.БитыНештатныхСитуаций & 0x04) != 0x00)
+                            if (данные.СостояниеКарточки != 26 && (данные.Emergency == Emergency.DelayedDeparture)) //(данные.СостояниеКарточки != 26 && (данные.БитыНештатныхСитуаций & 0x04) != 0x00)
                             {
                                 данные.ОписаниеСостоянияКарточки = "Задержка отправления поезда";
                                 данные.СостояниеКарточки = 26;
                                 внесеныИзменения = true;
                             }
                             else
-                            if (данные.СостояниеКарточки != 36 && (данные.БитыНештатныхСитуаций & 0x08) != 0x00)
+                            if (данные.СостояниеКарточки != 36 && (данные.Emergency == Emergency.DispatchOnReadiness))
                             {
                                 данные.ОписаниеСостоянияКарточки = "Отправление по готовности поезда";
                                 данные.СостояниеКарточки = 36;
@@ -1398,71 +1390,56 @@ namespace MainExample
                             if (данные.Автомат)
                             {
                                 //НЕШТАТНОЕ СОБЫТИЕ========================================================================
-                                for (int j = 0; j < данные.СписокНештатныхСообщений.Count; j++)
+                                for (int j = 0; j < данные.EmergencyTrainDynamiсList.Count; j++)
                                 {
-                                    var нештатноеСообщение = данные.СписокНештатныхСообщений[j];
-                                    if (нештатноеСообщение.Активность == true)
+                                    var emergencyAction = данные.EmergencyTrainDynamiсList[j];
+                                    if (emergencyAction.Activity)
                                     {
-                                        DateTime времяСобытия = нештатноеСообщение.ПривязкаКВремени == 0 ? данные.ВремяПрибытия : данные.ВремяОтправления;
-                                        времяСобытия = времяСобытия.AddMinutes(нештатноеСообщение.ВремяСмещения);
-
-                                        if (DateTime.Now < времяСобытия)
+                                        if (emergencyAction.SoundRecordStatus == SoundRecordStatus.ДобавленВОчередьРучное ||
+                                            emergencyAction.SoundRecordStatus == SoundRecordStatus.ВоспроизведениеРучное)
                                         {
-                                            if (нештатноеСообщение.СостояниеВоспроизведения != SoundRecordStatus.ОжиданиеВоспроизведения)
+                                            continue;
+                                        }
+
+                                        var activationTime = _soundReсordWorkerService.CalcTimeWithShift(ref данные, emergencyAction);
+                                        if (DateTime.Now < activationTime)
+                                        {
+                                            if (emergencyAction.SoundRecordStatus != SoundRecordStatus.ОжиданиеВоспроизведения)
                                             {
-                                                нештатноеСообщение.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;
-                                                данные.СписокНештатныхСообщений[j] = нештатноеСообщение;
+                                                emergencyAction.SoundRecordStatus = SoundRecordStatus.ОжиданиеВоспроизведения;
                                                 внесеныИзменения = true;
                                             }
                                         }
-                                        else if (DateTime.Now >= времяСобытия.AddSeconds(1))
+                                        else if (DateTime.Now >= activationTime.AddSeconds(1))
                                         {
-                                            if (QueueSound.FindItem(данные.Id, нештатноеСообщение.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
+                                            if (QueueSound.FindItem(данные.Id, emergencyAction.Id) == null) //Если нету элемента в очереди сообщений, то запись уже воспроизведенна.
                                             {
-                                                if (нештатноеСообщение.СостояниеВоспроизведения != SoundRecordStatus.Воспроизведена)
+                                                if (emergencyAction.SoundRecordStatus != SoundRecordStatus.Воспроизведена)
                                                 {
-                                                    нештатноеСообщение.СостояниеВоспроизведения = SoundRecordStatus.Воспроизведена;
-                                                    данные.СписокНештатныхСообщений[j] = нештатноеСообщение;
+                                                    emergencyAction.SoundRecordStatus = SoundRecordStatus.Воспроизведена;
                                                     внесеныИзменения = true;
                                                 }
                                             }
                                         }
-                                        else if (нештатноеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ОжиданиеВоспроизведения)
+                                        else if (emergencyAction.SoundRecordStatus == SoundRecordStatus.ОжиданиеВоспроизведения)
                                         {
                                             // СРАБОТКА------------------------------------------------------------
-                                            if ((текущееВремя.Hour == времяСобытия.Hour) && (текущееВремя.Minute == времяСобытия.Minute) && (текущееВремя.Second == времяСобытия.Second))
+                                            if ((текущееВремя.Hour == activationTime.Hour) && (текущееВремя.Minute == activationTime.Minute) && (текущееВремя.Second == activationTime.Second))
                                             {
-                                                нештатноеСообщение.СостояниеВоспроизведения = SoundRecordStatus.ДобавленВОчередьАвтомат;
-                                                данные.СписокНештатныхСообщений[j] = нештатноеСообщение;
+                                                emergencyAction.SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьАвтомат;
                                                 внесеныИзменения = true;
-
-                                                if (РазрешениеРаботы && (нештатноеСообщение.Шаблон != ""))
+                                                if (РазрешениеРаботы)//&& (нештатноеСообщение.Шаблон != "")
                                                 {
-                                                    СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон
-                                                    {
-                                                        Id = нештатноеСообщение.Id,
-                                                        SoundRecordId = данные.Id,
-                                                        ПриоритетГлавный = Priority.Midlle,
-                                                        Шаблон = нештатноеСообщение.Шаблон,
-                                                        ЯзыкиОповещения = new List<NotificationLanguage>
-                                                            {
-                                                                NotificationLanguage.Rus,
-                                                                NotificationLanguage.Eng
-                                                            },
-                                                        //TODO: вычислять языки оповещения 
-                                                        НазваниеШаблона = нештатноеСообщение.НазваниеШаблона,
-                                                    };
-                                                    MainWindowForm.ВоспроизвестиШаблонОповещения("Автоматическое воспроизведение сообщения о внештатной ситуации", данные, шаблонФормируемогоСообщения, MessageType.ДинамическоеАварийное);
+                                                    ВоспроизвестиШаблонОповещения_New("Автоматическое воспроизведение сообщения о внештатной ситуации", данные, emergencyAction, MessageType.ДинамическоеАварийное);
                                                 }
                                             }
                                         }
 
-
                                         //Добавление НЕШТАТНОГО события ===================================================================
-                                        if (DateTime.Now > времяСобытия.AddMinutes(-30) && !(нештатноеСообщение.СостояниеВоспроизведения == SoundRecordStatus.Воспроизведена && DateTime.Now > времяСобытия.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий)))//убрать через 5 мин. после воспроизведения
+                                        if (DateTime.Now > activationTime.AddMinutes(-30) && !(emergencyAction.SoundRecordStatus == SoundRecordStatus.Воспроизведена && DateTime.Now > activationTime.AddSeconds(ВремяЗадержкиВоспроизведенныхСобытий)))//убрать через 5 мин. после воспроизведения
                                         {
                                             StateTask состояниеСтроки = StateTask.Disabled;
-                                            switch (нештатноеСообщение.СостояниеВоспроизведения)
+                                            switch (emergencyAction.SoundRecordStatus)
                                             {
                                                 case SoundRecordStatus.Воспроизведена:
                                                 case SoundRecordStatus.Выключена:
@@ -1484,9 +1461,9 @@ namespace MainExample
                                                 MessageType = MessageType.ДинамическоеАварийное,
                                                 StateTask = состояниеСтроки,
                                                 Описание = данные.НомерПоезда + " " + данные.НазваниеПоезда + ": " + данные.ОписаниеСостоянияКарточки,
-                                                Время = времяСобытия,
+                                                Время = activationTime,
                                                 Key = SoundRecords.ElementAt(i).Key,
-                                                ParentId = нештатноеСообщение.Id
+                                                ParentId = emergencyAction.Id
                                             };
 
                                             TaskManager.AddItem(taskSound);
@@ -1690,8 +1667,7 @@ namespace MainExample
                                     };
 
                                     TaskManager.AddItem(taskSound);
-                                }
-                                
+                                }        
                             }
                         }
 
@@ -2587,8 +2563,6 @@ namespace MainExample
                                                 menuItem.Checked = (i == (int)Данные.РазрешениеНаОтображениеПути);
                                             }
                                         }
-
-
 
                                         шаблоныОповещенияToolStripMenuItem1.DropDownItems.Clear();
                                         for (int i = 0; i < Данные.СписокФормируемыхСообщений.Count(); i++)
@@ -4025,8 +3999,17 @@ namespace MainExample
                         break;
 
                     case MessageType.ДинамическоеАварийное:
-                        throw new NotImplementedException();
-                      
+                        if (SoundRecords.ContainsKey(subtaitle.Key))
+                        {
+                            var rec= SoundRecords[subtaitle.Key];
+                            var actionEmergencyDyn = rec.EmergencyTrainDynamiсList.FirstOrDefault(atd => atd.Id == subtaitle.ParentId);
+                            if (actionEmergencyDyn != null)
+                            {
+                                var textFragments = _soundReсordWorkerService.CalcTextFragment(ref rec, actionEmergencyDyn.ActionTrain);
+                                rtb_subtaitles.ShowTextFragment(textFragments);
+                            }
+                        }
+                        break;
 
                     default:
                         throw new ArgumentOutOfRangeException();
