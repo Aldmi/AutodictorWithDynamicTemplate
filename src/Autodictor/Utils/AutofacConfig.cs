@@ -111,6 +111,7 @@ namespace MainExample.Utils
             builder.RegisterType<PathwaysService>().SingleInstance();
             builder.RegisterType<TrainTypeByRyleService>().SingleInstance(); //TODO: удалить
             builder.RegisterType<UserService>().InstancePerDependency();
+            builder.RegisterType<SoundRecChangesService>().InstancePerDependency();
             builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
             builder.RegisterType<SoundReсordWorkerService>().As<ISoundReсordWorkerService>().InstancePerLifetimeScope();
             builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {

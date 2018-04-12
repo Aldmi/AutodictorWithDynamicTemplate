@@ -38,7 +38,7 @@ namespace MainExample.Services.GetDataService
 
         public bool Enable { get; set; }
 
-        public ISubject<SoundRecordChanges> SoundRecordChangesRx { get; } = new Subject<SoundRecordChanges>();
+        public ISubject<SoundRecordChange> SoundRecordChangesRx { get; } = new Subject<SoundRecordChange>();
 
         #endregion
 

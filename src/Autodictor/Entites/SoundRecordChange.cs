@@ -4,7 +4,7 @@ using DAL.Abstract.Entitys;
 
 namespace MainExample.Entites
 {
-    public class SoundRecordChanges
+    public class SoundRecordChange
     {
         public int ScheduleId { get; set; }            //Id поезда основного расписания на базе которого был сделанн данный поезд
         public DateTime TimeStamp { get; set; }      //Время фиксации изменений

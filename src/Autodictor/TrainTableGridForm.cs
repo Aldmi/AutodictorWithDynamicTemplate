@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutodictorBL.DataAccess;
+using AutodictorBL.Services;
 using Autofac.Features.OwnedInstances;
 using DAL.Abstract.Entitys;
 using Force.DeepCloner;

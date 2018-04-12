@@ -198,7 +198,7 @@ namespace MainExample.Services.GetDataService
 
                         if (changeFlag)
                         {
-                            SoundRecordChangesRx.OnNext(new SoundRecordChanges { NewRec = rec, Rec = recOld, TimeStamp = DateTime.Now, UserInfo = "Удаленный диспетчер" });
+                            SoundRecordChangesRx.OnNext(new SoundRecordChange { NewRec = rec, Rec = recOld, TimeStamp = DateTime.Now, UserInfo = "Удаленный диспетчер" });
                         }
                     }
                 }

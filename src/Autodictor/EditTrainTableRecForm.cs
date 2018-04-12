@@ -11,6 +11,7 @@ using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.DataAccess;
 using AutodictorBL.Factory;
 using AutodictorBL.Factory.TrainRecordFactory;
+using AutodictorBL.Services;
 using Autofac;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
@@ -54,7 +55,7 @@ namespace MainExample
 
         #region ctor
 
-        public EditTrainTableRecForm(TrainRecService trainRecService, TrainTableRec trainRec)
+        public EditTrainTableRecForm(TrainRecService trainRecService, IAuthentificationService service, TrainTableRec trainRec)
         {
             _trainRecService = trainRecService;
             TrainRec = trainRec;

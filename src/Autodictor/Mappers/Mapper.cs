@@ -712,9 +712,9 @@ namespace MainExample.Mappers
 
 
 
-        public static SoundRecordChanges SoundRecordChangesDb2SoundRecordChanges(SoundRecordChangesDb data)
+        public static SoundRecordChange SoundRecordChangesDb2SoundRecordChanges(SoundRecordChangesDb data)
         {      
-             return new SoundRecordChanges
+             return new SoundRecordChange
              {
                  ScheduleId = data.ScheduleId,
                  Rec = MapSoundRecordDb2SoundRecord(data.Rec),
@@ -727,7 +727,7 @@ namespace MainExample.Mappers
 
 
 
-        public static SoundRecordChangesDb SoundRecordChanges2SoundRecordChangesDb(SoundRecordChanges data)
+        public static SoundRecordChangesDb SoundRecordChanges2SoundRecordChangesDb(SoundRecordChange data)
         {
             return new SoundRecordChangesDb
             {

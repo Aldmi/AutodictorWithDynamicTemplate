@@ -55,6 +55,7 @@ namespace MainExample
         private readonly IUsersRepository _usersRepository;
         private static ISoundReсordWorkerService _soundReсordWorkerService; //DEL
         private readonly TrainRecService _trainRecService;
+        private readonly SoundRecChangesService _soundRecChangesService;
 
         private const int ВремяЗадержкиВоспроизведенныхСобытий = 20;  //сек
 
@@ -66,7 +67,7 @@ namespace MainExample
 
         public static SortedDictionary<string, СтатическоеСообщение> СтатическиеЗвуковыеСообщения = new SortedDictionary<string, СтатическоеСообщение>();
 
-        public static List<SoundRecordChanges> SoundRecordChanges = new List<SoundRecordChanges>();  //Изменения на тек.сутки + изменения на пред. сутки для поездов ходящих в тек. сутки
+        public static List<SoundRecordChange> SoundRecordChanges = new List<SoundRecordChange>();  //Изменения на тек.сутки + изменения на пред. сутки для поездов ходящих в тек. сутки
 
         public TaskManagerService TaskManager = new TaskManagerService();
 
@@ -117,98 +118,7 @@ namespace MainExample
         private ToolStripMenuItem[] СписокПолейПути;
 
 
-
-        // Конструктор
-        //public MainWindowForm(CisClient cisClient,
-        //                      IEnumerable<IBinding2PathBehavior> binding2PathBehaviors,
-        //                      IEnumerable<IBinding2GeneralSchedule> binding2GeneralScheduleBehaviors,
-        //                      IEnumerable<IBinding2ChangesBehavior> binding2ChangesBehaviors,
-        //                      IEnumerable<IBinding2ChangesEventBehavior> binding2ChangesEventBehaviors,
-        //                      IEnumerable<IBinding2GetData> binding2GetDataBehaviors,
-        //                      Device soundChanelManagment,
-        //                      IAuthentificationService authentificationService,
-        //                      IUsersRepository usersRepository)
-        //{
-            
-        //    if (myMainForm != null)
-        //        return;
-
-        //    myMainForm = this;
-
-        //    _authentificationService = authentificationService;
-        //    _usersRepository = usersRepository;
-
-        //    InitializeComponent();
-
-        //    tableLayoutPanel1.Visible = false;
-
-        //    CisClient = cisClient;
-
-        //    Binding2PathBehaviors = binding2PathBehaviors;
-        //    Binding2GeneralScheduleBehaviors = binding2GeneralScheduleBehaviors;
-        //    Binding2ChangesBehaviors = binding2ChangesBehaviors;
-        //    Binding2ChangesEventBehaviors = binding2ChangesEventBehaviors;
-        //    Binding2GetDataBehaviors = binding2GetDataBehaviors;
-        //    SoundChanelManagment = soundChanelManagment;
-     
-        //    MainForm.Пауза.Click += new System.EventHandler(this.btnПауза_Click);
-        //    MainForm.Включить.Click += new System.EventHandler(this.btnБлокировка_Click);
-        //    MainForm.ОбновитьСписок.Click += new System.EventHandler(this.btnОбновитьСписок_Click);
-
-
-        //    СписокПолейПути = new ToolStripMenuItem[] { путь0ToolStripMenuItem, путь1ToolStripMenuItem, путь2ToolStripMenuItem, путь3ToolStripMenuItem, путь4ToolStripMenuItem, путь5ToolStripMenuItem, путь6ToolStripMenuItem, путь7ToolStripMenuItem, путь8ToolStripMenuItem, путь9ToolStripMenuItem, путь10ToolStripMenuItem, путь11ToolStripMenuItem, путь12ToolStripMenuItem, путь13ToolStripMenuItem, путь14ToolStripMenuItem, путь15ToolStripMenuItem, путь16ToolStripMenuItem, путь17ToolStripMenuItem, путь18ToolStripMenuItem, путь19ToolStripMenuItem, путь20ToolStripMenuItem, путь21ToolStripMenuItem, путь22ToolStripMenuItem, путь23ToolStripMenuItem, путь24ToolStripMenuItem, путь25ToolStripMenuItem };
-
-
-        //    //if (CisClient.IsConnect)
-        //    //{
-        //    //    MainForm.СвязьСЦис.Text = "ЦИС на связи";
-        //    //    MainForm.СвязьСЦис.BackColor = Color.LightGreen;
-        //    //}
-        //    //else
-        //    //{
-        //    //    MainForm.СвязьСЦис.Text = "ЦИС НЕ на связи";
-        //    //    MainForm.СвязьСЦис.BackColor = Color.Orange;
-        //    //}
-
-        //    //DispouseCisClientIsConnectRx = CisClient.IsConnectChange.Subscribe(isConnect =>
-        //    //{
-        //    //    if (isConnect)
-        //    //    {
-        //    //        MainForm.СвязьСЦис.Text = "ЦИС на связи";
-        //    //        MainForm.СвязьСЦис.BackColor = Color.LightGreen;
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        MainForm.СвязьСЦис.Text = "ЦИС НЕ на связи";
-        //    //        MainForm.СвязьСЦис.BackColor = Color.Orange;
-        //    //    }
-        //    //});
-
-        //    //
-        //    DispouseQueueChangeRx = QueueSound.QueueChangeRx.Subscribe(status =>
-        //    {
-        //        switch (status)
-        //        {
-        //            case StatusPlaying.Start:
-        //                СобытиеНачалоПроигрыванияОчередиЗвуковыхСообщений();
-        //                break;
-
-        //            case StatusPlaying.Stop:
-        //                СобытиеКонецПроигрыванияОчередиЗвуковыхСообщений();
-        //                break;
-        //        }
-        //    });
-        //    DispouseStaticChangeRx = QueueSound.StaticChangeRx.Subscribe(StaticChangeRxEventHandler);
-        //    DispouseTemplateChangeRx = QueueSound.TemplateChangeRx.Subscribe(TemplateChangeRxEventHandler);
-
-          
-        //    //ЗАПУСК ОЧЕРЕДИ ЗВУКА
-        //    QueueSound.StartQueue();
-
-        //    MainForm.Включить.BackColor = Color.Red;
-        //    Program.ЗаписьЛога("Системное сообщение", "Программный комплекс включен", _authentificationService.CurrentUser);
-        //}
-
+        #region ctor
 
         public MainWindowForm(ExchangeModel exchangeModel,
                               Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> staticSoundCardFormFactory,
@@ -216,7 +126,8 @@ namespace MainExample
                               IAuthentificationService authentificationService,
                               IUsersRepository usersRepository,
                               ISoundReсordWorkerService soundReсordWorkerService,
-                              TrainRecService trainRecService)
+                              TrainRecService trainRecService,
+                              SoundRecChangesService soundRecChangesService)
         {
             if (myMainForm != null)
                 return;
@@ -229,6 +140,7 @@ namespace MainExample
             _usersRepository = usersRepository;
             _soundReсordWorkerService = soundReсordWorkerService;
             _trainRecService = trainRecService;
+            _soundRecChangesService = soundRecChangesService;
 
             InitializeComponent();
 
@@ -273,6 +185,8 @@ namespace MainExample
             MainForm.Включить.BackColor = Color.Red;
             Program.ЗаписьЛога("Системное сообщение", "Программный комплекс включен", _authentificationService.CurrentUser);
         }
+
+       #endregion
 
 
 
@@ -341,10 +255,10 @@ namespace MainExample
         }
 
 
-        private void HttpDispatcherSoundRecordChanges(SoundRecordChanges soundRecordChanges)
+        private void HttpDispatcherSoundRecordChanges(SoundRecordChange soundRecordChange)
         {
-            var данные = soundRecordChanges.NewRec;
-            var старыеДанные = soundRecordChanges.Rec;
+            var данные = soundRecordChange.NewRec;
+            var старыеДанные = soundRecordChange.Rec;
             string key = данные.Время.ToString("yy.MM.dd  HH:mm:ss");
             string keyOld = старыеДанные.Время.ToString("yy.MM.dd  HH:mm:ss");
 
@@ -356,7 +270,7 @@ namespace MainExample
             данные = ПрименитьИзмененияSoundRecord(данные, старыеДанные, key, keyOld, listView1);
             if (!StructCompare.SoundRecordComparer(ref данные, ref старыеДанные))
             {
-                СохранениеИзмененийДанныхКарточкеБД(старыеДанные, данные, "Удаленный диспетчер");
+                СохранениеИзмененийДанныхКарточкеБд(старыеДанные, данные, "Удаленный диспетчер");
             }
         }
 
@@ -2016,7 +1930,7 @@ namespace MainExample
                                                 данныеОчистки.НомерПути = данныеOld.НомерПути;
                                                 SendOnPathTable(данныеОчистки);
 
-                                                СохранениеИзмененийДанныхКарточкеБД(данныеOld, данные); //DEBUG
+                                                СохранениеИзмененийДанныхКарточкеБд(данныеOld, данные); //DEBUG
                                             }
                                     }
 
@@ -2035,7 +1949,7 @@ namespace MainExample
                                             данныеОчистки.НомерПути = данныеOld.НомерПути;
                                             SendOnPathTable(данныеОчистки);
 
-                                            СохранениеИзмененийДанныхКарточкеБД(данныеOld, данные); //DEBUG
+                                            СохранениеИзмененийДанныхКарточкеБд(данныеOld, данные); //DEBUG
                                         }
                                     }
                                 }
@@ -2057,7 +1971,7 @@ namespace MainExample
                                                 данныеОчистки.НомерПути = данныеOld.НомерПути;
                                                 SendOnPathTable(данныеОчистки);
 
-                                                СохранениеИзмененийДанныхКарточкеБД(данныеOld, данные); //DEBUG
+                                                СохранениеИзмененийДанныхКарточкеБд(данныеOld, данные); //DEBUG
                                             }
                                     }
 
@@ -2077,7 +1991,7 @@ namespace MainExample
                                             данныеОчистки.НомерПути = данныеOld.НомерПути;
                                             SendOnPathTable(данныеОчистки);
 
-                                            СохранениеИзмененийДанныхКарточкеБД(данныеOld, данные); //DEBUG
+                                            СохранениеИзмененийДанныхКарточкеБд(данныеOld, данные); //DEBUG
                                         }
                                     }
                                 }
@@ -2326,7 +2240,7 @@ namespace MainExample
                                 данные= ПрименитьИзмененияSoundRecord(данные, старыеДанные, key, keyOld, listView);
                                 if (!StructCompare.SoundRecordComparer(ref данные, ref старыеДанные))
                                 {
-                                    СохранениеИзмененийДанныхКарточкеБД(старыеДанные, данные);
+                                    СохранениеИзмененийДанныхКарточкеБд(старыеДанные, данные);
                                 }
                             }
                         }
@@ -3794,7 +3708,7 @@ namespace MainExample
                             старыеДанные.НомерПути = старыйНомерПути;
                             if (!StructCompare.SoundRecordComparer(ref данные, ref старыеДанные))
                             {
-                                СохранениеИзмененийДанныхКарточкеБД(старыеДанные, данные);
+                                СохранениеИзмененийДанныхКарточкеБд(старыеДанные, данные);
                             }
                             return;
                         }
@@ -3815,7 +3729,7 @@ namespace MainExample
                                 старыеДанные.НумерацияПоезда = СтараяНумерацияПоезда;
                                 if (!StructCompare.SoundRecordComparer(ref данные, ref старыеДанные))
                                 {
-                                    СохранениеИзмененийДанныхКарточкеБД(старыеДанные, данные);
+                                    СохранениеИзмененийДанныхКарточкеБд(старыеДанные, данные);
                                 }
                                 return;
                             }
@@ -3836,7 +3750,7 @@ namespace MainExample
                                 старыеДанные.КоличествоПовторений = СтароеКоличествоПовторений;
                                 if (!StructCompare.SoundRecordComparer(ref данные, ref старыеДанные))
                                 {
-                                    СохранениеИзмененийДанныхКарточкеБД(старыеДанные, данные);
+                                    СохранениеИзмененийДанныхКарточкеБд(старыеДанные, данные);
                                 }
                                 return;
                             }
@@ -4180,9 +4094,9 @@ namespace MainExample
 
 
 
-        private void СохранениеИзмененийДанныхКарточкеБД(SoundRecord старыеДанные, SoundRecord данные, string источникИзменений= "Текущий пользователь")
+        private void СохранениеИзмененийДанныхКарточкеБд(SoundRecord старыеДанные, SoundRecord данные, string источникИзменений= "Текущий пользователь")
         {
-            var recChange = new SoundRecordChanges
+            var recChange = new SoundRecordChange
             {
                 ScheduleId= данные.IdTrain.ScheduleId,
                 TimeStamp = DateTime.Now,
@@ -4195,7 +4109,8 @@ namespace MainExample
             //var hh = Mapper.SoundRecordChanges2SoundRecordChangesDb(recChange);//DEBUG
 
             //Сохранить в БД
-            Program.SoundRecordChangesDbRepository.Add(Mapper.SoundRecordChanges2SoundRecordChangesDb(recChange));
+            //Program.SoundRecordChangesDbRepository.Add(Mapper.SoundRecordChanges2SoundRecordChangesDb(recChange));
+            _soundRecChangesService.Add(Mapper.SoundRecordChanges2SoundRecordChangesDb(recChange));
 
             //Отправить на устройства с привязкой "Binding2ChangesEvent"
             SendData4Binding2ChangesEvent(recChange);
@@ -4205,7 +4120,7 @@ namespace MainExample
         /// <summary>
         /// Отправка изменения.
         /// </summary>
-        public void SendData4Binding2ChangesEvent(SoundRecordChanges recChange)
+        public void SendData4Binding2ChangesEvent(SoundRecordChange recChange)
         {
             if (Binding2ChangesEventBehaviors != null && Binding2ChangesEventBehaviors.Any())
             {
