@@ -1428,7 +1428,7 @@ namespace MainExample
                                             {
                                                 emergencyAction.SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьАвтомат;
                                                 внесеныИзменения = true;
-                                                if (РазрешениеРаботы)//&& (нештатноеСообщение.Шаблон != "")
+                                                if (РазрешениеРаботы)
                                                 {
                                                     ВоспроизвестиШаблонОповещения_New("Автоматическое воспроизведение сообщения о внештатной ситуации", данные, emergencyAction, MessageType.ДинамическоеАварийное);
                                                 }
@@ -2392,7 +2392,8 @@ namespace MainExample
                 }
 
             
-               данные = ЗаполнениеСпискаНештатныхСитуаций(ref данные, key);
+                if(данные.Emergency != старыеДанные.Emergency)
+                   данные = ЗаполнениеСпискаНештатныхСитуаций(ref данные, key);
                 
 
                 //Обновить Время ПРИБ
@@ -2463,16 +2464,18 @@ namespace MainExample
 
         private SoundRecord ЗаполнениеСпискаНештатныхСитуаций(ref SoundRecord record, string key)
         {
-            if (record.Emergency == Emergency.None)
+            var currentEmergency = record.Emergency;
+            if (currentEmergency == Emergency.None)
             {
                 record.EmergencyTrainDynamiсList= null;
                 return record;
             }
 
-            var currentEmergency = record.Emergency;
             var emergency = record.EmergencyTrainStaticList.FirstOrDefault(t => t.Emergency == currentEmergency);
             if (emergency == null)
                 return record;
+
+            emergency.FixedTimeEmergencyEvent = DateTime.Now.Date.AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute); //зафисксируем время выставления НЕШТАТКИ.
 
             //Сформируем список нештатных сообщений--------------------------------------------------------------------------------------------
             record.EmergencyTrainDynamiсList = _soundReсordWorkerService.СreateActionTrainDynamic(record, new List<ActionTrain> {emergency});

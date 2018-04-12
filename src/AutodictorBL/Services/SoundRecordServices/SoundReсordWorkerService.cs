@@ -12,6 +12,8 @@ namespace AutodictorBL.Services.SoundRecordServices
     {
         /// <summary>
         /// Вычислить время сработки шаблона с учетом смещения.
+        /// Для нештатного шаблона смещение применяеться на "время фикс. нешатаки"
+        /// Для обычного шаблона смещение применяется "Время относительно которого заданн шаблон"
         /// </summary>
         public DateTime CalcTimeWithShift(ref SoundRecord rec, ActionTrainDynamic actionTrainDyn)
         {
@@ -20,7 +22,7 @@ namespace AutodictorBL.Services.SoundRecordServices
                 : actionTrainDyn.ActionTrain.Time.CycleTime.Value;
 
             DateTime activationTime;
-            if (rec.Emergency == Emergency.None)
+            if (actionTrainDyn.ActionTrain.Emergency == Emergency.None)
             {
                 var manualTemplate= actionTrainDyn.ActionTrain.Name.StartsWith("@");
                 var arrivalTime= (rec.ФиксированноеВремяПрибытия == null || !manualTemplate) ? rec.ВремяПрибытия : rec.ФиксированноеВремяПрибытия.Value;
@@ -32,7 +34,7 @@ namespace AutodictorBL.Services.SoundRecordServices
             }
             else
             {
-                activationTime= DateTime.Now.AddMinutes(timeSift);
+                activationTime = actionTrainDyn.ActionTrain.FixedTimeEmergencyEvent.AddMinutes(timeSift);
             }
             return activationTime;
         }
@@ -41,7 +43,7 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// <summary>
         /// Возвращает список дианмических шаблонов на базе ActionTrain.
         /// Учитывается Время активации шаблона.
-        /// Для Нештатных шаблонов "Тек. времени" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
+        /// Для Нештатных шаблонов "время фикс. нешатаки" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
         /// Для Обычных шаблонов "Время относительно которого заданн шаблон" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
         /// </summary>
         public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, DateTime? startDate4Cycle=null, DateTime? endDate4Cycle=null)
@@ -72,13 +74,13 @@ namespace AutodictorBL.Services.SoundRecordServices
                 else                                   //Указан циклический повтор
                 {
                     DateTime eventTime;
-                    if (record.Emergency == Emergency.None)
+                    if (action.Emergency == Emergency.None)
                     {
                         eventTime = (action.ActionType == ActionType.Arrival) ? record.ВремяПрибытия : record.ВремяОтправления;
                     }
                     else
                     {
-                        eventTime = DateTime.Now;
+                        eventTime = action.FixedTimeEmergencyEvent;
                     }
                     startDate4Cycle = startDate4Cycle ?? eventTime;              //startDate4Cycle ?? eventTime.AddHours(-10);
                     endDate4Cycle = endDate4Cycle ?? eventTime.AddHours(27 - eventTime.Hour); //часы до конца суток  +3 часа;

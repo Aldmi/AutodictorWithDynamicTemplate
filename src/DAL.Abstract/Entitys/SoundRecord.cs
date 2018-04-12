@@ -144,6 +144,7 @@ namespace DAL.Abstract.Entitys
         public bool Activity { get; set; }                                // Разрешение работы всего шаблона
         public Priority PriorityMain { get; set; }                        // Проритет данного типа шаблонов
         public SoundRecordStatus SoundRecordStatus { get; set; }          // Статус воспроизведения
+
         public ActionTrain ActionTrain { get; set; }                      // Действие (Шаблоны)
     };
 

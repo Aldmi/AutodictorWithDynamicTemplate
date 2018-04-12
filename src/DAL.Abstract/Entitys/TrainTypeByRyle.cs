@@ -91,6 +91,7 @@ namespace DAL.Abstract.Entitys
         public int Priority { get; set; }
         public bool Transit { get; set; }        //?????????
         public Emergency Emergency { get; set; }
+        public DateTime FixedTimeEmergencyEvent { get; set; } //Время фиксации Нештатной ситуации (от этого времени отсчитывается генерация Динамических Нештатных шаблонов)
         public ActionTime Time { get; set; }
         public List<Lang> Langs { get; set; }         //Шаблоны на разных языках
 
