@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
 using AutodictorBL.Services.SoundRecordServices;
@@ -114,6 +115,7 @@ namespace MainExample.Utils
             builder.RegisterType<SoundRecChangesService>().InstancePerDependency();
             builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
             builder.RegisterType<SoundReсordWorkerService>().As<ISoundReсordWorkerService>().InstancePerLifetimeScope();
+            builder.RegisterType<TrainRecBuilderFluent>().As<ITrainRecBuilder>().InstancePerDependency();
             builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repLocalMain")),
@@ -122,8 +124,7 @@ namespace MainExample.Utils
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repRemoteCis")),
                         (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis))
                 }).SingleInstance();
-
-
+    
 
 
             //ФОРМЫ----------------------------------------------------------------------------------
@@ -137,7 +138,7 @@ namespace MainExample.Utils
             builder.RegisterType<TrainTableGridForm>().InstancePerDependency();
             builder.RegisterType<EditTrainTableRecForm>().InstancePerDependency();
             builder.RegisterType<SoundRecordEditForm>().InstancePerDependency();
-
+            builder.RegisterType<ArchiveChangesForm>().InstancePerDependency();
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()
             //    .WithParameter(new ResolvedParameter(

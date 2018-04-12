@@ -118,6 +118,8 @@ namespace MainExample
         private ToolStripMenuItem[] СписокПолейПути;
 
 
+
+
         #region ctor
 
         public MainWindowForm(ExchangeModel exchangeModel,
@@ -594,10 +596,13 @@ namespace MainExample
 
             //загрузим список изменений на текущий день.
             var currentDay = DateTime.Now.Date;
-            SoundRecordChanges = Program.SoundRecordChangesDbRepository.List()
-                                                                       .Where(p => (p.TimeStamp.Date == currentDay) ||
-                                                                                  ((p.TimeStamp.Date == currentDay.AddDays(-1)) && (p.Rec.Время.Date == currentDay)))
-                                                                       .Select(Mapper.SoundRecordChangesDb2SoundRecordChanges).ToList();
+            //SoundRecordChanges = Program.SoundRecordChangesDbRepository.List()
+            //                                                           .Where(p => (p.TimeStamp.Date == currentDay) ||
+            //                                                                      ((p.TimeStamp.Date == currentDay.AddDays(-1)) && (p.Rec.Время.Date == currentDay)))
+            //                                                           .Select(Mapper.SoundRecordChangesDb2SoundRecordChanges).ToList();
+            SoundRecordChanges= _soundRecChangesService.Get(p => (p.TimeStamp.Date == currentDay) ||
+                                                                 ((p.TimeStamp.Date == currentDay.AddDays(-1)) && (p.Rec.Время.Date == currentDay))).Select(Mapper.SoundRecordChangesDb2SoundRecordChanges).ToList();
+
 
             //DEBUG--------------
             //ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb> particirovanieNoSqlService = new ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>();
@@ -621,7 +626,7 @@ namespace MainExample
             СозданиеЗвуковыхФайловРасписанияЖдТранспорта(differences, DateTime.Now.AddDays(1).Date, hour => (hour >= 0 && hour <= 11), ref id); // на след. сутки на 2 первых часа
 
             //Корректировка записей по изменениям
-            //КорректировкаЗаписейПоИзменениям();
+            КорректировкаЗаписейПоИзменениям();
         }
 
 
@@ -4099,10 +4104,8 @@ namespace MainExample
                 CauseOfChange = источникИзменений
             };
             SoundRecordChanges.Add(recChange);
-            //var hh = Mapper.SoundRecordChanges2SoundRecordChangesDb(recChange);//DEBUG
 
             //Сохранить в БД
-            //Program.SoundRecordChangesDbRepository.Add(Mapper.SoundRecordChanges2SoundRecordChangesDb(recChange));
             _soundRecChangesService.Add(Mapper.SoundRecordChanges2SoundRecordChangesDb(recChange));
 
             //Отправить на устройства с привязкой "Binding2ChangesEvent"

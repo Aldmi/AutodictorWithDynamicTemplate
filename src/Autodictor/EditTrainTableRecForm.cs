@@ -194,16 +194,8 @@ namespace MainExample
             }
             tb_Category.Text = categoryText;
 
-            string[] станции = TrainRec.Name.Split('-');
-            if (станции.Length == 2)
-            {
-                cBОткуда.Text = станции[0].Trim(new char[] { ' ' });
-                cBКуда.Text = станции[1].Trim(new char[] { ' ' });
-            }
-            else if (станции.Length == 1 && TrainRec.Name != "")
-            {
-                cBКуда.Text = TrainRec.Name.Trim(new char[] { ' ' });
-            }
+            cBОткуда.Text = TrainRec.StationDepart?.NameRu ?? string.Empty;
+            cBКуда.Text = TrainRec.StationArrival?.NameRu ?? string.Empty;
 
             if ((TrainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
                 (TrainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))

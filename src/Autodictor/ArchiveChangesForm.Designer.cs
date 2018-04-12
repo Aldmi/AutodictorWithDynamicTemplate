@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class ОкноАрхиваИзменений
+    partial class ArchiveChangesForm
     {
         /// <summary>
         /// Required designer variable.
@@ -243,7 +243,7 @@
             this.ClientSize = new System.Drawing.Size(1297, 557);
             this.Controls.Add(this.dgv_архив);
             this.Controls.Add(this.grb_main);
-            this.Name = "ОкноАрхиваИзменений";
+            this.Name = "ArchiveChangesForm";
             this.Text = "Окно архива изменений";
             this.grb_main.ResumeLayout(false);
             this.grb_main.PerformLayout();

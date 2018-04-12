@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutodictorModel.cs" />
+    <Compile Include="Builder\TrainRecordBuilder\ITrainRecBuilder.cs" />
+    <Compile Include="Builder\TrainRecordBuilder\TrainRecBuilderFluent.cs" />
     <Compile Include="Builder\TrainRecordBuilder\TrainRecordBuilderBase.cs" />
     <Compile Include="Builder\TrainRecordBuilder\TrainRecordBuilderManual.cs" />
     <Compile Include="DataAccess\DirectionService.cs" />

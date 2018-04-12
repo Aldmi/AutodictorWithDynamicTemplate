@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
 using Autofac.Features.OwnedInstances;
@@ -32,6 +33,7 @@ namespace MainExample
         private readonly Func<TrainTableRec, EditTrainTableRecForm> _editTrainTableRecFormFactory;
         private readonly TrainRecService _trainRecService;
         private readonly IDisposable _trainRecServiceOwner;
+        private readonly ITrainRecBuilder _trainRecBuilder;
 
         private List<TrainTableRec> _listRecords = new List<TrainTableRec>(); // Содержит актуальное рабочее расписание
 
@@ -53,7 +55,7 @@ namespace MainExample
         #region ctor
         //Owned<TrainRecService> - форма управляет временем жизни всего скоупа TrainRecService.
         //Поэтому если время жизни TrainRecService- InstancePerLifetimeScope, то при закрытии формы весь скоуп TrainRecService будет уничтожен.
-        public TrainTableGridForm(Owned<TrainRecService> trainRecService, Func<TrainTableRec, EditTrainTableRecForm> editTrainTableRecFormFactory) 
+        public TrainTableGridForm(Owned<TrainRecService> trainRecService, ITrainRecBuilder trainRecBuilder, Func<TrainTableRec, EditTrainTableRecForm> editTrainTableRecFormFactory) 
         {
             if (MyMainForm != null)
                 return;
@@ -61,6 +63,7 @@ namespace MainExample
 
             _trainRecServiceOwner = trainRecService;
             _trainRecService = trainRecService.Value;
+            _trainRecBuilder = trainRecBuilder;
             _editTrainTableRecFormFactory = editTrainTableRecFormFactory;
   
 
@@ -510,61 +513,16 @@ namespace MainExample
 
 
         /// <summary>
-        /// Добавить
+        /// Добавить новую запись
         /// </summary>
         private void btn_ДобавитьЗапись_Click(object sender, EventArgs e)
         {
             int maxId = _listRecords.Any() ? _listRecords.Max(t => t.Id) : 0;
-
-            //создали новый элемент
-            TrainTableRec item = new TrainTableRec();
-            item.Id = ++maxId;
-            item.Num = "";
-            item.Num2 = "";
-            item.Addition = "";
-            item.Name = "";
-            item.StationArrival = null;
-            item.StationDepart = null;
-            item.Direction = null;
-            item.ArrivalTime = null;
-            item.StopTime = null;
-            item.DepartureTime = null;
-            item.FollowingTime = null;
-            item.Days = "";
-            item.DaysAlias = "";
-            item.Active = false;
-            item.WagonsNumbering = WagonsNumbering.None;
-            item.ChangeTrainPathDirection = false;
-            item.TrainPathNumber = new Dictionary<WeekDays, Pathway>
-            {
-                [WeekDays.Постоянно] = null,
-                [WeekDays.Пн] = null,
-                [WeekDays.Вт] = null,
-                [WeekDays.Ср] = null,
-                [WeekDays.Ср] = null,
-                [WeekDays.Чт] = null,
-                [WeekDays.Пт] = null,
-                [WeekDays.Сб] = null,
-                [WeekDays.Вс] = null
-            };
-            item.PathWeekDayes = false;
-            item.Примечание = "";
-            item.ВремяНачалаДействияРасписания =  DateTime.MinValue;
-            item.ВремяОкончанияДействияРасписания = DateTime.MaxValue;
-            item.Addition = "";
-            item.ИспользоватьДополнение = new Dictionary<string, bool>
-            {
-                ["звук"] = false,
-                ["табло"] = false
-            };
-            item.Автомат = true;
-
-            item.IsScoreBoardOutput = false;
-            item.IsSoundOutput = true;
-            item.TrainTypeByRyle = _trainRecService.GetTrainTypeByRyles().FirstOrDefault();  //TODO: сделать фабрику создания типа Manual - 
-            item.ActionTrains = new List<ActionTrain>();
-            item.EmergencyTrains = item.TrainTypeByRyle?.EmergencyTrains.DeepClone();
-
+            var item= _trainRecBuilder.SetDefaultMain(++maxId)
+                                      .SetDefaultDaysOfGoing()
+                                      .SetDefaultTrainTypeAndActionsAndEmergency()
+                                      .Build();
+        
             //Добавили в список
             _listRecords.Add(item);
 

@@ -289,11 +289,11 @@
     <Compile Include="SoundRecordEditForm.Designer.cs">
       <DependentUpon>SoundRecordEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ОкноАрхиваИзменений.cs">
+    <Compile Include="ArchiveChangesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ОкноАрхиваИзменений.Designer.cs">
-      <DependentUpon>ОкноАрхиваИзменений.cs</DependentUpon>
+    <Compile Include="ArchiveChangesForm.Designer.cs">
+      <DependentUpon>ArchiveChangesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ОкноДобавленияПоезда.cs">
       <SubType>Form</SubType>
@@ -425,8 +425,8 @@
     <EmbeddedResource Include="SoundRecordEditForm.resx">
       <DependentUpon>SoundRecordEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ОкноАрхиваИзменений.resx">
-      <DependentUpon>ОкноАрхиваИзменений.cs</DependentUpon>
+    <EmbeddedResource Include="ArchiveChangesForm.resx">
+      <DependentUpon>ArchiveChangesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ОкноДобавленияПоезда.resx">
       <DependentUpon>ОкноДобавленияПоезда.cs</DependentUpon>

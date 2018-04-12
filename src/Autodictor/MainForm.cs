@@ -44,6 +44,7 @@ namespace MainExample
         private readonly Func<ISoundPlayer, StaticSoundForm> _staticSoundFormFactory;
         private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> _staticSoundCardFormFactory;
         private readonly Func<TrainTableGridForm> _trainTableGridFormFactory;
+        private readonly Func<ArchiveChangesForm> _archiveChangesFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
         private readonly IAuthentificationService _authentificationService;
@@ -87,6 +88,7 @@ namespace MainExample
                         Func<ISoundPlayer, StaticSoundForm> staticSoundFormFactory,
                         Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> staticSoundCardFormFactory,
                         Func<TrainTableGridForm> trainTableGridFormFactory,
+                        Func<ArchiveChangesForm> archiveChangesFormFactory,
                         Owned<IAuthentificationService> authentificationService)
         {
             _adminFormFactory = adminFormFactory;
@@ -96,6 +98,7 @@ namespace MainExample
             _staticSoundFormFactory = staticSoundFormFactory;
             _staticSoundCardFormFactory = staticSoundCardFormFactory;
             _trainTableGridFormFactory = trainTableGridFormFactory;
+            _archiveChangesFormFactory = archiveChangesFormFactory;
             _authentificationService = authentificationService.Value;
             _authentificationServiceOwner = authentificationService;
             _authentificationService.UsersDbInitialize();               //Инициализируем БД Юзеров при загрузки
@@ -626,14 +629,15 @@ namespace MainExample
 
         private void ИзмененияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ОкноАрхиваИзменений.myMainForm != null)
+            if (ArchiveChangesForm.myMainForm != null)
             {
-                ОкноАрхиваИзменений.myMainForm.Show();
-                ОкноАрхиваИзменений.myMainForm.WindowState = FormWindowState.Normal;
+                ArchiveChangesForm.myMainForm.Show();
+                ArchiveChangesForm.myMainForm.WindowState = FormWindowState.Normal;
             }
             else
             {
-                ОкноАрхиваИзменений listFormOper = new ОкноАрхиваИзменений { MdiParent = this };
+                var listFormOper = _archiveChangesFormFactory();
+                listFormOper.MdiParent = this;
                 listFormOper.Show();
             }
         }

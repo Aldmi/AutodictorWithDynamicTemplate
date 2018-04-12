@@ -1,36 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
 using DAL.Abstract.Entitys;
 
 
 
 namespace MainExample
 {
-    public partial class ОкноАрхиваИзменений : Form
+    public partial class ArchiveChangesForm : Form
     {
-        public static ОкноАрхиваИзменений myMainForm = null;
-
-
+        private readonly SoundRecChangesService _soundRecChangesService;
+        public static ArchiveChangesForm myMainForm = null;
         public List<SoundRecordChangesDb> RecordChanges { get; set; }
+
 
 
 
         #region ctor
 
-        public ОкноАрхиваИзменений()
+        public ArchiveChangesForm(SoundRecChangesService soundRecChangesService)
         {
             if (myMainForm != null)
                 return;
-
             myMainForm = this;
 
+            _soundRecChangesService = soundRecChangesService;
             InitializeComponent();
         }
 
@@ -40,16 +37,17 @@ namespace MainExample
 
 
 
-
         #region EventHandlers
-
 
         private void btn_Поиск_Click(object sender, EventArgs e)
         {
             var startDate = dtp_Начало.Value;
             var endDate = dtp_Конец.Value;
+            var db= _soundRecChangesService.GetByDateRange(startDate, endDate, changesDb => true)?.ToList();
+            if(db == null)
+                return;
 
-            var db=  Program.SoundRecordChangesDbRepository.List();
+            //var db=  Program.SoundRecordChangesDbRepository.List();
             var query= db.Where(rec => (rec.TimeStamp >= startDate) && (rec.TimeStamp <= endDate));
 
             if (cb_ПоменялиПуть.Checked)
@@ -83,6 +81,7 @@ namespace MainExample
         {
             if (!RecordChanges.Any())
             {
+                dgv_архив.Rows.Clear();
                 MessageBox.Show(@"Поиск не дал результатов");
                 return;
             }
