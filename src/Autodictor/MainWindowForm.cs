@@ -415,17 +415,17 @@ namespace MainExample
                    soundRecordKeyValuePair = SoundRecords.FirstOrDefault(rec => rec.Value.Id == templateChangeValue.SoundMessage.RootId);
                    record = soundRecordKeyValuePair.Value;
                    template = record.EmergencyTrainDynamiсList.FirstOrDefault(actDyn => actDyn.Id == templateChangeValue.SoundMessage.ParentId);
-                    if (template == null) return;
-                    switch (templateChangeValue.StatusPlaying)
-                    {
+                   if (template == null) return;
+                   switch (templateChangeValue.StatusPlaying)
+                   {
                         case StatusPlaying.Start:
                             template.SoundRecordStatus = (template.SoundRecordStatus == SoundRecordStatus.ДобавленВОчередьРучное) ? SoundRecordStatus.ВоспроизведениеРучное : SoundRecordStatus.ВоспроизведениеАвтомат;
                             break;
                         case StatusPlaying.Stop:
                             template.SoundRecordStatus = SoundRecordStatus.Выключена;
                             break;
-                    }
-                    break;
+                   }
+                   break;
 
                 case MessageType.ДинамическоеТехническое:
                     var soundRecordTech = TechnicalMessageForm.SoundRecords.FirstOrDefault(rec => rec.Id == templateChangeValue.SoundMessage.RootId);
@@ -1968,7 +1968,6 @@ namespace MainExample
                                                 СохранениеИзмененийДанныхКарточкеБд(данныеOld, данные); //DEBUG
                                             }
                                     }
-
 
                                     //ОЧИСТИТЬ если убрали нештатные ситуации
                                     if ((данные.Emergency == Emergency.None)

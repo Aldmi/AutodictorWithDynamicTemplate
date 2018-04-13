@@ -1012,12 +1012,13 @@ namespace MainExample
                 var emergencyDyn = new ActionTrainDynamic
                 {
                     Id = 2000,
+                    SoundRecordId = _record.Id,
+                    Activity = true,
                     PriorityMain = Priority.Hight,
                     SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьРучное,
                     ActionTrain=  emergency
                 };
                 MainWindowForm.ВоспроизвестиШаблонОповещения_New("Действие оператора нештатная ситуация", _record, emergencyDyn, MessageType.ДинамическоеАварийное);
-
             }
 
             //СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон

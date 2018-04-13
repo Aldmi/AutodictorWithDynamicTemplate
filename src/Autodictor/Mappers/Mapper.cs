@@ -181,6 +181,7 @@ namespace MainExample.Mappers
             // Шаблоны оповещения
             record.ActionTrainDynamiсList= soundReсordWorkerService.СreateActionTrainDynamic(record, config.ActionTrains);
             record.EmergencyTrainStaticList = config.EmergencyTrains.DeepClone();
+            record.EmergencyTrainDynamiсList = new List<ActionTrainDynamic>();
             record.Emergency = Emergency.None;
 
             //TODO:УБРАТЬ
