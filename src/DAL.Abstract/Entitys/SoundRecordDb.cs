@@ -69,10 +69,9 @@ namespace DAL.Abstract.Entitys
         public string[] ИменаФайлов { get; set; }
         public byte КоличествоПовторений { get; set; }
         public List<СостояниеФормируемогоСообщенияИШаблонDb> СписокФормируемыхСообщений { get; set; }
-        public List<СостояниеФормируемогоСообщенияИШаблонDb> СписокНештатныхСообщений { get; set; }
         public byte СостояниеКарточки { get; set; }
         public string ОписаниеСостоянияКарточки { get; set; }
-        public byte БитыНештатныхСитуаций { get; set; } // бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности
+        public Emergency Emergency { get; set; }
         public uint ТаймерПовторения { get; set; }
     }
 }

@@ -68,11 +68,11 @@ namespace MainExample.Services.GetDataService
                                 (stationDepart.ToLower().Contains(idTrain.СтанцияОтправления.ToLower()) || idTrain.СтанцияОтправления.ToLower().Contains(stationDepart.ToLower())) &&
                                 (stationArrival.ToLower().Contains(idTrain.СтанцияНазначения.ToLower()) || idTrain.СтанцияНазначения.ToLower().Contains(stationArrival.ToLower())))
                             {
-                                if (rec.БитыНештатныхСитуаций != tr.EmergencySituation)
+                                if (rec.Emergency != (Emergency)tr.EmergencySituation)
                                 {
-                                    rec.БитыНештатныхСитуаций = tr.EmergencySituation;
+                                    rec.Emergency = (Emergency)tr.EmergencySituation;
                                     changeFlag = true;
-                                    //Log.log.Trace("нашли изменения для ТРАНЗИТ. БитыНештатныхСитуаций: " + rec.БитыНештатныхСитуаций);//LOG    
+                                    //Log.log.Trace("нашли изменения для ТРАНЗИТ. Emergency: " + rec.Emergency);//LOG    
                                 }
 
                                 if (rec.ВремяЗадержки != tr.DelayTime)
@@ -124,11 +124,11 @@ namespace MainExample.Services.GetDataService
                                 (stationDepart.ToLower().Contains(idTrain.СтанцияОтправления.ToLower()) || idTrain.СтанцияОтправления.ToLower().Contains(stationArrival.ToLower())) &&
                                 (stationArrival.ToLower().Contains(idTrain.СтанцияНазначения.ToLower()) || idTrain.СтанцияНазначения.ToLower().Contains(stationArrival.ToLower())))
                             {
-                                if (rec.БитыНештатныхСитуаций != tr.EmergencySituation)
+                                if (rec.Emergency != (Emergency)tr.EmergencySituation)
                                 {
-                                    rec.БитыНештатныхСитуаций = tr.EmergencySituation;
+                                    rec.Emergency = (Emergency)tr.EmergencySituation;
                                     changeFlag = true;
-                                    //Log.log.Trace("нашли изменения для ТРАНЗИТ. БитыНештатныхСитуаций: " + rec.БитыНештатныхСитуаций);//LOG    
+                                    //Log.log.Trace("нашли изменения для ТРАНЗИТ. Emergency: " + rec.Emergency);//LOG    
                                 }
 
                                 if (rec.ВремяЗадержки != tr.DelayTime)
@@ -164,11 +164,11 @@ namespace MainExample.Services.GetDataService
                                 (stationDepart.ToLower().Contains(idTrain.СтанцияОтправления.ToLower()) || idTrain.СтанцияОтправления.ToLower().Contains(stationArrival.ToLower())) &&
                                 (stationArrival.ToLower().Contains(idTrain.СтанцияНазначения.ToLower()) || idTrain.СтанцияНазначения.ToLower().Contains(stationArrival.ToLower())))
                             {
-                                if (rec.БитыНештатныхСитуаций != tr.EmergencySituation)
+                                if (rec.Emergency != (Emergency)tr.EmergencySituation)
                                 {
-                                    rec.БитыНештатныхСитуаций = tr.EmergencySituation;
+                                    rec.Emergency = (Emergency)tr.EmergencySituation;
                                     changeFlag = true;
-                                    //Log.log.Trace("нашли изменения для ТРАНЗИТ. БитыНештатныхСитуаций: " + rec.БитыНештатныхСитуаций);//LOG    
+                                    //Log.log.Trace("нашли изменения для ТРАНЗИТ. Emergency: " + rec.Emergency);//LOG    
                                 }
 
                                 if (rec.ВремяЗадержки != tr.DelayTime)

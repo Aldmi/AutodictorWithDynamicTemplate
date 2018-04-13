@@ -37,7 +37,7 @@ namespace MainExample
             Record.Активность = true;
             Record.Автомат = true;
             Record.БитыАктивностиПолей = 0x00;
-            Record.БитыНештатныхСитуаций = 0x00;
+            Record.Emergency = Emergency.None;
             Record.РазрешениеНаОтображениеПути = PathPermissionType.ИзФайлаНастроек;
             Record.Время = DateTime.Now;
             Record.ВремяОтправления = DateTime.Now;
@@ -70,7 +70,6 @@ namespace MainExample
             Record.ОписаниеСостоянияКарточки = "";
             Record.Дополнение = "";
             Record.ИменаФайлов = new string[0];
-            Record.СписокНештатныхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();
             Record.ИспользоватьДополнение = new Dictionary<string, bool>
             {
                 ["звук"] = true,

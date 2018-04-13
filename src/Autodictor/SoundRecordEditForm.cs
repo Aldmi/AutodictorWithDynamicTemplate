@@ -525,29 +525,24 @@ namespace MainExample
 
 
             //Применение битов нештатных ситуаций------------------------------
-            _record.БитыНештатныхСитуаций &= 0x00;
             _record.Emergency = Emergency.None;
             if (cBПоездОтменен.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x01;
                 _record.Emergency = Emergency.Cancel;
             }
             else
             if (cBПрибытиеЗадерживается.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x02;
                 _record.Emergency = Emergency.DelayedArrival;
             }
             else
             if (cBОтправлениеЗадерживается.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x04;
                 _record.Emergency = Emergency.DelayedDeparture;
             }
             else
             if (cBОтправлениеПоГотовности.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x08;
                 _record.Emergency = Emergency.DispatchOnReadiness;
             }
 
@@ -661,29 +656,24 @@ namespace MainExample
 
 
             //Применение битов нештатных ситуаций------------------------------
-            _record.БитыНештатныхСитуаций &= 0x00;
             _record.Emergency = Emergency.None;
             if (cBПоездОтменен.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x01;
                 _record.Emergency = Emergency.Cancel;
             }
             else
             if (cBПрибытиеЗадерживается.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x02;
                 _record.Emergency = Emergency.DelayedArrival;
             }
             else
             if (cBОтправлениеЗадерживается.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x04;
                 _record.Emergency = Emergency.DelayedDeparture;
             }
             else
             if (cBОтправлениеПоГотовности.Checked)
             {
-                _record.БитыНештатныхСитуаций |= 0x08;
                 _record.Emergency = Emergency.DispatchOnReadiness;
             }
 

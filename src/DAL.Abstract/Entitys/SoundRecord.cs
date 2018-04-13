@@ -70,11 +70,9 @@ namespace DAL.Abstract.Entitys
         public List<ActionTrain> EmergencyTrainStaticList { get; set; }  //4 нештатных шаблона взятых из TrainTypeByRyle и отредактированных для данного поезда
         public List<ActionTrainDynamic> EmergencyTrainDynamiсList { get; set; } //N нештатных шаблона, сгенерированных при АКТИВНОЙ нештатной ситуации.
 
-        public List<СостояниеФормируемогоСообщенияИШаблон> СписокНештатныхСообщений;
         public byte СостояниеКарточки;
         public string ОписаниеСостоянияКарточки;
 
-        public byte БитыНештатныхСитуаций; //Убрать!!  бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности
         public Emergency Emergency { get; set; } // Текущая нештатная ситуация
 
         public uint ТаймерПовторения;
