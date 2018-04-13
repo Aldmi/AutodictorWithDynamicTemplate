@@ -6,6 +6,7 @@ using System.Linq;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
+using DAL.Abstract.Entitys.Changes;
 using Library.Logs;
 using MainExample.Entites;
 

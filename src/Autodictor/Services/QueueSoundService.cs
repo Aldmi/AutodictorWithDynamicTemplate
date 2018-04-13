@@ -8,6 +8,7 @@ using System.Runtime.Remoting.Messaging;
 using AutodictorBL.Entites;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
+using DAL.NoSqlLiteDb.Entityes;
 using Library.Logs;
 using MainExample.Entites;
 using WCFCis2AvtodictorContract.DataContract;

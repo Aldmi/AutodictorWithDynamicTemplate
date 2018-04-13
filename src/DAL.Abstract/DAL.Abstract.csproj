@@ -45,12 +45,11 @@
     <Compile Include="Concrete\IRepository.cs" />
     <Compile Include="Entitys\Authentication\Role.cs" />
     <Compile Include="Entitys\Authentication\User.cs" />
+    <Compile Include="Entitys\Changes\SoundRecordChange.cs" />
     <Compile Include="Entitys\Direction.cs" />
     <Compile Include="Entitys\EntityBase.cs" />
     <Compile Include="Entitys\Pathway.cs" />
     <Compile Include="Entitys\SoundRecord.cs" />
-    <Compile Include="Entitys\SoundRecordChangesDb.cs" />
-    <Compile Include="Entitys\SoundRecordDb.cs" />
     <Compile Include="Entitys\Station.cs" />
     <Compile Include="Entitys\TrainTableRec.cs" />
     <Compile Include="Entitys\TrainTableRecord.cs" />

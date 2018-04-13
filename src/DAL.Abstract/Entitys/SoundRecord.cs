@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace DAL.Abstract.Entitys
 {
+    public enum SoundRecordStatus { Выключена = 0, ОжиданиеВоспроизведения, ВоспроизведениеАвтомат, ВоспроизведениеРучное, Воспроизведена, ДобавленВОчередьАвтомат, ДобавленВОчередьРучное };
+    public enum TableRecordStatus { Выключена = 0, ОжиданиеОтображения, Отображение, Обновление, Очистка };
+    public enum SoundRecordType { Обычное = 0, ДвижениеПоезда, ДвижениеПоездаНеПодтвержденное, Предупредительное, Важное };
+    public enum PathPermissionType { ИзФайлаНастроек = 0, Отображать, НеОтображать };
+    public enum Priority { Low = 0, Midlle, Hight, VeryHight };
+    public enum PriorityPrecise { Zero = 0, One, Two, Three, Four, Five, Six, Seven, Eight, Nine };
+    public enum NotificationLanguage { Rus, Eng, Fin, Ch };
+
+
     public struct SoundRecord
     {
         public int Id;

@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using DAL.Abstract.Abstract;
-using DAL.Abstract.Concrete;
-using DAL.Abstract.Entitys;
-using DAL.Abstract.Entitys.Authentication;
-
+using DAL.NoSqlLiteDb.Entityes;
 
 namespace AutodictorBL.DataAccess
 {

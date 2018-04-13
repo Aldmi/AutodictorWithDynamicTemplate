@@ -7,6 +7,7 @@ using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
+using DAL.NoSqlLiteDb.Entityes;
 using MainExample.Extension;
 using MainExample.Services;
 

@@ -13,6 +13,7 @@ using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
 using DAL.Composite.Repository;
 using DAL.InMemory.Repository;
+using DAL.NoSqlLiteDb.Entityes;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
 using DAL.Serialize.XML.Reposirory;

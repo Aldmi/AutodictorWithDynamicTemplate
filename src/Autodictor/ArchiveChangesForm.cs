@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using AutodictorBL.DataAccess;
 using DAL.Abstract.Entitys;
-
+using DAL.NoSqlLiteDb.Entityes;
 
 
 namespace MainExample
@@ -47,7 +47,7 @@ namespace MainExample
             if(db == null)
                 return;
 
-            //var db=  Program.SoundRecordChangesDbRepository.List();
+
             var query= db.Where(rec => (rec.TimeStamp >= startDate) && (rec.TimeStamp <= endDate));
 
             if (cb_ПоменялиПуть.Checked)

@@ -9,6 +9,7 @@ using AutodictorBL.Sound;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
 using DAL.Abstract.Entitys;
+using DAL.NoSqlLiteDb.Entityes;
 using NickBuhro.Translit;
 
 

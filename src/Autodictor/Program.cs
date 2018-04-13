@@ -10,6 +10,7 @@ using Autofac;
 using DAL.Abstract.Abstract;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
+using DAL.NoSqlLiteDb.Entityes;
 using DAL.NoSqlLiteDb.Repository;
 using Force.DeepCloner;
 using Library.Logs;
@@ -43,7 +44,6 @@ namespace MainExample
         public static DirectionService DirectionService; //Направления. 
         public static PathwaysService PathwaysService;   //Пути.
         public static IEnumerable<TrainTypeByRyle> TrainTypes;
-        public static IGenericDataRepository<SoundRecordChangesDb> SoundRecordChangesDbRepository; //Изменения в SoundRecord хранилище NoSqlDb
 
 
         /// <summary>
@@ -259,9 +259,6 @@ namespace MainExample
             ResolveStaticServices();
 
             ОкноНастроек.ЗагрузитьНастройки();
-
-            string connection = @"NoSqlDb\Main.db";
-            SoundRecordChangesDbRepository = new RepositoryNoSql<SoundRecordChangesDb>(connection);
 
             try
             {

@@ -9,6 +9,7 @@ using CommunicationDevices.Behavior.ExhangeBehavior;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
+using DAL.Abstract.Entitys.Changes;
 using MainExample.Entites;
 using MainExample.Extension;
 

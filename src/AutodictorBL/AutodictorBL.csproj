@@ -114,6 +114,10 @@
       <Project>{6c145733-3a76-4afa-85f6-8e782108a27b}</Project>
       <Name>DAL.Composite</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DAL.NoSqlLiteDb\DAL.NoSqlLiteDb.csproj">
+      <Project>{13930FA6-7596-4BBA-B813-DDA9B8DD928C}</Project>
+      <Name>DAL.NoSqlLiteDb</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{87b6f9ef-6a0d-4daf-9df0-718036b1c8e4}</Project>
       <Name>Library</Name>

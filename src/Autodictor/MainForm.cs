@@ -31,6 +31,7 @@ using MainExample.Extension;
 using MainExample.Services;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
+using DAL.NoSqlLiteDb.Entityes;
 
 
 namespace MainExample

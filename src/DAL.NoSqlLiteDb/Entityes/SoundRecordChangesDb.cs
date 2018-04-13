@@ -1,6 +1,7 @@
 ﻿using System;
+using DAL.Abstract.Entitys;
 
-namespace DAL.Abstract.Entitys
+namespace DAL.NoSqlLiteDb.Entityes
 {
     public class SoundRecordChangesDb : EntityBase
     {

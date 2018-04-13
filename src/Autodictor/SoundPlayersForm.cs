@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using AutodictorBL.Entites;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
+using DAL.NoSqlLiteDb.Entityes;
 using MainExample.Extension;
 
 

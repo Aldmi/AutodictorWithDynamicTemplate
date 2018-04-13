@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using DAL.Abstract.Entitys;
+using DAL.NoSqlLiteDb.Entityes;
 using MainExample.Entites;
 using MainExample.Services;
 using MainExample.Services.FactoryServices;

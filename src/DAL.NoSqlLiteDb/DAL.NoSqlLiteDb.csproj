@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entityes\SoundRecordChangesDb.cs" />
+    <Compile Include="Entityes\SoundRecordDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\NoSqlUsersRepository.cs" />
     <Compile Include="Repository\RepositoryNoSql.cs" />

@@ -8,6 +8,7 @@ using AutodictorBL.DataAccess;
 using AutodictorBL.Entites;
 using AutodictorBL.Services.SoundRecordServices;
 using DAL.Abstract.Entitys;
+using DAL.NoSqlLiteDb.Entityes;
 using MainExample.UIHelpers;
 
 namespace MainExample

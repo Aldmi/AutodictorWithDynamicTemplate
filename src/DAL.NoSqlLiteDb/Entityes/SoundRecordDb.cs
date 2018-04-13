@@ -1,34 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using DAL.Abstract.Entitys;
 
-namespace DAL.Abstract.Entitys
+namespace DAL.NoSqlLiteDb.Entityes
 {
-    public enum SoundRecordStatus { Выключена = 0, ОжиданиеВоспроизведения, ВоспроизведениеАвтомат, ВоспроизведениеРучное, Воспроизведена, ДобавленВОчередьАвтомат, ДобавленВОчередьРучное };
-    public enum TableRecordStatus { Выключена = 0, ОжиданиеОтображения, Отображение, Обновление, Очистка };
-    public enum SoundRecordType { Обычное = 0, ДвижениеПоезда, ДвижениеПоездаНеПодтвержденное, Предупредительное, Важное };
-    public enum PathPermissionType { ИзФайлаНастроек = 0, Отображать, НеОтображать };
-    public enum Priority { Low = 0, Midlle, Hight, VeryHight };
-    public enum PriorityPrecise { Zero = 0, One, Two, Three, Four, Five, Six, Seven, Eight, Nine };
-
-    public enum NotificationLanguage { Rus, Eng, Fin, Ch };
-
-    public class СостояниеФормируемогоСообщенияИШаблонDb : EntityBase
-    {
-        public int SoundRecordId { get; set; }                 // строка расписания к которой принадлежит данный шаблон
-        public bool Активность { get; set; }
-        public Priority Приоритет { get; set; }
-        public bool Воспроизведен { get; set; }                //???
-        public SoundRecordStatus СостояниеВоспроизведения { get; set; }
-        public int ПривязкаКВремени { get; set; }              // 0 - приб. 1- отпр
-        public int ВремяСмещения { get; set; }
-        public string НазваниеШаблона { get; set; }
-        public string Шаблон { get; set; }
-        public List<NotificationLanguage> ЯзыкиОповещения { get; set; }
-    };
-
-
-
-
 
     public class SoundRecordDb : EntityBase
     {
@@ -68,7 +43,6 @@ namespace DAL.Abstract.Entitys
         public PathPermissionType РазрешениеНаОтображениеПути { get; set; }
         public string[] ИменаФайлов { get; set; }
         public byte КоличествоПовторений { get; set; }
-        public List<СостояниеФормируемогоСообщенияИШаблонDb> СписокФормируемыхСообщений { get; set; } //TODO: Создать тип ActionTrainDynamicDb
         public byte СостояниеКарточки { get; set; }
         public string ОписаниеСостоянияКарточки { get; set; }
         public Emergency Emergency { get; set; }

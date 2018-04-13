@@ -29,6 +29,8 @@ using CommunicationDevices.Services;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
+using DAL.Abstract.Entitys.Changes;
+using DAL.NoSqlLiteDb.Entityes;
 using Force.DeepCloner;
 using Library.Convertion;
 using MainExample.Comparers;
@@ -596,30 +598,15 @@ namespace MainExample
 
             //загрузим список изменений на текущий день.
             var currentDay = DateTime.Now.Date;
-            //SoundRecordChanges = Program.SoundRecordChangesDbRepository.List()
-            //                                                           .Where(p => (p.TimeStamp.Date == currentDay) ||
-            //                                                                      ((p.TimeStamp.Date == currentDay.AddDays(-1)) && (p.Rec.Время.Date == currentDay)))
-            //                                                           .Select(Mapper.SoundRecordChangesDb2SoundRecordChanges).ToList();
             SoundRecordChanges= _soundRecChangesService.Get(p => (p.TimeStamp.Date == currentDay) ||
                                                                  ((p.TimeStamp.Date == currentDay.AddDays(-1)) && (p.Rec.Время.Date == currentDay))).Select(Mapper.SoundRecordChangesDb2SoundRecordChanges).ToList();
-
-
-            //DEBUG--------------
-            //ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb> particirovanieNoSqlService = new ParticirovanieNoSqlRepositoryService<SoundRecordChangesDb>();
-            //var soundRecordChangesCurrentDay = particirovanieNoSqlService.GetRepositoryOnCurrentDay().List();
-            //var soundRecordChangesYesterdayDay = particirovanieNoSqlService.GetRepositoryOnYesterdayDay().List().Where(p=> p.Rec.Время.Date == currentDay);
-            //SoundRecordChanges= soundRecordChangesCurrentDay.Union(soundRecordChangesYesterdayDay).Select(Mapper.SoundRecordChangesDb2SoundRecordChanges).ToList();
-            //DEBUG-------------
-
-
             //Добавим весь список Оперативного расписания
             //СозданиеЗвуковыхФайловРасписанияЖдТранспорта(TrainTableOperative.TrainTableRecords, DateTime.Now, null, ref id);                                         // на тек. сутки
             //СозданиеЗвуковыхФайловРасписанияЖдТранспорта(TrainTableOperative.TrainTableRecords, DateTime.Now.AddDays(1), hour => (hour >= 0 && hour <= 11), ref id); // на след. сутки на 2 первых часа
 
             //Вычтем из Главного расписания элементы оперативного расписания, уже добавленные к списку.
-            var mainTrainTableRec= _trainRecService.GetAll(); //TrainSheduleTable.TrainTableRecords
+            var mainTrainTableRec= _trainRecService.GetAll();
             var differences = mainTrainTableRec.Where(l2 =>!SoundRecords.Values.Any(l1 => l1.IdTrain.ScheduleId == l2.Id)).ToList();
-
 
             //Добавим оставшиеся записи
             СозданиеЗвуковыхФайловРасписанияЖдТранспорта(differences, DateTime.Now.Date, null, ref id);                                         // на тек. сутки
@@ -740,11 +727,9 @@ namespace MainExample
             rec.СтанцияОтправления = newRec.СтанцияОтправления;
             rec.НазваниеПоезда = newRec.НазваниеПоезда;
             rec.СостояниеОтображения = newRec.СостояниеОтображения;
-            rec.ТипСообщения = newRec.ТипСообщения;//???
+            rec.ТипСообщения = newRec.ТипСообщения;
 
-            //Заполнение СписокНештатныхСообщений.
-            rec= ЗаполнениеСпискаНештатныхСитуаций(ref rec, null);
-            
+            rec= ЗаполнениеСпискаНештатныхСитуаций(ref rec, null);     
             rec.AplyIdTrain();
 
             //СОХРАНЕНИЕ
@@ -1811,11 +1796,9 @@ namespace MainExample
                     {
                         //загрузим список изменений на глубину beh.HourDepth.
                         var min = DateTime.Now.AddHours(beh.HourDepth * (-1));
-                        var changes = Program.SoundRecordChangesDbRepository.List()
-                            .Where(p => p.TimeStamp >= min)
+                        var changes = _soundRecChangesService.Get(db => true).Where(p => p.TimeStamp >= min)
                             .Select(Mapper.SoundRecordChangesDb2SoundRecordChanges)
                             .ToList();
-
 
                         List<UniversalInputType> table= new List<UniversalInputType>();
                         foreach (var change in changes)
