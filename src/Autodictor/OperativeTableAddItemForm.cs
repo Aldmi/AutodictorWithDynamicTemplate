@@ -74,14 +74,14 @@ namespace MainExample
             cBНомерПоезда.Text = tableRec.Num;
             cBНомерПоезда2.Text = tableRec.Num2;
 
-            СтанцииВыбранногоНаправления = Program.ПолучитьСтанцииНаправления(tableRec.Direction)?.Select(st => st.NameRu).ToArray();
-            if (СтанцииВыбранногоНаправления != null)
-            {
-                cBОткуда.Items.Clear();
-                cBКуда.Items.Clear();
-                cBОткуда.Items.AddRange(СтанцииВыбранногоНаправления);
-                cBКуда.Items.AddRange(СтанцииВыбранногоНаправления);
-            }
+            //СтанцииВыбранногоНаправления = Program.ПолучитьСтанцииНаправления(tableRec.Direction)?.Select(st => st.NameRu).ToArray();
+            //if (СтанцииВыбранногоНаправления != null)
+            //{
+            //    cBОткуда.Items.Clear();
+            //    cBКуда.Items.Clear();
+            //    cBОткуда.Items.AddRange(СтанцииВыбранногоНаправления);
+            //    cBКуда.Items.AddRange(СтанцииВыбранногоНаправления);
+            //}
 
             cBОткуда.Text = tableRec.StationDepart;
             cBКуда.Text = tableRec.StationArrival;

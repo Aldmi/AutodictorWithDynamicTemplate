@@ -136,6 +136,17 @@ namespace AutodictorBL.DataAccess
             return _directionService.GetStationInDirectionByCodeExpressStation(directionName, codeExpress);
         }
 
+        public Station GetStationByCodeExpressStation(int codeExpress)
+        {
+            foreach (var direction in _directionService.GetAll())
+            {
+               var station= direction.Stations.FirstOrDefault(st => st.CodeExpress == codeExpress);
+                if (station != null)
+                    return station;
+            }
+            return null;
+        }
+
         public TrainTypeByRyle GetTrainTypeByRyleById(int id)
         {
             return _trainTypeByRyleService.GetById(id);

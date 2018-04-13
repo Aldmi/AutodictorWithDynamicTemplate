@@ -41,7 +41,6 @@ namespace MainExample
         public static DateTime StartTime { get; } = DateTime.Now;
         public static AutodictorModel AutodictorModel { get; set; }
 
-        public static DirectionService DirectionService; //Направления. 
         public static PathwaysService PathwaysService;   //Пути.
         public static IEnumerable<TrainTypeByRyle> TrainTypes;
 
@@ -56,7 +55,7 @@ namespace MainExample
                 return;
 
             AutofacConfig.ConfigureContainer();
-
+            Mappers.Mapper.SetContainer(AutofacConfig.Container);//Передача контейнера в статический класс
 
             //DEBUG-------------
             //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
@@ -368,7 +367,6 @@ namespace MainExample
         {
             try
             {
-                DirectionService = AutofacConfig.Container.Resolve<DirectionService>();
                 PathwaysService = AutofacConfig.Container.Resolve<PathwaysService>();
                 TrainTypes = AutofacConfig.Container.Resolve<TrainTypeByRyleService>().GetAll();
                 //AuthenticationService = AutofacConfig.Container.Resolve<IAuthentificationService>();
@@ -379,54 +377,6 @@ namespace MainExample
             }
         }
 
-
-
-
-
-        //TODO: DI. Вынести в DirectionService.
-        public static List<Station> ПолучитьСтанцииНаправления(string имяНаправления)
-        {
-            var direction = DirectionService.GetAll().FirstOrDefault(d => d.Name == имяНаправления);
-            var станцииНаправления = direction?.Stations.ToList();
-            return станцииНаправления;
-        }
-
-
-        //TODO: DI. Вынести в DirectionService.
-        public static Station ПолучитьСтанциюНаправления(string имяНаправления, string названиеСтанцииRu)
-        {
-            return ПолучитьСтанцииНаправления(имяНаправления)?.FirstOrDefault(st => st.NameRu == названиеСтанцииRu);
-        }
-
-
-
-        //TODO: DI.Вынести в DirectionService.
-        /// <summary>
-        /// Находим объект Station в репозитории по коду Экспресс станции.
-        /// </summary>
-        public static Station GetStationByCode(int codeExpress)
-        {
-            if (codeExpress == 0)
-            {
-                //MessageBox.Show("Передана пустая станция");
-                return new Station { NameRu = default(string), CodeExpress = codeExpress };
-            }
-            foreach (var direction in DirectionService.GetAll())
-            {
-                var station = GetStationByCode(codeExpress, direction.Name);
-                if (station != null)
-                    return station;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Находим объект Station в репозитории по коду Экспресс станции, зная направление, на котором находится станция.
-        /// </summary>
-        public static Station GetStationByCode(int codeExpress, string имяНаправления)
-        {
-            return ПолучитьСтанцииНаправления(имяНаправления)?.FirstOrDefault(st => st.CodeExpress == codeExpress);
-        }
 
 
         public static void ЗаписьЛога(string ТипСообщения, string Сообщение, User user)

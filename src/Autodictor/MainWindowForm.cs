@@ -232,7 +232,7 @@ namespace MainExample
                         chbox_CisRegShControl.Visible = true;
                         chbox_CisRegShControl.Checked = Program.Настройки.GetDataCisRegShStart;
 
-                        CisRegShAbstract = new GetCisRegSh(beh.BaseGetDataBehavior, null, _usersRepository);
+                        CisRegShAbstract = new GetCisRegSh(beh.BaseGetDataBehavior, null, _usersRepository, _trainRecService);
                         CisRegShAbstract.SubscribeAndStart(chbox_CisRegShControl);
                         CisRegShAbstract.Enable = chbox_CisRegShControl.Checked;
                         break;
@@ -3425,12 +3425,7 @@ namespace MainExample
                         case "СТАНЦИИ":
                             if ((record.ТипПоезда.CategoryTrain == CategoryTrain.Suburb))
                             {
-                                var списокСтанцийНаправления = Program.ПолучитьСтанцииНаправления(record.Направление)?.Select(st => st.NameRu).ToList();
-                                var списокСтанцийParse = record.Примечание.Substring(record.Примечание.IndexOf(":", StringComparison.Ordinal) + 1).Split(',').Select(st => st.Trim()).ToList();
-
-                                if (списокСтанцийНаправления == null || !списокСтанцийНаправления.Any())
-                                    break;
-
+                                var списокСтанцийParse= record.Примечание.Substring(record.Примечание.IndexOf(":", StringComparison.Ordinal) + 1).Split(',').Select(st => st.Trim()).ToList();
                                 if (!списокСтанцийParse.Any())
                                     break;
 
@@ -3453,8 +3448,7 @@ namespace MainExample
                                 else if (record.Примечание.Contains("С остановк"))
                                 {
                                     logMessage += "Электропоезд движется с остановками на станциях: ";
-                                    foreach (var станция in списокСтанцийНаправления)
-                                        if (списокСтанцийParse.Contains(станция))
+                                    foreach (var станция in списокСтанцийParse)
                                             logMessage += станция + " ";
 
                                     if (Program.FilesFolder.Contains("СОстановками"))
@@ -3470,27 +3464,27 @@ namespace MainExample
                                         });
                                     }
 
-                                    foreach (var станция in списокСтанцийНаправления)
-                                        if (списокСтанцийParse.Contains(станция))
-                                            if (Program.FilesFolder.Contains(станция))
+                                    foreach (var станция in списокСтанцийParse)
+                                    {
+                                        if (Program.FilesFolder.Contains(станция))
+                                        {
+                                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                             {
-                                                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-                                                {
-                                                    ИмяВоспроизводимогоФайла = станция,
-                                                    MessageType = messageType,
-                                                    Язык = язык,
-                                                    ParentId = формируемоеСообщение.Id,
-                                                    RootId = формируемоеСообщение.SoundRecordId,
-                                                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-                                                });
-                                            }
+                                                ИмяВоспроизводимогоФайла = станция,
+                                                MessageType = messageType,
+                                                Язык = язык,
+                                                ParentId = формируемоеСообщение.Id,
+                                                RootId = формируемоеСообщение.SoundRecordId,
+                                                ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
+                                            });
+                                        }
+                                    }
                                 }
                                 else if (record.Примечание.Contains("Кроме"))
                                 {
                                     logMessage += "Электропоезд движется с остановками кроме станций: ";
-                                    foreach (var станция in списокСтанцийНаправления)
-                                        if (списокСтанцийParse.Contains(станция))
-                                            logMessage += станция + " ";
+                                    foreach (var станция in списокСтанцийParse)
+                                        logMessage += станция + " ";
 
                                     if (Program.FilesFolder.Contains("СОстановкамиКроме"))
                                     {
@@ -3505,20 +3499,21 @@ namespace MainExample
                                         });
                                     }
 
-                                    foreach (var станция in списокСтанцийНаправления)
-                                        if (списокСтанцийParse.Contains(станция))
-                                            if (Program.FilesFolder.Contains(станция))
+                                    foreach (var станция in списокСтанцийParse)
+                                    {
+                                        if (Program.FilesFolder.Contains(станция))
+                                        {
+                                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
                                             {
-                                                воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
-                                                {
-                                                    ИмяВоспроизводимогоФайла = станция,
-                                                    MessageType = messageType,
-                                                    Язык = язык,
-                                                    ParentId = формируемоеСообщение.Id,
-                                                    RootId = формируемоеСообщение.SoundRecordId,
-                                                    ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
-                                                });
-                                            }
+                                                ИмяВоспроизводимогоФайла = станция,
+                                                MessageType = messageType,
+                                                Язык = язык,
+                                                ParentId = формируемоеСообщение.Id,
+                                                RootId = формируемоеСообщение.SoundRecordId,
+                                                ПриоритетГлавный = формируемоеСообщение.ПриоритетГлавный
+                                            });
+                                        }
+                                    }
                                 }
                             }
                             break;

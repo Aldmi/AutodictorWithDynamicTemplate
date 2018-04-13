@@ -294,11 +294,11 @@
     <Compile Include="ArchiveChangesForm.Designer.cs">
       <DependentUpon>ArchiveChangesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ОкноДобавленияПоезда.cs">
+    <Compile Include="AddingTrainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ОкноДобавленияПоезда.Designer.cs">
-      <DependentUpon>ОкноДобавленияПоезда.cs</DependentUpon>
+    <Compile Include="AddingTrainForm.Designer.cs">
+      <DependentUpon>AddingTrainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ОкноНастроек.cs">
       <SubType>Form</SubType>
@@ -427,8 +427,8 @@
     <EmbeddedResource Include="ArchiveChangesForm.resx">
       <DependentUpon>ArchiveChangesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ОкноДобавленияПоезда.resx">
-      <DependentUpon>ОкноДобавленияПоезда.cs</DependentUpon>
+    <EmbeddedResource Include="AddingTrainForm.resx">
+      <DependentUpon>AddingTrainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ОкноНастроек.resx">
       <DependentUpon>ОкноНастроек.cs</DependentUpon>

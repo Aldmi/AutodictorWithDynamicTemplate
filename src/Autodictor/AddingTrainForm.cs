@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AutodictorBL.DataAccess;
 using DAL.Abstract.Entitys;
 using DAL.NoSqlLiteDb.Entityes;
 using MainExample.Entites;
@@ -16,18 +17,23 @@ using MainExample.Services.FactoryServices;
 
 namespace MainExample
 {
-    public partial class ОкноДобавленияПоезда : Form
+    public partial class AddingTrainForm : Form
     {
+        private readonly TrainRecService _trainRecService;
+
+
         public SoundRecord Record;
         public int  RecordId { get; private set; }
         private string[] СтанцииВыбранногоНаправления { get; set; } = new string[0];
-        private List<Pathway> НомераПутей { get; set; }
+        private List<Pathway> НомераПутей { get; }
         public List<string> ИспользуемыеНомераПоездов { get; set; }
 
 
 
-        public ОкноДобавленияПоезда(int recordId)
+
+        public AddingTrainForm(int recordId, TrainRecService trainRecService)
         {
+            _trainRecService = trainRecService;
             НомераПутей = Program.PathwaysService.GetAll().ToList();
 
             InitializeComponent();
@@ -575,7 +581,7 @@ namespace MainExample
                             Record.ИменаФайлов = new string[0];
                             Record.Направление = Config.Direction;
 
-                            СтанцииВыбранногоНаправления = Program.ПолучитьСтанцииНаправления(Record.Направление)?.Select(st => st.NameRu).ToArray();
+                            СтанцииВыбранногоНаправления = _trainRecService.GetStationsInDirectionByName(Record.Направление)?.Select(st => st.NameRu).ToArray();
                             if (СтанцииВыбранногоНаправления != null)
                             {
                                 cBОткуда.Items.Clear();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
@@ -17,15 +18,16 @@ namespace MainExample.Services.GetDataService
     class GetCisRegSh : GetSheduleAbstract
     {
         private readonly IUsersRepository _usersRepository;
-
+        private readonly TrainRecService _trainRecService;
 
 
         #region ctor
 
-        public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords, IUsersRepository usersRepository) 
+        public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords, IUsersRepository usersRepository, TrainRecService trainRecService) 
             : base(baseGetDataBehavior, soundRecords)
         {
             _usersRepository = usersRepository;
+            _trainRecService = trainRecService;
         }
 
         #endregion
@@ -107,10 +109,8 @@ namespace MainExample.Services.GetDataService
                         {
                             try
                             {
-                                //var trTable= Mapper.MapUniversalInputType2TrainTableRecord(uit);
-                                //TrainTableRecord tableRec = new TrainTableRecord();
-                                uit.StationDeparture = Program.GetStationByCode(uit.StationDeparture.CodeExpress);
-                                uit.StationArrival = Program.GetStationByCode(uit.StationArrival.CodeExpress);
+                                uit.StationDeparture = _trainRecService.GetStationByCodeExpressStation(uit.StationDeparture.CodeExpress);
+                                uit.StationArrival = _trainRecService.GetStationByCodeExpressStation(uit.StationArrival.CodeExpress);
                                 uit.Stations = $"{uit.StationDeparture?.NameRu} - {uit.StationArrival?.NameRu}";
                                 string[] num;
                                 if (uit.NumberOfTrain.Contains("/"))

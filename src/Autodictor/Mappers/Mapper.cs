@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Services.SoundRecordServices;
+using Autofac;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Model;
 using DAL.Abstract.Entitys;
@@ -9,12 +11,20 @@ using DAL.Abstract.Entitys.Changes;
 using DAL.NoSqlLiteDb.Entityes;
 using Force.DeepCloner;
 using MainExample.Entites;
+using MainExample.Utils;
 
 
 namespace MainExample.Mappers
 {
     public static class Mapper
     {
+        private static  IContainer _container;
+        public static void SetContainer(IContainer container)
+        {
+            _container = container;
+        }
+
+
         public static List<СтатическоеСообщение> MapSoundConfigurationRecord2СтатическоеСообщение(SoundConfigurationRecord scr, ref int newId)
         {
             СтатическоеСообщение statRecord;
@@ -249,9 +259,14 @@ namespace MainExample.Mappers
                     return emptyStation;
                 }
 
-                var stationDir = Program.ПолучитьСтанциюНаправления(direction, station);
-                if (stationDir == null)
-                    return emptyStation;
+                Station stationDir;
+                using (var scope = _container.BeginLifetimeScope())
+                {
+                    var trainRecService = scope.Resolve<TrainRecService>();
+                    stationDir = trainRecService.GetStationInDirectionByNameStation(direction, station);//Program.ПолучитьСтанциюНаправления(direction, station);
+                    if (stationDir == null)
+                        return emptyStation;
+                }
 
                 return stationDir;
             };
@@ -429,10 +444,17 @@ namespace MainExample.Mappers
                     break;
             }
 
-            var defaultStation = ExchangeModel.NameRailwayStation;
-            var cтанцияОтправления = Program.ПолучитьСтанциюНаправления(data.Направление, data.СтанцияОтправления) ?? defaultStation;
-            var cтанцияНазначения = Program.ПолучитьСтанциюНаправления(data.Направление, data.СтанцияНазначения) ?? defaultStation;
 
+            Station cтанцияОтправления;
+            Station cтанцияНазначения;
+            var defaultStation = ExchangeModel.NameRailwayStation;
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                var trainRecService = scope.Resolve<TrainRecService>();
+                trainRecService.GetStationInDirectionByNameStation(data.Направление, data.СтанцияОтправления);//Program.ПолучитьСтанциюНаправления(direction, station);
+                cтанцияОтправления = trainRecService.GetStationInDirectionByNameStation(data.Направление, data.СтанцияОтправления) ?? defaultStation;
+                cтанцияНазначения = trainRecService.GetStationInDirectionByNameStation(data.Направление, data.СтанцияНазначения) ?? defaultStation;
+            }
 
             UniversalInputType mapData;
             if (isShow)

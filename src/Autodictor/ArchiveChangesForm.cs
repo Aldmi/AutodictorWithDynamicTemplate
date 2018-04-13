@@ -36,7 +36,6 @@ namespace MainExample
 
 
 
-
         #region EventHandlers
 
         private void btn_Поиск_Click(object sender, EventArgs e)

@@ -46,6 +46,7 @@ namespace MainExample
         private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> _staticSoundCardFormFactory;
         private readonly Func<TrainTableGridForm> _trainTableGridFormFactory;
         private readonly Func<ArchiveChangesForm> _archiveChangesFormFactory;
+        private readonly Func<int, AddingTrainForm> _addingTrainFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
         private readonly IAuthentificationService _authentificationService;
@@ -69,19 +70,6 @@ namespace MainExample
 
 
 
-
-        //public MainForm(Func<AdminForm> adminFormFactory,
-        //    Func<AuthenticationForm> authenticationFormFactory,
-        //    Func<ExchangeModel, MainWindowForm> mainWindowFormFactory,
-        //    Func<ICollection<IBinding2StaticFormBehavior>, MainWindowForm> staticDisplayFormFactory,
-        //    Func<ISoundPlayer, StaticSoundForm> staticSoundFormFactory,
-        //    Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщения> staticSoundCardFormFactory,
-        //    Owned<IAuthentificationService> authentificationService)
-
-
-        // TrainTableGridForm
-        
-
         public MainForm(Func<AdminForm> adminFormFactory,
                         Func<AuthenticationForm> authenticationFormFactory,
                         Func<ExchangeModel, MainWindowForm> mainWindowFormFactory,
@@ -90,6 +78,7 @@ namespace MainExample
                         Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> staticSoundCardFormFactory,
                         Func<TrainTableGridForm> trainTableGridFormFactory,
                         Func<ArchiveChangesForm> archiveChangesFormFactory,
+                        Func<int, AddingTrainForm> addingTrainFormFactory,
                         Owned<IAuthentificationService> authentificationService)
         {
             _adminFormFactory = adminFormFactory;
@@ -100,6 +89,7 @@ namespace MainExample
             _staticSoundCardFormFactory = staticSoundCardFormFactory;
             _trainTableGridFormFactory = trainTableGridFormFactory;
             _archiveChangesFormFactory = archiveChangesFormFactory;
+            _addingTrainFormFactory = addingTrainFormFactory;
             _authentificationService = authentificationService.Value;
             _authentificationServiceOwner = authentificationService;
             _authentificationService.UsersDbInitialize();               //Инициализируем БД Юзеров при загрузки
@@ -583,7 +573,7 @@ namespace MainExample
             }
 
             var newRecId = MainWindowForm.SoundRecords.Max(rec => rec.Value.Id) + 1;
-            ОкноДобавленияПоезда окно = new ОкноДобавленияПоезда(newRecId);
+            AddingTrainForm окно = _addingTrainFormFactory(newRecId);
             if (окно.ShowDialog() == DialogResult.OK)
             {
                 var record = окно.Record;
