@@ -55,7 +55,7 @@ namespace MainExample
 
         #region ctor
 
-        public EditTrainTableRecForm(TrainRecService trainRecService, IAuthentificationService service, TrainTableRec trainRec)
+        public EditTrainTableRecForm(TrainRecService trainRecService, TrainTableRec trainRec)
         {
             _trainRecService = trainRecService;
             TrainRec = trainRec;
@@ -620,6 +620,11 @@ namespace MainExample
             {
                 MessageBox.Show(@"Обязательные поля не заполнены !!!");
                 return;
+            }
+
+            if (!ActionTrainsVm.Any()) //Автозаполнение шаблонов, если список шаблонов ПУСТ 
+            {
+                btnАвтогенерацияШаблонов_Click(null, EventArgs.Empty);
             }
 
             ApplyChangedUi2Model();
