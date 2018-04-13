@@ -418,25 +418,20 @@ namespace MainExample
 
 
 
-        private void ДобавитьШаблонВОчередьЗвуковыхСообщенийПриФиксацииВремени(int? привязкаКоВремени)
+        private void ДобавитьШаблонВОчередьЗвуковыхСообщенийПриФиксацииВремени(ActionType actionType)
         {
-            for (int i = 0; i < _record.СписокФормируемыхСообщений.Count; i++)
+            foreach (var actionTrainDyn in _record.ActionTrainDynamiсList)
             {
-                var формируемоеСообщение = _record.СписокФормируемыхСообщений[i];
-                if (привязкаКоВремени != null &&
-                    формируемоеСообщение.ПривязкаКВремени != привязкаКоВремени.Value)
+                if (actionType != ActionType.None && actionTrainDyn.ActionTrain.ActionType != actionType)
                 {
                     continue;
                 }
 
-                if (формируемоеСообщение.НазваниеШаблона.StartsWith("@") && формируемоеСообщение.ВремяСмещения == 0)
+                if (actionTrainDyn.ActionTrain.Name.StartsWith("@") && actionTrainDyn.ActionTrain.ActionType == ActionType.Arrival)
                 {
-                    формируемоеСообщение.Воспроизведен = true;
-                    формируемоеСообщение.СостояниеВоспроизведения = SoundRecordStatus.ДобавленВОчередьРучное;
-                    формируемоеСообщение.ПриоритетГлавный = Priority.Hight;
-                    _record.СписокФормируемыхСообщений[i] = формируемоеСообщение;
-
-                    MainWindowForm.ВоспроизвестиШаблонОповещения("Воспроизведение шаблона в ручном режиме при фиксации времени", _record, формируемоеСообщение, MessageType.Динамическое);
+                    actionTrainDyn.SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьРучное;
+                    actionTrainDyn.PriorityMain = Priority.Hight;
+                    MainWindowForm.ВоспроизвестиШаблонОповещения_New("Воспроизведение шаблона в ручном режиме при фиксации времени", _record, actionTrainDyn, MessageType.Динамическое);
                 }
             }
         }
@@ -984,7 +979,7 @@ namespace MainExample
 
         private void btnНештаткаПоезда_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Вы точно хотите воспроизвести данное сообщение в эфир?", "Внимание !!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            if (MessageBox.Show(@"Вы точно хотите воспроизвести данное сообщение в эфир?", @"Внимание !!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
             ActionTrain emergency = null;
@@ -1019,19 +1014,7 @@ namespace MainExample
                     ActionTrain=  emergency
                 };
                 MainWindowForm.ВоспроизвестиШаблонОповещения_New("Действие оператора нештатная ситуация", _record, emergencyDyn, MessageType.ДинамическоеАварийное);
-            }
-
-            //СостояниеФормируемогоСообщенияИШаблон шаблонФормируемогоСообщения = new СостояниеФормируемогоСообщенияИШаблон
-            //{
-            //    Id = 2000,
-            //    ПриоритетГлавный = Priority.Hight,
-            //    SoundRecordId = _record.Id,
-            //    Шаблон = ФормируемоеСообщение,
-            //    ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng }, //TODO: вычислять языки оповещения 
-            //    НазваниеШаблона = "Авария"
-            //};
-            //MainWindowForm.ВоспроизвестиШаблонОповещения("Действие оператора нештатная ситуация", _record, шаблонФормируемогоСообщения, MessageType.ДинамическоеАварийное);
-        
+            }      
         }
 
 
@@ -1127,23 +1110,23 @@ namespace MainExample
             lb_фиксВрПриб.BackColor = Color.Aqua;
             lb_фиксВрОтпр.BackColor = Color.Aqua;
 
-            int? привязкаКоВремени = null;
+            ActionType actionType = ActionType.None;
             if (_record.ФиксированноеВремяПрибытия == _record.ФиксированноеВремяОтправления)
             {
-                привязкаКоВремени = null;     //шаблоны привязанные к ПРИБ и ОТПР с 0 смещением добавятся в очередь
+                actionType = ActionType.None;//шаблоны привязанные к ПРИБ и ОТПР с 0 смещением добавятся в очередь
             }
             else
             if (_record.ФиксированноеВремяПрибытия == текВремя)
             {
-                привязкаКоВремени = 0;     //шаблоны привязанные к ПРИБ с 0 смещением добавятся в очередь
+                actionType = ActionType.Arrival; //шаблоны привязанные к ПРИБ с 0 смещением добавятся в очередь
             }
             else
             if (_record.ФиксированноеВремяОтправления == текВремя)
             {
-                привязкаКоВремени = 1;   //шаблоны привязанные к ОТПР с 0 смещением добавятся в очередь
+                actionType = ActionType.Departure;//шаблоны привязанные к ОТПР с 0 смещением добавятся в очередь
             }
 
-            ДобавитьШаблонВОчередьЗвуковыхСообщенийПриФиксацииВремени(привязкаКоВремени);
+            ДобавитьШаблонВОчередьЗвуковыхСообщенийПриФиксацииВремени(actionType);
             ОбновитьСостояниеТаблицыШаблонов();
         }
 

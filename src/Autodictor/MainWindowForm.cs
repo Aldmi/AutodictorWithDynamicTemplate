@@ -1583,8 +1583,8 @@ namespace MainExample
 
 
                         var количествоЭлементов = данные.Автомат
-                            ? данные.СписокФормируемыхСообщений.Count
-                            : данные.СписокФормируемыхСообщений.Count(s => !s.НазваниеШаблона.StartsWith("@"));
+                            ? данные.ActionTrainDynamiсList.Count
+                            : данные.ActionTrainDynamiсList.Count(s => !s.ActionTrain.Name.StartsWith("@"));
 
                         if (количествоВключенныхГалочек < количествоЭлементов)
                         {
@@ -1645,14 +1645,14 @@ namespace MainExample
             for (int i = 0; i < TechnicalMessageForm.SoundRecords.Count; i++)
             {
                 var record = TechnicalMessageForm.SoundRecords[i];
-                if (record.СписокФормируемыхСообщений.Any())
+                if (record.ActionTrainDynamiсList.Any())
                 {
-                    var формируемоеСообщение = record.СписокФормируемыхСообщений[0];
-                    if (формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ДобавленВОчередьРучное ||
-                        формируемоеСообщение.СостояниеВоспроизведения == SoundRecordStatus.ВоспроизведениеРучное)
+                    var формируемоеСообщение = record.ActionTrainDynamiсList[0];
+                    if (формируемоеСообщение.SoundRecordStatus == SoundRecordStatus.ДобавленВОчередьРучное ||
+                        формируемоеСообщение.SoundRecordStatus == SoundRecordStatus.ВоспроизведениеРучное)
                     {
                         StateTask состояниеСтроки = StateTask.Disabled; //0
-                        switch (формируемоеСообщение.СостояниеВоспроизведения)
+                        switch (формируемоеСообщение.SoundRecordStatus)
                         {
                             case SoundRecordStatus.ДобавленВОчередьРучное:
                                 состояниеСтроки = StateTask.Waiting;  //1
@@ -1667,7 +1667,7 @@ namespace MainExample
                         {
                             MessageType = MessageType.Динамическое,
                             StateTask = состояниеСтроки,
-                            Описание = формируемоеСообщение.НазваниеШаблона,
+                            Описание = формируемоеСообщение.ActionTrain.Name,
                             Время = record.Время,
                             Key = SoundRecords.ElementAt(i).Key,
                             ParentId = формируемоеСообщение.Id
@@ -2476,13 +2476,13 @@ namespace MainExample
                                         }
 
                                         шаблоныОповещенияToolStripMenuItem1.DropDownItems.Clear();
-                                        for (int i = 0; i < Данные.СписокФормируемыхСообщений.Count(); i++)
+                                        for (int i = 0; i < Данные.ActionTrainDynamiсList.Count; i++)
                                         {
-                                            var Сообщение = Данные.СписокФормируемыхСообщений[i];
-                                            ToolStripMenuItem tsmi = new ToolStripMenuItem(Сообщение.НазваниеШаблона);
+                                            var Сообщение = Данные.ActionTrainDynamiсList[i];
+                                            ToolStripMenuItem tsmi = new ToolStripMenuItem(Сообщение.ActionTrain.Name);
                                             tsmi.Size = new System.Drawing.Size(165, 22);
                                             tsmi.Name = "ШаблонОповещения" + i.ToString();
-                                            tsmi.Checked = Сообщение.Активность;
+                                            tsmi.Checked = Сообщение.Activity;
                                             tsmi.Click += new System.EventHandler(this.путь1ToolStripMenuItem_Click);
                                             шаблоныОповещенияToolStripMenuItem1.DropDownItems.Add(tsmi);
                                         }
@@ -3752,11 +3752,11 @@ namespace MainExample
                     if (шаблоныОповещенияToolStripMenuItem1.DropDownItems.Contains(tsmi))
                     {
                         int ИндексШаблона = шаблоныОповещенияToolStripMenuItem1.DropDownItems.IndexOf(tsmi);
-                        if (ИндексШаблона >= 0 && ИндексШаблона < 10 && ИндексШаблона < данные.СписокФормируемыхСообщений.Count)
+                        if (ИндексШаблона >= 0 && ИндексШаблона < 10 && ИндексШаблона < данные.ActionTrainDynamiсList.Count)
                         {
-                            var ФормируемоеСообщение = данные.СписокФормируемыхСообщений[ИндексШаблона];
-                            ФормируемоеСообщение.Активность = !tsmi.Checked;
-                            данные.СписокФормируемыхСообщений[ИндексШаблона] = ФормируемоеСообщение;
+                            var формируемоеСообщение = данные.ActionTrainDynamiсList[ИндексШаблона];
+                            формируемоеСообщение.Activity = !tsmi.Checked;
+                            данные.ActionTrainDynamiсList[ИндексШаблона] = формируемоеСообщение;
                             SoundRecords[КлючВыбранныйМеню] = данные;
                             return;
                         }

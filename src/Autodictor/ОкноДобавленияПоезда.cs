@@ -60,7 +60,7 @@ namespace MainExample
             Record.Состояние = SoundRecordStatus.ОжиданиеВоспроизведения;
             Record.ТипСообщения = SoundRecordType.ДвижениеПоездаНеПодтвержденное;
             Record.СостояниеОтображения = TableRecordStatus.Выключена;
-            Record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();
+            Record.ActionTrainDynamiсList = new List<ActionTrainDynamic>();
             Record.СтанцияНазначения = "";
             Record.СтанцияОтправления = "";
             Record.ТипПоезда = null;
@@ -107,7 +107,7 @@ namespace MainExample
             Record.ШаблонВоспроизведенияСообщений = ПолучитьШаблоныОповещения();
 
             // Шаблоны оповещения
-            Record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();
+            Record.ActionTrainDynamiсList = new List<ActionTrainDynamic>();
             string[] ШаблонОповещения = Record.ШаблонВоспроизведенияСообщений.Split(':');
             int ПривязкаВремени = 0;
             if ((ШаблонОповещения.Length % 3) == 0)
@@ -161,7 +161,7 @@ namespace MainExample
                                     НовыйШаблон.ПривязкаКВремени = ПривязкаВремени;
                                     НовыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };
 
-                                    Record.СписокФормируемыхСообщений.Add(НовыйШаблон);
+                                   // Record.СписокФормируемыхСообщений.Add(НовыйШаблон);
                                 }
                             }
                         }
@@ -667,7 +667,7 @@ namespace MainExample
 
                             // Шаблоны оповещения
                             lVШаблоныОповещения.Items.Clear();
-                            Record.СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон>();
+                            Record.ActionTrainDynamiсList = new List<ActionTrainDynamic>();
                             string[] ШаблонОповещения = Record.ШаблонВоспроизведенияСообщений.Split(':');
                             int ТипОповещенияПути = 0;
                             if ((ШаблонОповещения.Length % 3) == 0)

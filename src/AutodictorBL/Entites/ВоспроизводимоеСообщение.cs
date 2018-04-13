@@ -6,8 +6,8 @@ namespace AutodictorBL.Entites
     public enum MessageType
     {
         Статическое, //ищем в списке стат. сообщений
-        Динамическое, //ищем в SoundRecord.СписокФормируемыхСообщений
-        ДинамическоеАварийное, //ищем в SoundRecord.СписокНештатныхСообщений
+        Динамическое, //ищем в SoundRecord.ActionTrainDynamiсList
+        ДинамическоеАварийное, //ищем в SoundRecord.EmergencyTrainDynamiсList
         ДинамическоеТехническое, //ищем в списке ТехническихСоосбщений
     }
 

@@ -68,7 +68,7 @@ namespace DAL.Abstract.Entitys
         public PathPermissionType РазрешениеНаОтображениеПути { get; set; }
         public string[] ИменаФайлов { get; set; }
         public byte КоличествоПовторений { get; set; }
-        public List<СостояниеФормируемогоСообщенияИШаблонDb> СписокФормируемыхСообщений { get; set; }
+        public List<СостояниеФормируемогоСообщенияИШаблонDb> СписокФормируемыхСообщений { get; set; } //TODO: Создать тип ActionTrainDynamicDb
         public byte СостояниеКарточки { get; set; }
         public string ОписаниеСостоянияКарточки { get; set; }
         public Emergency Emergency { get; set; }

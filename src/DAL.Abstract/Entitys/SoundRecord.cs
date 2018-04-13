@@ -65,7 +65,7 @@ namespace DAL.Abstract.Entitys
         public string[] ИменаФайлов;
         public byte КоличествоПовторений;
 
-        public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;  //УДАЛИТЬ
+       // public List<СостояниеФормируемогоСообщенияИШаблон> СписокФормируемыхСообщений;  //УДАЛИТЬ
         public List<ActionTrainDynamic> ActionTrainDynamiсList;    //Шаблоны поезда
         public List<ActionTrain> EmergencyTrainStaticList { get; set; }  //4 нештатных шаблона взятых из TrainTypeByRyle и отредактированных для данного поезда
         public List<ActionTrainDynamic> EmergencyTrainDynamiсList { get; set; } //N нештатных шаблона, сгенерированных при АКТИВНОЙ нештатной ситуации.
