@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class TrainTableOperative
+    partial class TrainTableOperativeForm
     {
         /// <summary>
         /// Required designer variable.
@@ -236,7 +236,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = global::MainExample.Properties.Resources.SmallIcon;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "TrainTableOperative";
+            this.Name = "TrainTableOperativeForm";
             this.Text = "Оперативное распсиание движения поездов";
             this.pnСостояниеCIS.ResumeLayout(false);
             this.groupBoxSourseShedule.ResumeLayout(false);

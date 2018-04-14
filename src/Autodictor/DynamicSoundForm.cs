@@ -2,22 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
 using AutodictorBL.Sound;
-using CommunicationDevices.DataProviders;
-using CommunicationDevices.Devices;
 using DAL.Abstract.Entitys;
-using DAL.NoSqlLiteDb.Entityes;
-using NickBuhro.Translit;
 
 
 namespace MainExample
 {
     public struct DynamicSoundRecord
     {
-        public int ID;
+        public int Id;
         public string Name;
         public string Message;
         public PriorityPrecise PriorityTemplate;
@@ -110,8 +105,8 @@ namespace MainExample
                 var priorityNum = данные.Name.Contains("---------") ? string.Empty :  variant.IndexOf(данные.PriorityTemplate).ToString();
 
             
-                ListViewItem lvi = new ListViewItem(new string[] { данные.ID.ToString(), данные.Name, данные.Message, priorityNum });
-                lvi.Tag = данные.ID;
+                ListViewItem lvi = new ListViewItem(new string[] { данные.Id.ToString(), данные.Name, данные.Message, priorityNum });
+                lvi.Tag = данные.Id;
                 lvi.BackColor = (номерЭлемента++ % 2) == 0 ? Color.Aqua : Color.LightGreen;
                 this.listView1.Items.Add(lvi);
             }
@@ -132,7 +127,7 @@ namespace MainExample
         {
             DynamicSoundRecord Данные;
 
-            Данные.ID = ++ID;
+            Данные.Id = ++ID;
             Данные.Name = this.textBox_Name.Text;
             Данные.Message = this.textBox_Message.Text;
             Данные.PriorityTemplate = PriorityPrecise.Zero;
@@ -331,15 +326,15 @@ namespace MainExample
                             DynamicSoundRecord Данные;
                             PriorityPrecise priorityPrecise;
 
-                            Данные.ID = int.Parse(Settings[0]);
+                            Данные.Id = int.Parse(Settings[0]);
                             Данные.Name = Settings[1];
                             Данные.Message = Settings[2];    
                             Данные.PriorityTemplate = (Enum.TryParse(Settings[3], out priorityPrecise)) ? priorityPrecise : PriorityPrecise.Zero;
                             DynamicSoundRecords.Add(Данные);
                             Program.ШаблоныОповещения.Add(Settings[1]);
 
-                            if (Данные.ID > ID)
-                                ID = Данные.ID;
+                            if (Данные.Id > ID)
+                                ID = Данные.Id;
                         }
                     }
 
@@ -363,7 +358,7 @@ namespace MainExample
                     foreach (var данные in DynamicSoundRecords)
                     {
                         string priority = данные.Name.Contains("---------") ? string.Empty  : данные.PriorityTemplate.ToString("D");
-                        dumpFile.WriteLine(данные.ID.ToString() + ";" + данные.Name + ";" + данные.Message + ";" + priority);
+                        dumpFile.WriteLine(данные.Id.ToString() + ";" + данные.Name + ";" + данные.Message + ";" + priority);
                     }
 
                     dumpFile.Close();

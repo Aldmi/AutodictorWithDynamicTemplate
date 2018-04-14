@@ -9,8 +9,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AutodictorBL.DataAccess;
 using DAL.Abstract.Entitys;
-using MainExample.Entites;
 using MainExample.Mappers;
 
 namespace MainExample
@@ -20,20 +20,25 @@ namespace MainExample
     /// </summary>
     public partial class OperativeTableAddItemForm : Form
     {
-        public TrainTableRecord TableRec { get;  private set; }
+        private readonly TrainRecService _trainRecService;
+
+        public TrainTableRec TableRec { get;  private set; }
         private string[] СтанцииВыбранногоНаправления { get; set; } = new string[0];
         private Расписание Расписание { get; set; }
         public List<Pathway> НомераПутей { get; set; }
+        public IEnumerable<TrainTableRec> TrainTableRecs { get; set; }
 
 
 
 
         #region ctor
 
-        public OperativeTableAddItemForm()
+        public OperativeTableAddItemForm(TrainRecService trainRecService)
         {
-            TableRec= new TrainTableRecord();
-            НомераПутей = Program.PathwaysService.GetAll().ToList();
+            _trainRecService = trainRecService;
+
+            TableRec= new TrainTableRec();
+            НомераПутей = _trainRecService.GetPathways().ToList();
 
             InitializeComponent();
             InitializeFormDate();
@@ -44,15 +49,15 @@ namespace MainExample
 
 
 
-
         #region Methode
 
         private void InitializeFormDate()
         {
-            foreach (var данные in TrainSheduleTable.TrainTableRecords)
+            TrainTableRecs = _trainRecService.GetAll();
+            foreach (var данные in TrainTableRecs)
             {
-                string поезд = данные.Num + ":     " + "{" + данные.Id + "}" + данные.Name +" " + (данные.ArrivalTime != "" ? "   Приб: " + данные.ArrivalTime : "") + (данные.DepartureTime != "" ? "   Отпр: " + данные.DepartureTime : "");
-                cBПоездИзРасписания.Items.Add(поезд);
+                //string поезд = данные.Num + ":     " + "{" + данные.Id + "}" + данные.Name +" " + (данные.ArrivalTime != "" ? "   Приб: " + данные.ArrivalTime : "") + (данные.DepartureTime != "" ? "   Отпр: " + данные.DepartureTime : "");
+                //cBПоездИзРасписания.Items.Add(поезд);
             }
 
             foreach (var номерПоезда in Program.НомераПоездов)
@@ -67,7 +72,7 @@ namespace MainExample
 
 
 
-        private void InitializeFormDate(TrainTableRecord tableRec)
+        private void InitializeFormDate(TrainTableRec tableRec)
         {
             this.Text = "Расписание движения для поезда: " + tableRec.Num + " - " + tableRec.Name;
 
@@ -83,8 +88,8 @@ namespace MainExample
             //    cBКуда.Items.AddRange(СтанцииВыбранногоНаправления);
             //}
 
-            cBОткуда.Text = tableRec.StationDepart;
-            cBКуда.Text = tableRec.StationArrival;
+            //cBОткуда.Text = tableRec.StationDepart;
+            //cBКуда.Text = tableRec.StationArrival;
 
 
             int Часы = 0;
@@ -99,38 +104,38 @@ namespace MainExample
             // бит 3 - стоянка
             // бит 4 - отправления
 
-            if (tableRec.ArrivalTime != "")
-            {
-                string[] subStrings = tableRec.ArrivalTime.Split(':');
-                if (int.TryParse(subStrings[0], out Часы) && int.TryParse(subStrings[1], out Минуты))
-                {
-                    ВремяПрибытия = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
-                    dTPПрибытие.Value = ВремяПрибытия;
-                    НомерСписка |= 0x04;
-                }
-            }
+            //if (tableRec.ArrivalTime != "")
+            //{
+            //    string[] subStrings = tableRec.ArrivalTime.Split(':');
+            //    if (int.TryParse(subStrings[0], out Часы) && int.TryParse(subStrings[1], out Минуты))
+            //    {
+            //        ВремяПрибытия = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
+            //        dTPПрибытие.Value = ВремяПрибытия;
+            //        НомерСписка |= 0x04;
+            //    }
+            //}
 
-            if (tableRec.DepartureTime != "")
-            {
-                string[] subStrings = tableRec.DepartureTime.Split(':');
-                if (int.TryParse(subStrings[0], out Часы) && int.TryParse(subStrings[1], out Минуты))
-                {
-                    ВремяОтправления = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
-                    dTPОтправление.Value = ВремяОтправления;
-                    НомерСписка |= 0x10;
-                }
-            }
+            //if (tableRec.DepartureTime != "")
+            //{
+            //    string[] subStrings = tableRec.DepartureTime.Split(':');
+            //    if (int.TryParse(subStrings[0], out Часы) && int.TryParse(subStrings[1], out Минуты))
+            //    {
+            //        ВремяОтправления = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
+            //        dTPОтправление.Value = ВремяОтправления;
+            //        НомерСписка |= 0x10;
+            //    }
+            //}
 
-            if (!string.IsNullOrEmpty(tableRec.FollowingTime))
-            {
-                string[] subStrings = tableRec.FollowingTime.Split(':');
-                if (int.TryParse(subStrings[0], out Часы) && int.TryParse(subStrings[1], out Минуты))
-                    dTPСледования.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
-            }
-            else
-            {
-                dTPСледования.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
-            }
+            //if (!string.IsNullOrEmpty(tableRec.FollowingTime))
+            //{
+            //    string[] subStrings = tableRec.FollowingTime.Split(':');
+            //    if (int.TryParse(subStrings[0], out Часы) && int.TryParse(subStrings[1], out Минуты))
+            //        dTPСледования.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
+            //}
+            //else
+            //{
+            //    dTPСледования.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            //}
 
 
             if ((НомерСписка & 0x14) == 0x14)
@@ -149,14 +154,14 @@ namespace MainExample
                     времяПрибытия = времяПрибытия.AddDays(1);
                 }
                 var stopTime = (времяПрибытия - ВремяОтправления);
-                tableRec.StopTime = stopTime.ToString("t");
+              //  tableRec.StopTime = stopTime.ToString("t");
             }
 
             cBПутьПоУмолчанию.Items.Add("Не определен");
             foreach (var путь in НомераПутей.Select(p => p.Name))
                 cBПутьПоУмолчанию.Items.Add(путь);
 
-            cBПутьПоУмолчанию.Text = tableRec.TrainPathNumber[WeekDays.Постоянно];
+           // cBПутьПоУмолчанию.Text = tableRec.TrainPathNumber[WeekDays.Постоянно];
 
 
             //cBКатегория.SelectedIndex = (int)TableRec.ТипПоезда;  //TODO: выбор типа поезда, сделать как в окне "Оповешение".
@@ -164,21 +169,6 @@ namespace MainExample
 
             // Шаблоны оповещения
             lVШаблоныОповещения.Items.Clear();
-            string[] шаблонОповещения = tableRec.SoundTemplates.Split(':');
-            if ((шаблонОповещения.Length % 3) == 0)
-            {
-                for (int i = 0; i < шаблонОповещения.Length / 3; i++)
-                {
-                    if (Program.ШаблоныОповещения.Contains(шаблонОповещения[3 * i + 0]))
-                    {
-                        var типОповещенияПути = 0;
-                        int.TryParse(шаблонОповещения[3 * i + 2], out типОповещенияПути);
-                        if (типОповещенияПути > 1) типОповещенияПути = 0;
-                        ListViewItem lvi = new ListViewItem(new string[] { шаблонОповещения[3 * i + 0], шаблонОповещения[3 * i + 1], Program.ТипыВремени[типОповещенияПути] });
-                        this.lVШаблоныОповещения.Items.Add(lvi);
-                    }
-                }
-            }
 
 
             // станции следования
@@ -281,7 +271,7 @@ namespace MainExample
             int id;
             if (int.TryParse(mathStr, out id) == true)
             {
-                foreach (var config in TrainSheduleTable.TrainTableRecords)
+                foreach (var config in TrainTableRecs)
                 {
                     if (config.Id == id)
                     {
@@ -436,7 +426,7 @@ namespace MainExample
             var id = -1;
             while (id != 0)
             {
-                id = TrainTableOperative.TrainTableRecords.FirstOrDefault(tr => tr.Id == newId).Id;
+                id = TrainTableOperativeForm.TrainTableRecords.FirstOrDefault(tr => tr.Id == newId).Id;
                 if (id != 0)
                   newId++;
             }
@@ -454,10 +444,10 @@ namespace MainExample
         {
             //Удалить поезд с таким же ID
             var newId = TableRec.Id;
-            var findTrain = TrainTableOperative.TrainTableRecords.FirstOrDefault(tr => tr.Id == newId);
+            var findTrain = TrainTableOperativeForm.TrainTableRecords.FirstOrDefault(tr => tr.Id == newId);
             if (findTrain.Id != 0)
             {
-                TrainTableOperative.TrainTableRecords.Remove(findTrain);
+                TrainTableOperativeForm.TrainTableRecords.Remove(findTrain);
             }
 
             CreateTableRec(newId);
@@ -469,113 +459,113 @@ namespace MainExample
 
         private void CreateTableRec(int id)
         {
-            var newTableRec = TableRec;
-            newTableRec.Id = id;
-            newTableRec.SoundTemplates = ПолучитьШаблоныОповещения();
-            newTableRec.Num = cBНомерПоезда.Text;
-            newTableRec.Num2 = cBНомерПоезда2.Text;
-            //newTableRec.ТипПоезда = (ТипПоезда) cBКатегория.SelectedIndex;
-            newTableRec.Автомат = rB_РежРабАвтомат.Checked;
-            newTableRec.DaysAlias = tb_ДниСледованияAlias.Text;
-            newTableRec.StationDepart = cBОткуда.Text;
-            newTableRec.StationArrival = cBКуда.Text;
+            //var newTableRec = TableRec;
+            //newTableRec.Id = id;
+            //newTableRec.SoundTemplates = ПолучитьШаблоныОповещения();
+            //newTableRec.Num = cBНомерПоезда.Text;
+            //newTableRec.Num2 = cBНомерПоезда2.Text;
+            ////newTableRec.ТипПоезда = (ТипПоезда) cBКатегория.SelectedIndex;
+            //newTableRec.Автомат = rB_РежРабАвтомат.Checked;
+            //newTableRec.DaysAlias = tb_ДниСледованияAlias.Text;
+            //newTableRec.StationDepart = cBОткуда.Text;
+            //newTableRec.StationArrival = cBКуда.Text;
 
-            if (cBОткуда.Text != "")
-                newTableRec.Name = cBОткуда.Text + " - " + cBКуда.Text;
-            else
-                newTableRec.Name = cBКуда.Text;
+            //if (cBОткуда.Text != "")
+            //    newTableRec.Name = cBОткуда.Text + " - " + cBКуда.Text;
+            //else
+            //    newTableRec.Name = cBКуда.Text;
 
-            if (rBПрибытие.Checked == true)
-            {
-                newTableRec.ArrivalTime = dTPПрибытие.Value.ToString("HH:mm");
-                newTableRec.StopTime = "";
-                newTableRec.DepartureTime = "";
-            }
-            else if (rBОтправление.Checked == true)
-            {
-                newTableRec.ArrivalTime = "";
-                newTableRec.StopTime = "";
-                newTableRec.DepartureTime = dTPОтправление.Value.ToString("HH:mm");
-            }
-            else
-            {
-                var времяПрибытия = dTPПрибытие.Value;
-                if (dTPОтправление.Value > времяПрибытия)
-                {
-                    времяПрибытия = времяПрибытия.AddDays(1);
-                }
-                var stopTime = (времяПрибытия - dTPОтправление.Value);
-                newTableRec.StopTime = stopTime.Hours.ToString("D2") + ":" + stopTime.Minutes.ToString("D2");
+            //if (rBПрибытие.Checked == true)
+            //{
+            //    newTableRec.ArrivalTime = dTPПрибытие.Value.ToString("HH:mm");
+            //    newTableRec.StopTime = "";
+            //    newTableRec.DepartureTime = "";
+            //}
+            //else if (rBОтправление.Checked == true)
+            //{
+            //    newTableRec.ArrivalTime = "";
+            //    newTableRec.StopTime = "";
+            //    newTableRec.DepartureTime = dTPОтправление.Value.ToString("HH:mm");
+            //}
+            //else
+            //{
+            //    var времяПрибытия = dTPПрибытие.Value;
+            //    if (dTPОтправление.Value > времяПрибытия)
+            //    {
+            //        времяПрибытия = времяПрибытия.AddDays(1);
+            //    }
+            //    var stopTime = (времяПрибытия - dTPОтправление.Value);
+            //    newTableRec.StopTime = stopTime.Hours.ToString("D2") + ":" + stopTime.Minutes.ToString("D2");
 
-                newTableRec.ArrivalTime = dTPПрибытие.Value.ToString("HH:mm");
-                newTableRec.DepartureTime = dTPОтправление.Value.ToString("HH:mm");
-            }
+            //    newTableRec.ArrivalTime = dTPПрибытие.Value.ToString("HH:mm");
+            //    newTableRec.DepartureTime = dTPОтправление.Value.ToString("HH:mm");
+            //}
 
-            newTableRec.FollowingTime = dTPСледования.Value.ToString("HH:mm");
+            //newTableRec.FollowingTime = dTPСледования.Value.ToString("HH:mm");
 
-            if (rBНеОповещать.Checked)
-            {
-                newTableRec.Примечание = "";
-            }
-            else if (rBСоВсемиОстановками.Checked)
-            {
-                newTableRec.Примечание = "Со всеми остановками";
-            }
-            else if (rBБезОстановок.Checked)
-            {
-                newTableRec.Примечание = "Без остановок";
-            }
-            else if (rBСОстановкамиНа.Checked)
-            {
-                newTableRec.Примечание = "С остановками: ";
-                for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
-                    newTableRec.Примечание += lB_ПоСтанциям.Items[i] + ",";
+            //if (rBНеОповещать.Checked)
+            //{
+            //    newTableRec.Примечание = "";
+            //}
+            //else if (rBСоВсемиОстановками.Checked)
+            //{
+            //    newTableRec.Примечание = "Со всеми остановками";
+            //}
+            //else if (rBБезОстановок.Checked)
+            //{
+            //    newTableRec.Примечание = "Без остановок";
+            //}
+            //else if (rBСОстановкамиНа.Checked)
+            //{
+            //    newTableRec.Примечание = "С остановками: ";
+            //    for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
+            //        newTableRec.Примечание += lB_ПоСтанциям.Items[i] + ",";
 
-                if (newTableRec.Примечание.Length > 10)
-                    if (newTableRec.Примечание[newTableRec.Примечание.Length - 1] == ',')
-                        newTableRec.Примечание = newTableRec.Примечание.Remove(newTableRec.Примечание.Length - 1);
-            }
-            else if (rBСОстановкамиКроме.Checked)
-            {
-                newTableRec.Примечание = "Кроме: ";
-                for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
-                    newTableRec.Примечание += lB_ПоСтанциям.Items[i] + ",";
+            //    if (newTableRec.Примечание.Length > 10)
+            //        if (newTableRec.Примечание[newTableRec.Примечание.Length - 1] == ',')
+            //            newTableRec.Примечание = newTableRec.Примечание.Remove(newTableRec.Примечание.Length - 1);
+            //}
+            //else if (rBСОстановкамиКроме.Checked)
+            //{
+            //    newTableRec.Примечание = "Кроме: ";
+            //    for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
+            //        newTableRec.Примечание += lB_ПоСтанциям.Items[i] + ",";
 
-                if (newTableRec.Примечание.Length > 10)
-                    if (newTableRec.Примечание[newTableRec.Примечание.Length - 1] == ',')
-                        newTableRec.Примечание = newTableRec.Примечание.Remove(newTableRec.Примечание.Length - 1);
-            }
+            //    if (newTableRec.Примечание.Length > 10)
+            //        if (newTableRec.Примечание[newTableRec.Примечание.Length - 1] == ',')
+            //            newTableRec.Примечание = newTableRec.Примечание.Remove(newTableRec.Примечание.Length - 1);
+            //}
 
-            //РАСПИСАНИЕ ПОЕЗДА
-            if (rBВремяДействияС.Checked == true)
-            {
-                newTableRec.ВремяНачалаДействияРасписания = dTPВремяДействияС.Value;
-                newTableRec.ВремяОкончанияДействияРасписания = new DateTime(2100, 1, 1);
-            }
-            else if (rBВремяДействияПо.Checked == true)
-            {
-                newTableRec.ВремяНачалаДействияРасписания = new DateTime(1900, 1, 1);
-                newTableRec.ВремяОкончанияДействияРасписания = dTPВремяДействияПо.Value;
-            }
-            else if (rBВремяДействияСПо.Checked == true)
-            {
-                newTableRec.ВремяНачалаДействияРасписания = dTPВремяДействияС2.Value;
-                newTableRec.ВремяОкончанияДействияРасписания = dTPВремяДействияПо2.Value;
-            }
-            else if (rBВремяДействияПостоянно.Checked == true)
-            {
-                newTableRec.ВремяНачалаДействияРасписания = new DateTime(1900, 1, 1);
-                newTableRec.ВремяОкончанияДействияРасписания = new DateTime(2100, 1, 1);
-            }
+            ////РАСПИСАНИЕ ПОЕЗДА
+            //if (rBВремяДействияС.Checked == true)
+            //{
+            //    newTableRec.ВремяНачалаДействияРасписания = dTPВремяДействияС.Value;
+            //    newTableRec.ВремяОкончанияДействияРасписания = new DateTime(2100, 1, 1);
+            //}
+            //else if (rBВремяДействияПо.Checked == true)
+            //{
+            //    newTableRec.ВремяНачалаДействияРасписания = new DateTime(1900, 1, 1);
+            //    newTableRec.ВремяОкончанияДействияРасписания = dTPВремяДействияПо.Value;
+            //}
+            //else if (rBВремяДействияСПо.Checked == true)
+            //{
+            //    newTableRec.ВремяНачалаДействияРасписания = dTPВремяДействияС2.Value;
+            //    newTableRec.ВремяОкончанияДействияРасписания = dTPВремяДействияПо2.Value;
+            //}
+            //else if (rBВремяДействияПостоянно.Checked == true)
+            //{
+            //    newTableRec.ВремяНачалаДействияРасписания = new DateTime(1900, 1, 1);
+            //    newTableRec.ВремяОкончанияДействияРасписания = new DateTime(2100, 1, 1);
+            //}
 
-            newTableRec.Days = Расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуРасписания();
+            //newTableRec.Days = Расписание.ПолучитьПланРасписанияПоезда().ПолучитьСтрокуРасписания();
 
-            //ПУТЬ
-            newTableRec.PathWeekDayes = TableRec.PathWeekDayes;
-            newTableRec.TrainPathNumber = TableRec.TrainPathNumber;
-            TableRec.TrainPathNumber[WeekDays.Постоянно] = cBПутьПоУмолчанию.Text;
+            ////ПУТЬ
+            //newTableRec.PathWeekDayes = TableRec.PathWeekDayes;
+            //newTableRec.TrainPathNumber = TableRec.TrainPathNumber;
+            //TableRec.TrainPathNumber[WeekDays.Постоянно] = cBПутьПоУмолчанию.Text;
 
-            TableRec = newTableRec;
+            //TableRec = newTableRec;
         }
 
         #endregion

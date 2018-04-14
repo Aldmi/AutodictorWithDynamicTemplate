@@ -74,7 +74,7 @@ namespace MainExample
 
 
              rbSourseSheduleCis.Checked = (_trainRecService.SourceLoad == TrainRecType.RemoteCis);
-            _dispouseRemoteCisTableChangeRx = _trainRecService.RemoteCisTableChangeRx.Subscribe(data =>   //обновим tableRec в списке, при получении данных.
+            _dispouseRemoteCisTableChangeRx = _trainRecService.TableChangeRx.Subscribe(data =>   //обновим tableRec в списке, при получении данных.
             {
                 if (data == TrainRecType.RemoteCis)
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 
@@ -33,7 +34,7 @@ namespace AutodictorBL.DataAccess
 
         #region Rx
 
-        public Subject<TrainRecType> RemoteCisTableChangeRx { get; } = new Subject<TrainRecType>();
+        public Subject<TrainRecType> TableChangeRx { get; } = new Subject<TrainRecType>();
 
         #endregion
 
@@ -70,20 +71,28 @@ namespace AutodictorBL.DataAccess
         }
 
 
-        public IEnumerable<TrainTableRec> GetAll()
+        public IEnumerable<TrainTableRec> GetAll(TrainRecType? trainRecType = null)
         {
-            var rep= (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            var sourceLoad = trainRecType ?? SourceLoad;
+            var rep= (sourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
             return rep.List();
         }
 
-
-        public void ReWriteAll(IEnumerable<TrainTableRec> list)
+        public async Task<IEnumerable<TrainTableRec>> GetAllAsync(TrainRecType? trainRecType = null)
         {
-            var rep= (SourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            var sourceLoad = trainRecType ?? SourceLoad;
+            var rep = (sourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            return rep.List(); //TODO добавить async версии для репозиториев
+        }
+
+
+        public void ReWriteAll(IEnumerable<TrainTableRec> list, TrainRecType? trainRecType = null)
+        {
+            var sourceLoad = trainRecType ?? SourceLoad;
+            var rep=  (sourceLoad == TrainRecType.LocalMain) ? _repLocalMain : _repRemoteCis;
             rep.Delete(t=> true);
             rep.AddRange(list);
-
-            RemoteCisTableChangeRx.OnNext(SourceLoad);
+            TableChangeRx.OnNext(SourceLoad);
         }
 
 
@@ -162,6 +171,35 @@ namespace AutodictorBL.DataAccess
             return _trainTypeByRyleService.GetIndexOf(rule);
         }
 
+
+        public async Task SaveListByRemoteCis(IEnumerable<TrainTableRec> trainTableRecords)
+        {
+            ReWriteAll(trainTableRecords, TrainRecType.RemoteCis);
+        }
+
+
+        /// <summary>
+        /// Сохранить список от ЦИС
+        /// Начнет асинхронно сохранять и обновлять список UI.
+        /// </summary>
+        //public static async Task СохранитьИПрименитьСписокРегулярноеРасписаниеЦис(IList<TrainTableRecord> trainTableRecords)
+        //{
+        //    await Task.Factory.StartNew(() =>
+        //    {
+        //        СохранитьСписок(trainTableRecords, FileNameRemoteCisTableRec);
+        //    });
+
+        //    switch (SourceLoad)
+        //    {
+        //        case TrainRecType.RemoteCis:
+        //            TrainTableRecords = trainTableRecords as List<TrainTableRecord>;
+        //            break;
+        //    }
+        //    RemoteCisTableChangeRx.OnNext(SourceLoad);
+        //}
+
+
+
         #endregion
 
 
@@ -169,9 +207,9 @@ namespace AutodictorBL.DataAccess
 
         public void Dispose()
         {
-            if (!RemoteCisTableChangeRx.IsDisposed)
+            if (!TableChangeRx.IsDisposed)
             {
-                RemoteCisTableChangeRx.Dispose();
+                TableChangeRx.Dispose();
             }
         }
     }

@@ -141,6 +141,9 @@ namespace MainExample.Utils
             builder.RegisterType<SoundRecordEditForm>().InstancePerDependency();
             builder.RegisterType<ArchiveChangesForm>().InstancePerDependency();
             builder.RegisterType<AddingTrainForm>().InstancePerDependency();
+            builder.RegisterType<TechnicalMessageForm>().InstancePerDependency();
+            builder.RegisterType<OperativeTableAddItemForm>().InstancePerDependency();
+            builder.RegisterType<TrainTableOperativeForm>().InstancePerDependency();
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()
             //    .WithParameter(new ResolvedParameter(

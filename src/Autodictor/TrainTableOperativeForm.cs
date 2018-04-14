@@ -7,20 +7,23 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
 using DAL.Abstract.Entitys;
-using MainExample.Entites;
+
 
 
 namespace MainExample
 {
-    public partial class TrainTableOperative : Form
+    public partial class TrainTableOperativeForm : Form
     {
         #region fields
 
+        private readonly Func<OperativeTableAddItemForm> _operativeTableAddItemFormFactory;
+        private readonly PathwaysService _pathwaysService;
         private const string TableFileName = "TableRecordsOperative.ini";
-        public static List<TrainTableRecord> TrainTableRecords = new List<TrainTableRecord>();
+        public static List<TrainTableRec> TrainTableRecords = new List<TrainTableRec>();
         private static int _id = 0;
-        public static TrainTableOperative myMainForm = null;
+        public static TrainTableOperativeForm myMainForm = null;
 
         #endregion
 
@@ -29,12 +32,14 @@ namespace MainExample
 
         #region ctor
 
-        public TrainTableOperative()
+        public TrainTableOperativeForm(Func<OperativeTableAddItemForm> operativeTableAddItemFormFactory, PathwaysService pathwaysService)
         {
             if (myMainForm != null)
                 return;
-
             myMainForm = this;
+
+            _operativeTableAddItemFormFactory = operativeTableAddItemFormFactory;
+            _pathwaysService = pathwaysService;
 
             InitializeComponent();
 
@@ -51,7 +56,7 @@ namespace MainExample
 
         private void btn_ДобавитьЗапись_Click(object sender, EventArgs e)
         {
-            var form = new OperativeTableAddItemForm();
+            var form = _operativeTableAddItemFormFactory();
             if (form.ShowDialog() == DialogResult.OK)
             {
                 var tableRec = form.TableRec;
@@ -115,7 +120,7 @@ namespace MainExample
                     {
                         if (TrainTableRecords[i].Id == ID)
                         {
-                            TrainTableRecord Данные;
+                            TrainTableRec Данные;
 
                             Данные = TrainTableRecords[i];
                             ПланРасписанияПоезда ТекущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(Данные.Days);
@@ -165,10 +170,10 @@ namespace MainExample
             {
                 string строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.Days).ПолучитьСтрокуОписанияРасписания();
 
-                ListViewItem lvi = new ListViewItem(new string[] { данные.Id.ToString(), данные.Num, данные.Name, данные.ArrivalTime, данные.StopTime, данные.DepartureTime, строкаОписанияРасписания });
-                lvi.Tag = данные;
-                lvi.BackColor = данные.Active ? Color.LightGreen : Color.LightGray;
-                this.listView1.Items.Add(lvi);
+                //ListViewItem lvi = new ListViewItem(new string[] { данные.Id.ToString(), данные.Num, данные.Name, данные.ArrivalTime, данные.StopTime, данные.DepartureTime, строкаОписанияРасписания });
+                //lvi.Tag = данные;
+                //lvi.BackColor = данные.Active ? Color.LightGreen : Color.LightGray;
+                //this.listView1.Items.Add(lvi);
             }
         }
 
@@ -188,7 +193,7 @@ namespace MainExample
                         string[] Settings = line.Split(';');
                         if ((Settings.Length == 13) || (Settings.Length == 15) || (Settings.Length >= 16))
                         {
-                            TrainTableRecord данные;
+                            TrainTableRec данные;
 
                             данные.Id = int.Parse(Settings[0]);
                             данные.Num = Settings[1];
@@ -216,9 +221,10 @@ namespace MainExample
                                 данные.TrainPathDirection = 0;
 
 
-                            var path = Program.PathwaysService.GetAll().FirstOrDefault(p => p.Name == данные.TrainPathNumber[WeekDays.Постоянно]);
-                            if (path == null)
-                                данные.TrainPathNumber[WeekDays.Постоянно] = "";
+                            
+                            //var path = Program.PathwaysService.GetAll().FirstOrDefault(p => p.Name == данные.TrainPathNumber[WeekDays.Постоянно]);
+                            //if (path == null)
+                            //    данные.TrainPathNumber[WeekDays.Постоянно] = "";
 
                             DateTime НачалоДействия = new DateTime(1900, 1, 1);
                             DateTime КонецДействия = new DateTime(2100, 1, 1);

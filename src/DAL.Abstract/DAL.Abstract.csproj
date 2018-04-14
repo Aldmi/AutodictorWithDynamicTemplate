@@ -52,7 +52,6 @@
     <Compile Include="Entitys\SoundRecord.cs" />
     <Compile Include="Entitys\Station.cs" />
     <Compile Include="Entitys\TrainTableRec.cs" />
-    <Compile Include="Entitys\TrainTableRecord.cs" />
     <Compile Include="Entitys\TrainTypeByRyle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

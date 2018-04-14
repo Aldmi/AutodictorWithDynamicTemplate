@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using CommunicationDevices.Model;
@@ -8,30 +7,17 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Forms.VisualStyles;
-using System.Windows.Input;
-using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
 using AutodictorBL.Sound;
 using Autofac.Features.OwnedInstances;
-using CommunicationDevices.Behavior.BindingBehavior;
-using CommunicationDevices.Behavior.BindingBehavior.ToChange;
-using CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule;
-using CommunicationDevices.Behavior.BindingBehavior.ToGetData;
-using CommunicationDevices.Behavior.BindingBehavior.ToPath;
 using CommunicationDevices.Behavior.BindingBehavior.ToStatic;
-using CommunicationDevices.ClientWCF;
-using CommunicationDevices.Quartz.Jobs;
 using CommunicationDevices.Quartz.Shedules;
 using CommunicationDevices.Verification;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
-using MainExample.Entites;
 using MainExample.Extension;
 using MainExample.Services;
 using CommunicationDevices.DataProviders;
-using CommunicationDevices.Devices;
-using DAL.NoSqlLiteDb.Entityes;
 
 
 namespace MainExample
@@ -47,6 +33,7 @@ namespace MainExample
         private readonly Func<TrainTableGridForm> _trainTableGridFormFactory;
         private readonly Func<ArchiveChangesForm> _archiveChangesFormFactory;
         private readonly Func<int, AddingTrainForm> _addingTrainFormFactory;
+        private readonly Func<TechnicalMessageForm> _technicalMessageFormFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
         private readonly IAuthentificationService _authentificationService;
@@ -79,6 +66,7 @@ namespace MainExample
                         Func<TrainTableGridForm> trainTableGridFormFactory,
                         Func<ArchiveChangesForm> archiveChangesFormFactory,
                         Func<int, AddingTrainForm> addingTrainFormFactory,
+                        Func<TechnicalMessageForm> technicalMessageFormFormFactory,
                         Owned<IAuthentificationService> authentificationService)
         {
             _adminFormFactory = adminFormFactory;
@@ -90,6 +78,7 @@ namespace MainExample
             _trainTableGridFormFactory = trainTableGridFormFactory;
             _archiveChangesFormFactory = archiveChangesFormFactory;
             _addingTrainFormFactory = addingTrainFormFactory;
+            _technicalMessageFormFormFactory = technicalMessageFormFormFactory;
             _authentificationService = authentificationService.Value;
             _authentificationServiceOwner = authentificationService;
             _authentificationService.UsersDbInitialize();               //Инициализируем БД Юзеров при загрузки
@@ -100,8 +89,7 @@ namespace MainExample
             StaticSoundForm.ЗагрузитьСписок();
             DynamicSoundForm.ЗагрузитьСписок();
             SoundConfiguration.ЗагрузитьСписок();
-            TrainSheduleTable.SourceLoadMainListAsync().GetAwaiter();
-            TrainTableOperative.ЗагрузитьСписок();
+
 
 
             ExchangeModel = new ExchangeModel();
@@ -604,15 +592,15 @@ namespace MainExample
 
         private void оперативноеРасписаниеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (TrainTableOperative.myMainForm != null)
+            if (TrainTableOperativeForm.myMainForm != null)
             {
-                TrainTableOperative.myMainForm.Show();
-                TrainTableOperative.myMainForm.WindowState = FormWindowState.Normal;
+                TrainTableOperativeForm.myMainForm.Show();
+                TrainTableOperativeForm.myMainForm.WindowState = FormWindowState.Normal;
             }
             else
             {
-                TrainTableOperative listFormOper = new TrainTableOperative { MdiParent = this };
-                listFormOper.Show();
+                //TrainTableOperative listFormOper = new TrainTableOperative { MdiParent = this };
+                //listFormOper.Show();
             }
         }
 
@@ -672,7 +660,7 @@ namespace MainExample
                 return;
             }
 
-            TechnicalMessageForm techForm = new TechnicalMessageForm();
+            TechnicalMessageForm techForm = _technicalMessageFormFormFactory();
             techForm.ShowDialog();
         }
 

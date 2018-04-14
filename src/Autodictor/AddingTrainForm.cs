@@ -34,12 +34,12 @@ namespace MainExample
         public AddingTrainForm(int recordId, TrainRecService trainRecService)
         {
             _trainRecService = trainRecService;
-            НомераПутей = Program.PathwaysService.GetAll().ToList();
 
             InitializeComponent();
 
-            RecordId = recordId;
+            НомераПутей = _trainRecService.GetPathways().ToList();
 
+            RecordId = recordId;
             Record.Id = 1;
             Record.Активность = true;
             Record.Автомат = true;
@@ -84,9 +84,11 @@ namespace MainExample
             };
 
 
-            foreach (var Данные in TrainSheduleTable.TrainTableRecords)
+           
+
+            foreach (var данные in _trainRecService.GetAll())
             {
-                string Поезд = Данные.Id.ToString() + ":   " + Данные.Num + " " + Данные.Name + (Данные.ArrivalTime != "" ? "   Приб: " + Данные.ArrivalTime : "" ) + (Данные.DepartureTime != "" ? "   Отпр: " + Данные.DepartureTime : "");
+                string Поезд = данные.Id.ToString() + ":   " + данные.Num + " " + данные.Name + (данные.ArrivalTime != "" ? "   Приб: " + данные.ArrivalTime : "" ) + (данные.DepartureTime != "" ? "   Отпр: " + данные.DepartureTime : "");
                 cBПоездИзРасписания.Items.Add(Поезд);
             }
 
@@ -548,38 +550,38 @@ namespace MainExample
                 int ID;
                 if (int.TryParse(Parts[0], out ID) == true)
                 {
-                    foreach (var Config in TrainSheduleTable.TrainTableRecords)
+                    foreach (var config in _trainRecService.GetAll())
                     {
-                        if (Config.Id == ID)
+                        if (config.Id == ID)
                         {
                             // Нашли параметры выбранного поезда. Заполняем все поля.
-                            if (ИспользуемыеНомераПоездов.Contains(Config.Num))
+                            if (ИспользуемыеНомераПоездов.Contains(config.Num))
                             {
                                 Record.НомерПоезда = string.Empty;
                                 cBНомерПоезда.Text = string.Empty;
                             }
                             else
                             {
-                                Record.НомерПоезда = Config.Num;
+                                Record.НомерПоезда = config.Num;
                                 cBНомерПоезда.Text = Record.НомерПоезда;
                             }
 
-                            Record.НазваниеПоезда = Config.Name;
+                            Record.НазваниеПоезда = config.Name;
 
-                            Record.ДниСледования = Config.Days;
-                            Record.Активность = Config.Active;
-                            Record.ШаблонВоспроизведенияСообщений = Config.SoundTemplates;
-                            Record.НомерПути = Config.TrainPathNumber[WeekDays.Постоянно];
+                            Record.ДниСледования = config.Days;
+                            Record.Активность = config.Active;
+                            Record.ШаблонВоспроизведенияСообщений = config.SoundTemplates;
+                            Record.НомерПути = config.TrainPathNumber[WeekDays.Постоянно];
                             Record.НомерПутиБезАвтосброса = Record.НомерПути;
-                            Record.НумерацияПоезда = Config.TrainPathDirection;
-                            Record.Примечание = Config.Примечание;
-                            Record.ТипПоезда = Config.TrainTypeByRyle;
+                            Record.НумерацияПоезда = config.TrainPathDirection;
+                            Record.Примечание = config.Примечание;
+                            Record.ТипПоезда = config.TrainTypeByRyle;
                             Record.Состояние = SoundRecordStatus.ОжиданиеВоспроизведения;
                             Record.ТипСообщения = SoundRecordType.ДвижениеПоездаНеПодтвержденное;
                             Record.Описание = "";
                             Record.КоличествоПовторений = 1;
                             Record.ИменаФайлов = new string[0];
-                            Record.Направление = Config.Direction;
+                            Record.Направление = config.Direction;
 
                             СтанцииВыбранногоНаправления = _trainRecService.GetStationsInDirectionByName(Record.Направление)?.Select(st => st.NameRu).ToArray();
                             if (СтанцииВыбранногоНаправления != null)
@@ -590,9 +592,9 @@ namespace MainExample
                                 cBКуда.Items.AddRange(СтанцииВыбранногоНаправления);
                             }
 
-                            Record.СтанцияОтправления = Config.StationDepart;
+                            Record.СтанцияОтправления = config.StationDepart;
                             cBОткуда.Text = Record.СтанцияОтправления;
-                            Record.СтанцияНазначения = Config.StationArrival;
+                            Record.СтанцияНазначения = config.StationArrival;
                             cBКуда.Text = Record.СтанцияНазначения;
 
 
@@ -612,9 +614,9 @@ namespace MainExample
                             // бит 3 - стоянка
                             // бит 4 - отправления
 
-                            if (Config.ArrivalTime != "")
+                            if (config.ArrivalTime != "")
                             {
-                                string[] SubStrings = Config.ArrivalTime.Split(':');
+                                string[] SubStrings = config.ArrivalTime.Split(':');
 
                                 if (int.TryParse(SubStrings[0], out Часы) && int.TryParse(SubStrings[1], out Минуты))
                                 {
@@ -625,9 +627,9 @@ namespace MainExample
                                 }
                             }
 
-                            if (Config.DepartureTime != "")
+                            if (config.DepartureTime != "")
                             {
-                                string[] SubStrings = Config.DepartureTime.Split(':');
+                                string[] SubStrings = config.DepartureTime.Split(':');
 
                                 if (int.TryParse(SubStrings[0], out Часы) && int.TryParse(SubStrings[1], out Минуты))
                                 {

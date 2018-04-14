@@ -203,7 +203,7 @@ namespace MainExample.Mappers
 
 
 
-        public static UniversalInputType MapTrainTableRecord2UniversalInputType(TrainTableRecord t)
+        public static UniversalInputType MapTrainTableRecord2UniversalInputType(TrainTableRec t)
         {
             Func<string, string, DateTime> timePars = (arrival, depart) =>
             {
@@ -305,9 +305,9 @@ namespace MainExample.Mappers
 
 
 
-        public static TrainTableRecord MapUniversalInputType2TrainTableRecord(UniversalInputType uit)
+        public static TrainTableRec MapUniversalInputType2TrainTableRecord(UniversalInputType uit)
         {
-            var tableRec= new TrainTableRecord();
+            var tableRec= new TrainTableRec();
             return tableRec;
         }
 

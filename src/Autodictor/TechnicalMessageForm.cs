@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AutodictorBL.DataAccess;
 using AutodictorBL.Entites;
 using DAL.Abstract.Entitys;
 using DAL.NoSqlLiteDb.Entityes;
@@ -17,6 +18,9 @@ namespace MainExample
 {
     public partial class TechnicalMessageForm : Form
     {
+        private readonly PathwaysService _pathwaysService;
+
+
         #region prop
 
         private List<DynamicSoundRecord> DynamicTechnicalSoundRecords { get; }= new List<DynamicSoundRecord>();
@@ -30,8 +34,9 @@ namespace MainExample
 
         #region ctor
 
-        public TechnicalMessageForm()
+        public TechnicalMessageForm(PathwaysService pathwaysService)
         {
+            _pathwaysService = pathwaysService;
             InitializeComponent();
         }
 
@@ -50,8 +55,8 @@ namespace MainExample
             //cBШаблонОповещения.Items.Add("Блокировка");
             foreach (var item in DynamicTechnicalSoundRecords)
                 cBШаблонОповещения.Items.Add(item.Name);
-
-            var paths = Program.PathwaysService.GetAll().Select(p => p.Name).ToList();
+ 
+            var paths = _pathwaysService.GetAll().Select(p => p.Name).ToList();
             cBПутьПоУмолчанию.Items.Add("Не определен");
             foreach (var путь in paths)
                 cBПутьПоУмолчанию.Items.Add(путь);
@@ -75,14 +80,13 @@ namespace MainExample
                         string[] Settings = line.Split(';');
                         if (Settings.Length == 3)
                         {
-                            DynamicSoundRecord Данные;
+                            DynamicSoundRecord данные;
 
-                            Данные.ID = int.Parse(Settings[0]);
-                            Данные.Name = Settings[1];
-                            Данные.Message = Settings[2];
-                            Данные.PriorityTemplate= PriorityPrecise.Zero; //TODO: загружать из файла
-
-                            DynamicTechnicalSoundRecords.Add(Данные);
+                            данные.Id = int.Parse(Settings[0]);
+                            данные.Name = Settings[1];
+                            данные.Message = Settings[2];
+                            данные.PriorityTemplate= PriorityPrecise.Zero; //TODO: загружать из файла
+                            DynamicTechnicalSoundRecords.Add(данные);
                         }
                     }
 
@@ -91,34 +95,53 @@ namespace MainExample
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки файла DynamicSoundTechnical: {ex.Message}");
+                MessageBox.Show($@"Ошибка загрузки файла DynamicSoundTechnical: {ex.Message}");
             }
         }
 
 
 
-        private СостояниеФормируемогоСообщенияИШаблон СоздатьСостояниеФормируемогоСообщенияИШаблон(int soundRecordId, DynamicSoundRecord template)
+        private ActionTrainDynamic СоздатьСостояниеФормируемогоСообщенияИШаблон(int soundRecordId, DynamicSoundRecord template)
         {
-            СостояниеФормируемогоСообщенияИШаблон новыйШаблон;
-            новыйШаблон.Id = 1;
-            новыйШаблон.SoundRecordId = soundRecordId;
-            новыйШаблон.Активность = true;
-            новыйШаблон.ПриоритетГлавный = Priority.VeryHight;
-            новыйШаблон.ПриоритетВторостепенный = PriorityPrecise.One;
-            новыйШаблон.Воспроизведен = false;
-            новыйШаблон.СостояниеВоспроизведения = SoundRecordStatus.ДобавленВОчередьРучное;
-            новыйШаблон.ВремяСмещения = 0;
-            новыйШаблон.НазваниеШаблона = template.Name;
-            новыйШаблон.Шаблон = template.Message;
-            новыйШаблон.ПривязкаКВремени = 0;
-            новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };
+            ActionTrainDynamic actionTrainDyn = new ActionTrainDynamic
+            {
+                Id = 1,
+                SoundRecordId = soundRecordId,
+                Activity = true,
+                PriorityMain = Priority.VeryHight,
+                SoundRecordStatus = SoundRecordStatus.ДобавленВОчередьРучное,
+                ActionTrain = new ActionTrain
+                {
+                    Id = 1,
+                    Emergency = Emergency.Cancel,
+                    Name = template.Name,
+                    Priority = 9,
+                    Time = new ActionTime("0"),
+                    ActionType = ActionType.Arrival,
+                    Langs = new List<Lang> { new Lang { Name = "Ru", IsEnable = true, TemplateSoundBody = null} }
+                }
+             };
 
-            return новыйШаблон;
+            //новыйШаблон.Id = 1;
+            //новыйШаблон.SoundRecordId = soundRecordId;
+            //новыйШаблон.Активность = true;
+            //новыйШаблон.ПриоритетГлавный = Priority.VeryHight;
+            //новыйШаблон.ПриоритетВторостепенный = PriorityPrecise.One;
+            //новыйШаблон.Воспроизведен = false;
+            //новыйШаблон.СостояниеВоспроизведения = SoundRecordStatus.ДобавленВОчередьРучное;
+
+            //новыйШаблон.ВремяСмещения = 0;
+            //новыйШаблон.НазваниеШаблона = template.Name;
+            //новыйШаблон.Шаблон = template.Message;
+            //новыйШаблон.ПривязкаКВремени = 0;
+            //новыйШаблон.ЯзыкиОповещения = new List<NotificationLanguage> { NotificationLanguage.Rus, NotificationLanguage.Eng };
+
+            return actionTrainDyn;
         }
 
 
 
-        private SoundRecord СоздатьSoundRecord(int soundRecordId, string pathNumber, СостояниеФормируемогоСообщенияИШаблон template)
+        private SoundRecord СоздатьSoundRecord(int soundRecordId, string pathNumber, ActionTrainDynamic actionTrainDyn)
         {
             SoundRecord record = new SoundRecord
             {
@@ -126,7 +149,7 @@ namespace MainExample
                 НомерПоезда = "xxx",
                 НомерПути = pathNumber,
                 Время = DateTime.Now,
-                //СписокФормируемыхСообщений = new List<СостояниеФормируемогоСообщенияИШаблон> { template },
+                ActionTrainDynamiсList = new List<ActionTrainDynamic> { actionTrainDyn },
                 КоличествоПовторений = 1,
                 ВыводЗвука = true
             };
@@ -167,11 +190,11 @@ namespace MainExample
 
             //на каждое сообщение создается новый SoundRecord (поезд) с одним шаблоном.
             var newId = SoundRecords.Any() ? SoundRecords.Max(rec => rec.Id) + 1 : 1;
-            var формируемоеСообщение = СоздатьСостояниеФормируемогоСообщенияИШаблон(newId, template);
-            var record = СоздатьSoundRecord(newId, pathNumber, формируемоеСообщение);
+            var actionTrainDyn = СоздатьСостояниеФормируемогоСообщенияИШаблон(newId, template);
+            var record = СоздатьSoundRecord(newId, pathNumber, actionTrainDyn);
 
             SoundRecords.Add(record);
-            MainWindowForm.ВоспроизвестиШаблонОповещения("Техническое сообщение", record, формируемоеСообщение, MessageType.ДинамическоеТехническое);
+            MainWindowForm.ВоспроизвестиШаблонОповещения_New("Техническое сообщение", record, actionTrainDyn, MessageType.ДинамическоеТехническое);
         }
 
         #endregion

@@ -183,7 +183,6 @@
       <DependentUpon>CommunicationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Comparers\TrainTableRecordComparer.cs" />
-    <Compile Include="Entites\TrainSheduleTable.cs" />
     <Compile Include="Extension\ControlExtentions.cs" />
     <Compile Include="Services\FactoryServices\PreprocessingOutputFactory.cs" />
     <Compile Include="Services\GetDataService\GetCisOperSh.cs" />
@@ -267,11 +266,11 @@
     <Compile Include="DynamicSoundForm.Designer.cs">
       <DependentUpon>DynamicSoundForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TrainTableOperative.cs">
+    <Compile Include="TrainTableOperativeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TrainTableOperative.Designer.cs">
-      <DependentUpon>TrainTableOperative.cs</DependentUpon>
+    <Compile Include="TrainTableOperativeForm.Designer.cs">
+      <DependentUpon>TrainTableOperativeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UIHelpers\ControlExtensions.cs" />
     <Compile Include="Utils\AutofacConfig.cs" />
@@ -415,8 +414,8 @@
     <EmbeddedResource Include="DynamicSoundForm.resx">
       <DependentUpon>DynamicSoundForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TrainTableOperative.resx">
-      <DependentUpon>TrainTableOperative.cs</DependentUpon>
+    <EmbeddedResource Include="TrainTableOperativeForm.resx">
+      <DependentUpon>TrainTableOperativeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="КарточкаСтатическогоЗвуковогоСообщенияForm.resx">
       <DependentUpon>КарточкаСтатическогоЗвуковогоСообщенияForm.cs</DependentUpon>
@@ -507,7 +506,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Entites\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutodictorBL\AutodictorBL.csproj">
       <Project>{ef089e5d-a3d1-47ba-a414-f9615e585d45}</Project>

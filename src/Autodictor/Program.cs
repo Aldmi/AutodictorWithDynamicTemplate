@@ -41,8 +41,6 @@ namespace MainExample
         public static DateTime StartTime { get; } = DateTime.Now;
         public static AutodictorModel AutodictorModel { get; set; }
 
-        public static PathwaysService PathwaysService;   //Пути.
-        public static IEnumerable<TrainTypeByRyle> TrainTypes;
 
 
         /// <summary>
@@ -215,46 +213,6 @@ namespace MainExample
             };
             serv.ReWriteAll(items);
 
-
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IPathwaysRepository>();
-            //    var acc = new PathwaysService(repResolve);
-            //    var listPathwayses = acc.GetAll();
-            //}
-
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IDirectionRepository>();
-            //    var acc = new DirectionService(repResolve);
-            //    var listDirections = acc.GetAll();
-            //}
-
-            ////Users--
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IUsersRepository>();
-            //    var acc = new UserService(repResolve);
-            //    var users= acc.GetAll();
-            //}
-
-            ////SoundRecordChanges--
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.Resolve<IParticirovanieService<SoundRecordChangesDb>>();
-            //    var acc= new SoundRecChangesService(repResolve);
-            //}
-
-            ////TrainTableRec--
-            //using (var scope = AutofacConfig.Container.BeginLifetimeScope())
-            //{
-            //    var repResolve = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain);
-
-            //    var repResolve2 = scope.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis);
-            //}
-
-            //DEBUG-------------
-
             ResolveStaticServices();
 
             ОкноНастроек.ЗагрузитьНастройки();
@@ -367,9 +325,6 @@ namespace MainExample
         {
             try
             {
-                PathwaysService = AutofacConfig.Container.Resolve<PathwaysService>();
-                TrainTypes = AutofacConfig.Container.Resolve<TrainTypeByRyleService>().GetAll();
-                //AuthenticationService = AutofacConfig.Container.Resolve<IAuthentificationService>();
             }
             catch (Exception ex)
             {
