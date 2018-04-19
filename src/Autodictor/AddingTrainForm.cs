@@ -13,10 +13,8 @@ namespace MainExample
     public partial class AddingTrainForm : Form
     {
         private readonly TrainRecService _trainRecService;
-
-
         public SoundRecord Record;
-        public int  RecordId { get; private set; }
+        public int  RecordId { get; }
         private string[] СтанцииВыбранногоНаправления { get; set; } = new string[0];
         private List<Pathway> НомераПутей { get; }
         public List<string> ИспользуемыеНомераПоездов { get; set; }
@@ -27,10 +25,10 @@ namespace MainExample
         public AddingTrainForm(int recordId, TrainRecService trainRecService)
         {
             _trainRecService = trainRecService;
+            НомераПутей = _trainRecService.GetPathways().ToList();
 
             InitializeComponent();
 
-            НомераПутей = _trainRecService.GetPathways().ToList();
 
             RecordId = recordId;
             Record.Id = 1;
@@ -81,8 +79,8 @@ namespace MainExample
 
             foreach (var данные in _trainRecService.GetAll())
             {
-                string Поезд = данные.Id.ToString() + ":   " + данные.Num + " " + данные.Name + (данные.ArrivalTime != "" ? "   Приб: " + данные.ArrivalTime : "" ) + (данные.DepartureTime != "" ? "   Отпр: " + данные.DepartureTime : "");
-                cBПоездИзРасписания.Items.Add(Поезд);
+                //string Поезд = данные.Id.ToString() + ":   " + данные.Num + " " + данные.Name + (данные.ArrivalTime != "" ? "   Приб: " + данные.ArrivalTime : "" ) + (данные.DepartureTime != "" ? "   Отпр: " + данные.DepartureTime : "");
+                //cBПоездИзРасписания.Items.Add(Поезд);
             }
 
 
@@ -96,8 +94,8 @@ namespace MainExample
 
 
 
-            foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
-                cBШаблонОповещения.Items.Add(Item.Name);
+            //foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
+            //    cBШаблонОповещения.Items.Add(Item.Name);
         }
 
 
@@ -237,34 +235,27 @@ namespace MainExample
 
         private void btnДобавитьШаблон_Click(object sender, EventArgs e)
         {
-            if (cBШаблонОповещения.SelectedIndex >= 0)
-            {
-                string ВремяОповещения = tBВремяОповещения.Text.Replace(" ", "");
-                string[] Времена = ВремяОповещения.Split(',');
+            //if (cBШаблонОповещения.SelectedIndex >= 0)
+            //{
+            //    string ВремяОповещения = tBВремяОповещения.Text.Replace(" ", "");
+            //    string[] Времена = ВремяОповещения.Split(',');
 
-                int TempInt = 0;
-                bool Result = true;
+            //    int TempInt = 0;
+            //    bool Result = true;
 
-                foreach (var ВременнойИнтервал in Времена)
-                    Result &= int.TryParse(ВременнойИнтервал, out TempInt);
+            //    foreach (var ВременнойИнтервал in Времена)
+            //        Result &= int.TryParse(ВременнойИнтервал, out TempInt);
 
-                if (Result == true)
-                {
-                    ListViewItem lvi = new ListViewItem(new string[] { cBШаблонОповещения.Text, tBВремяОповещения.Text, cBВремяОповещения.Text });
-                    this.lVШаблоныОповещения.Items.Add(lvi);
-                }
-                else
-                {
-                    MessageBox.Show(this, "Строка должна содержать время смещения шаблона оповещения, разделенного запятыми", "Внимание !!!");
-                }
-            }
-        }
-
-
-        private void btnУдалитьШаблон_Click(object sender, EventArgs e)
-        {
-            while (lVШаблоныОповещения.SelectedItems.Count > 0)
-                lVШаблоныОповещения.Items.Remove(lVШаблоныОповещения.SelectedItems[0]);
+            //    if (Result == true)
+            //    {
+            //        ListViewItem lvi = new ListViewItem(new string[] { cBШаблонОповещения.Text, tBВремяОповещения.Text, cBВремяОповещения.Text });
+            //        this.lVШаблоныОповещения.Items.Add(lvi);
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show(this, "Строка должна содержать время смещения шаблона оповещения, разделенного запятыми", "Внимание !!!");
+            //    }
+            //}
         }
 
 
@@ -563,10 +554,10 @@ namespace MainExample
 
                             Record.ДниСледования = config.Days;
                             Record.Активность = config.Active;
-                            Record.ШаблонВоспроизведенияСообщений = config.SoundTemplates;
-                            Record.НомерПути = config.TrainPathNumber[WeekDays.Постоянно];
+                         //   Record.ШаблонВоспроизведенияСообщений = config.SoundTemplates;
+                           // Record.НомерПути = config.TrainPathNumber[WeekDays.Постоянно];
                             Record.НомерПутиБезАвтосброса = Record.НомерПути;
-                            Record.НумерацияПоезда = config.TrainPathDirection;
+                           // Record.НумерацияПоезда = config.TrainPathDirection;
                             Record.Примечание = config.Примечание;
                             Record.ТипПоезда = config.TrainTypeByRyle;
                             Record.Состояние = SoundRecordStatus.ОжиданиеВоспроизведения;
@@ -574,7 +565,7 @@ namespace MainExample
                             Record.Описание = "";
                             Record.КоличествоПовторений = 1;
                             Record.ИменаФайлов = new string[0];
-                            Record.Направление = config.Direction;
+                            //Record.Направление = config.Direction;
 
                             СтанцииВыбранногоНаправления = _trainRecService.GetStationsInDirectionByName(Record.Направление)?.Select(st => st.NameRu).ToArray();
                             if (СтанцииВыбранногоНаправления != null)
@@ -585,9 +576,9 @@ namespace MainExample
                                 cBКуда.Items.AddRange(СтанцииВыбранногоНаправления);
                             }
 
-                            Record.СтанцияОтправления = config.StationDepart;
+                            //Record.СтанцияОтправления = config.StationDepart;
                             cBОткуда.Text = Record.СтанцияОтправления;
-                            Record.СтанцияНазначения = config.StationArrival;
+                            //Record.СтанцияНазначения = config.StationArrival;
                             cBКуда.Text = Record.СтанцияНазначения;
 
 
@@ -607,31 +598,31 @@ namespace MainExample
                             // бит 3 - стоянка
                             // бит 4 - отправления
 
-                            if (config.ArrivalTime != "")
-                            {
-                                string[] SubStrings = config.ArrivalTime.Split(':');
+                            //if (config.ArrivalTime != "")
+                            //{
+                            //    string[] SubStrings = config.ArrivalTime.Split(':');
 
-                                if (int.TryParse(SubStrings[0], out Часы) && int.TryParse(SubStrings[1], out Минуты))
-                                {
-                                    ВремяПрибытия = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
-                                    Record.ВремяПрибытия = ВремяПрибытия;
-                                    dTPВремя1.Value = ВремяПрибытия;
-                                    НомерСписка |= 0x04;
-                                }
-                            }
+                            //    if (int.TryParse(SubStrings[0], out Часы) && int.TryParse(SubStrings[1], out Минуты))
+                            //    {
+                            //        ВремяПрибытия = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
+                            //        Record.ВремяПрибытия = ВремяПрибытия;
+                            //        dTPВремя1.Value = ВремяПрибытия;
+                            //        НомерСписка |= 0x04;
+                            //    }
+                            //}
 
-                            if (config.DepartureTime != "")
-                            {
-                                string[] SubStrings = config.DepartureTime.Split(':');
+                            //if (config.DepartureTime != "")
+                            //{
+                            //    string[] SubStrings = config.DepartureTime.Split(':');
 
-                                if (int.TryParse(SubStrings[0], out Часы) && int.TryParse(SubStrings[1], out Минуты))
-                                {
-                                    ВремяОтправления = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
-                                    Record.ВремяОтправления = ВремяОтправления;
-                                    dTPВремя2.Value = ВремяОтправления;
-                                    НомерСписка |= 0x10;
-                                }
-                            }
+                            //    if (int.TryParse(SubStrings[0], out Часы) && int.TryParse(SubStrings[1], out Минуты))
+                            //    {
+                            //        ВремяОтправления = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Часы, Минуты, 0);
+                            //        Record.ВремяОтправления = ВремяОтправления;
+                            //        dTPВремя2.Value = ВремяОтправления;
+                            //        НомерСписка |= 0x10;
+                            //    }
+                            //}
 
                             if ((НомерСписка & 0x14) == 0x14)
                                 rBТранзит.Invoke((MethodInvoker)(() => rBТранзит.Checked = true));
@@ -665,28 +656,6 @@ namespace MainExample
                             Record.СостояниеОтображения = TableRecordStatus.Выключена;
 
                             Record.Время = (НомерСписка & 0x04) != 0x00 ? Record.ВремяПрибытия : Record.ВремяОтправления;
-
-
-                            // Шаблоны оповещения
-                            lVШаблоныОповещения.Items.Clear();
-                            Record.ActionTrainDynamiсList = new List<ActionTrainDynamic>();
-                            string[] ШаблонОповещения = Record.ШаблонВоспроизведенияСообщений.Split(':');
-                            int ТипОповещенияПути = 0;
-                            if ((ШаблонОповещения.Length % 3) == 0)
-                            {
-                                for (int i = 0; i < ШаблонОповещения.Length / 3; i++)
-                                {
-                                    if (Program.ШаблоныОповещения.Contains(ШаблонОповещения[3 * i + 0]))
-                                    {
-                                        int.TryParse(ШаблонОповещения[3 * i + 2], out ТипОповещенияПути);
-                                        if (ТипОповещенияПути > 1) ТипОповещенияПути = 0;
-                                        ListViewItem lvi = new ListViewItem(new string[] { ШаблонОповещения[3 * i + 0], ШаблонОповещения[3 * i + 1], Program.ТипыВремени[ТипОповещенияПути] });
-                                        this.lVШаблоныОповещения.Items.Add(lvi);
-                                    }
-                                }
-                            }
-
-                            cBВремяОповещения.SelectedIndex = 0;
 
 
                             lB_ПоСтанциям.Items.Clear();
@@ -741,16 +710,16 @@ namespace MainExample
         {
             string РезультирующийШаблонОповещения = "";
 
-            for (int item = 0; item < this.lVШаблоныОповещения.Items.Count; item++)
-            {
-                РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[0].Text + ":";
-                РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[1].Text + ":";
-                РезультирующийШаблонОповещения += (this.lVШаблоныОповещения.Items[item].SubItems[2].Text == "Отправление") ? "1:" : "0:";
-            }
+            //for (int item = 0; item < this.lVШаблоныОповещения.Items.Count; item++)
+            //{
+            //    РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[0].Text + ":";
+            //    РезультирующийШаблонОповещения += this.lVШаблоныОповещения.Items[item].SubItems[1].Text + ":";
+            //    РезультирующийШаблонОповещения += (this.lVШаблоныОповещения.Items[item].SubItems[2].Text == "Отправление") ? "1:" : "0:";
+            //}
 
-            if (РезультирующийШаблонОповещения.Length > 0)
-                if (РезультирующийШаблонОповещения[РезультирующийШаблонОповещения.Length - 1] == ':')
-                    РезультирующийШаблонОповещения = РезультирующийШаблонОповещения.Remove(РезультирующийШаблонОповещения.Length - 1);
+            //if (РезультирующийШаблонОповещения.Length > 0)
+            //    if (РезультирующийШаблонОповещения[РезультирующийШаблонОповещения.Length - 1] == ':')
+            //        РезультирующийШаблонОповещения = РезультирующийШаблонОповещения.Remove(РезультирующийШаблонОповещения.Length - 1);
 
             return РезультирующийШаблонОповещения;
         }
@@ -775,23 +744,6 @@ namespace MainExample
                 Record.Время = Record.ВремяПрибытия;
             else
                 Record.Время = Record.ВремяОтправления;
-        }
-
-        private void lVШаблоныОповещения_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-            if (lVШаблоныОповещения.SelectedItems.Count > 0)
-            {
-                string Шаблон = lVШаблоныОповещения.SelectedItems[0].SubItems[0].Text;
-
-                foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
-                {
-                    if (Item.Name == Шаблон)
-                    {
-                        ОтобразитьШаблонОповещенияВОкне(Item.Message);
-                        break;
-                    }
-                }
-            }
         }
     }
 }

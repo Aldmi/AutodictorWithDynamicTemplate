@@ -42,17 +42,7 @@
             this.rBОтправление = new System.Windows.Forms.RadioButton();
             this.rBПрибытие = new System.Windows.Forms.RadioButton();
             this.gBШаблонОповещения = new System.Windows.Forms.GroupBox();
-            this.lVШаблоныОповещения = new System.Windows.Forms.ListView();
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label6 = new System.Windows.Forms.Label();
             this.rTB_Сообщение = new System.Windows.Forms.RichTextBox();
-            this.cBВремяОповещения = new System.Windows.Forms.ComboBox();
-            this.tBВремяОповещения = new System.Windows.Forms.TextBox();
-            this.cBШаблонОповещения = new System.Windows.Forms.ComboBox();
-            this.btnУдалитьШаблон = new System.Windows.Forms.Button();
-            this.btnДобавитьШаблон = new System.Windows.Forms.Button();
             this.gBОстановки = new System.Windows.Forms.GroupBox();
             this.lB_ПоСтанциям = new System.Windows.Forms.ListBox();
             this.btnРедактировать = new System.Windows.Forms.Button();
@@ -210,63 +200,13 @@
             // 
             // gBШаблонОповещения
             // 
-            this.gBШаблонОповещения.Controls.Add(this.lVШаблоныОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.label6);
             this.gBШаблонОповещения.Controls.Add(this.rTB_Сообщение);
-            this.gBШаблонОповещения.Controls.Add(this.cBВремяОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.tBВремяОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.cBШаблонОповещения);
-            this.gBШаблонОповещения.Controls.Add(this.btnУдалитьШаблон);
-            this.gBШаблонОповещения.Controls.Add(this.btnДобавитьШаблон);
             this.gBШаблонОповещения.Location = new System.Drawing.Point(12, 371);
             this.gBШаблонОповещения.Name = "gBШаблонОповещения";
             this.gBШаблонОповещения.Size = new System.Drawing.Size(957, 311);
             this.gBШаблонОповещения.TabIndex = 59;
             this.gBШаблонОповещения.TabStop = false;
             this.gBШаблонОповещения.Text = "Шаблоны оповещения";
-            // 
-            // lVШаблоныОповещения
-            // 
-            this.lVШаблоныОповещения.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader5});
-            this.lVШаблоныОповещения.FullRowSelect = true;
-            this.lVШаблоныОповещения.GridLines = true;
-            this.lVШаблоныОповещения.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.lVШаблоныОповещения.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lVШаблоныОповещения.Location = new System.Drawing.Point(117, 95);
-            this.lVШаблоныОповещения.Name = "lVШаблоныОповещения";
-            this.lVШаблоныОповещения.Size = new System.Drawing.Size(833, 134);
-            this.lVШаблоныОповещения.TabIndex = 66;
-            this.lVШаблоныОповещения.UseCompatibleStateImageBehavior = false;
-            this.lVШаблоныОповещения.View = System.Windows.Forms.View.Details;
-            this.lVШаблоныОповещения.SelectedIndexChanged += new System.EventHandler(this.lVШаблоныОповещения_SelectedIndexChanged_1);
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Шаблон";
-            this.columnHeader2.Width = 510;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Время оповещения";
-            this.columnHeader3.Width = 174;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "Время";
-            this.columnHeader5.Width = 145;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(6, 60);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(197, 20);
-            this.label6.TabIndex = 65;
-            this.label6.Text = "Время, через запятую";
             // 
             // rTB_Сообщение
             // 
@@ -275,56 +215,6 @@
             this.rTB_Сообщение.Size = new System.Drawing.Size(944, 70);
             this.rTB_Сообщение.TabIndex = 58;
             this.rTB_Сообщение.Text = "";
-            // 
-            // cBВремяОповещения
-            // 
-            this.cBВремяОповещения.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cBВремяОповещения.FormattingEnabled = true;
-            this.cBВремяОповещения.Items.AddRange(new object[] {
-            "Прибытие",
-            "Отправление"});
-            this.cBВремяОповещения.Location = new System.Drawing.Point(667, 57);
-            this.cBВремяОповещения.Name = "cBВремяОповещения";
-            this.cBВремяОповещения.Size = new System.Drawing.Size(283, 28);
-            this.cBВремяОповещения.TabIndex = 57;
-            // 
-            // tBВремяОповещения
-            // 
-            this.tBВремяОповещения.Location = new System.Drawing.Point(209, 57);
-            this.tBВремяОповещения.Name = "tBВремяОповещения";
-            this.tBВремяОповещения.Size = new System.Drawing.Size(244, 26);
-            this.tBВремяОповещения.TabIndex = 55;
-            // 
-            // cBШаблонОповещения
-            // 
-            this.cBШаблонОповещения.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cBШаблонОповещения.FormattingEnabled = true;
-            this.cBШаблонОповещения.Location = new System.Drawing.Point(6, 23);
-            this.cBШаблонОповещения.Name = "cBШаблонОповещения";
-            this.cBШаблонОповещения.Size = new System.Drawing.Size(945, 28);
-            this.cBШаблонОповещения.TabIndex = 53;
-            // 
-            // btnУдалитьШаблон
-            // 
-            this.btnУдалитьШаблон.Location = new System.Drawing.Point(6, 140);
-            this.btnУдалитьШаблон.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btnУдалитьШаблон.Name = "btnУдалитьШаблон";
-            this.btnУдалитьШаблон.Size = new System.Drawing.Size(105, 35);
-            this.btnУдалитьШаблон.TabIndex = 54;
-            this.btnУдалитьШаблон.Text = "Удалить";
-            this.btnУдалитьШаблон.UseVisualStyleBackColor = true;
-            this.btnУдалитьШаблон.Click += new System.EventHandler(this.btnУдалитьШаблон_Click);
-            // 
-            // btnДобавитьШаблон
-            // 
-            this.btnДобавитьШаблон.Location = new System.Drawing.Point(6, 95);
-            this.btnДобавитьШаблон.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btnДобавитьШаблон.Name = "btnДобавитьШаблон";
-            this.btnДобавитьШаблон.Size = new System.Drawing.Size(105, 35);
-            this.btnДобавитьШаблон.TabIndex = 53;
-            this.btnДобавитьШаблон.Text = "Добавить";
-            this.btnДобавитьШаблон.UseVisualStyleBackColor = true;
-            this.btnДобавитьШаблон.Click += new System.EventHandler(this.btnДобавитьШаблон_Click);
             // 
             // gBОстановки
             // 
@@ -494,7 +384,7 @@
             this.btnОтмена.UseVisualStyleBackColor = true;
             this.btnОтмена.Click += new System.EventHandler(this.btnОтмена_Click);
             // 
-            // ОкноДобавленияПоезда
+            // AddingTrainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -526,7 +416,6 @@
             this.Name = "AddingTrainForm";
             this.Text = "Окно добавления поезда в текущее расписание";
             this.gBШаблонОповещения.ResumeLayout(false);
-            this.gBШаблонОповещения.PerformLayout();
             this.gBОстановки.ResumeLayout(false);
             this.gBОстановки.PerformLayout();
             this.ResumeLayout(false);
@@ -550,11 +439,6 @@
         private System.Windows.Forms.RadioButton rBОтправление;
         private System.Windows.Forms.RadioButton rBПрибытие;
         private System.Windows.Forms.GroupBox gBШаблонОповещения;
-        private System.Windows.Forms.ComboBox cBВремяОповещения;
-        private System.Windows.Forms.TextBox tBВремяОповещения;
-        private System.Windows.Forms.ComboBox cBШаблонОповещения;
-        private System.Windows.Forms.Button btnУдалитьШаблон;
-        private System.Windows.Forms.Button btnДобавитьШаблон;
         private System.Windows.Forms.GroupBox gBОстановки;
         private System.Windows.Forms.Button btnРедактировать;
         private System.Windows.Forms.RadioButton rBСОстановкамиКроме;
@@ -570,10 +454,5 @@
         private System.Windows.Forms.Button btnОтмена;
         private System.Windows.Forms.RichTextBox rTB_Сообщение;
         private System.Windows.Forms.ListBox lB_ПоСтанциям;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.ListView lVШаблоныОповещения;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
     }
 }
