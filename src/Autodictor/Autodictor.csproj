@@ -275,6 +275,7 @@
     <Compile Include="UIHelpers\ControlExtensions.cs" />
     <Compile Include="Utils\AutofacConfig.cs" />
     <Compile Include="ViewModel\ActionTrainViewModel.cs" />
+    <Compile Include="ViewModel\AddingTrainFormVM\TrainRec4AddingTrainViewModel.cs" />
     <Compile Include="КарточкаСтатическогоЗвуковогоСообщенияForm.cs">
       <SubType>Form</SubType>
     </Compile>

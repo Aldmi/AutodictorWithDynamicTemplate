@@ -346,7 +346,7 @@
             "Скоростной",
             "Ласточка",
             "РЭКС"});
-            this.cBКатегория.Location = new System.Drawing.Point(121, 221);
+            this.cBКатегория.Location = new System.Drawing.Point(121, 190);
             this.cBКатегория.Name = "cBКатегория";
             this.cBКатегория.Size = new System.Drawing.Size(257, 28);
             this.cBКатегория.TabIndex = 62;
@@ -356,7 +356,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(12, 224);
+            this.label5.Location = new System.Drawing.Point(12, 193);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(98, 20);
             this.label5.TabIndex = 63;

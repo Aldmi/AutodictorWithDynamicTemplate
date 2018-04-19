@@ -560,7 +560,7 @@ namespace MainExample
                 return;
             }
 
-            var newRecId = MainWindowForm.SoundRecords.Max(rec => rec.Value.Id) + 1;
+            var newRecId = (MainWindowForm.SoundRecords.Any()) ? (MainWindowForm.SoundRecords.Max(rec => rec.Value.Id) + 1) : 1;
             AddingTrainForm окно = _addingTrainFormFactory(newRecId);
             if (окно.ShowDialog() == DialogResult.OK)
             {

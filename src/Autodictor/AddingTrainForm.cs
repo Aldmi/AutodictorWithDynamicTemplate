@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using AutodictorBL.DataAccess;
 using DAL.Abstract.Entitys;
 using MainExample.Services.FactoryServices;
+using MainExample.ViewModel;
 
 
 namespace MainExample
@@ -28,7 +29,6 @@ namespace MainExample
             НомераПутей = _trainRecService.GetPathways().ToList();
 
             InitializeComponent();
-
 
             RecordId = recordId;
             Record.Id = 1;
@@ -75,14 +75,10 @@ namespace MainExample
             };
 
 
-           
-
-            foreach (var данные in _trainRecService.GetAll())
-            {
-                //string Поезд = данные.Id.ToString() + ":   " + данные.Num + " " + данные.Name + (данные.ArrivalTime != "" ? "   Приб: " + данные.ArrivalTime : "" ) + (данные.DepartureTime != "" ? "   Отпр: " + данные.DepartureTime : "");
-                //cBПоездИзРасписания.Items.Add(Поезд);
-            }
-
+            var gg = _trainRecService.GetAll();
+            var trainRec4AddingTrainViewModel = _trainRecService.GetAll().Select(t => new TrainRec4AddingTrainViewModel {TrainTableRec = t}).ToList();
+            cBПоездИзРасписания.DataSource = trainRec4AddingTrainViewModel;
+            cBПоездИзРасписания.DisplayMember = "ViewTrainSelection";
 
 
             ИспользуемыеНомераПоездов = MainWindowForm.SoundRecords.Values.Select(rec=>rec.НомерПоезда).ToList();
@@ -91,11 +87,6 @@ namespace MainExample
             );
             foreach (var номерПоезда in неИспользуемыеНомераПоездов)
                 cBНомерПоезда.Items.Add(номерПоезда);
-
-
-
-            //foreach (var Item in DynamicSoundForm.DynamicSoundRecords)
-            //    cBШаблонОповещения.Items.Add(Item.Name);
         }
 
 
