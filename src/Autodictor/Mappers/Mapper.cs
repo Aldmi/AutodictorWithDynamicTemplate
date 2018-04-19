@@ -10,7 +10,6 @@ using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Changes;
 using DAL.NoSqlLiteDb.Entityes;
 using Force.DeepCloner;
-using MainExample.Entites;
 using MainExample.Utils;
 
 
@@ -205,46 +204,43 @@ namespace MainExample.Mappers
 
         public static UniversalInputType MapTrainTableRecord2UniversalInputType(TrainTableRec t)
         {
-            Func<string, string, DateTime> timePars = (arrival, depart) =>
+            Func<DateTime?, DateTime?, DateTime> timePars = (arrivalTime, departTime) =>
             {
-                DateTime outData;
-                if (DateTime.TryParse(arrival, out outData))
-                    return outData;
+                if (arrivalTime.HasValue)
+                    return arrivalTime.Value;
 
-                if (DateTime.TryParse(depart, out outData))
-                    return outData;
+                if (departTime.HasValue)
+                    return departTime.Value;
 
                 return DateTime.MinValue;
             };
 
-            Func<string, string, string> eventPars = (arrivalTime, departTime) =>
+            Func<Classification, string> eventPars = (classification) =>
             {
-                if ((!string.IsNullOrEmpty(arrivalTime)) && (!string.IsNullOrEmpty(departTime)))
+                switch (classification)
                 {
-                    return "СТОЯНКА";
+                    case Classification.Arrival:
+                        return "ПРИБ.";
+                   
+                    case Classification.Departure:
+                        return "ОТПР.";
+                       
+                    case Classification.Transit:
+                        return "СТОЯНКА";
+                        
+                    default:
+                        return string.Empty;
                 }
-
-                if (!string.IsNullOrEmpty(arrivalTime))
-                {
-                    return "ПРИБ.";
-                }
-
-                if (!string.IsNullOrEmpty(departTime))
-                {
-                    return "ОТПР.";
-                }
-
-                return String.Empty;
             };
 
 
-            Func<string, string, Dictionary<string, DateTime>> transitTimePars = (arrivalTime, departTime) =>
+            Func<DateTime?, DateTime?, Dictionary <string, DateTime>> transitTimePars = (arrivalTime, departTime) =>
             {
                 var transitTime = new Dictionary<string, DateTime>();
-                if ((!string.IsNullOrEmpty(arrivalTime)) && (!string.IsNullOrEmpty(departTime)))
+                if (arrivalTime.HasValue && departTime.HasValue)
                 {
-                    transitTime["приб"] = timePars(arrivalTime, String.Empty);
-                    transitTime["отпр"] = timePars(departTime, String.Empty);
+                    transitTime["приб"] = arrivalTime.Value;
+                    transitTime["отпр"] = departTime.Value;
                 }
 
                 return transitTime;
@@ -277,20 +273,24 @@ namespace MainExample.Mappers
             {
                 IsActive = t.Active,
                 Id = t.Id,
-                Event = eventPars(t.ArrivalTime, t.DepartureTime),
+                Event = eventPars(t.Classification),
+                Classification = t.Classification,
                 TypeTrain = t.TrainTypeByRyle.NameRu,
                 Note = t.Примечание, //C остановками: ...
                 //PathNumber = ПолучитьНомерПутиПоДнямНедели(t),                    //TODO:  ?????
-                VagonDirection = (VagonDirection)t.TrainPathDirection,
+                WagonsNumbering = t.WagonsNumbering,
                 NumberOfTrain = t.Num,
                 Stations = t.Name,
-                DirectionStation = t.Direction,
-                StationDeparture = stationsPars2(t.StationDepart, t.Direction),
-                StationArrival = stationsPars2(t.StationArrival, t.Direction),
-                Time = timePars(t.ArrivalTime, t.DepartureTime),
+                DirectionStation = t.Direction.Name,
+                Direction = t.Direction,
+                StationDeparture = t.StationDepart,
+                StationArrival = t.StationArrival,
+                Time = timePars(t.ArrivalTime, t.DepartureTime), 
+                DepartureTime = t.DepartureTime,
+                ArrivalTime = t.ArrivalTime,
                 TransitTime = transitTimePars(t.ArrivalTime, t.DepartureTime),
                 DelayTime = null,
-                StopTime = (TimeSpan?)(TimeSpan.TryParse(t.StopTime, out stopTime) ? (ValueType)stopTime : null),
+                StopTime = t.StopTime,
                 ExpectedTime = timePars(t.ArrivalTime, t.DepartureTime),
                 DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(t.Days).ПолучитьСтрокуОписанияРасписания(),
                 DaysFollowingAlias = t.DaysAlias,
@@ -451,7 +451,7 @@ namespace MainExample.Mappers
             using (var scope = _container.BeginLifetimeScope())
             {
                 var trainRecService = scope.Resolve<TrainRecService>();
-                trainRecService.GetStationInDirectionByNameStation(data.Направление, data.СтанцияОтправления);//Program.ПолучитьСтанциюНаправления(direction, station);
+                trainRecService.GetStationInDirectionByNameStation(data.Направление, data.СтанцияОтправления);
                 cтанцияОтправления = trainRecService.GetStationInDirectionByNameStation(data.Направление, data.СтанцияОтправления) ?? defaultStation;
                 cтанцияНазначения = trainRecService.GetStationInDirectionByNameStation(data.Направление, data.СтанцияНазначения) ?? defaultStation;
             }
@@ -465,7 +465,7 @@ namespace MainExample.Mappers
                     ScheduleId = data.IdTrain.ScheduleId,
                     IsActive = data.Активность,
                     NumberOfTrain = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? номерПоезда : "   ",
-                    VagonDirection = (VagonDirection)data.НумерацияПоезда,
+                    WagonsNumbering = data.WagonsNumbering,
                     ChangeVagonDirection = data.СменнаяНумерацияПоезда,
                     PathNumber = номерПути,
                     PathNumberWithoutAutoReset = data.НомерПутиБезАвтосброса,
@@ -499,7 +499,7 @@ namespace MainExample.Mappers
                     ScheduleId = data.IdTrain.ScheduleId,
                     IsActive = data.Активность,
                     NumberOfTrain = номерПоезда,
-                    VagonDirection = (VagonDirection)data.НумерацияПоезда,
+                    WagonsNumbering = data.WagonsNumbering,
                     ChangeVagonDirection = data.СменнаяНумерацияПоезда,
                     PathNumber = номерПути,
                     PathNumberWithoutAutoReset = data.НомерПутиБезАвтосброса,

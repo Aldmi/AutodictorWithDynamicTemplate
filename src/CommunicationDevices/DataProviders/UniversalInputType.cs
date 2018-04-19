@@ -8,7 +8,6 @@ using MoreLinq;
 
 namespace CommunicationDevices.DataProviders
 {
-    public enum VagonDirection { None, FromTheHead, FromTheTail }
     public enum Command { None, View, Update, Delete, Clear, Restart }
 
 
@@ -19,26 +18,40 @@ namespace CommunicationDevices.DataProviders
         public string AddressDevice { get; set; }                    //Адресс устройсва
         public bool IsActive { get; set; }                           //Флаг активности записи ("Отменен без объявления")
 
-        public string TypeTrain { get; set; }                //тип поезда
+        public string TypeTrain { get; set; }                        //тип поезда
         public string NumberOfTrain { get; set; }                    //Номер поезда
         public string PathNumber { get; set; }                       //Номер пути
         public string PathNumberWithoutAutoReset { get; set; }       //Номер пути Без Автосброса
-        public string Event { get; set; }                            //Событие (ОТПР./ПРИБ./СТОЯНКА)
+
+        public string Event { get; set; }                            //!!!!! Событие (ОТПР./ПРИБ./СТОЯНКА)
+        public Classification Classification { get; set; }
+
+
         public string Addition { get; set; }                         //Дополнение (свободная строка)
         public string Stations { get; set; }                         // Станции Отправления-Прибытия. (название поезда)
-        public string DirectionStation { get; set; }                 // Направление.
+
+        public string DirectionStation { get; set; }                 //!!!!! Направление.
+        public Direction Direction { get; set; }                     //Направление
+
+
         public Station StationDeparture { get; set; }
         public Station StationArrival { get; set; }
 
         public string Note { get; set; }                             //Примечание.
         public string DaysFollowing { get; set; }                    //Дни следования
         public string DaysFollowingAlias { get; set; }               //Дни следования, заданные в строке в нужном формате
-        public DateTime Time { get; set; }                           //Время
+
+
+        public DateTime Time { get; set; }                           //!!!!!Время
+        public DateTime? ArrivalTime { get; set; }                   //Время прибытия
+        public DateTime? DepartureTime { get; set; }                 //Время Отправления
+
+
         public Dictionary<string, DateTime> TransitTime { get; set; } //Транзитное время ["приб"]/["отпр"]
         public DateTime? DelayTime { get; set; }                     //Время задержки (прибытия или отправления поезда)
         public DateTime ExpectedTime { get; set; }                   //Ожидаемое время (Время + Время задержки)
         public TimeSpan? StopTime { get; set; }                      //время стоянки (для транзитов: Время отпр - время приб)
-        public VagonDirection VagonDirection { get; set; }           //Нумерация вагона (с головы, с хвоста)
+        public WagonsNumbering WagonsNumbering { get; set; }         //Нумерация вагона (с головы, с хвоста)
         public bool ChangeVagonDirection { get; set; }               //флаг смены нумерации вагонов
         public bool SendingDataLimit { get; set; }                   //Ограниение отправки данных (если Contrains="SendingDataLimit", то выводим только с галкой)
         public string Message { get; set; }                          //Сообщение
@@ -87,7 +100,7 @@ namespace CommunicationDevices.DataProviders
             Message = initializeData.Message;
             EmergencySituation = initializeData.EmergencySituation;
             Command = initializeData.Command;
-            VagonDirection = initializeData.VagonDirection;
+            WagonsNumbering = initializeData.WagonsNumbering;
             ChangeVagonDirection= initializeData.ChangeVagonDirection;
 
 
