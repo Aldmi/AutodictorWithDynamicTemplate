@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using AutodictorBL.DataAccess;
@@ -181,202 +177,202 @@ namespace MainExample
 
         public static void ЗагрузитьСписок()
         {
-            TrainTableRecords.Clear();
+            //TrainTableRecords.Clear();
 
-            try
-            {
-                using (StreamReader file = new StreamReader(TableFileName))
-                {
-                    string line;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        string[] Settings = line.Split(';');
-                        if ((Settings.Length == 13) || (Settings.Length == 15) || (Settings.Length >= 16))
-                        {
-                            TrainTableRec данные;
+            //try
+            //{
+            //    using (StreamReader file = new StreamReader(TableFileName))
+            //    {
+            //        string line;
+            //        while ((line = file.ReadLine()) != null)
+            //        {
+            //            string[] Settings = line.Split(';');
+            //            if ((Settings.Length == 13) || (Settings.Length == 15) || (Settings.Length >= 16))
+            //            {
+            //                TrainTableRec данные;
 
-                            данные.Id = int.Parse(Settings[0]);
-                            данные.Num = Settings[1];
-                            данные.Name = Settings[2];
-                            данные.ArrivalTime = Settings[3];
-                            данные.StopTime = Settings[4];
-                            данные.DepartureTime = Settings[5];
-                            данные.Days = Settings[6];
-                            данные.Active = Settings[7] == "1" ? true : false;
-                            данные.SoundTemplates = Settings[8];
-                            данные.TrainPathDirection = byte.Parse(Settings[9]);
-                            данные.TrainPathNumber = LoadPathFromFile(Settings[10], out данные.PathWeekDayes);
-                            данные.ИспользоватьДополнение = new Dictionary<string, bool>()
-                            {
-                                ["звук"] = false,
-                                ["табло"] = false
-                            };
-                            данные.Автомат = true;
+            //                данные.Id = int.Parse(Settings[0]);
+            //                данные.Num = Settings[1];
+            //                данные.Name = Settings[2];
+            //                данные.ArrivalTime = Settings[3];
+            //                данные.StopTime = Settings[4];
+            //                данные.DepartureTime = Settings[5];
+            //                данные.Days = Settings[6];
+            //                данные.Active = Settings[7] == "1" ? true : false;
+            //                данные.SoundTemplates = Settings[8];
+            //                данные.TrainPathDirection = byte.Parse(Settings[9]);
+            //                данные.TrainPathNumber = LoadPathFromFile(Settings[10], out данные.PathWeekDayes);
+            //                данные.ИспользоватьДополнение = new Dictionary<string, bool>()
+            //                {
+            //                    ["звук"] = false,
+            //                    ["табло"] = false
+            //                };
+            //                данные.Автомат = true;
 
   
 
-                            данные.Примечание = Settings[12];
+            //                данные.Примечание = Settings[12];
 
-                            if (данные.TrainPathDirection > 2)
-                                данные.TrainPathDirection = 0;
+            //                if (данные.TrainPathDirection > 2)
+            //                    данные.TrainPathDirection = 0;
 
 
                             
-                            //var path = Program.PathwaysService.GetAll().FirstOrDefault(p => p.Name == данные.TrainPathNumber[WeekDays.Постоянно]);
-                            //if (path == null)
-                            //    данные.TrainPathNumber[WeekDays.Постоянно] = "";
+            //                //var path = Program.PathwaysService.GetAll().FirstOrDefault(p => p.Name == данные.TrainPathNumber[WeekDays.Постоянно]);
+            //                //if (path == null)
+            //                //    данные.TrainPathNumber[WeekDays.Постоянно] = "";
 
-                            DateTime НачалоДействия = new DateTime(1900, 1, 1);
-                            DateTime КонецДействия = new DateTime(2100, 1, 1);
-                            if (Settings.Length >= 15)
-                            {
-                                DateTime.TryParse(Settings[13], out НачалоДействия);
-                                DateTime.TryParse(Settings[14], out КонецДействия);
-                            }
-                            данные.ВремяНачалаДействияРасписания = НачалоДействия;
-                            данные.ВремяОкончанияДействияРасписания = КонецДействия;
-
-
-                            var addition = "";
-                            if (Settings.Length >= 16)
-                            {
-                                addition = Settings[15];
-                            }
-                            данные.Addition = addition;
+            //                DateTime НачалоДействия = new DateTime(1900, 1, 1);
+            //                DateTime КонецДействия = new DateTime(2100, 1, 1);
+            //                if (Settings.Length >= 15)
+            //                {
+            //                    DateTime.TryParse(Settings[13], out НачалоДействия);
+            //                    DateTime.TryParse(Settings[14], out КонецДействия);
+            //                }
+            //                данные.ВремяНачалаДействияРасписания = НачалоДействия;
+            //                данные.ВремяОкончанияДействияРасписания = КонецДействия;
 
 
-                            if (Settings.Length >= 18)
-                            {
-                                данные.ИспользоватьДополнение["табло"] = Settings[16] == "1";
-                                данные.ИспользоватьДополнение["звук"] = Settings[17] == "1";
-                            }
-
-                            if (Settings.Length >= 19)
-                            {
-                                данные.Автомат = (string.IsNullOrEmpty(Settings[18]) || Settings[18] == "1"); // по умолчанию true
-                            }
+            //                var addition = "";
+            //                if (Settings.Length >= 16)
+            //                {
+            //                    addition = Settings[15];
+            //                }
+            //                данные.Addition = addition;
 
 
-                            данные.Num2 = String.Empty;
-                            данные.FollowingTime = String.Empty;
-                            данные.DaysAlias = String.Empty;
-                            if (Settings.Length >= 22)
-                            {
-                                данные.Num2 = Settings[19];
-                                данные.FollowingTime = Settings[20];
-                                данные.DaysAlias = Settings[21];
-                            }
+            //                if (Settings.Length >= 18)
+            //                {
+            //                    данные.ИспользоватьДополнение["табло"] = Settings[16] == "1";
+            //                    данные.ИспользоватьДополнение["звук"] = Settings[17] == "1";
+            //                }
+
+            //                if (Settings.Length >= 19)
+            //                {
+            //                    данные.Автомат = (string.IsNullOrEmpty(Settings[18]) || Settings[18] == "1"); // по умолчанию true
+            //                }
 
 
-                            данные.StationDepart = String.Empty;
-                            данные.StationArrival = String.Empty;
-                            if (Settings.Length >= 23)
-                            {
-                                данные.StationDepart = Settings[22];
-                                данные.StationArrival = Settings[23];
-                            }
+            //                данные.Num2 = String.Empty;
+            //                данные.FollowingTime = String.Empty;
+            //                данные.DaysAlias = String.Empty;
+            //                if (Settings.Length >= 22)
+            //                {
+            //                    данные.Num2 = Settings[19];
+            //                    данные.FollowingTime = Settings[20];
+            //                    данные.DaysAlias = Settings[21];
+            //                }
 
-                            данные.Direction = String.Empty;
-                            if (Settings.Length >= 25)
-                            {
-                                данные.Direction = Settings[24];
-                            }
 
-                            данные.ChangeTrainPathDirection = false;
-                            if (Settings.Length >= 26)
-                            {
-                                bool changeDirection;
-                                bool.TryParse(Settings[25], out changeDirection);
-                                данные.ChangeTrainPathDirection = changeDirection;
-                            }
+            //                данные.StationDepart = String.Empty;
+            //                данные.StationArrival = String.Empty;
+            //                if (Settings.Length >= 23)
+            //                {
+            //                    данные.StationDepart = Settings[22];
+            //                    данные.StationArrival = Settings[23];
+            //                }
 
-                            данные.IsScoreBoardOutput = false;
-                            if (Settings.Length >= 27)
-                            {
-                                bool ограничениеОтправки;
-                                bool.TryParse(Settings[26], out ограничениеОтправки);
-                                данные.IsScoreBoardOutput = ограничениеОтправки;
-                            }
+            //                данные.Direction = String.Empty;
+            //                if (Settings.Length >= 25)
+            //                {
+            //                    данные.Direction = Settings[24];
+            //                }
 
-                            данные.IsSoundOutput = true;
-                            if (Settings.Length >= 28)
-                            {
-                                bool выводЗвука;
-                                bool.TryParse(Settings[27], out выводЗвука);
-                                данные.IsSoundOutput = выводЗвука;
-                            }
+            //                данные.ChangeTrainPathDirection = false;
+            //                if (Settings.Length >= 26)
+            //                {
+            //                    bool changeDirection;
+            //                    bool.TryParse(Settings[25], out changeDirection);
+            //                    данные.ChangeTrainPathDirection = changeDirection;
+            //                }
 
-                            //TODO: добавить обработку
-                            данные.TrainTypeByRyle = null;
-                            данные.ActionTrains = null;
+            //                данные.IsScoreBoardOutput = false;
+            //                if (Settings.Length >= 27)
+            //                {
+            //                    bool ограничениеОтправки;
+            //                    bool.TryParse(Settings[26], out ограничениеОтправки);
+            //                    данные.IsScoreBoardOutput = ограничениеОтправки;
+            //                }
 
-                            TrainTableRecords.Add(данные);
-                            Program.НомераПоездов.Add(данные.Num);
-                            if (!string.IsNullOrEmpty(данные.Num2))
-                                Program.НомераПоездов.Add(данные.Num2);
+            //                данные.IsSoundOutput = true;
+            //                if (Settings.Length >= 28)
+            //                {
+            //                    bool выводЗвука;
+            //                    bool.TryParse(Settings[27], out выводЗвука);
+            //                    данные.IsSoundOutput = выводЗвука;
+            //                }
 
-                            if (данные.Id > _id)
-                                _id = данные.Id;
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            //                //TODO: добавить обработку
+            //                данные.TrainTypeByRyle = null;
+            //                данные.ActionTrains = null;
+
+            //                TrainTableRecords.Add(данные);
+            //                Program.НомераПоездов.Add(данные.Num);
+            //                if (!string.IsNullOrEmpty(данные.Num2))
+            //                    Program.НомераПоездов.Add(данные.Num2);
+
+            //                if (данные.Id > _id)
+            //                    _id = данные.Id;
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //}
         }
 
 
 
         private void СохранитьСписок()
         {
-            try
-            {
-                using (StreamWriter DumpFile = new StreamWriter(TableFileName))
-                {
-                    for (int i = 0; i < TrainTableRecords.Count; i++)
-                    {
-                        string line =
-                            TrainTableRecords[i].Id + ";" +
-                            TrainTableRecords[i].Num + ";" +
-                            TrainTableRecords[i].Name + ";" +
-                            TrainTableRecords[i].ArrivalTime + ";" +
-                            TrainTableRecords[i].StopTime + ";" +
-                            TrainTableRecords[i].DepartureTime + ";" +
-                            TrainTableRecords[i].Days + ";" +
-                            (TrainTableRecords[i].Active ? "1" : "0") + ";" +
-                            TrainTableRecords[i].SoundTemplates + ";" +
-                            TrainTableRecords[i].TrainPathDirection.ToString() + ";" +
-                            SavePath2File(TrainTableRecords[i].TrainPathNumber, TrainTableRecords[i].PathWeekDayes) + ";" +
-                            TrainTableRecords[i].Примечание + ";" +
-                            TrainTableRecords[i].ВремяНачалаДействияРасписания.ToString("dd.MM.yyyy HH:mm:ss") + ";" +
-                            TrainTableRecords[i].ВремяОкончанияДействияРасписания.ToString("dd.MM.yyyy HH:mm:ss") + ";" +
-                            TrainTableRecords[i].Addition + ";" +
-                            (TrainTableRecords[i].ИспользоватьДополнение["табло"] ? "1" : "0") + ";" +
-                            (TrainTableRecords[i].ИспользоватьДополнение["звук"] ? "1" : "0") + ";" +
-                            (TrainTableRecords[i].Автомат ? "1" : "0") + ";" +
+            //try
+            //{
+            //    using (StreamWriter DumpFile = new StreamWriter(TableFileName))
+            //    {
+            //        for (int i = 0; i < TrainTableRecords.Count; i++)
+            //        {
+            //            string line =
+            //                TrainTableRecords[i].Id + ";" +
+            //                TrainTableRecords[i].Num + ";" +
+            //                TrainTableRecords[i].Name + ";" +
+            //                TrainTableRecords[i].ArrivalTime + ";" +
+            //                TrainTableRecords[i].StopTime + ";" +
+            //                TrainTableRecords[i].DepartureTime + ";" +
+            //                TrainTableRecords[i].Days + ";" +
+            //                (TrainTableRecords[i].Active ? "1" : "0") + ";" +
+            //                TrainTableRecords[i].SoundTemplates + ";" +
+            //                TrainTableRecords[i].TrainPathDirection.ToString() + ";" +
+            //                SavePath2File(TrainTableRecords[i].TrainPathNumber, TrainTableRecords[i].PathWeekDayes) + ";" +
+            //                TrainTableRecords[i].Примечание + ";" +
+            //                TrainTableRecords[i].ВремяНачалаДействияРасписания.ToString("dd.MM.yyyy HH:mm:ss") + ";" +
+            //                TrainTableRecords[i].ВремяОкончанияДействияРасписания.ToString("dd.MM.yyyy HH:mm:ss") + ";" +
+            //                TrainTableRecords[i].Addition + ";" +
+            //                (TrainTableRecords[i].ИспользоватьДополнение["табло"] ? "1" : "0") + ";" +
+            //                (TrainTableRecords[i].ИспользоватьДополнение["звук"] ? "1" : "0") + ";" +
+            //                (TrainTableRecords[i].Автомат ? "1" : "0") + ";" +
 
-                            TrainTableRecords[i].Num2 + ";" +
-                            TrainTableRecords[i].FollowingTime + ";" +
-                            TrainTableRecords[i].DaysAlias + ";" +
+            //                TrainTableRecords[i].Num2 + ";" +
+            //                TrainTableRecords[i].FollowingTime + ";" +
+            //                TrainTableRecords[i].DaysAlias + ";" +
 
-                            TrainTableRecords[i].StationDepart + ";" +
-                            TrainTableRecords[i].StationArrival + ";" +
-                            TrainTableRecords[i].Direction + ";" +
-                            TrainTableRecords[i].ChangeTrainPathDirection + ";" +
-                            TrainTableRecords[i].IsScoreBoardOutput;
+            //                TrainTableRecords[i].StationDepart + ";" +
+            //                TrainTableRecords[i].StationArrival + ";" +
+            //                TrainTableRecords[i].Direction + ";" +
+            //                TrainTableRecords[i].ChangeTrainPathDirection + ";" +
+            //                TrainTableRecords[i].IsScoreBoardOutput;
 
-                        DumpFile.WriteLine(line);
-                    }
+            //            DumpFile.WriteLine(line);
+            //        }
 
-                    DumpFile.Close();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            //        DumpFile.Close();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //}
         }
 
 

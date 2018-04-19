@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using Communication.Annotations;
 using Communication.Interfaces;
 using Library.Extensions;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Xml.Linq;
-
-namespace AutodictorBL.Settings.XmlSound
+﻿namespace AutodictorBL.Settings.XmlSound
 {
     public enum SoundPlayerType
     {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using DAL.Abstract.Entitys;
+﻿using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.Builder.TrainRecordBuilder
 {

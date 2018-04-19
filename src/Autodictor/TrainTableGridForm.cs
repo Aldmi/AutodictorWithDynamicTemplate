@@ -5,16 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.DataAccess;
-using AutodictorBL.Services;
 using Autofac.Features.OwnedInstances;
 using DAL.Abstract.Entitys;
-using Force.DeepCloner;
-using MainExample.Entites;
 using MainExample.Extension;
 
 

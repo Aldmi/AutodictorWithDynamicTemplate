@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutodictorBL.Services;
 using CommunicationDevices.Behavior.BindingBehavior.ToStatic;
 using CommunicationDevices.DataProviders;
-using CommunicationDevices.Devices;
 using DAL.Abstract.Entitys.Authentication;
 
 

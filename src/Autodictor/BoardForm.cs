@@ -1,22 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net.Mail;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AutodictorBL.Services;
-using CommunicationDevices.ClientWCF;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
 using MainExample.Extension;
-using WCFCis2AvtodictorContract.DataContract;
-using CommunicationDevices.Settings;
 using CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings;
 using MainExample.Properties;
 

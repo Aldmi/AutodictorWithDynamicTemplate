@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
 using Autofac.Features.OwnedInstances;
-using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
 
 

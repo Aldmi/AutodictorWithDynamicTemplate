@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Subjects;
 using System.Timers;
 using CommunicationDevices.DataProviders;
-using CommunicationDevices.Devices;
 
 namespace CommunicationDevices.Behavior.BindingBehavior.Helpers
 {

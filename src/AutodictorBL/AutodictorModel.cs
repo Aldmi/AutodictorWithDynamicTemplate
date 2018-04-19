@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using AutodictorBL.Settings;
 using AutodictorBL.Settings.XmlSound;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
-using Library.Logs;
-using Library.Xml;
 
 
 namespace AutodictorBL

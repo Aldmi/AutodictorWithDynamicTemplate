@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using AutodictorBL.DataAccess;
-using AutodictorBL.Services;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
-using DAL.Abstract.Entitys.Authentication;
-using MainExample.Entites;
-using MainExample.Mappers;
 
 namespace MainExample.Services.GetDataService
 {

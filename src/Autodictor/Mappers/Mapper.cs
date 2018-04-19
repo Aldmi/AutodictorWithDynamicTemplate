@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutodictorBL.DataAccess;
 using AutodictorBL.Services.SoundRecordServices;
 using Autofac;
@@ -10,7 +9,6 @@ using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Changes;
 using DAL.NoSqlLiteDb.Entityes;
 using Force.DeepCloner;
-using MainExample.Utils;
 
 
 namespace MainExample.Mappers

@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Communication.SerialPort;
-using CommunicationDevices.Model;
-using CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings;
 using MainExample.Extension;
-using MainExample.Properties;
 
 namespace MainExample
 {

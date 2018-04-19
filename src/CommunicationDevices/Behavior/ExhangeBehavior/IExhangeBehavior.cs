@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using CommunicationDevices.DataProviders;

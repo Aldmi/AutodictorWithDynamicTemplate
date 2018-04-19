@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml.Linq;
-using CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings;
-using Library.Convertion;
 
 namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
 {

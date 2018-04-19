@@ -5,9 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Communication.SerialPort;
-using Communication.TcpIp;
 using CommunicationDevices.DataProviders;
-using CommunicationDevices.DataProviders.VidorDataProvider;
 
 namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
 {

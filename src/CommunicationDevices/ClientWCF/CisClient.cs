@@ -6,10 +6,7 @@ using System.ServiceModel;
 using System.Timers;
 using System.Xml;
 using CommunicationDevices.Devices;
-using CommunicationDevices.Model;
-using Library.Logs;
 using MainExample.Converters;
-using WCFAvtodictor2PcTableContract.Contract;
 using WCFCis2AvtodictorContract.Contract;
 using WCFCis2AvtodictorContract.DataContract;
 

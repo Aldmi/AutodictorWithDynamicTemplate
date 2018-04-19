@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.ServiceModel;
-using System.Timers;
 using CommunicationDevices.Behavior.BindingBehavior.Helpers;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;

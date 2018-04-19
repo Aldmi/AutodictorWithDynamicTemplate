@@ -1,28 +1,26 @@
 ﻿using System;
 using CommunicationDevices.DataProviders;
+using DAL.Abstract.Entitys;
 
 namespace CommunicationDevices.Services
 {
     public class UitPreprocessingChnagePathDirection4Transit : IUitPreprocessing
     {
-
-
-
         public void StartPreprocessing(UniversalInputType uit)
         {
-            if (uit.Event == "СТОЯНКА") 
+            if (uit.Classification == Classification.Transit) 
             {
                 if (uit.ChangeVagonDirection)
                 {
                     if (DateTime.Now > uit.TransitTime["приб"] && DateTime.Now < uit.TransitTime["отпр"])// поезд прибыл и еще не отправился, поменяем нумерацию вагонов для отправления
                     {
-                        switch (uit.VagonDirection)
+                        switch (uit.WagonsNumbering)
                         {
-                            case VagonDirection.FromTheHead:
-                                uit.VagonDirection = VagonDirection.FromTheTail;
+                            case WagonsNumbering.Head:
+                                uit.WagonsNumbering = WagonsNumbering.Rear;
                                 break;
-                            case VagonDirection.FromTheTail:
-                                uit.VagonDirection = VagonDirection.FromTheHead;
+                            case WagonsNumbering.Rear:
+                                uit.WagonsNumbering = WagonsNumbering.Head;
                                 break;
                         }
                     }

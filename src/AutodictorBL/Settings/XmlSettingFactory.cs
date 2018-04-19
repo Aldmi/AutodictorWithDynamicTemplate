@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using AutodictorBL.Settings.XmlSound;
-using DAL.Abstract.Entitys;
 
 
 namespace AutodictorBL.Settings

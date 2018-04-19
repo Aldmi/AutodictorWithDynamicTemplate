@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 using AutodictorBL.DataAccess;
 using DAL.Abstract.Entitys;
-using DAL.NoSqlLiteDb.Entityes;
-using MainExample.Entites;
-using MainExample.Services;
 using MainExample.Services.FactoryServices;
 
 

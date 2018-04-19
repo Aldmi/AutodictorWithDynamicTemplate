@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
-using MoreLinq;
 
 namespace CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData
 {
@@ -141,7 +137,7 @@ namespace CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData
                         int vagonDirection;
                         if (int.TryParse(StringTrim(line, "VagonDirection"), out vagonDirection))
                         {
-                            uit.VagonDirection = (VagonDirection)vagonDirection;
+                            uit.WagonsNumbering = (WagonsNumbering)vagonDirection;
                         }
 
                         //DefaultsPaths------------- нет возможности собирать эту информацию из ЦИС

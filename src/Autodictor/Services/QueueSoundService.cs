@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Subjects;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
 using AutodictorBL.Entites;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
-using DAL.NoSqlLiteDb.Entityes;
 using Library.Logs;
-using MainExample.Entites;
-using WCFCis2AvtodictorContract.DataContract;
 
 
 namespace MainExample.Services

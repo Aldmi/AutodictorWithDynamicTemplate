@@ -1,5 +1,4 @@
 ﻿using System;
-using CommunicationDevices.Verification;
 using Quartz;
 
 namespace CommunicationDevices.Quartz.Jobs

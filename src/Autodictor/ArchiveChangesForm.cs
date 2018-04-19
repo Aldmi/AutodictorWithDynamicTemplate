@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using AutodictorBL.DataAccess;
-using DAL.Abstract.Entitys;
 using DAL.NoSqlLiteDb.Entityes;
 
 

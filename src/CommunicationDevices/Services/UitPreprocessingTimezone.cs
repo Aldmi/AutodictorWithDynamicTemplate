@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.AccessControl;
-using CommunicationDevices.DataProviders;
+﻿using CommunicationDevices.DataProviders;
 
 
 namespace CommunicationDevices.Services

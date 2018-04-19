@@ -5,18 +5,14 @@ using AutodictorBL.Services;
 using AutodictorBL.Services.SoundRecordServices;
 using Autofac;
 using Autofac.Core;
-using Autofac.Features.OwnedInstances;
-using Castle.Core.Logging;
 using DAL.Abstract.Abstract;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
-using DAL.Abstract.Entitys.Authentication;
 using DAL.Composite.Repository;
 using DAL.InMemory.Repository;
 using DAL.NoSqlLiteDb.Entityes;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
-using DAL.Serialize.XML.Reposirory;
 using DAL.XmlRaw.Repository;
 
 

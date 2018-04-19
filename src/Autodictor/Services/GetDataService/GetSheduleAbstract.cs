@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -10,7 +9,6 @@ using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Changes;
-using MainExample.Entites;
 using MainExample.Extension;
 
 namespace MainExample.Services.GetDataService

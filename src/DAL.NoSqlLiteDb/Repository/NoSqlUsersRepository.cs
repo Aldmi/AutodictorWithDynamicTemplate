@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using DAL.Abstract.Abstract;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
-using DAL.NoSqlLiteDb.Service;
 
 namespace DAL.NoSqlLiteDb.Repository
 {

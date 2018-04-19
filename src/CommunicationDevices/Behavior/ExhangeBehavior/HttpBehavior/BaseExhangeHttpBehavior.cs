@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Reactive.Subjects;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using Communication.Annotations;
 using Communication.Http;
-using Communication.TcpIp;
 using CommunicationDevices.DataProviders;
 using Timer = System.Timers.Timer;
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
@@ -58,7 +57,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
                     new XElement("Direction", direction),
                     new XElement("EvTrackNumber", uit.PathNumber),
                     new XElement("State", 0),
-                    new XElement("VagonDirection", (byte)uit.VagonDirection),
+                    new XElement("VagonDirection", (byte)uit.WagonsNumbering),
                     new XElement("Enabled", (uit.EmergencySituation & 0x01) == 0x01 ? 0 : 1),
 
                     new XElement("tt",

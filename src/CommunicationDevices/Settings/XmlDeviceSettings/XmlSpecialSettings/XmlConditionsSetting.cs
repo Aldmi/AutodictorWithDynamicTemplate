@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Castle.Components.DictionaryAdapter;
 using CommunicationDevices.DataProviders;
-using MoreLinq;
 
 
 namespace CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings

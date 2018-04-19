@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using DAL.Abstract.Entitys;
+﻿using DAL.Abstract.Entitys;
 
 
 namespace MainExample.Infrastructure

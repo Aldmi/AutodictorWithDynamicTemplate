@@ -1,11 +1,6 @@
-﻿using System.IO;
-using System.Linq;
-using System.Reactive.Subjects;
-using Castle.Core.Internal;
-using CommunicationDevices.Behavior;
+﻿using Castle.Core.Internal;
 using CommunicationDevices.Behavior.ExhangeBehavior;
 using CommunicationDevices.DataProviders;
-using CommunicationDevices.Settings;
 using CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings;
 
 

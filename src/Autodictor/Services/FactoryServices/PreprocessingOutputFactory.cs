@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CommunicationDevices.DataProviders;
 using CommunicationDevices.Services;
 
 namespace MainExample.Services.FactoryServices

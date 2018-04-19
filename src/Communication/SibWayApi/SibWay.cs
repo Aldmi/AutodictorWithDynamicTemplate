@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using Communication.Annotations;
 using LedScreenLibNetWrapper;
 using LedScreenLibNetWrapper.Impl;
-using Library.Extensions;
-using Log = Library.Logs.Log;
 
 namespace Communication.SibWayApi
 {

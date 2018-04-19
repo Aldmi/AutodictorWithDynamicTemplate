@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Xml.Linq;
-using Communication.Annotations;
 
 namespace Communication.Settings
 {

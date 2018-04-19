@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ServiceModel;
 using System.Runtime.Serialization;
 
 namespace WCFCis2AvtodictorContract.DataContract

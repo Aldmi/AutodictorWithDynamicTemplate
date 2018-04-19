@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 
 namespace CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings
