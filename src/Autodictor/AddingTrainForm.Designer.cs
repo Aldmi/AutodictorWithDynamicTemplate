@@ -36,13 +36,12 @@
             this.cBОткуда = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cBКуда = new System.Windows.Forms.ComboBox();
-            this.dTPВремя2 = new System.Windows.Forms.DateTimePicker();
-            this.dTPВремя1 = new System.Windows.Forms.DateTimePicker();
+            this.dTPВремяОтпр = new System.Windows.Forms.DateTimePicker();
+            this.dTPВремяПриб = new System.Windows.Forms.DateTimePicker();
             this.rBТранзит = new System.Windows.Forms.RadioButton();
             this.rBОтправление = new System.Windows.Forms.RadioButton();
             this.rBПрибытие = new System.Windows.Forms.RadioButton();
             this.gBШаблонОповещения = new System.Windows.Forms.GroupBox();
-            this.rTB_Сообщение = new System.Windows.Forms.RichTextBox();
             this.gBОстановки = new System.Windows.Forms.GroupBox();
             this.lB_ПоСтанциям = new System.Windows.Forms.ListBox();
             this.btnРедактировать = new System.Windows.Forms.Button();
@@ -57,7 +56,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.btnДобавить = new System.Windows.Forms.Button();
             this.btnОтмена = new System.Windows.Forms.Button();
-            this.gBШаблонОповещения.SuspendLayout();
             this.gBОстановки.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -137,28 +135,28 @@
             this.cBКуда.TabIndex = 5;
             this.cBКуда.SelectedIndexChanged += new System.EventHandler(this.cBКуда_SelectedIndexChanged);
             // 
-            // dTPВремя2
+            // dTPВремяОтпр
             // 
-            this.dTPВремя2.CustomFormat = "HH:mm";
-            this.dTPВремя2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dTPВремя2.Location = new System.Drawing.Point(157, 151);
-            this.dTPВремя2.Name = "dTPВремя2";
-            this.dTPВремя2.ShowUpDown = true;
-            this.dTPВремя2.Size = new System.Drawing.Size(72, 26);
-            this.dTPВремя2.TabIndex = 57;
-            this.dTPВремя2.ValueChanged += new System.EventHandler(this.dTPВремя2_ValueChanged);
+            this.dTPВремяОтпр.CustomFormat = "HH:mm";
+            this.dTPВремяОтпр.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dTPВремяОтпр.Location = new System.Drawing.Point(157, 151);
+            this.dTPВремяОтпр.Name = "dTPВремяОтпр";
+            this.dTPВремяОтпр.ShowUpDown = true;
+            this.dTPВремяОтпр.Size = new System.Drawing.Size(72, 26);
+            this.dTPВремяОтпр.TabIndex = 57;
+            this.dTPВремяОтпр.ValueChanged += new System.EventHandler(this.dTPВремя2_ValueChanged);
             // 
-            // dTPВремя1
+            // dTPВремяПриб
             // 
-            this.dTPВремя1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.dTPВремя1.CustomFormat = "HH:mm";
-            this.dTPВремя1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dTPВремя1.Location = new System.Drawing.Point(157, 119);
-            this.dTPВремя1.Name = "dTPВремя1";
-            this.dTPВремя1.ShowUpDown = true;
-            this.dTPВремя1.Size = new System.Drawing.Size(72, 26);
-            this.dTPВремя1.TabIndex = 56;
-            this.dTPВремя1.ValueChanged += new System.EventHandler(this.dTPВремя1_ValueChanged);
+            this.dTPВремяПриб.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.dTPВремяПриб.CustomFormat = "HH:mm";
+            this.dTPВремяПриб.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dTPВремяПриб.Location = new System.Drawing.Point(157, 119);
+            this.dTPВремяПриб.Name = "dTPВремяПриб";
+            this.dTPВремяПриб.ShowUpDown = true;
+            this.dTPВремяПриб.Size = new System.Drawing.Size(72, 26);
+            this.dTPВремяПриб.TabIndex = 56;
+            this.dTPВремяПриб.ValueChanged += new System.EventHandler(this.dTPВремя1_ValueChanged);
             // 
             // rBТранзит
             // 
@@ -200,21 +198,12 @@
             // 
             // gBШаблонОповещения
             // 
-            this.gBШаблонОповещения.Controls.Add(this.rTB_Сообщение);
-            this.gBШаблонОповещения.Location = new System.Drawing.Point(12, 371);
+            this.gBШаблонОповещения.Location = new System.Drawing.Point(6, 371);
             this.gBШаблонОповещения.Name = "gBШаблонОповещения";
-            this.gBШаблонОповещения.Size = new System.Drawing.Size(957, 311);
+            this.gBШаблонОповещения.Size = new System.Drawing.Size(963, 311);
             this.gBШаблонОповещения.TabIndex = 59;
             this.gBШаблонОповещения.TabStop = false;
             this.gBШаблонОповещения.Text = "Шаблоны оповещения";
-            // 
-            // rTB_Сообщение
-            // 
-            this.rTB_Сообщение.Location = new System.Drawing.Point(7, 235);
-            this.rTB_Сообщение.Name = "rTB_Сообщение";
-            this.rTB_Сообщение.Size = new System.Drawing.Size(944, 70);
-            this.rTB_Сообщение.TabIndex = 58;
-            this.rTB_Сообщение.Text = "";
             // 
             // gBОстановки
             // 
@@ -395,8 +384,8 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lblВремя2);
             this.Controls.Add(this.lblВремя1);
-            this.Controls.Add(this.dTPВремя2);
-            this.Controls.Add(this.dTPВремя1);
+            this.Controls.Add(this.dTPВремяОтпр);
+            this.Controls.Add(this.dTPВремяПриб);
             this.Controls.Add(this.rBТранзит);
             this.Controls.Add(this.rBОтправление);
             this.Controls.Add(this.rBПрибытие);
@@ -415,7 +404,6 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "AddingTrainForm";
             this.Text = "Окно добавления поезда в текущее расписание";
-            this.gBШаблонОповещения.ResumeLayout(false);
             this.gBОстановки.ResumeLayout(false);
             this.gBОстановки.PerformLayout();
             this.ResumeLayout(false);
@@ -433,8 +421,8 @@
         private System.Windows.Forms.ComboBox cBОткуда;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cBКуда;
-        private System.Windows.Forms.DateTimePicker dTPВремя2;
-        private System.Windows.Forms.DateTimePicker dTPВремя1;
+        private System.Windows.Forms.DateTimePicker dTPВремяОтпр;
+        private System.Windows.Forms.DateTimePicker dTPВремяПриб;
         private System.Windows.Forms.RadioButton rBТранзит;
         private System.Windows.Forms.RadioButton rBОтправление;
         private System.Windows.Forms.RadioButton rBПрибытие;
@@ -452,7 +440,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnДобавить;
         private System.Windows.Forms.Button btnОтмена;
-        private System.Windows.Forms.RichTextBox rTB_Сообщение;
         private System.Windows.Forms.ListBox lB_ПоСтанциям;
     }
 }

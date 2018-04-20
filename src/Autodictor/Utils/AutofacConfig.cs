@@ -14,6 +14,7 @@ using DAL.NoSqlLiteDb.Entityes;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
 using DAL.XmlRaw.Repository;
+using MainExample.ViewModel.AddingTrainFormVM;
 
 
 namespace MainExample.Utils
@@ -103,7 +104,6 @@ namespace MainExample.Utils
 
 
 
-
             //СЕРВИСЫ---------------------------------------------------------------------------------
             builder.RegisterType<DirectionService>().SingleInstance();
             builder.RegisterType<PathwaysService>().SingleInstance();
@@ -121,7 +121,13 @@ namespace MainExample.Utils
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repRemoteCis")),
                         (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis))
                 }).SingleInstance();
-    
+
+
+
+            //VIEWMODEL------------------------------------------------------------------------------
+            builder.RegisterType<AddingTrainFormViewModel>().InstancePerDependency();
+
+
 
 
             //ФОРМЫ----------------------------------------------------------------------------------

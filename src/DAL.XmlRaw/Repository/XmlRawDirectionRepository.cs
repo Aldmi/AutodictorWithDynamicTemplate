@@ -41,7 +41,7 @@ namespace DAL.XmlRaw.Repository
 
         public Direction GetById(int id)
         {
-           return List().FirstOrDefault(dir => dir.Id == 1);
+           return List().FirstOrDefault(dir => dir.Id == id);
         }
 
 

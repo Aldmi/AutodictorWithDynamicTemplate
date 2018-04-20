@@ -460,7 +460,7 @@ namespace MainExample
         /// </summary>
         private async void btnLoad_Click(object sender, EventArgs e)
         {
-            _listRecords= _trainRecService.GetAll().ToList();
+            _listRecords = _trainRecService.GetAll().ToList();
             await ОбновитьДанныеВСпискеAsync();
         }
 

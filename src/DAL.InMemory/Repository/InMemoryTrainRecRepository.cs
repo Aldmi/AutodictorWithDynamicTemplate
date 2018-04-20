@@ -45,14 +45,6 @@ namespace DAL.InMemory.Repository
 
         public IEnumerable<TrainTableRec> List()
         {
-            //DEBUG----------
-            //var time = TrainTableRecs.FirstOrDefault()?.ActionTrains.FirstOrDefault(at => at.Id == 5)?.Time;
-            //var cloneTime = time.DeepClone();
-
-            //var firstTrainRec = TrainTableRecs.FirstOrDefault();
-            //var trainTableRecClone = firstTrainRec.DeepClone();
-            //DEBUG----------
-
             return TrainTableRecs.Select(itemRec=> itemRec.DeepClone()).ToList();
         }
 

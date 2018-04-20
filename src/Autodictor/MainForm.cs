@@ -32,7 +32,7 @@ namespace MainExample
         private readonly Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> _staticSoundCardFormFactory;
         private readonly Func<TrainTableGridForm> _trainTableGridFormFactory;
         private readonly Func<ArchiveChangesForm> _archiveChangesFormFactory;
-        private readonly Func<int, AddingTrainForm> _addingTrainFormFactory;
+        private readonly Func<AddingTrainForm> _addingTrainFormFactory;
         private readonly Func<TechnicalMessageForm> _technicalMessageFormFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
@@ -65,7 +65,7 @@ namespace MainExample
                         Func<СтатическоеСообщение, КарточкаСтатическогоЗвуковогоСообщенияForm> staticSoundCardFormFactory,
                         Func<TrainTableGridForm> trainTableGridFormFactory,
                         Func<ArchiveChangesForm> archiveChangesFormFactory,
-                        Func<int, AddingTrainForm> addingTrainFormFactory,
+                        Func<AddingTrainForm> addingTrainFormFactory,
                         Func<TechnicalMessageForm> technicalMessageFormFormFactory,
                         Owned<IAuthentificationService> authentificationService)
         {
@@ -561,7 +561,7 @@ namespace MainExample
             }
 
             var newRecId = (MainWindowForm.SoundRecords.Any()) ? (MainWindowForm.SoundRecords.Max(rec => rec.Value.Id) + 1) : 1;
-            AddingTrainForm окно = _addingTrainFormFactory(newRecId);
+            AddingTrainForm окно = _addingTrainFormFactory();
             if (окно.ShowDialog() == DialogResult.OK)
             {
                 var record = окно.Record;

@@ -3,7 +3,7 @@
 namespace MainExample.ViewModel.AddingTrainFormVM
 {
     //ViewModel для формы AddingTrainForm, выбор поезда из списка расписания
-    public class TrainRecAdding
+    public class TrainRecAddingVm
     {
         public TrainTableRec TrainTableRec { get; set; }
 
