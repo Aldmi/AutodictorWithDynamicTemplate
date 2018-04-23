@@ -560,12 +560,11 @@ namespace MainExample
                 return;
             }
 
-            var newRecId = (MainWindowForm.SoundRecords.Any()) ? (MainWindowForm.SoundRecords.Max(rec => rec.Value.Id) + 1) : 1;
             AddingTrainForm окно = _addingTrainFormFactory();
             if (окно.ShowDialog() == DialogResult.OK)
             {
-                var record = окно.Record;
-
+                var record = окно.RecordResult;
+                
                 //Добавление созданной записи
                 var pipelineService = new SchedulingPipelineService();
                 var newkey = pipelineService.GetUniqueKey(MainWindowForm.SoundRecords.Keys, record.Время);

@@ -95,7 +95,6 @@
             this.cBНомерПоезда.Name = "cBНомерПоезда";
             this.cBНомерПоезда.Size = new System.Drawing.Size(87, 28);
             this.cBНомерПоезда.TabIndex = 3;
-            this.cBНомерПоезда.SelectedIndexChanged += new System.EventHandler(this.cBНомерПоезда_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -114,7 +113,6 @@
             this.cBОткуда.Name = "cBОткуда";
             this.cBОткуда.Size = new System.Drawing.Size(252, 28);
             this.cBОткуда.TabIndex = 3;
-            this.cBОткуда.SelectedIndexChanged += new System.EventHandler(this.cBОткуда_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -133,7 +131,6 @@
             this.cBКуда.Name = "cBКуда";
             this.cBКуда.Size = new System.Drawing.Size(278, 28);
             this.cBКуда.TabIndex = 5;
-            this.cBКуда.SelectedIndexChanged += new System.EventHandler(this.cBКуда_SelectedIndexChanged);
             // 
             // dTPВремяОтпр
             // 
@@ -144,7 +141,6 @@
             this.dTPВремяОтпр.ShowUpDown = true;
             this.dTPВремяОтпр.Size = new System.Drawing.Size(72, 26);
             this.dTPВремяОтпр.TabIndex = 57;
-            this.dTPВремяОтпр.ValueChanged += new System.EventHandler(this.dTPВремя2_ValueChanged);
             // 
             // dTPВремяПриб
             // 
@@ -156,7 +152,6 @@
             this.dTPВремяПриб.ShowUpDown = true;
             this.dTPВремяПриб.Size = new System.Drawing.Size(72, 26);
             this.dTPВремяПриб.TabIndex = 56;
-            this.dTPВремяПриб.ValueChanged += new System.EventHandler(this.dTPВремя1_ValueChanged);
             // 
             // rBТранзит
             // 
@@ -339,7 +334,6 @@
             this.cBКатегория.Name = "cBКатегория";
             this.cBКатегория.Size = new System.Drawing.Size(257, 28);
             this.cBКатегория.TabIndex = 62;
-            this.cBКатегория.SelectedIndexChanged += new System.EventHandler(this.cBКатегория_SelectedIndexChanged);
             // 
             // label5
             // 

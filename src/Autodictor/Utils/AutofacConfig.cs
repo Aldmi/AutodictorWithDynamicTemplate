@@ -14,7 +14,9 @@ using DAL.NoSqlLiteDb.Entityes;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
 using DAL.XmlRaw.Repository;
+using MainExample.Services;
 using MainExample.ViewModel.AddingTrainFormVM;
+using AuthenticationService = AutodictorBL.Services.AuthenticationService;
 
 
 namespace MainExample.Utils
@@ -37,7 +39,9 @@ namespace MainExample.Utils
         /// </summary>
         private static void RegisterType(ContainerBuilder builder)
         {
-            //РЕПОЗИТОРИИ--------------------------------------------------------------------------------------------
+
+            #region REPOSITORY
+
             builder.RegisterType<XmlRawTrainTypeByRuleRepository>().As<ITrainTypeByRyleRepository>()
                 .WithParameters(new List<Parameter> { new NamedParameter("folderName", "Config"),
                                                       new NamedParameter("fileName", "DynamicSound.xml") }).InstancePerLifetimeScope();
@@ -102,9 +106,12 @@ namespace MainExample.Utils
                         (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>())
                 }).InstancePerLifetimeScope();
 
+            #endregion
 
 
-            //СЕРВИСЫ---------------------------------------------------------------------------------
+
+            #region SERVICES
+
             builder.RegisterType<DirectionService>().SingleInstance();
             builder.RegisterType<PathwaysService>().SingleInstance();
             builder.RegisterType<TrainTypeByRyleService>().SingleInstance(); //TODO: удалить
@@ -113,6 +120,7 @@ namespace MainExample.Utils
             builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
             builder.RegisterType<SoundReсordWorkerService>().As<ISoundReсordWorkerService>().InstancePerLifetimeScope();
             builder.RegisterType<TrainRecBuilderFluent>().As<ITrainRecBuilder>().InstancePerDependency();
+            builder.RegisterType<SchedulingPipelineService>().InstancePerLifetimeScope();
             builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repLocalMain")),
@@ -123,12 +131,19 @@ namespace MainExample.Utils
                 }).SingleInstance();
 
 
+            #endregion
 
-            //VIEWMODEL------------------------------------------------------------------------------
+
+
+            #region VIEWMODELS
+
             builder.RegisterType<AddingTrainFormViewModel>().InstancePerDependency();
 
+            #endregion
 
 
+
+            #region FORMS
 
             //ФОРМЫ----------------------------------------------------------------------------------
             builder.RegisterType<MainForm>().InstancePerDependency();
@@ -146,6 +161,8 @@ namespace MainExample.Utils
             builder.RegisterType<TechnicalMessageForm>().InstancePerDependency();
             builder.RegisterType<OperativeTableAddItemForm>().InstancePerDependency();
             builder.RegisterType<TrainTableOperativeForm>().InstancePerDependency();
+
+            #endregion
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()
             //    .WithParameter(new ResolvedParameter(
