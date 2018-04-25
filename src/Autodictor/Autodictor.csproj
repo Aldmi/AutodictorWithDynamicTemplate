@@ -338,11 +338,11 @@
     <Compile Include="СписокВоспроизведения.Designer.cs">
       <DependentUpon>СписокВоспроизведения.cs</DependentUpon>
     </Compile>
-    <Compile Include="СписокСтанций.cs">
+    <Compile Include="СписокСтанцийForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="СписокСтанций.Designer.cs">
-      <DependentUpon>СписокСтанций.cs</DependentUpon>
+    <Compile Include="СписокСтанцийForm.Designer.cs">
+      <DependentUpon>СписокСтанцийForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ФормаЗаписиСообщения.cs">
       <SubType>Form</SubType>
@@ -449,8 +449,8 @@
     <EmbeddedResource Include="СписокВоспроизведения.resx">
       <DependentUpon>СписокВоспроизведения.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="СписокСтанций.resx">
-      <DependentUpon>СписокСтанций.cs</DependentUpon>
+    <EmbeddedResource Include="СписокСтанцийForm.resx">
+      <DependentUpon>СписокСтанцийForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ФормаЗаписиСообщения.resx">
       <DependentUpon>ФормаЗаписиСообщения.cs</DependentUpon>

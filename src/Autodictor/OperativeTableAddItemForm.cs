@@ -392,18 +392,18 @@ namespace MainExample
 
         private void btnРедактировать_Click(object sender, EventArgs e)
         {
-            string СписокВыбранныхСтанций = "";
-            for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
-                СписокВыбранныхСтанций += lB_ПоСтанциям.Items[i].ToString() + ",";
+            //string СписокВыбранныхСтанций = "";
+            //for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
+            //    СписокВыбранныхСтанций += lB_ПоСтанциям.Items[i].ToString() + ",";
 
-            СписокСтанций списокСтанций = new СписокСтанций(СписокВыбранныхСтанций, СтанцииВыбранногоНаправления);
-            if (списокСтанций.ShowDialog() == DialogResult.OK)
-            {
-                List<string> РезультирующиеСтанции = списокСтанций.ПолучитьСписокВыбранныхСтанций();
-                lB_ПоСтанциям.Items.Clear();
-                foreach (var res in РезультирующиеСтанции)
-                    lB_ПоСтанциям.Items.Add(res);
-            }
+            //СписокСтанцийForm списокСтанцийForm = new СписокСтанцийForm(СписокВыбранныхСтанций, СтанцииВыбранногоНаправления);
+            //if (списокСтанцийForm.ShowDialog() == DialogResult.OK)
+            //{
+            //    List<string> РезультирующиеСтанции = списокСтанцийForm.ПолучитьСписокВыбранныхСтанций();
+            //    lB_ПоСтанциям.Items.Clear();
+            //    foreach (var res in РезультирующиеСтанции)
+            //        lB_ПоСтанциям.Items.Add(res);
+            //}
         }
 
 

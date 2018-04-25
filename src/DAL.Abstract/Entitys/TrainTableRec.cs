@@ -36,7 +36,10 @@ namespace DAL.Abstract.Entitys
         public string Num { get; set; }                                        //Номер поезда
         public string Num2 { get; set; }                                       //Номер поезда 2 (для транзита)
         public string Name { get; set; }                                       //Название поезда
+
         public string Примечание { get; set; }
+        public Route Route { get; set; }                                        //Маршрут (список станций)
+
         public bool Active { get; set; }                                        //активность, отметка галочкой
         public bool Автомат { get; set; }                                       // true - поезд обрабатывается в автомате.
         public bool IsScoreBoardOutput { get; set; }                            // Вывод на табло. true. (Работает если указанн Contrains SendingDataLimit)

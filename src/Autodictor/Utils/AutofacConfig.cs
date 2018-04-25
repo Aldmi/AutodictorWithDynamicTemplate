@@ -161,8 +161,11 @@ namespace MainExample.Utils
             builder.RegisterType<TechnicalMessageForm>().InstancePerDependency();
             builder.RegisterType<OperativeTableAddItemForm>().InstancePerDependency();
             builder.RegisterType<TrainTableOperativeForm>().InstancePerDependency();
-
+            builder.RegisterType<СписокСтанцийForm>().InstancePerDependency();
+            
             #endregion
+
+
 
             //builder.RegisterType<XmlSerializeTableRecRepository>()
             //    .WithParameter(new ResolvedParameter(

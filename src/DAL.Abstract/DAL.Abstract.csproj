@@ -49,6 +49,7 @@
     <Compile Include="Entitys\Direction.cs" />
     <Compile Include="Entitys\EntityBase.cs" />
     <Compile Include="Entitys\Pathway.cs" />
+    <Compile Include="Entitys\Route.cs" />
     <Compile Include="Entitys\SoundRecord.cs" />
     <Compile Include="Entitys\Station.cs" />
     <Compile Include="Entitys\TrainTableRec.cs" />

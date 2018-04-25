@@ -33,6 +33,7 @@ namespace MainExample
 
         public TrainTableRec TrainRec;
         private readonly TrainRecService _trainRecService;
+        private readonly Func<Route, List<Station>, СписокСтанцийForm> _списокСтанцийFormFactory;
         private string[] SelectedDestinationStations { get; set; } = new string[0];
 
         private List<ActionTrainViewModel> ActionTrainsVm { get; } = new List<ActionTrainViewModel>();
@@ -44,11 +45,14 @@ namespace MainExample
 
 
 
+
+
         #region ctor
 
-        public EditTrainTableRecForm(TrainRecService trainRecService, TrainTableRec trainRec)
+        public EditTrainTableRecForm(TrainRecService trainRecService, Func<Route, List<Station>, СписокСтанцийForm> списокСтанцийFormFactory, TrainTableRec trainRec)
         {
             _trainRecService = trainRecService;
+            _списокСтанцийFormFactory = списокСтанцийFormFactory;
             TrainRec = trainRec;
 
             InitializeComponent();
@@ -259,7 +263,6 @@ namespace MainExample
             dTPСледования.Value = TrainRec.FollowingTime ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             cBБлокировка.Checked = !TrainRec.Active;
 
-            //TODO:trainRec.Примечание Сделать классом "StopTheTrain"
             if (TrainRec.Примечание.Contains("Со всеми остановками"))
             {
                 rBСоВсемиОстановками.Checked = true;
@@ -658,11 +661,10 @@ namespace MainExample
             for (int i = 0; i < lVСписокСтанций.Items.Count; i++)
                 списокВыбранныхСтанций += lVСписокСтанций.Items[i].Text + ",";
 
-            СписокСтанций списокСтанций = new СписокСтанций(списокВыбранныхСтанций, SelectedDestinationStations);
-
-            if (списокСтанций.ShowDialog() == DialogResult.OK)
+            var списокСтанцийForm= _списокСтанцийFormFactory(TrainRec.Route, TrainRec.Direction.Stations);
+            if (списокСтанцийForm.ShowDialog() == DialogResult.OK)
             {
-                List<string> результирующиеСтанции = списокСтанций.ПолучитьСписокВыбранныхСтанций();
+                List<string> результирующиеСтанции = списокСтанцийForm.ПолучитьСписокВыбранныхСтанций();
                 lVСписокСтанций.Items.Clear();
                 foreach (var res in результирующиеСтанции)
                     lVСписокСтанций.Items.Add(res);

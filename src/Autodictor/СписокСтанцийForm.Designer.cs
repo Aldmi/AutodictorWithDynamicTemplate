@@ -1,6 +1,6 @@
 ﻿namespace MainExample
 {
-    partial class СписокСтанций
+    partial class СписокСтанцийForm
     {
         /// <summary>
         /// Required designer variable.
@@ -174,7 +174,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(5);
-            this.Name = "СписокСтанций";
+            this.Name = "СписокСтанцийForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Выбор списка станций";
             this.TopMost = true;

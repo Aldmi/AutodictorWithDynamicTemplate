@@ -1,28 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
+using DAL.Abstract.Entitys;
+
 
 namespace MainExample
 {
-    public partial class СписокСтанций : Form
+    public partial class СписокСтанцийForm : Form
     {
-        private readonly string[] _станцииВыбранногоНаправления;
+        private readonly string[] _станцииВыбранногоНаправления;//УБРАТЬ
+
+        #region Field
+
+        private readonly Route _route;
+        private readonly List<Station> _stations;
+
+        #endregion
 
 
 
-        public СписокСтанций(string списокСтанций, string[] станцииВыбранногоНаправления)
+
+        public СписокСтанцийForm(Route route, List<Station> stations)
         {
-            _станцииВыбранногоНаправления = станцииВыбранногоНаправления;
+            _route = route;
+            _stations = stations;
+
             InitializeComponent();
 
-            string[] выбранныеСтанции = списокСтанций.Split(',');
+            //string[] выбранныеСтанции = списокСтанций.Split(',');
 
-            foreach (var станция in станцииВыбранногоНаправления)
-                if (выбранныеСтанции.Contains(станция))
-                    lVВыбранныеСтанции.Items.Add(станция);
-                else
-                    lVОбщийСписок.Items.Add(станция);
+            //foreach (var станция in станцииВыбранногоНаправления)
+            //    if (выбранныеСтанции.Contains(станция))
+            //        lVВыбранныеСтанции.Items.Add(станция);
+            //    else
+            //        lVОбщийСписок.Items.Add(станция);
         }
 
 
