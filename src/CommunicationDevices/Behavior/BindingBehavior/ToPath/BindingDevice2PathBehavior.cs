@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CommunicationDevices.ConditionsHandler;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
 using CommunicationDevices.Settings;
@@ -131,7 +132,7 @@ namespace CommunicationDevices.Behavior.BindingBehavior.ToPath
         /// </summary>
         public int? GetCountDataTake()
         {
-            return Conditions?.LimitNumberRows;
+            return null; //Conditions?.LimitNumberRows;
         }
 
 

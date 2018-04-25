@@ -127,21 +127,6 @@ namespace DAL.Abstract.Entitys
         public string СтанцияНазначения { get; set; }
     }
 
-    public struct СостояниеФормируемогоСообщенияИШаблон
-    {
-        public int Id;                            // порядковый номер шаблона
-        public int SoundRecordId;                 // строка расписания к которой принадлежит данный шаблон
-        public bool Активность;
-        public Priority ПриоритетГлавный;
-        public PriorityPrecise ПриоритетВторостепенный;
-        public bool Воспроизведен;                //???
-        public SoundRecordStatus СостояниеВоспроизведения;
-        public int ПривязкаКВремени;              // 0 - приб. 1- отпр
-        public int ВремяСмещения;
-        public string НазваниеШаблона;
-        public string Шаблон;
-        public List<NotificationLanguage> ЯзыкиОповещения;
-    };
 
     //ВМЕСТО "СостояниеФормируемогоСообщенияИШаблон"
     public class ActionTrainDynamic
@@ -165,15 +150,4 @@ namespace DAL.Abstract.Entitys
         public SoundRecordStatus СостояниеВоспроизведения;
         public bool Активность;
     };
-
-    public struct ОписаниеСобытия
-    {
-        public DateTime Время;
-        public string Описание;
-        public byte НомерСписка;            // 0 - Динамические сообщения, 1 - статические звуковые сообщения
-        public string Ключ;
-        public byte СостояниеСтроки;        // 0 - Выключена, 1 - движение поезда (динамика), 2 - статическое сообщение, 3 - аварийное сообщение, 4 - воспроизведение, 5 - воспроизведЕН
-        public string ШаблонИлиСообщение;   //текст стат. сообщения, или номер шаблона в динам. сообщении (для Субтитров)
-    };
-
 }

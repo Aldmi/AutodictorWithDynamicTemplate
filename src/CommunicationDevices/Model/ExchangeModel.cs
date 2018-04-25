@@ -217,7 +217,7 @@ namespace CommunicationDevices.Model
                 byte maxCountFaildRespowne;
 
                 XmlBindingSetting binding = null;
-                XmlConditionsSetting contrains = null;
+                XmlConditionsSetting conditions = null;
                 XmlPagingSetting paging = null;
                 XmlCountRowSetting countRow = null;
                 XmlPathPermissionSetting pathPermission = null;
@@ -231,7 +231,7 @@ namespace CommunicationDevices.Model
 
                 if (xmlDeviceSp.SpecialDictionary.ContainsKey("Contrains"))
                 {
-                    contrains = xmlDeviceSp.SpecialDictionary["Contrains"] as XmlConditionsSetting;
+                    conditions = xmlDeviceSp.SpecialDictionary["Contrains"] as XmlConditionsSetting;
                 }
 
                 if (xmlDeviceSp.SpecialDictionary.ContainsKey("Paging"))
@@ -282,7 +282,7 @@ namespace CommunicationDevices.Model
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
                         {
-                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions);
+                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions);
                             Binding2PathBehaviors.Add(bindingBeh);
                             bindingBeh.InitializeDevicePathInfo();                       //Вывод номера пути в пустом сообщении
                         }
@@ -308,7 +308,7 @@ namespace CommunicationDevices.Model
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
                         {
-                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions);
+                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions);
                             Binding2PathBehaviors.Add(bindingBeh);
                             bindingBeh.InitializeDevicePathInfo();                      //Вывод номера пути в пустом сообщении
                         }
@@ -344,12 +344,12 @@ namespace CommunicationDevices.Model
 
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
-                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions));
+                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions));
 
                         //создание поведения привязка табло к главному расписанию
                         if (binding.BindingType == BindingType.ToGeneral)
                         {
-                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                             //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                             if (!Binding2GeneralSchedules.Last().IsPaging)
                             {
@@ -385,13 +385,13 @@ namespace CommunicationDevices.Model
 
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
-                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions));
+                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions));
 
 
                         //создание поведения привязка табло к главному расписанию
                         if (binding.BindingType == BindingType.ToGeneral)
                         {
-                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                             //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                             if (!Binding2GeneralSchedules.Last().IsPaging)
                             {
@@ -511,7 +511,7 @@ namespace CommunicationDevices.Model
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
                         {
-                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions);
+                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions);
                             Binding2PathBehaviors.Add(bindingBeh);
                             // bindingBeh.InitializeDevicePathInfo();                      //Вывод номера пути в пустом сообщении
                         }
@@ -519,7 +519,7 @@ namespace CommunicationDevices.Model
                         //создание поведения привязка табло к главному расписанию
                         if (binding.BindingType == BindingType.ToGeneral)
                         {
-                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                             //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                             if (!Binding2GeneralSchedules.Last().IsPaging)
                             {
@@ -553,7 +553,7 @@ namespace CommunicationDevices.Model
                 byte maxCountFaildRespowne;
 
                 XmlBindingSetting binding = null;
-                XmlConditionsSetting contrains = null;
+                XmlConditionsSetting conditions = null;
                 XmlPagingSetting paging = null;
                 XmlCountRowSetting countRow = null;
                 XmlPathPermissionSetting pathPermission = null;
@@ -565,7 +565,7 @@ namespace CommunicationDevices.Model
 
                 if (xmlDevicePc.SpecialDictionary.ContainsKey("Contrains"))
                 {
-                    contrains = xmlDevicePc.SpecialDictionary["Contrains"] as XmlConditionsSetting;
+                    conditions = xmlDevicePc.SpecialDictionary["Contrains"] as XmlConditionsSetting;
                 }
 
                 if (xmlDevicePc.SpecialDictionary.ContainsKey("Paging"))
@@ -613,14 +613,14 @@ namespace CommunicationDevices.Model
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
                         {
-                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions));
+                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions));
                             DeviceTables.Last().AddCycleFunc(); //добавим все функции циклического опроса
                         }
 
                         //создание поведения привязка табло к главному расписанию
                         if (binding.BindingType == BindingType.ToGeneral)
                         {
-                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging.CountPage, paging.TimePaging));
+                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging.CountPage, paging.TimePaging));
                             //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                             if (!Binding2GeneralSchedules.Last().IsPaging)
                             {
@@ -657,7 +657,7 @@ namespace CommunicationDevices.Model
                 byte maxCountFaildRespowne;
 
                 XmlBindingSetting binding = null;
-                XmlConditionsSetting contrains = null;
+                XmlConditionsSetting conditions = null;
                 XmlPagingSetting paging = null;
                 XmlCountRowSetting countRow = null;
                 XmlPathPermissionSetting pathPermission = null;
@@ -670,7 +670,7 @@ namespace CommunicationDevices.Model
 
                 if (xmlDeviceTcpIp.SpecialDictionary.ContainsKey("Contrains"))
                 {
-                    contrains = xmlDeviceTcpIp.SpecialDictionary["Contrains"] as XmlConditionsSetting;
+                    conditions = xmlDeviceTcpIp.SpecialDictionary["Contrains"] as XmlConditionsSetting;
                 }
 
                 if (xmlDeviceTcpIp.SpecialDictionary.ContainsKey("Paging"))
@@ -727,12 +727,12 @@ namespace CommunicationDevices.Model
 
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
-                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions));
+                            Binding2PathBehaviors.Add(new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions));
 
                         //создание поведения привязка табло к главному расписанию
                         if (binding.BindingType == BindingType.ToGeneral)
                         {
-                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                             //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                             if (!Binding2GeneralSchedules.Last().IsPaging)
                             {
@@ -826,7 +826,7 @@ namespace CommunicationDevices.Model
                         //создание поведения привязка табло к пути.
                         if (binding.BindingType == BindingType.ToPath)
                         {
-                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions);
+                            var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions);
                             Binding2PathBehaviors.Add(bindingBeh);
                             // bindingBeh.InitializeDevicePathInfo();                      //Вывод номера пути в пустом сообщении
                         }
@@ -834,7 +834,7 @@ namespace CommunicationDevices.Model
                         //создание поведения привязка табло к главному расписанию
                         if (binding.BindingType == BindingType.ToGeneral)
                         {
-                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                            Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                             //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                             if (!Binding2GeneralSchedules.Last().IsPaging)
                             {
@@ -863,7 +863,7 @@ namespace CommunicationDevices.Model
             foreach (var xmlDeviceHttp in xmlDeviceHttpSettings)
             {
                 XmlBindingSetting binding = null;
-                XmlConditionsSetting contrains = null;
+                XmlConditionsSetting conditions = null;
                 XmlPagingSetting paging = null;
                 XmlPathPermissionSetting pathPermission = null;
                 XmlProviderTypeSetting providerType = null;
@@ -875,7 +875,7 @@ namespace CommunicationDevices.Model
 
                 if (xmlDeviceHttp.SpecialDictionary.ContainsKey("Contrains"))
                 {
-                    contrains = xmlDeviceHttp.SpecialDictionary["Contrains"] as XmlConditionsSetting;
+                    conditions = xmlDeviceHttp.SpecialDictionary["Contrains"] as XmlConditionsSetting;
                 }
 
                 if (xmlDeviceHttp.SpecialDictionary.ContainsKey("Paging"))
@@ -981,7 +981,7 @@ namespace CommunicationDevices.Model
                 //создание поведения привязка табло к пути.
                 if (binding.BindingType == BindingType.ToPath)
                 {
-                    var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions);
+                    var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions);
                     Binding2PathBehaviors.Add(bindingBeh);
                     bindingBeh.InitializeDevicePathInfo();     //Вывод номера пути в пустом сообщении
                     DeviceTables.Last().AddCycleFunc();        //Добавим все функции циклического опроса          
@@ -990,7 +990,7 @@ namespace CommunicationDevices.Model
                 //создание поведения привязка табло к главному расписанию
                 if (binding.BindingType == BindingType.ToGeneral)
                 {
-                    Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                    Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                     //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                     if (!Binding2GeneralSchedules.Last().IsPaging)
                     {
@@ -1005,7 +1005,7 @@ namespace CommunicationDevices.Model
                 //создание поведения привязка табло к Изменениям
                 if (binding.BindingType == BindingType.ToChange)
                 {
-                    Binding2ChangesSchedules.Add(new Binding2ChangesBehavior(DeviceTables.Last(),  binding.HourDepth, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                    Binding2ChangesSchedules.Add(new Binding2ChangesBehavior(DeviceTables.Last(),  binding.HourDepth, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                     //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                     if (!Binding2ChangesSchedules.Last().IsPaging)
                     {
@@ -1036,7 +1036,7 @@ namespace CommunicationDevices.Model
             foreach (var xmlDeviceSibWay in xmlDeviceSibWaySettings)
             {
                 XmlBindingSetting binding = null;
-                XmlConditionsSetting contrains = null;
+                XmlConditionsSetting conditions = null;
                 XmlPagingSetting paging = null;
 
                 if (xmlDeviceSibWay.SpecialDictionary.ContainsKey("Binding"))
@@ -1046,7 +1046,7 @@ namespace CommunicationDevices.Model
 
                 if (xmlDeviceSibWay.SpecialDictionary.ContainsKey("Contrains"))
                 {
-                    contrains = xmlDeviceSibWay.SpecialDictionary["Contrains"] as XmlConditionsSetting;
+                    conditions = xmlDeviceSibWay.SpecialDictionary["Contrains"] as XmlConditionsSetting;
                 }
 
                 if (xmlDeviceSibWay.SpecialDictionary.ContainsKey("Paging"))
@@ -1072,7 +1072,7 @@ namespace CommunicationDevices.Model
                 //создание поведения привязка табло к пути.
                 if (binding.BindingType == BindingType.ToPath)
                 {
-                    var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, contrains?.Conditions);
+                    var bindingBeh = new Binding2PathBehavior(DeviceTables.Last(), binding.PathNumbers, conditions?.Conditions);
                     Binding2PathBehaviors.Add(bindingBeh);
                     bindingBeh.InitializeDevicePathInfo();     //Вывод номера пути в пустом сообщении
                     DeviceTables.Last().AddCycleFunc();        //Добавим все функции циклического опроса          
@@ -1081,7 +1081,7 @@ namespace CommunicationDevices.Model
                 //создание поведения привязка табло к главному расписанию
                 if (binding.BindingType == BindingType.ToGeneral)
                 {
-                    Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                    Binding2GeneralSchedules.Add(new BindingDevice2GeneralShBehavior(DeviceTables.Last(), binding.SourceLoad, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                     //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                     if (!Binding2GeneralSchedules.Last().IsPaging)
                     {
@@ -1096,7 +1096,7 @@ namespace CommunicationDevices.Model
                 //создание поведения привязка табло к Изменениям
                 if (binding.BindingType == BindingType.ToChange)
                 {
-                    Binding2ChangesSchedules.Add(new Binding2ChangesBehavior(DeviceTables.Last(), binding.HourDepth, contrains?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
+                    Binding2ChangesSchedules.Add(new Binding2ChangesBehavior(DeviceTables.Last(), binding.HourDepth, conditions?.Conditions, paging?.CountPage ?? 0, paging?.TimePaging ?? 0));
                     //Если отключен пагинатор, то работаем по таймеру ExchangeBehavior ус-ва.
                     if (!Binding2ChangesSchedules.Last().IsPaging)
                     {

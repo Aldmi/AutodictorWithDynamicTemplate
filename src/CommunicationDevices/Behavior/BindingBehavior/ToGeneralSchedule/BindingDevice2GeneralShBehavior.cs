@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CommunicationDevices.Behavior.BindingBehavior.Helpers;
+using CommunicationDevices.ConditionsHandler;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
 using CommunicationDevices.Settings;
@@ -98,9 +99,6 @@ namespace CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule
         }
 
 
-
-
-
         /// <summary>
         /// Проверка ограничения привязки.
         /// </summary>
@@ -121,7 +119,7 @@ namespace CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule
         /// </summary>
         public int? GetCountDataTake()
         {
-            return Conditions?.LimitNumberRows;
+            return null; //Conditions?.LimitNumberRows;
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CommunicationDevices.Behavior.BindingBehavior.Helpers;
+using CommunicationDevices.ConditionsHandler;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
 using CommunicationDevices.Settings;
@@ -125,7 +126,7 @@ namespace CommunicationDevices.Behavior.BindingBehavior.ToChange
         /// </summary>
         public int? GetCountDataTake()
         {
-            return Conditions?.LimitNumberRows;
+            return null; //Conditions?.LimitNumberRows;
         }
 
         #endregion
