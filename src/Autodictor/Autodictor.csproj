@@ -86,6 +86,7 @@
     <Reference Include="DevExpress.Data.v14.2, Version=14.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Printing.v14.2.Core, Version=14.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Utils.v14.2, Version=14.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraBars.v14.2, Version=14.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v14.2, Version=14.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraGrid.v14.2, Version=14.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraLayout.v14.2, Version=14.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
@@ -274,9 +275,10 @@
     </Compile>
     <Compile Include="UIHelpers\ControlExtensions.cs" />
     <Compile Include="Utils\AutofacConfig.cs" />
-    <Compile Include="ViewModel\ActionTrainViewModel.cs" />
+    <Compile Include="ViewModel\ActionTrainFormVM\ActionTrainViewModel.cs" />
     <Compile Include="ViewModel\AddingTrainFormVM\AddingTrainFormViewModel.cs" />
     <Compile Include="ViewModel\AddingTrainFormVM\TrainRecAddingVm.cs" />
+    <Compile Include="ViewModel\EditRouteFormVM\EditListStationFormViewModel.cs" />
     <Compile Include="КарточкаСтатическогоЗвуковогоСообщенияForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -338,11 +340,11 @@
     <Compile Include="СписокВоспроизведения.Designer.cs">
       <DependentUpon>СписокВоспроизведения.cs</DependentUpon>
     </Compile>
-    <Compile Include="СписокСтанцийForm.cs">
+    <Compile Include="EditListStationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="СписокСтанцийForm.Designer.cs">
-      <DependentUpon>СписокСтанцийForm.cs</DependentUpon>
+    <Compile Include="EditListStationForm.Designer.cs">
+      <DependentUpon>EditListStationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ФормаЗаписиСообщения.cs">
       <SubType>Form</SubType>
@@ -449,8 +451,8 @@
     <EmbeddedResource Include="СписокВоспроизведения.resx">
       <DependentUpon>СписокВоспроизведения.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="СписокСтанцийForm.resx">
-      <DependentUpon>СписокСтанцийForm.cs</DependentUpon>
+    <EmbeddedResource Include="EditListStationForm.resx">
+      <DependentUpon>EditListStationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ФормаЗаписиСообщения.resx">
       <DependentUpon>ФормаЗаписиСообщения.cs</DependentUpon>

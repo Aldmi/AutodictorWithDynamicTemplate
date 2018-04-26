@@ -16,6 +16,7 @@ using DAL.NoSqlLiteDb.Service;
 using DAL.XmlRaw.Repository;
 using MainExample.Services;
 using MainExample.ViewModel.AddingTrainFormVM;
+using MainExample.ViewModel.EditRouteFormVM;
 using AuthenticationService = AutodictorBL.Services.AuthenticationService;
 
 
@@ -138,7 +139,8 @@ namespace MainExample.Utils
             #region VIEWMODELS
 
             builder.RegisterType<AddingTrainFormViewModel>().InstancePerDependency();
-
+            builder.RegisterType<EditListStationFormViewModel>().InstancePerDependency();
+            
             #endregion
 
 
@@ -161,7 +163,7 @@ namespace MainExample.Utils
             builder.RegisterType<TechnicalMessageForm>().InstancePerDependency();
             builder.RegisterType<OperativeTableAddItemForm>().InstancePerDependency();
             builder.RegisterType<TrainTableOperativeForm>().InstancePerDependency();
-            builder.RegisterType<СписокСтанцийForm>().InstancePerDependency();
+            builder.RegisterType<EditListStationForm>().InstancePerDependency();
             
             #endregion
 

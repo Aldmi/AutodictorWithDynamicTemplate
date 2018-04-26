@@ -3,8 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DAL.Abstract.Entitys;
 
-
-namespace MainExample.ViewModel
+namespace MainExample.ViewModel.ActionTrainFormVM
 {
     public enum ActionTypeViewModel
     {

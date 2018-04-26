@@ -12,6 +12,8 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using MainExample.ViewModel;
+using MainExample.ViewModel.ActionTrainFormVM;
+using MainExample.ViewModel.EditRouteFormVM;
 
 
 namespace MainExample
@@ -33,12 +35,15 @@ namespace MainExample
 
         public TrainTableRec TrainRec;
         private readonly TrainRecService _trainRecService;
-        private readonly Func<Route, List<Station>, СписокСтанцийForm> _списокСтанцийFormFactory;
-        private string[] SelectedDestinationStations { get; set; } = new string[0];
+
+        private readonly Func<Route, List<Station>, EditListStationForm> _editListStationFormFactory;
+        private List<Station> CurrentDirectionStations { get; set; } = new List<Station>();
 
         private List<ActionTrainViewModel> ActionTrainsVm { get; } = new List<ActionTrainViewModel>();
         private List<ActionTrainViewModel> ActionTrainsSelectedTypeVm { get; set; } = new List<ActionTrainViewModel>();
         private List<ActionTrainViewModel> ActionEmergencyVm { get; } = new List<ActionTrainViewModel>();
+
+        private Route RouteVm { get; set; }
 
         #endregion
 
@@ -48,12 +53,17 @@ namespace MainExample
 
 
         #region ctor
-
-        public EditTrainTableRecForm(TrainRecService trainRecService, Func<Route, List<Station>, СписокСтанцийForm> списокСтанцийFormFactory, TrainTableRec trainRec)
+     //   public EditTrainTableRecForm(TrainRecService trainRecService, Func<List<Station>, List<Station>, EditListStationForm> editListStationFormFactory, TrainTableRec trainRec)
+        public EditTrainTableRecForm(TrainRecService trainRecService, Func<Route, List<Station>, EditListStationForm> editListStationFormFactory, TrainTableRec trainRec)
         {
             _trainRecService = trainRecService;
-            _списокСтанцийFormFactory = списокСтанцийFormFactory;
+            _editListStationFormFactory = editListStationFormFactory;
             TrainRec = trainRec;
+
+            //DEBUG------------------
+            if(TrainRec.Route == null)
+              TrainRec.Route = new Route {Stations = _trainRecService.GetDirections().FirstOrDefault().Stations.Take(20).ToList(), RouteType = RouteType.WithAllStops};
+
 
             InitializeComponent();
         }
@@ -263,31 +273,26 @@ namespace MainExample
             dTPСледования.Value = TrainRec.FollowingTime ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             cBБлокировка.Checked = !TrainRec.Active;
 
-            if (TrainRec.Примечание.Contains("Со всеми остановками"))
+            //Станции маршрута
+            RouteVm = TrainRec.Route;
+            lbRoute.DataSource = RouteVm?.Stations;
+            lbRoute.DisplayMember = "NameRu";
+
+            if (TrainRec.Route.RouteType == RouteType.WithAllStops)
             {
                 rBСоВсемиОстановками.Checked = true;
             }
-            else if (TrainRec.Примечание.Contains("Без остановок"))
+            else if (TrainRec.Route.RouteType == RouteType.None)
             {
                 rBБезОстановок.Checked = true;
             }
-            else if (TrainRec.Примечание.Contains("С остановками: "))
+            else if (TrainRec.Route.RouteType == RouteType.WithStopsAt)
             {
                 rBСОстановкамиНа.Checked = true;
-                string Примечание = TrainRec.Примечание.Replace("С остановками: ", "");
-                string[] СписокСтанций = Примечание.Split(',');
-                foreach (var Станция in СписокСтанций)
-                    if (SelectedDestinationStations.Contains(Станция))
-                        lVСписокСтанций.Items.Add(Станция);
             }
-            else if (TrainRec.Примечание.Contains("Кроме: "))
+            else if (TrainRec.Route.RouteType == RouteType.WithStopsExcept)
             {
                 rBСОстановкамиКроме.Checked = true;
-                string Примечание = TrainRec.Примечание.Replace("Кроме: ", "");
-                string[] СписокСтанций = Примечание.Split(',');
-                foreach (var Станция in СписокСтанций)
-                    if (SelectedDestinationStations.Contains(Станция))
-                        lVСписокСтанций.Items.Add(Станция);
             }
             else
             {
@@ -378,7 +383,7 @@ namespace MainExample
         }
 
 
-        private void ApplyChangedUi2Model()
+        private void Ui2Model()
         {
             TrainRec.Num = tBНомерПоезда.Text;
             TrainRec.Num2 = tBНомерПоездаДоп.Text;
@@ -459,37 +464,26 @@ namespace MainExample
 
             TrainRec.FollowingTime = dTPСледования.Value;
 
-            if (rBНеОповещать.Checked)
+            TrainRec.Route = RouteVm;
+            if (rBСоВсемиОстановками.Checked)
             {
-                TrainRec.Примечание = "";
-            }
-            else if (rBСоВсемиОстановками.Checked)
-            {
-                TrainRec.Примечание = "Со всеми остановками";
+                TrainRec.Route.RouteType = RouteType.WithAllStops;
             }
             else if (rBБезОстановок.Checked)
             {
-                TrainRec.Примечание = "Без остановок";
+                TrainRec.Route.RouteType = RouteType.None;
             }
             else if (rBСОстановкамиНа.Checked)
             {
-                TrainRec.Примечание = "С остановками: ";
-                for (int i = 0; i < lVСписокСтанций.Items.Count; i++)
-                    TrainRec.Примечание += lVСписокСтанций.Items[i].SubItems[0].Text + ",";
-
-                if (TrainRec.Примечание.Length > 10)
-                    if (TrainRec.Примечание[TrainRec.Примечание.Length - 1] == ',')
-                        TrainRec.Примечание = TrainRec.Примечание.Remove(TrainRec.Примечание.Length - 1);
+                TrainRec.Route.RouteType = RouteType.WithStopsAt;
             }
             else if (rBСОстановкамиКроме.Checked)
             {
-                TrainRec.Примечание = "Кроме: ";
-                for (int i = 0; i < lVСписокСтанций.Items.Count; i++)
-                    TrainRec.Примечание += lVСписокСтанций.Items[i].SubItems[0].Text + ",";
-
-                if (TrainRec.Примечание.Length > 10)
-                    if (TrainRec.Примечание[TrainRec.Примечание.Length - 1] == ',')
-                        TrainRec.Примечание = TrainRec.Примечание.Remove(TrainRec.Примечание.Length - 1);
+                TrainRec.Route.RouteType = RouteType.WithStopsExcept;
+            }
+            else
+            {
+                TrainRec.Route.RouteType = RouteType.NotNotify;
             }
 
             TrainRec.DaysAlias = tb_ДниСледованияAlias.Text;
@@ -613,7 +607,7 @@ namespace MainExample
                 btnАвтогенерацияШаблонов_Click(null, EventArgs.Empty);
             }
 
-            ApplyChangedUi2Model();
+            Ui2Model();
             DialogResult = DialogResult.OK;
         }
 
@@ -656,18 +650,11 @@ namespace MainExample
 
 
         private void btnРедактировать_Click(object sender, EventArgs e)
-        {
-            string списокВыбранныхСтанций = "";
-            for (int i = 0; i < lVСписокСтанций.Items.Count; i++)
-                списокВыбранныхСтанций += lVСписокСтанций.Items[i].Text + ",";
-
-            var списокСтанцийForm= _списокСтанцийFormFactory(TrainRec.Route, TrainRec.Direction.Stations);
-            if (списокСтанцийForm.ShowDialog() == DialogResult.OK)
+        {     
+            var editRouteForm= _editListStationFormFactory(RouteVm, CurrentDirectionStations);
+            if (editRouteForm.ShowDialog() == DialogResult.OK)
             {
-                List<string> результирующиеСтанции = списокСтанцийForm.ПолучитьСписокВыбранныхСтанций();
-                lVСписокСтанций.Items.Clear();
-                foreach (var res in результирующиеСтанции)
-                    lVСписокСтанций.Items.Add(res);
+                RouteVm.Stations= editRouteForm.EditListStationFormViewModel.RouteStations;
             }
         }
 
@@ -844,18 +831,24 @@ namespace MainExample
                 var directions = _trainRecService.GetDirections().ToList();
                 if (directions.Any())
                 {
-                    SelectedDestinationStations = directions[selectedIndex].Stations?.Select(st => st.NameRu).ToArray();
-                    if (SelectedDestinationStations != null && SelectedDestinationStations.Any())
+                    CurrentDirectionStations = directions[selectedIndex].Stations;
+                    var stationNames = CurrentDirectionStations?.Select(st => st.NameRu).ToArray();
+                    if (stationNames != null && stationNames.Any())
                     {
                         cBОткуда.Items.Clear();
                         cBКуда.Items.Clear();
-                        cBОткуда.Items.AddRange(SelectedDestinationStations);
-                        cBКуда.Items.AddRange(SelectedDestinationStations);
+                        cBОткуда.Items.AddRange(stationNames);
+                        cBКуда.Items.AddRange(stationNames);
                     }
                 }
 
                 rBНеОповещать.Checked = true;
-                lVСписокСтанций.Items.Clear();
+
+                if (RouteVm != null)
+                {
+                    RouteVm.Stations.Clear();
+                    RouteVm.RouteType = RouteType.None;
+                }
             }
         }
 

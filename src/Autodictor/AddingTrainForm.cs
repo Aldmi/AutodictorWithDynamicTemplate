@@ -5,7 +5,6 @@ using DAL.Abstract.Entitys;
 using MainExample.ViewModel.AddingTrainFormVM;
 
 
-
 namespace MainExample
 {
     public partial class AddingTrainForm : Form
@@ -16,8 +15,6 @@ namespace MainExample
         public SoundRecord RecordResult { get; private set; }
 
         #endregion
-
-
 
 
 

@@ -10,7 +10,8 @@ namespace DAL.Abstract.Entitys
         None,                                //без остановок
         WithStopsAt,                         //с остановками НА
         WithStopsExcept,                     //с остановками КРОМЕ
-        WithAllStops                         //со всеми остановками
+        WithAllStops,                        //со всеми остановками
+        NotNotify                            //не оповещаьт   
     }
 
 
