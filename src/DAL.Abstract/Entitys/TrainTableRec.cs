@@ -10,26 +10,14 @@ namespace DAL.Abstract.Entitys
     /// <summary>
     /// нумерация вагонов
     /// </summary>
-    public enum WagonsNumbering
-    {
-        None,
-        Head,
-        Rear   
-    };
+    public enum WagonsNumbering { None, Head, Rear };
 
     /// <summary>
     /// Классификация поезда
     /// </summary>
-    public enum Event
-    {
-        None,
-        Arrival,
-        Departure,
-        Transit
-    };
+    public enum Event { None, Arrival, Departure, Transit };
 
 
-    //!!!!!! НОВАЯ РЕАЛИЗАЦИЯ
     public class TrainTableRec
     {
         public int Id { get; set; }
@@ -37,7 +25,7 @@ namespace DAL.Abstract.Entitys
         public string Num2 { get; set; }                                       //Номер поезда 2 (для транзита)
         public string Name { get; set; }                                       //Название поезда
 
-        public string Примечание { get; set; }
+        public string Примечание { get; set; }                                  //!!!! удалить
         public Route Route { get; set; }                                        //Маршрут (список станций)
 
         public bool Active { get; set; }                                        //активность, отметка галочкой

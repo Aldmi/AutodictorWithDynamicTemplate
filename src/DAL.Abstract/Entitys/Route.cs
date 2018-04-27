@@ -4,7 +4,6 @@ using System.Text;
 
 namespace DAL.Abstract.Entitys
 {
-
     public enum RouteType
     {
         None,                                //без остановок
