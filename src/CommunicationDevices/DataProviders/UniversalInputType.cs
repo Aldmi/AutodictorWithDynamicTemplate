@@ -23,8 +23,10 @@ namespace CommunicationDevices.DataProviders
         public string PathNumber { get; set; }                       //Номер пути
         public string PathNumberWithoutAutoReset { get; set; }       //Номер пути Без Автосброса
 
-        public string Event { get; set; }                            //!!!!! Событие (ОТПР./ПРИБ./СТОЯНКА)
-        public Classification Classification { get; set; }
+        public string EventOld { get; set; }                         //!!!!! Событие (ОТПР./ПРИБ./СТОЯНКА)
+        public Event Event { get; set; }
+
+        public Classification Classification { get; set; }             
 
 
         public string Addition { get; set; }                         //Дополнение (свободная строка)
@@ -56,7 +58,8 @@ namespace CommunicationDevices.DataProviders
         public bool SendingDataLimit { get; set; }                   //Ограниение отправки данных (если Contrains="SendingDataLimit", то выводим только с галкой)
         public string Message { get; set; }                          //Сообщение
 
-        public byte EmergencySituation { get; set; }                 //Нешатная ситуация (бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности)
+        public byte EmergencySituation { get; set; }                 // !!!! Нешатная ситуация (бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности)
+        public Emergency Emergency { get; set; }
 
         public Command Command { get; set; }                         //Команда (если указанна команда, то приоритет отдается выполнению команды.)
 
@@ -83,7 +86,7 @@ namespace CommunicationDevices.DataProviders
             NumberOfTrain = initializeData.NumberOfTrain;
             PathNumber = initializeData.PathNumber;
             PathNumberWithoutAutoReset = initializeData.PathNumberWithoutAutoReset;
-            Event = initializeData.Event;
+            EventOld = initializeData.EventOld;
             Addition = initializeData.Addition;
             Stations = initializeData.Stations;
             DirectionStation = initializeData.DirectionStation;

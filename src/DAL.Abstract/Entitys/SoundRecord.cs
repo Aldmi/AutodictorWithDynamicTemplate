@@ -34,7 +34,7 @@ namespace DAL.Abstract.Entitys
         public DateTime ВремяПрибытия;
         public DateTime ВремяОтправления;
 
-        public Classification Classification { get; set; }   // NEW Классификация поезда (readonly)
+        public Event Event { get; set; }   // NEW Классификация поезда (readonly)
 
         public DateTime? ВремяЗадержки;                      //время задержки в мин. относительно времени прибытия или отправелния
         public DateTime ОжидаемоеВремя;                      //вычисляется ВремяПрибытия или ВремяОтправления + ВремяЗадержки

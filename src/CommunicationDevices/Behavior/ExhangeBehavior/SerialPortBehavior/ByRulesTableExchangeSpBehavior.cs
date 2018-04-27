@@ -121,7 +121,7 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
                     var commandDate = new UniversalInputType
                     {
                         Command = inData.Command,
-                        Event = "  ",
+                        EventOld = "  ",
                         NumberOfTrain = "  ",
                         PathNumber = "  ",
                         Stations = "  ",

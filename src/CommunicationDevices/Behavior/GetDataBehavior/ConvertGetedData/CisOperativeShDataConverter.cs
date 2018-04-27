@@ -11,12 +11,12 @@ namespace CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData
 
             return new List<UniversalInputType>
             {
-                new UniversalInputType {NumberOfTrain = "235", DaysFollowing = "Ежедневно", Event = "ПРИБ."},
-                new UniversalInputType {NumberOfTrain = "111", DaysFollowing = "Ежедневно", Event = "ПРИБ."},
-                new UniversalInputType {NumberOfTrain = "136", DaysFollowing = "Ежедневно", Event = "СТОЯНКА"},
-                new UniversalInputType {NumberOfTrain = "452", DaysFollowing = "Ежедневно", Event = "ОТПР."},
-                new UniversalInputType {NumberOfTrain = "740", DaysFollowing = "Ежедневно", Event = "СТОЯНКА"},
-                new UniversalInputType {NumberOfTrain = "123", DaysFollowing = "Ежедневно", Event = "СТОЯНКА"},
+                new UniversalInputType {NumberOfTrain = "235", DaysFollowing = "Ежедневно", EventOld = "ПРИБ."},
+                new UniversalInputType {NumberOfTrain = "111", DaysFollowing = "Ежедневно", EventOld = "ПРИБ."},
+                new UniversalInputType {NumberOfTrain = "136", DaysFollowing = "Ежедневно", EventOld = "СТОЯНКА"},
+                new UniversalInputType {NumberOfTrain = "452", DaysFollowing = "Ежедневно", EventOld = "ОТПР."},
+                new UniversalInputType {NumberOfTrain = "740", DaysFollowing = "Ежедневно", EventOld = "СТОЯНКА"},
+                new UniversalInputType {NumberOfTrain = "123", DaysFollowing = "Ежедневно", EventOld = "СТОЯНКА"},
             };
         }
     }

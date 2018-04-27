@@ -106,7 +106,7 @@ namespace MainExample
 
                         inData.NumberOfTrain = "666";
                         inData.PathNumber = "2";
-                        inData.Event = "ПРИБ.";
+                        inData.EventOld = "ПРИБ.";
                         inData.Time = new DateTime(2016, 11, 30, 15, 10, 00);
                         inData.Stations = "табло временно не работает";
                         inData.Note = "с остановками:  Химки, Ласточка, Строгино  ";
@@ -118,7 +118,7 @@ namespace MainExample
                         {
                             inData.NumberOfTrain = "  ";
                             inData.PathNumber = "1";
-                            inData.Event = "  ";
+                            inData.EventOld = "  ";
                             inData.Time = DateTime.MinValue;
                             inData.Stations = "  ";
                             inData.Note = "  ";
@@ -172,7 +172,7 @@ namespace MainExample
                         }
 
                         inData.Message =
-                            $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.Event}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}, ПРИМЕЧАНИЕ:{inData.Note}";
+                            $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.EventOld}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}, ПРИМЕЧАНИЕ:{inData.Note}";
                         break;
 
 

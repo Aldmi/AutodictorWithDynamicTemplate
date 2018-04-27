@@ -65,7 +65,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
             {
                 tables = tables.OrderBy(train =>
                 {
-                    switch (train.Event)
+                    switch (train.EventOld)
                     {
                         case "СТОЯНКА":
                             switch (_transitSortFormat)
@@ -97,7 +97,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
                 var timeArrival = string.Empty;
                 var timeDepart = string.Empty;
                 byte direction = 0;
-                switch (uit.Event)
+                switch (uit.EventOld)
                 {
                     case "ПРИБ.":
                         switch (_dateTimeFormat)

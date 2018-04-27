@@ -245,22 +245,22 @@ namespace MainExample
             dTPОтправление.Value = DateTime.Parse("00:00");
             dTPСледования.Value = DateTime.Parse("00:00");
 
-            switch (TrainRec.Classification)
+            switch (TrainRec.Event)
             {
-                case Classification.None:
-                case Classification.Arrival:
+                case Event.None:
+                case Event.Arrival:
                     rBПрибытие.Checked = true;
                     if (TrainRec.ArrivalTime.HasValue)
                         dTPПрибытие.Value = TrainRec.ArrivalTime.Value;
                     break;
 
-                case Classification.Departure:
+                case Event.Departure:
                     rBОтправление.Checked = true;
                     if (TrainRec.DepartureTime.HasValue)
                         dTPОтправление.Value = TrainRec.DepartureTime.Value;
                     break;
 
-                case Classification.Transit:
+                case Event.Transit:
                     rBТранзит.Checked = true;
                     if (TrainRec.ArrivalTime.HasValue && TrainRec.DepartureTime.HasValue)
                     {
@@ -436,21 +436,21 @@ namespace MainExample
 
             if (rBПрибытие.Checked == true)
             {
-                TrainRec.Classification = Classification.Arrival;
+                TrainRec.Event = Event.Arrival;
                 TrainRec.ArrivalTime = dTPПрибытие.Value;
                 TrainRec.DepartureTime = null;
                 TrainRec.StopTime = null;
             }
             else if (rBОтправление.Checked == true)
             {
-                TrainRec.Classification = Classification.Departure;
+                TrainRec.Event = Event.Departure;
                 TrainRec.DepartureTime = dTPОтправление.Value;
                 TrainRec.ArrivalTime = null;
                 TrainRec.StopTime = null;
             }
             else
             {
-                TrainRec.Classification = Classification.Transit;
+                TrainRec.Event = Event.Transit;
                 var времяПрибытия = dTPПрибытие.Value;
                 if (dTPОтправление.Value > времяПрибытия)
                 {

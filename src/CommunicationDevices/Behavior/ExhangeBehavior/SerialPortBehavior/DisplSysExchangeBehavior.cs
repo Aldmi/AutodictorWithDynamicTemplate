@@ -23,7 +23,7 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
             : base(port, timeRespone, maxCountFaildRespowne)
         {
             //добавляем циклические функции
-            Data4CycleFunc = new ReadOnlyCollection<UniversalInputType>(new List<UniversalInputType> { new UniversalInputType { Event = "  ", NumberOfTrain = "  ", PathNumber = "  ", Stations = "  ", Time = DateTime.MinValue, TableData = new List<UniversalInputType>() } });  //данные для 1-ой циклической функции
+            Data4CycleFunc = new ReadOnlyCollection<UniversalInputType>(new List<UniversalInputType> { new UniversalInputType { EventOld = "  ", NumberOfTrain = "  ", PathNumber = "  ", Stations = "  ", Time = DateTime.MinValue, TableData = new List<UniversalInputType>() } });  //данные для 1-ой циклической функции
             ListCycleFuncs = new List<Func<MasterSerialPort, CancellationToken, Task>> { CycleExcangeService };                      // 1 циклическая функция
         }
 
@@ -46,12 +46,12 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
                 //вывод пустой строки если в таблице нет данных
                 var emptyMessage = new UniversalInputType
                 {
-                    Event = "  ",
+                    EventOld = "  ",
                     NumberOfTrain = "  ",
                     PathNumber = "  ",
                     Stations = "  ",
                     Time = DateTime.MinValue,
-                    Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.Event}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
+                    Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.EventOld}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
                 };
 
                 var viewData = timeSamplingMessage ?? emptyMessage;
@@ -96,12 +96,12 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
                     //вывод пустой строки если в таблице нет данных
                     var emptyMessage = new UniversalInputType
                     {
-                        Event = "  ",
+                        EventOld = "  ",
                         NumberOfTrain = "  ",
                         PathNumber = "  ",
                         Stations = "  ",
                         Time = DateTime.MinValue,
-                        Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.Event}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
+                        Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.EventOld}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
                     };
 
                     var viewData = timeSamplingMessage ?? emptyMessage;

@@ -200,9 +200,9 @@ namespace CommunicationDevices.Rules.ExchangeRules
                     }
 
 
-                    if (subvar == nameof(uit.Event))
+                    if (subvar == nameof(uit.EventOld))
                     {
-                        var formatStr = string.Format(replaseStr.Replace(nameof(uit.Event), "0"), string.IsNullOrEmpty(uit.Event) ? " " : uit.Event);
+                        var formatStr = string.Format(replaseStr.Replace(nameof(uit.EventOld), "0"), string.IsNullOrEmpty(uit.EventOld) ? " " : uit.EventOld);
                         resStr.Append(formatStr);
                         continue;
                     }
@@ -219,7 +219,7 @@ namespace CommunicationDevices.Rules.ExchangeRules
                     if (subvar == "StationsCut")
                     {
                         var stationsCut = " ";
-                        switch (uit.Event)
+                        switch (uit.EventOld)
                         {
                             case "ПРИБ.":
                                 stationsCut = (uit.StationArrival != null) ? uit.StationArrival.NameRu : " ";
@@ -358,7 +358,7 @@ namespace CommunicationDevices.Rules.ExchangeRules
                     if (subvar == "TDepart")
                     {
                         DateTime timeDepart = DateTime.MinValue;
-                        switch (uit.Event)
+                        switch (uit.EventOld)
                         {
                             case "СТОЯНКА":
                                 timeDepart = (uit.TransitTime != null && uit.TransitTime.ContainsKey("отпр")) ? uit.TransitTime["отпр"] : DateTime.MinValue;
@@ -398,7 +398,7 @@ namespace CommunicationDevices.Rules.ExchangeRules
                     if (subvar == "TArrival")
                     {
                         DateTime timeArrival = DateTime.MinValue;
-                        switch (uit.Event)
+                        switch (uit.EventOld)
                         {
                             case "СТОЯНКА":
                                 timeArrival = (uit.TransitTime != null && uit.TransitTime.ContainsKey("приб")) ? uit.TransitTime["приб"] : DateTime.MinValue;

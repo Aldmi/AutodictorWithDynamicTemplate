@@ -34,7 +34,7 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
         {
             ExchangeRules = exchangeRules;
             //добавляем циклические функции
-            Data4CycleFunc = new ReadOnlyCollection<UniversalInputType>(new List<UniversalInputType> { new UniversalInputType { Event = "  ", NumberOfTrain = "  ", PathNumber = "  ", Stations = "  ", Time = DateTime.MinValue, TableData = new List<UniversalInputType>() } });  //данные для 1-ой циклической функции
+            Data4CycleFunc = new ReadOnlyCollection<UniversalInputType>(new List<UniversalInputType> { new UniversalInputType { EventOld = "  ", NumberOfTrain = "  ", PathNumber = "  ", Stations = "  ", Time = DateTime.MinValue, TableData = new List<UniversalInputType>() } });  //данные для 1-ой циклической функции
             ListCycleFuncs = new List<Func<MasterSerialPort, CancellationToken, Task>> { CycleExcangeService };                      // 1 циклическая функция
         }
 
@@ -59,12 +59,12 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
                 var emptyDate = new UniversalInputType
                 {
                     Command = inData.Command,
-                    Event = "  ",
+                    EventOld = "  ",
                     NumberOfTrain = "  ",
                     PathNumber = "  ",
                     Stations = "  ",
                     Time = DateTime.MinValue,
-                    Message = inData.Command != Command.None ? inData.Command.ToString() + "....................." : $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.Event}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
+                    Message = inData.Command != Command.None ? inData.Command.ToString() + "....................." : $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.EventOld}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
                 };
 
 
@@ -123,12 +123,12 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SerialPortBehavior
                     var emptyDate = new UniversalInputType
                     {
                         Command = inData.Command,
-                        Event = "  ",
+                        EventOld = "  ",
                         NumberOfTrain = "  ",
                         PathNumber = "  ",
                         Stations = "  ",
                         Time = DateTime.MinValue,
-                        Message = inData.Command != Command.None ? inData.Command.ToString() + "....................." : $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.Event}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
+                        Message = inData.Command != Command.None ? inData.Command.ToString() + "....................." : $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.EventOld}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}"
                     };
 
                     var viewData = timeSamplingData ?? emptyDate;

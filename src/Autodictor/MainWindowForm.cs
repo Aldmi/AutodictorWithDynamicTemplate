@@ -1681,7 +1681,7 @@ namespace MainExample
                     IsActive = true,
                     NumberOfTrain = "  ",
                     PathNumber = "  ",
-                    Event = "   ",
+                    EventOld = "   ",
                     Time = DateTime.MinValue,
                     Stations = "   ",
                     Note = "   ",
@@ -1719,7 +1719,7 @@ namespace MainExample
                                 table.ForEach(t =>
                                 {
                                     uitPreprocessingService.StartPreprocessing(t);
-                                    t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.Event}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}";
+                                    t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.EventOld}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}";
                                 });
 
                                 var inData = new UniversalInputType { TableData = table };
@@ -1743,7 +1743,7 @@ namespace MainExample
                                 table.ForEach(t =>
                                 {
                                     uitPreprocessingService.StartPreprocessing(t);
-                                    t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.Event}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}";
+                                    t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.EventOld}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}";
                                 });
 
                                 var inData = new UniversalInputType { TableData = table };
@@ -1766,7 +1766,7 @@ namespace MainExample
                                 table.ForEach(t =>
                                     {
                                         uitPreprocessingService.StartPreprocessing(t);
-                                        t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.Event}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}";
+                                        t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.EventOld}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}";
                                     });
                                 var inData = new UniversalInputType {TableData = table};
                                 beh.InitializePagingBuffer(inData, defaultType, beh.CheckContrains, beh.GetCountDataTake());
@@ -1811,7 +1811,7 @@ namespace MainExample
                             table.Add(uitNew);
                         }
 
-                        table.ForEach(t => t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.Event}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}");
+                        table.ForEach(t => t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.EventOld}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}");
                         var inData = new UniversalInputType { TableData = table };
                         beh.InitializePagingBuffer(inData, beh.CheckContrains, beh.GetCountDataTake());
                     }
@@ -2102,7 +2102,7 @@ namespace MainExample
                     var inData = Mapper.MapSoundRecord2UniveralInputType(data, beh.GetDeviceSetting.PathPermission, true);
                     var uitPreprocessingService = PreprocessingOutputFactory.CreateUitPreprocessingOutputService();
                     uitPreprocessingService.StartPreprocessing(inData);
-                    inData.Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.Event}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}";
+                    inData.Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.EventOld}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}";
 
                     var numberOfTrain = (string.IsNullOrEmpty(data.НомерПоезда2) || string.IsNullOrWhiteSpace(data.НомерПоезда2)) ? data.НомерПоезда : (data.НомерПоезда + "/" + data.НомерПоезда2);
                     beh.SendMessage4Path(inData, numberOfTrain, beh.CheckContrains);
@@ -3483,7 +3483,7 @@ namespace MainExample
 
                     table.Add(uit);
                     table.Add(uitNew);
-                    table.ForEach(t => t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.Event}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}");
+                    table.ForEach(t => t.Message = $"ПОЕЗД:{t.NumberOfTrain}, ПУТЬ:{t.PathNumber}, СОБЫТИЕ:{t.EventOld}, СТАНЦИИ:{t.Stations}, ВРЕМЯ:{t.Time.ToShortTimeString()}");
                     var inData = new UniversalInputType { TableData = table };
                     beh.SendMessage(inData);
                 }

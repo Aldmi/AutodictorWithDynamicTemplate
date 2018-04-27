@@ -8,7 +8,7 @@ namespace CommunicationDevices.Services
     {
         public void StartPreprocessing(UniversalInputType uit)
         {
-            if (uit.Classification == Classification.Transit) 
+            if (uit.Event == Event.Transit) 
             {
                 if (uit.ChangeVagonDirection)
                 {

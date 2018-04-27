@@ -239,7 +239,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
              timeDepart = string.Empty;
              direction = 0;
 
-            switch (uit.Event)
+            switch (uit.EventOld)
             {
                 case "ПРИБ.":
                     switch (_dateTimeFormat)

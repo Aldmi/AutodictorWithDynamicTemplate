@@ -73,7 +73,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
             {
                 tables = tables.OrderBy(train =>
                 {
-                    switch (train.Event)
+                    switch (train.EventOld)
                     {
                         case "СТОЯНКА":
                             switch (_transitSortFormat)
@@ -104,7 +104,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
                 var timeArrival = string.Empty;
                 var timeDepart = string.Empty;
                 byte direction = 0;
-                switch (uit.Event)
+                switch (uit.EventOld)
                 {
                     case "ПРИБ.":
                         switch (_dateTimeFormat)
@@ -167,7 +167,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
                 }
 
                 var stopTime = (uit.StopTime.HasValue) ? uit.StopTime.Value.Hours.ToString("D2") + ":" + uit.StopTime.Value.Minutes.ToString("D2") : string.Empty;
-                if (stopTime == string.Empty && uit.Event == "СТОЯНКА")
+                if (stopTime == string.Empty && uit.EventOld == "СТОЯНКА")
                 {
                     stopTime = "Время стоянки будет измененно";
                 }

@@ -71,11 +71,11 @@ namespace MainExample
             selectedTableRec.StationDepart = _addingTrainFormViewModel.GetStationsInDirectionSelectedItem()?.FirstOrDefault(st => st.NameRu == cBОткуда.Text);
 
             if (rBПрибытие.Checked)
-                selectedTableRec.Classification = Classification.Arrival;
+                selectedTableRec.Event = Event.Arrival;
             if (rBОтправление.Checked)
-                selectedTableRec.Classification = Classification.Departure;
+                selectedTableRec.Event = Event.Departure;
             if (rBТранзит.Checked)
-                selectedTableRec.Classification = Classification.Transit;
+                selectedTableRec.Event = Event.Transit;
 
             return true;
         }
@@ -102,21 +102,21 @@ namespace MainExample
             cBКуда.DisplayMember = "NameRu";
             cBКуда.SelectedItem = _addingTrainFormViewModel.SelectedItem.TrainTableRec.StationDepart != null ? stations.FirstOrDefault(st => st.NameRu == _addingTrainFormViewModel.SelectedItem.TrainTableRec.StationDepart.NameRu) : null;
 
-            switch (_addingTrainFormViewModel.SelectedItem.TrainTableRec.Classification)
+            switch (_addingTrainFormViewModel.SelectedItem.TrainTableRec.Event)
             {
-                case Classification.Arrival:
+                case Event.Arrival:
                     rBПрибытие.Checked = true;
                     dTPВремяПриб.Enabled = true;
                     dTPВремяОтпр.Enabled = false;
                     dTPВремяПриб.Value = _addingTrainFormViewModel.SelectedItem.TrainTableRec.ArrivalTime.Value;
                     break;
-                case Classification.Departure:
+                case Event.Departure:
                     rBОтправление.Checked = true;
                     dTPВремяОтпр.Enabled = true;
                     dTPВремяПриб.Enabled = false;
                     dTPВремяОтпр.Value = _addingTrainFormViewModel.SelectedItem.TrainTableRec.DepartureTime.Value;
                     break;
-                case Classification.Transit:
+                case Event.Transit:
                     rBТранзит.Checked = true;
                     dTPВремяПриб.Enabled = true;
                     dTPВремяОтпр.Enabled = true;

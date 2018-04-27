@@ -56,7 +56,7 @@ namespace CommunicationDevices.DataProviders.DisplaySysDataProvider
 
                 string numberOfTrain = string.IsNullOrEmpty(InputData.NumberOfTrain) ? " " : InputData.NumberOfTrain;
                 string numberOfPath = string.IsNullOrEmpty(InputData.PathNumber) ? " " : InputData.PathNumber;
-                string ev = string.IsNullOrEmpty(InputData.Event) ? " " : InputData.Event;
+                string ev = string.IsNullOrEmpty(InputData.EventOld) ? " " : InputData.EventOld;
                 string stations = string.IsNullOrEmpty(InputData.Stations) ? " " : InputData.Stations;
                 string note = string.IsNullOrEmpty(InputData.Note) ? " " : InputData.Note;
                 string time = (InputData.Time == DateTime.MinValue) ? " " : InputData.Time.ToShortTimeString();

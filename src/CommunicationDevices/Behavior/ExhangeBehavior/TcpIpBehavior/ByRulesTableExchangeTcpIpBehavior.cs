@@ -65,7 +65,7 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.TcpIpBehavior
                         var commandDate = new UniversalInputType
                         {
                             Command = inData.Command,
-                            Event = "  ",
+                            EventOld = "  ",
                             NumberOfTrain = "  ",
                             PathNumber = "  ",
                             Stations = "  ",

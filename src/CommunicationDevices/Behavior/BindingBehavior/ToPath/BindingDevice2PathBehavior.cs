@@ -146,7 +146,7 @@ namespace CommunicationDevices.Behavior.BindingBehavior.ToPath
             {
                 NumberOfTrain = "   ",
                 PathNumber = (CollectionPathNumber != null && CollectionPathNumber.Any()) ? CollectionPathNumber.First().ToString() : "   ",
-                Event = "   ",
+                EventOld = "   ",
                 Time = DateTime.MinValue,
                 Stations = "   ",
                 Note = "   ",
@@ -154,7 +154,7 @@ namespace CommunicationDevices.Behavior.BindingBehavior.ToPath
                 TypeTrain = null,
                 TableData = new List<UniversalInputType>() { new UniversalInputType() }
             };
-            inData.Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.Event}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}";
+            inData.Message = $"ПОЕЗД:{inData.NumberOfTrain}, ПУТЬ:{inData.PathNumber}, СОБЫТИЕ:{inData.EventOld}, СТАНЦИИ:{inData.Stations}, ВРЕМЯ:{inData.Time.ToShortTimeString()}";
 
             _device.AddCycleFuncData(0, inData);
         }

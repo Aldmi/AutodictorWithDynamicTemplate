@@ -138,7 +138,7 @@ namespace MainExample.Mappers
             record.ВремяЗадержки = null;
             byte номерСписка = 0x00;
 
-            record.Classification = config.Classification;
+            record.Event = config.Event;
 
             if (config.ArrivalTime.HasValue)
             {
@@ -213,17 +213,17 @@ namespace MainExample.Mappers
                 return DateTime.MinValue;
             };
 
-            Func<Classification, string> eventPars = (classification) =>
+            Func<Event, string> eventPars = (classification) =>
             {
                 switch (classification)
                 {
-                    case Classification.Arrival:
+                    case Event.Arrival:
                         return "ПРИБ.";
                    
-                    case Classification.Departure:
+                    case Event.Departure:
                         return "ОТПР.";
                        
-                    case Classification.Transit:
+                    case Event.Transit:
                         return "СТОЯНКА";
                         
                     default:
@@ -271,8 +271,8 @@ namespace MainExample.Mappers
             {
                 IsActive = t.Active,
                 Id = t.Id,
-                Event = eventPars(t.Classification),
-                Classification = t.Classification,
+                EventOld = eventPars(t.Event),
+                Event = t.Event,
                 TypeTrain = t.TrainTypeByRyle.NameRu,
                 Note = t.Примечание, //C остановками: ...
                 //PathNumber = ПолучитьНомерПутиПоДнямНедели(t),                    //TODO:  ?????
@@ -467,7 +467,7 @@ namespace MainExample.Mappers
                     ChangeVagonDirection = data.СменнаяНумерацияПоезда,
                     PathNumber = номерПути,
                     PathNumberWithoutAutoReset = data.НомерПутиБезАвтосброса,
-                    Event = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? actStr : "   ",
+                    EventOld = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? actStr : "   ",
                     Time = time,
                     TransitTime = transitTimes,
                     DelayTime = data.ВремяЗадержки,
@@ -501,7 +501,7 @@ namespace MainExample.Mappers
                     ChangeVagonDirection = data.СменнаяНумерацияПоезда,
                     PathNumber = номерПути,
                     PathNumberWithoutAutoReset = data.НомерПутиБезАвтосброса,
-                    Event = actStr,
+                    EventOld = actStr,
                     Time = time,
                     TransitTime = transitTimes,
                     DelayTime = data.ВремяЗадержки,

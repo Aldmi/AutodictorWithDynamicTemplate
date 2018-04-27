@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CommunicationDevices.DataProviders;
+using DAL.Abstract.Entitys;
 using Quartz.Util;
 using NCalc;
 
@@ -13,7 +15,7 @@ namespace CommunicationDevices.ConditionsHandler
     {
         #region StaticCtor
 
-        private static Dictionary<string, ConditionHandlerItem> _baseDict;
+        private static readonly Dictionary<string, ConditionHandlerItem> _baseDict;
         static Conditions()
         {
             _baseDict = new Dictionary<string, ConditionHandlerItem>
@@ -26,7 +28,21 @@ namespace CommunicationDevices.ConditionsHandler
 
                 {"событие", new ConditionHandlerItem("событие", ItemType.Expression, (uit, value) =>
                     {
-                        var res = (uit.Event == value);
+                        Event eventTrain = Event.None;
+                        switch (value)
+                        {
+                            case "ПРИБ.":
+                                eventTrain = Event.Arrival;
+                                break;
+                            case "ОТПР.":
+                                eventTrain = Event.Departure;
+                                break;
+                            case "ТРАНЗ.":
+                                eventTrain = Event.Transit;
+                                break;
+                        }
+
+                        var res = (uit.Event == eventTrain);
                         return res;
                     })
                 },
@@ -46,24 +62,143 @@ namespace CommunicationDevices.ConditionsHandler
                     })
                 },
 
+                //Время=120|120               //ДельтаТекВремени
+                //Время=МеньшеТекВремени      //МеньшеТекВремени
+                //Время=БольшеТекВремени      //БольшеТекВремени
+                //Время=120|120:60|60:10|10   //ДельтаТекВремениПоТипамПоездов  (по событиям)
                 {"время", new ConditionHandlerItem("время", ItemType.Expression, (uit, value) =>
                     {
-                        var res = true;
-                        return res;
+                        switch (value)
+                        {
+                            case "МеньшеТекВремени":
+                                return uit.Time < DateTime.Now;
+
+                            case "БольшеТекВремени":
+                                return uit.Time > DateTime.Now;
+                        }
+
+                        //Функция проверки диапазона времени в формате "120|120"  
+                        Func<string, bool> checkDeltaTime = (inputStr) =>
+                        {
+                            var deltaTime = inputStr.Split('|');
+                            if (deltaTime.Length == 2)
+                            {
+                                int minMinute;
+                                int maxMinute;
+                                if (int.TryParse(deltaTime[0], out minMinute) && int.TryParse(deltaTime[1], out maxMinute))
+                                {
+                                    var min = DateTime.Now.AddMinutes(-1 * minMinute);
+                                    var max = DateTime.Now.AddMinutes(maxMinute);
+                                    return (uit.Time > min && uit.Time < max);
+                                }
+                            }
+                            return true;
+                        };
+
+                        // дельта по событию поезда ДельтаПриб|ДельтаОтпр|ДельтаТранзит()
+                        if (value.Contains(":"))
+                        {
+                            var deltas = value.Split(':');
+                            if (deltas.Length < 3)
+                                return false;
+
+                            int indexItem= 0;
+                            switch (uit.Event)
+                            {
+                                case Event.Arrival:
+                                    indexItem = 0;
+                                    break;
+                                case Event.Departure:
+                                    indexItem = 1;
+                                    break;
+                                case Event.Transit:
+                                    indexItem = 2;
+                                    break;
+                            }
+                            var item= deltas[indexItem];
+                            return checkDeltaTime(item);
+                        }
+
+                        //ДельтаТекВремени
+                        return checkDeltaTime(value);
                     })
                 },
 
-                {"классификация", new ConditionHandlerItem("классификация", ItemType.Expression, (uit, value) =>
+                {"классификация", new ConditionHandlerItem("классификация", ItemType.Expression, (uit, value) =>      //Дальний, Приг.
                     {
-                        var res = true;
+                        var classification = Classification.None;
+                        switch (value)
+                        {
+                            case "Дальний":
+                                classification= Classification.LongDist;
+                                break;
+                            case "Пригород":
+                                classification= Classification.Suburb;
+                                break;
+                        }
+                        var res = uit.Classification == classification;
                         return res;
                     })
                 },
 
                 {"направление", new ConditionHandlerItem("направление", ItemType.Expression, (uit, value) =>
                     {
-                        var res = true;
+                        var res = uit.Direction.Name == value;
                         return res;
+                    })
+                },
+
+                {"задержкаприб", new ConditionHandlerItem("задержкаприб", ItemType.Expression, (uit, value) =>
+                    {
+                        bool boolVal;
+                        if (bool.TryParse(value, out boolVal))
+                        {
+                            return uit.Emergency == Emergency.DelayedArrival && boolVal;
+                        }
+                        return false;
+                    })
+                },
+
+                {"задержкаотпр", new ConditionHandlerItem("задержкаотпр", ItemType.Expression, (uit, value) =>
+                    {
+                        bool boolVal;
+                        if (bool.TryParse(value, out boolVal))
+                        {
+                            return uit.Emergency == Emergency.DelayedDeparture && boolVal;
+                        }
+                        return false;
+                    })
+                },
+
+                {"отмена", new ConditionHandlerItem("отмена", ItemType.Expression, (uit, value) =>
+                    {
+                        bool boolVal;
+                        if (bool.TryParse(value, out boolVal))
+                        {
+                            return uit.Emergency == Emergency.Cancel && boolVal;
+                        }
+                        return false;
+                    })
+                },
+
+                {"отправлениепоготовности", new ConditionHandlerItem("отправлениепоготовности", ItemType.Expression, (uit, value) =>
+                    {
+                        bool boolVal;
+                        if (bool.TryParse(value, out boolVal))
+                        {
+                            return uit.Emergency == Emergency.DispatchOnReadiness && boolVal;
+                        }
+                        return false;
+                    })
+                },
+
+                {"ограничениеотправкиданных", new ConditionHandlerItem("ограничениеотправкиданных", ItemType.Expression, (uit, value) =>
+                    {
+                        bool boolVal;
+                        if(bool.TryParse(value, out boolVal))
+                            return uit.SendingDataLimit == boolVal;
+
+                        return false;
                     })
                 },
             };

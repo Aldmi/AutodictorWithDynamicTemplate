@@ -23,7 +23,7 @@ namespace CommunicationDevices.DataProviders.XmlDataProvider.XMLFormatProviders
                 var timeArrival = string.Empty;
                 var timeDepart = string.Empty;
                 byte direction = 0;
-                switch (uit.Event)
+                switch (uit.EventOld)
                 {
                     case "ПРИБ.":
                         timeArrival = uit.Time.ToString("s");
