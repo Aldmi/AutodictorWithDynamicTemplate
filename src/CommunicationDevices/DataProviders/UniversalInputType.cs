@@ -24,17 +24,15 @@ namespace CommunicationDevices.DataProviders
         public string PathNumberWithoutAutoReset { get; set; }       //Номер пути Без Автосброса
 
         public string EventOld { get; set; }                         //!!!!! Событие (ОТПР./ПРИБ./СТОЯНКА)
-        public Event Event { get; set; }
-
-        public Classification Classification { get; set; }             
-
+        public Event Event { get; set; }                             //Событие(ОТПР./ПРИБ./СТОЯНКА)
 
         public string Addition { get; set; }                         //Дополнение (свободная строка)
-        public string Stations { get; set; }                         // Станции Отправления-Прибытия. (название поезда)
+        public string Stations { get; set; }                         //Станции Отправления-Прибытия. (название поезда)
 
         public string DirectionStation { get; set; }                 //!!!!! Направление.
         public Direction Direction { get; set; }                     //Направление
 
+        public TrainTypeByRyle TrainTypeByRyle { get; set; }         // Тип поезда
 
         public Station StationDeparture { get; set; }
         public Station StationArrival { get; set; }
@@ -59,7 +57,7 @@ namespace CommunicationDevices.DataProviders
         public string Message { get; set; }                          //Сообщение
 
         public byte EmergencySituation { get; set; }                 // !!!! Нешатная ситуация (бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности)
-        public Emergency Emergency { get; set; }
+        public Emergency Emergency { get; set; }                     // Нешатная ситуация
 
         public Command Command { get; set; }                         //Команда (если указанна команда, то приоритет отдается выполнению команды.)
 

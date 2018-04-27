@@ -244,29 +244,6 @@ namespace MainExample.Mappers
                 return transitTime;
             };
 
-
-            Func<string, string, Station> stationsPars2 = (station, direction) =>
-            {
-                var emptyStation= new Station { NameRu = string.Empty, NameEng = string.Empty, NameCh = string.Empty };
-                if (string.IsNullOrEmpty(direction) || string.IsNullOrEmpty(station))
-                {
-                    return emptyStation;
-                }
-
-                Station stationDir;
-                using (var scope = _container.BeginLifetimeScope())
-                {
-                    var trainRecService = scope.Resolve<TrainRecService>();
-                    stationDir = trainRecService.GetStationInDirectionByNameStation(direction, station);//Program.ПолучитьСтанциюНаправления(direction, station);
-                    if (stationDir == null)
-                        return emptyStation;
-                }
-
-                return stationDir;
-            };
-
-
-            TimeSpan stopTime;
             UniversalInputType uit = new UniversalInputType
             {
                 IsActive = t.Active,
@@ -274,8 +251,8 @@ namespace MainExample.Mappers
                 EventOld = eventPars(t.Event),
                 Event = t.Event,
                 TypeTrain = t.TrainTypeByRyle.NameRu,
+                TrainTypeByRyle = t.TrainTypeByRyle,
                 Note = t.Примечание, //C остановками: ...
-                //PathNumber = ПолучитьНомерПутиПоДнямНедели(t),                    //TODO:  ?????
                 WagonsNumbering = t.WagonsNumbering,
                 NumberOfTrain = t.Num,
                 Stations = t.Name,
@@ -295,6 +272,7 @@ namespace MainExample.Mappers
                 Addition = t.Addition,
                 SendingDataLimit = t.IsScoreBoardOutput,
                 Command = Command.None,
+                Emergency = Emergency.None,
                 EmergencySituation = 0x00
             };
 
@@ -468,6 +446,7 @@ namespace MainExample.Mappers
                     PathNumber = номерПути,
                     PathNumberWithoutAutoReset = data.НомерПутиБезАвтосброса,
                     EventOld = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? actStr : "   ",
+                    Event = data.Event,
                     Time = time,
                     TransitTime = transitTimes,
                     DelayTime = data.ВремяЗадержки,
@@ -475,10 +454,10 @@ namespace MainExample.Mappers
                     StopTime = data.ВремяСтоянки,
                     Stations = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? data.НазваниеПоезда : "   ",
                     DirectionStation = data.Направление,
-
+                    Emergency = data.Emergency,
+                    TrainTypeByRyle = data.ТипПоезда,
                     StationDeparture = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияОтправления : new Station(),
                     StationArrival = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияНазначения : new Station(),
-
                     Note = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? data.Примечание : "   ",
                     TypeTrain = data.ТипПоезда.NameRu,
                     DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(data.ДниСледования).ПолучитьСтрокуОписанияРасписания(),
@@ -502,6 +481,7 @@ namespace MainExample.Mappers
                     PathNumber = номерПути,
                     PathNumberWithoutAutoReset = data.НомерПутиБезАвтосброса,
                     EventOld = actStr,
+                    Event = data.Event,
                     Time = time,
                     TransitTime = transitTimes,
                     DelayTime = data.ВремяЗадержки,
@@ -509,6 +489,8 @@ namespace MainExample.Mappers
                     StopTime = data.ВремяСтоянки,
                     Stations = data.НазваниеПоезда,
                     DirectionStation = data.Направление,
+                    Emergency = data.Emergency,
+                    TrainTypeByRyle = data.ТипПоезда,
                     StationDeparture =  cтанцияОтправления,  //(data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияОтправления : new Station(),
                     StationArrival = cтанцияНазначения,     // (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияНазначения : new Station(), 
                     Note = data.Примечание,
@@ -577,7 +559,6 @@ namespace MainExample.Mappers
         }
 
 
-
         public static SoundRecord MapSoundRecordDb2SoundRecord(SoundRecordDb data)
         {
             return new SoundRecord
@@ -642,7 +623,6 @@ namespace MainExample.Mappers
         }
 
 
-
         public static SoundRecordChangesDb SoundRecordChanges2SoundRecordChangesDb(SoundRecordChange data)
         {
             return new SoundRecordChangesDb
@@ -655,6 +635,5 @@ namespace MainExample.Mappers
                 CauseOfChange = data.CauseOfChange
             };
         }
-
     }
 }

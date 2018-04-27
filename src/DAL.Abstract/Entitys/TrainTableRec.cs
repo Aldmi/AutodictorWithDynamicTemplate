@@ -28,16 +28,6 @@ namespace DAL.Abstract.Entitys
         Transit
     };
 
-    /// <summary>
-    /// Классификация поезда
-    /// </summary>
-    public enum Classification
-    {
-        None,
-        Suburb,
-        LongDist
-    };
-
 
     //!!!!!! НОВАЯ РЕАЛИЗАЦИЯ
     public class TrainTableRec
@@ -67,7 +57,6 @@ namespace DAL.Abstract.Entitys
         public DateTime ВремяОкончанияДействияРасписания { get; set; }
         public WagonsNumbering WagonsNumbering { get; set; }                    //Нумерация вагонов
         public Event Event { get; set; }                                        // Событие поезда (ПРИБ. ОТПР. ТРАНЗ.)
-        public Classification Classification { get; set; }                      // Классификация поезда  (ПРИГ. ДАЛЬН.)
         public bool? ChangeTrainPathDirection { get; set; }                     //смена направления (для транзитов)
         public Dictionary<WeekDays, Pathway> TrainPathNumber { get; set; }      //Пути по дням недели или постоянно
         public bool PathWeekDayes { get; set; }                                 //true - установленны пути по дням недели, false - путь установленн постоянно
