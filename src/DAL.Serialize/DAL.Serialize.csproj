@@ -41,16 +41,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XML\Reposirory\XmlSerializeTableRecRepository.cs" />
+    <Compile Include="XML\Model\RouteXmlModel.cs" />
+    <Compile Include="XML\Model\TrainTableRecXmlModel.cs" />
+    <Compile Include="XML\Reposirory\XmlSerializeTrainTableRecRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JSON\" />
-    <Folder Include="XML\Model\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAL.Abstract\DAL.Abstract.csproj">
       <Project>{b3cf5fb8-856d-4b3e-ad4c-376388da658b}</Project>
       <Name>DAL.Abstract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{87B6F9EF-6A0D-4DAF-9DF0-718036B1C8E4}</Project>
+      <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

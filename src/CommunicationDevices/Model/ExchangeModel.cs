@@ -164,7 +164,7 @@ namespace CommunicationDevices.Model
 
             try
             {
-                var xmlFile = XmlWorker.LoadXmlFile("Settings", "Setting.xml"); //все настройки в одном файле
+                var xmlFile = FileWorker.LoadXmlFile("Settings", "Setting.xml"); //все настройки в одном файле
                 if (xmlFile == null)
                     return;
 

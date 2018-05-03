@@ -27,7 +27,7 @@ namespace DAL.XmlRaw.Repository
 
         public XmlRawPathWaysRepository(string folderName, string fileName)
         {
-            var xmlFile = XmlWorker.LoadXmlFile(folderName, fileName);
+            var xmlFile = FileWorker.LoadXmlFile(folderName, fileName);
             if (xmlFile == null)
                 throw new FileNotFoundException("Файл не найден Config/DynamicSound.xml");
             _xElement = xmlFile;

@@ -13,6 +13,7 @@ using DAL.InMemory.Repository;
 using DAL.NoSqlLiteDb.Entityes;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;
+using DAL.Serialize.XML.Reposirory;
 using DAL.XmlRaw.Repository;
 using MainExample.Services;
 using MainExample.ViewModel.AddingTrainFormVM;
@@ -62,27 +63,26 @@ namespace MainExample.Utils
                 .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") }).InstancePerLifetimeScope();
 
 
-            //builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
-            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableMain.xml") }).InstancePerLifetimeScope();
-
-            //builder.RegisterType<XmlSerializeTableRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
-            //    .WithParameters(new List<Parameter> { new NamedParameter("connection", @"TrainTableRemoteCis.xml") }).InstancePerLifetimeScope();
-
-
-            //TEST TrainRecRepository
-            //builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+            ////ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "LocalMain"
+            //builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("LocalMain")
             //    .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain") }).InstancePerLifetimeScope();
 
-            //builder.RegisterType<InMemoryTrainRecRepository>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+            ////ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "RemoteCis"
+            //builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
             //    .WithParameters(new List<Parameter> { new NamedParameter("key", @"RemoteCis") }).InstancePerLifetimeScope();
 
+
             //ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "LocalMain"
-            builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("LocalMain")
-                .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain") }).InstancePerLifetimeScope();
+            builder.RegisterType<XmlSerializeTrainTableRecRepository>().Named<ITrainTableRecRepository>("LocalMain")
+                .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain"),
+                                                      new NamedParameter("folderName", @"XmlSerialize"),
+                                                      new NamedParameter("fileName", @"TrainTableRec.xml")}).InstancePerLifetimeScope();
 
             //ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "RemoteCis"
-            builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
-                .WithParameters(new List<Parameter> { new NamedParameter("key", @"RemoteCis") }).InstancePerLifetimeScope();
+            builder.RegisterType<XmlSerializeTrainTableRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
+                .WithParameters(new List<Parameter> { new NamedParameter("key", @"RemoteCis"),
+                                                      new NamedParameter("folderName", @"XmlSerialize"),
+                                                      new NamedParameter("fileName", @"TrainTableRecRemoteCis.xml")}).InstancePerLifetimeScope();
 
 
             //ITrainTableRecRepository -> CompositerTrainRecRepositoryDecorator with key= TrainRecType.LocalMain

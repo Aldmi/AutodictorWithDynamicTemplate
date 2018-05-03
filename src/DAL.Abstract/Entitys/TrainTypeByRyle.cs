@@ -15,11 +15,10 @@ namespace DAL.Abstract.Entitys
     }
 
 
-    public class TrainTypeByRyle : IRuleByTrainType
+    public class TrainTypeByRyle : EntityBase, IRuleByTrainType
     {
         #region prop
 
-        public int Id { get; }              //Id типа.
         public CategoryTrain CategoryTrain { get; } //Принадлежность к типу (дальний/пригород)
         public string NameRu { get; }       //Имя и его Alias
         public string AliasRu { get; }
@@ -79,11 +78,10 @@ namespace DAL.Abstract.Entitys
     /// <summary>
     /// действие (шаблон)
     /// </summary>
-    public class ActionTrain
+    public class ActionTrain : EntityBase
     {
         #region prop
 
-        public int Id { get; set; }                    //Id действия
         public string Name { get; set; }
         public bool IsActiveBase { get; set; }        //Базовая активность шаблона, задается в XML файле    
         public ActionType ActionType { get; set; }
@@ -248,11 +246,10 @@ namespace DAL.Abstract.Entitys
     /// <summary>
     /// Язык и  шаблон для него
     /// </summary>
-    public class Lang
+    public class Lang : EntityBase
     {
         #region prop
 
-        public int Id { get; set; }              //Id языка
         public string Name { get; set; }
         public bool IsEnable { get; set; }  // Вкл/Выкл язык
         public int RepeatSoundBody { get; set; }   
