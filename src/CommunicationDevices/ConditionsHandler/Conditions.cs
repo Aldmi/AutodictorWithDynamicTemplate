@@ -11,6 +11,29 @@ using NCalc;
 
 namespace CommunicationDevices.ConditionsHandler
 {
+    /// <summary>
+    /// Прверяет строковые выражения булевого типа.
+    /// Все элементы выражения отделяются пробелами.
+    /// ОПЕРАТОРЫ:
+    /// "("
+    /// ")"
+    /// "&&"
+    /// "||"
+    /// "!"
+    /// ВЫРАЖЕНИЯ:
+    /// событие="приб." / "отпр." / "транз."
+    /// типпоезда="тип поезда из DynamicSound.xml"
+    /// путь="1,2,3,4"
+    /// время="МеньшеТекВремени" / "БольшеТекВремени" / "120|120" / "120|120:60|60:10|10"
+    /// классификация="дальний" / "пригород"
+    /// направление="направление из Direction"
+    /// задержкаприб="true" / "false"
+    /// задержкаотпр="true" / "false"
+    /// отмена="true" / "false"
+    /// отправлениепоготовности="true" / "false"
+    /// ограничениеотправкиданных="флаг отправка данных из uit"
+    /// команда="очистка" / "удаление" / "рестарт" / "обновить" / "отобразить"
+    /// </summary>
     public class Conditions
     {
         #region StaticCtor
@@ -29,15 +52,15 @@ namespace CommunicationDevices.ConditionsHandler
                 {"событие", new ConditionHandlerItem("событие", ItemType.Expression, (uit, value) =>
                     {
                         Event eventTrain = Event.None;
-                        switch (value)
+                        switch (value.ToLower(CultureInfo.InvariantCulture))
                         {
-                            case "ПРИБ.":
+                            case "приб.":
                                 eventTrain = Event.Arrival;
                                 break;
-                            case "ОТПР.":
+                            case "отпр.":
                                 eventTrain = Event.Departure;
                                 break;
-                            case "ТРАНЗ.":
+                            case "транз.":
                                 eventTrain = Event.Transit;
                                 break;
                         }
@@ -49,7 +72,7 @@ namespace CommunicationDevices.ConditionsHandler
 
                 {"типпоезда", new ConditionHandlerItem("типпоезда", ItemType.Expression, (uit, value) =>
                     {
-                        var res = (uit.TypeTrain == value);
+                        var res = (uit.TrainTypeByRyle.NameRu == value);
                         return res;
                     })
                 },
@@ -68,12 +91,12 @@ namespace CommunicationDevices.ConditionsHandler
                 //Время=120|120:60|60:10|10   //ДельтаТекВремениПоТипамПоездов  (по событиям)
                 {"время", new ConditionHandlerItem("время", ItemType.Expression, (uit, value) =>
                     {
-                        switch (value)
+                        switch (value.ToLower(CultureInfo.InvariantCulture))
                         {
-                            case "МеньшеТекВремени":
+                            case "меньшетеквремени":
                                 return uit.Time < DateTime.Now;
 
-                            case "БольшеТекВремени":
+                            case "большетеквремени":
                                 return uit.Time > DateTime.Now;
                         }
 
@@ -126,17 +149,17 @@ namespace CommunicationDevices.ConditionsHandler
 
                 {"классификация", new ConditionHandlerItem("классификация", ItemType.Expression, (uit, value) =>      //Дальний, Приг.
                     {
-                        var classification = Classification.None;
-                        switch (value)
+                        var categoryTrain = CategoryTrain.None;
+                        switch (value.ToLower(CultureInfo.InvariantCulture))
                         {
-                            case "Дальний":
-                                classification= Classification.LongDist;
+                            case "дальний":
+                                categoryTrain= CategoryTrain.LongDist;
                                 break;
-                            case "Пригород":
-                                classification= Classification.Suburb;
+                            case "пригород":
+                                categoryTrain= CategoryTrain.Suburb;
                                 break;
                         }
-                        var res = uit.Classification == classification;
+                        var res = uit.TrainTypeByRyle.CategoryTrain == categoryTrain;
                         return res;
                     })
                 },
@@ -201,6 +224,31 @@ namespace CommunicationDevices.ConditionsHandler
                         return false;
                     })
                 },
+
+                {"команда", new ConditionHandlerItem("команда", ItemType.Expression, (uit, value) =>
+                    {
+                       var command = Command.None;
+                       switch (value.ToLower(CultureInfo.InvariantCulture))
+                       {
+                            case "очистка":
+                                command= Command.Clear;
+                                break;
+                            case "удаление":
+                                command= Command.Delete;
+                                break;
+                            case "рестарт":
+                                command= Command.Restart;
+                                break;
+                            case "обновить":
+                                command= Command.Update;
+                                break;
+                            case "отобразить":
+                                command= Command.View;
+                                break;
+                       }
+                       return (uit.Command == command);
+                    })
+                },
             };
         }
 
@@ -237,7 +285,7 @@ namespace CommunicationDevices.ConditionsHandler
         /// <summary>
         /// Создать список логических выражений.
         /// </summary>
-        public List<ConditionHandlerItem> CreateListLogicalExpressions()
+        private List<ConditionHandlerItem> CreateListLogicalExpressions()
         {
             if (string.IsNullOrEmpty(_conditionStr))
                 return null;
@@ -251,7 +299,7 @@ namespace CommunicationDevices.ConditionsHandler
                 //Operator-------------------------------------------
                 if (_baseDict.ContainsKey(itemWs))
                 {
-                    var handler = _baseDict[itemWs];//DeepClone
+                    var handler = _baseDict[itemWs];
                     if (handler.ItemType == ItemType.Operator)
                     {
                         handlers.Add(handler);
