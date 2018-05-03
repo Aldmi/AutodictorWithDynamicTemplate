@@ -18,7 +18,7 @@ namespace Library.Xml
             }
             path = Path.Combine(Directory.GetCurrentDirectory(), $"{folderName}\\{fileName}");
             XmlSerializer formatter = new XmlSerializer(typeof(T));
-            using (FileStream fs = new FileStream(path, FileMode.Create))
+            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
                 formatter.Serialize(fs, obj);
             }
@@ -37,7 +37,7 @@ namespace Library.Xml
                 throw new FileNotFoundException($"файл XML файл не НАЙДЕННА!!!  \"{path} \"");
             }
             XmlSerializer formatter = new XmlSerializer(typeof(T));
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                return (T)formatter.Deserialize(fs);
             }

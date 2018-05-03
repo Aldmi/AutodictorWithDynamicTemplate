@@ -49,7 +49,7 @@ namespace DAL.Serialize.XML.Reposirory
         {
             try
             {
-                var listTrainTableRecXmlModel = XmlSerializerWorker.Load<List<TrainTableRecXmlModel>>(_folderName, _fileName);
+                var listTrainTableRecXmlModel = XmlSerializerWorker.Load<ListTrainRecsXml>(_folderName, _fileName);
                 //listTrainTableRecXmlModel --> listTrainTableRec
             }
             catch (Exception)
@@ -83,7 +83,9 @@ namespace DAL.Serialize.XML.Reposirory
                     Name = "Саратов-Ростов",
                     Num = "456",
                     Num2 = null,
-                    Примечание = "l;l;l;"
+                    Примечание = "l;l;l;",
+                    RouteXmlModel = new RouteXmlModel {RouteType = RouteType.WithStopsAt, StationsId = new List<int> {2,5,6,78 }},
+                    ArrivalTime = DateTime.Now
                 },
                 new TrainTableRecXmlModel
                 {
@@ -91,12 +93,14 @@ namespace DAL.Serialize.XML.Reposirory
                     Name = "Адлер-Анапа",
                     Num = null,
                     Num2 = "dsd",
-                    Примечание = null
+                    Примечание = null,
+                    ArrivalTime = DateTime.Now.AddHours(10)
                 },
             };
 
-            //XmlSerializerWorker.Save(debbugingList, _folderName, _fileName);
+            var container = new ListTrainRecsXml {TrainTableRecXmlModels = debbugingList};
 
+            XmlSerializerWorker.Save(container, _folderName, _fileName);
         }
 
 

@@ -1,29 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using DAL.Abstract.Entitys;
 
+
+//    [OptionalField] // атрибут для новых полей. (сериализовали без поля, а дессериализовать надо с полем)
+
+
 namespace DAL.Serialize.XML.Model
 {
+    [XmlRoot("TrainRecs")]
+    public class ListTrainRecsXml
+    {
+        [XmlArray("Recs")]
+        [XmlArrayItem("Rec")]
+        public List<TrainTableRecXmlModel> TrainTableRecXmlModels { get; set; }
+    }
+
 
     public class TrainTableRecXmlModel
     {
-        public int Id { get; set; }
-        public string Num { get; set; }                                        //Номер поезда
-        public string Num2 { get; set; }                                       //Номер поезда 2 (для транзита)
-        public string Name { get; set; }                                       //Название поезда
+        public int Id;
+        public string Num;                                        //Номер поезда
+        public string Num2;                                       //Номер поезда 2 (для транзита)
+        public string Name;                                       //Название поезда
+        public string Примечание;
 
-        public string Примечание { get; set; }
-        //public RouteXmlModel RouteXmlModel { get; set; }                       //Маршрут
+        [XmlElement("Route")]
+        public RouteXmlModel RouteXmlModel;                       //Маршрут
 
-        //public bool Active { get; set; }                                        //активность, отметка галочкой
-        //public bool Автомат { get; set; }                                       // true - поезд обрабатывается в автомате.
-        //public bool IsScoreBoardOutput { get; set; }                            // Вывод на табло. true. (Работает если указанн Contrains SendingDataLimit)
-        //public bool IsSoundOutput { get; set; }                                 // Вывод звука. true.
-        //public int DirectionId { get; set; }                                    //Направление
-        //public int StationDepartId { get; set; }                                //станция отправления Id
-        //public int StationArrivalId { get; set; }                               //станция прибытия Id
-        //public DateTime? ArrivalTime { get; set; }                              //время прибытие
+        public bool Active;                                       //активность, отметка галочкой
+        public bool Автомат;                                      // true - поезд обрабатывается в автомате.
+        public bool IsScoreBoardOutput;                           // Вывод на табло. true. (Работает если указанн Contrains SendingDataLimit)
+        public bool IsSoundOutput;                                // Вывод звука. true.
+        public int DirectionId;                                   //Направление Id
+        public int StationDepartId;                               //станция отправления Id
+        public int StationArrivalId;                              //станция прибытия Id
+        public DateTime? ArrivalTime;                             //время прибытие
         //public TimeSpan? StopTime { get; set; }                                 //время стоянка (для транзитов)
         //public DateTime? DepartureTime { get; set; }                            //время отправление
         //public DateTime? FollowingTime { get; set; }                            //время следования (время в пути)
