@@ -116,6 +116,9 @@ namespace MainExample
         /// <param name="flagApplicationExit">ВЫХОД из приложения</param>
         private void CheckAuthentication(bool flagApplicationExit)
         {
+            if(_authentificationService.CurrentUser == null)
+                return;
+
             tSBAdmin.Visible = false;
             while (_authentificationService.IsAuthentification == false)
             {
@@ -141,7 +144,7 @@ namespace MainExample
                     //ПОЛЬЗОВАТЕЛЬ - Предыдущий пользователь
                     _authentificationService.SetOldUser();
                     var user = _authentificationService.CurrentUser;
-                    tSBLogOut.Text = user.Login;
+                    tSBLogOut.Text = user?.Login ?? String.Empty;
                     SendAuthenticationChanges(user, "Вход в систему");
                     break;
                 }
@@ -159,6 +162,9 @@ namespace MainExample
 
         private void SendAuthenticationChanges(User user, string causeOfChange)
         {
+            if(user == null)
+                return;
+
             if (table.Count < 1)
             {
                 // Первичные изменения записываем в список изменений

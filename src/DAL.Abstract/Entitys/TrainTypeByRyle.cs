@@ -40,6 +40,12 @@ namespace DAL.Abstract.Entitys
 
         #region ctor
 
+        public TrainTypeByRyle()
+        {
+            
+        }
+
+
         public TrainTypeByRyle(string id, string typeTrain, string nameRu, string aliasRu, string nameEng, string aliasEng, string nameCh, string aliasCh, string showPathTimer, string warningTimer, List<ActionTrain> actionTrains, List<ActionTrain> emergencyTrains)
         {
             int intVal;

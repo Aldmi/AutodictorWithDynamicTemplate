@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using DAL.Abstract.Entitys;
+using Library.Xml;
 
 
 //    [OptionalField] // атрибут для новых полей. (сериализовали без поля, а дессериализовать надо с полем)
@@ -16,7 +15,7 @@ namespace DAL.Serialize.XML.Model
     {
         [XmlArray("Recs")]
         [XmlArrayItem("Rec")]
-        public List<TrainTableRecXmlModel> TrainTableRecXmlModels { get; set; }
+        public List<TrainTableRecXmlModel> TrainTableRecXmlModels;
     }
 
 
@@ -39,36 +38,34 @@ namespace DAL.Serialize.XML.Model
         public int StationDepartId;                               //станция отправления Id
         public int StationArrivalId;                              //станция прибытия Id
         public DateTime? ArrivalTime;                             //время прибытие
-        //public TimeSpan? StopTime { get; set; }                                 //время стоянка (для транзитов)
-        //public DateTime? DepartureTime { get; set; }                            //время отправление
-        //public DateTime? FollowingTime { get; set; }                            //время следования (время в пути)
-        //public string Days { get; set; }                                        //дни следования
-        //public string DaysAlias { get; set; }                                   //дни следования алиас (строка заполняется в ручную)
-        //public DateTime ВремяНачалаДействияРасписания { get; set; }
-        //public DateTime ВремяОкончанияДействияРасписания { get; set; }
-        //public WagonsNumbering WagonsNumbering { get; set; }                    //Нумерация вагонов
-        //public Event Event { get; set; }                                        // Событие поезда (ПРИБ. ОТПР. ТРАНЗ.)
-        //public Classification Classification { get; set; }                      // Классификация поезда  (ПРИГ. ДАЛЬН.)
-        //public bool? ChangeTrainPathDirection { get; set; }                     //смена направления (для транзитов)
-        //public Dictionary<WeekDays, Pathway> TrainPathNumber { get; set; }      //Пути по дням недели или постоянно
-        //public bool PathWeekDayes { get; set; }                                 //true - установленны пути по дням недели, false - путь установленн постоянно
-        //public Dictionary<string, bool> ИспользоватьДополнение { get; set; }    //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
-        //public string Addition { get; set; }                                    //Дополнение
+        public TimeSpan? StopTime;                                //время стоянка (для транзитов)
+        public DateTime? DepartureTime;                           //время отправление
+        public DateTime? FollowingTime;                           //время следования (время в пути)
 
-        //public int TrainTypeByRyleId { get; set; }                              // тип поезда Id
-        //public List<int> ActionTrains { get; set; }                             // Текущие действия поезда Id (шаблоны поезда).
-        //public List<int> EmergencyTrains { get; set; }                         // Текущие список НЕШТАТОК поезда Id (фиксированный набор нештаток, скопированный из типа поезда).
+        public string Days;                                       //дни следования
+        public string DaysAlias;                                  //дни следования алиас (строка заполняется в ручную)
 
+        public DateTime ВремяНачалаДействияРасписания;
+        public DateTime ВремяОкончанияДействияРасписания;
 
+        public WagonsNumbering WagonsNumbering;                    //Нумерация вагонов
+        public Event Event;                                        // Событие поезда (ПРИБ. ОТПР. ТРАНЗ.)
+        public bool? ChangeTrainPathDirection;                     //смена направления (для транзитов)
 
-        public bool ShouldSerializeName()
-        {
-            return Name != null;
-        }
+        public XmlSerializableDictionary<WeekDays, int> TrainPathNumber; //Пути по дням недели или постоянно  (key= день нгедели value= Id пути)
+        public bool PathWeekDayes;                                 //true - установленны пути по дням недели, false - путь установленн постоянно
 
-        public bool ShouldSerializeNum2()
-        {
-            return Num2 != null;
-        }
+        public XmlSerializableDictionary<string, bool> ИспользоватьДополнение;   //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
+        public string Addition;                                    //Дополнение
+
+        public int TrainTypeByRyleId;                             // тип поезда Id
+
+        [XmlArray("ActionTrains")]
+        [XmlArrayItem("ActId")]
+        public List<int> ActionTrainsId;                            // Текущие действия поезда Id (шаблоны поезда).
+
+        [XmlArray("EmergencyTrains")]
+        [XmlArrayItem("EmId")]
+        public List<int> EmergencyTrainsId;                         // Текущие список НЕШТАТОК поезда Id (фиксированный набор нештаток, скопированный из типа поезда).
     }
 }
