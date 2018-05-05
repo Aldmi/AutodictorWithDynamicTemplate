@@ -24,8 +24,7 @@ namespace CommunicationDevices.Mappers
                     .ForMember(dest => dest.StationDeparture,
                         opt => opt.MapFrom(src => src.StationDeparture.NameRu))
                     .ForMember(dest => dest.Command,
-                        opt => opt.MapFrom(src => src.Command.ToString()))
-                      );
+                        opt => opt.MapFrom(src => src.Command.ToString())));
         }
 
         private static string PathNumberConverter(string pathNumber)

@@ -33,7 +33,11 @@ namespace DAL.Serialize.XML.Reposirory
             _key = key;
             _folderName = folderName;
             _fileName = fileName;
+        }
 
+
+        static XmlSerializeTrainTableRecRepository()
+        {
             AutoMapperConfig.Register();
         }
 
@@ -50,18 +54,13 @@ namespace DAL.Serialize.XML.Reposirory
         }
 
 
-        public IEnumerable<TrainTableRec> List() //TODO: realize
+        public IEnumerable<TrainTableRec> List()
         {
             try
             {
                 var listTrainTableRecXmlModel = XmlSerializerWorker.Load<ListTrainRecsXml>(_folderName, _fileName).TrainTableRecXmlModels;
-
-
-                var first = listTrainTableRecXmlModel.FirstOrDefault();
-                var firstMap= Mapper.Map<TrainTableRec>(first);
-
-                var listTrainRecs = new TrainTableRec[10]; // Mapper.Map<IEnumerable<TrainTableRec>>(listTrainTableRecXmlModel).ToList();
-                return listTrainRecs;
+                var listTrainTableRec = Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
+                return listTrainTableRec;
             }
             catch (Exception ex)
             {
@@ -84,43 +83,7 @@ namespace DAL.Serialize.XML.Reposirory
 
         public void AddRange(IEnumerable<TrainTableRec> entitys)//TODO: realize
         {
-           var first= entitys.FirstOrDefault();
-           first.Route= new Route {RouteType = RouteType.WithStopsAt, Stations = new List<Station> {new Station {Id = 10} } };
-           first.ИспользоватьДополнение["звук"] = true;
-
-           var listTrainRecsXml = Mapper.Map<IEnumerable<TrainTableRecXmlModel>>(entitys).ToList();
-
-            //var debbugingList = new List<TrainTableRecXmlModel> //DEBUG
-            //{
-            //    new TrainTableRecXmlModel
-            //    {
-            //        Id = 100,
-            //        Name = "Саратов-Ростов",
-            //        Num = "456",
-            //        Num2 = null,
-            //        Примечание = "l;l;l;",
-            //       // RouteXmlModel = new RouteXmlModel {RouteType = RouteType.WithStopsAt, StationsId = new List<int> {2,5,6,78 }},
-            //       // ArrivalTime = DateTime.Now,
-            //       // StopTime = new TimeSpan(10,2,3),
-            //       //// TrainPathNumber = new List<KeyValuePair<WeekDays, int>> {new KeyValuePair<WeekDays, int>(WeekDays.Постоянно, 10) }
-            //       //TrainPathNumber = new XmlSerializableDictionary<WeekDays, int>
-            //       //{
-            //       //    {WeekDays.Постоянно, 10 }
-            //       //}
-                    
-            //    },
-            //    new TrainTableRecXmlModel
-            //    {
-            //        Id = 2,
-            //        Name = "Адлер-Анапа",
-            //        Num = null,
-            //        Num2 = "dsd",
-            //        Примечание = null,
-            //        //ArrivalTime = null,
-            //        //StopTime = new TimeSpan(10,2,3)
-            //    },
-            //};
-
+            var listTrainRecsXml = Mapper.Map<IEnumerable<TrainTableRecXmlModel>>(entitys).ToList();
             var container = new ListTrainRecsXml { TrainTableRecXmlModels = listTrainRecsXml };
             XmlSerializerWorker.Save(container, _folderName, _fileName);
         }

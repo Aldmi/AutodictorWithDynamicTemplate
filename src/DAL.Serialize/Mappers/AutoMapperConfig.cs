@@ -13,34 +13,34 @@ namespace DAL.Serialize.Mappers
         public static void Register()
         {
             Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<TrainTableRec, TrainTableRecXmlModel>()
-                        .ForMember(dest => dest.Id,
-                            opt => opt.MapFrom(src => src.Id))
-                        .ForMember(dest => dest.RouteXmlModel,
-                            opt => opt.MapFrom(src => new RouteXmlModel
-                            {
-                                RouteType = src.Route.RouteType,
-                                StationsId = src.Route.Stations.Select(st => st.Id).ToList()
-                            }))
-                        .ForMember(dest => dest.DirectionId,
-                            opt => opt.MapFrom(src => src.Direction.Id))
-                        .ForMember(dest => dest.StationArrivalId,
-                            opt => opt.MapFrom(src => src.StationArrival.Id))
-                        .ForMember(dest => dest.StationDepartId,
-                            opt => opt.MapFrom(src => src.StationDepart.Id))
-                        .ForMember(dest => dest.TrainPathNumber,
-                            opt => opt.MapFrom(src => ConvertTrainPathNumberToRepModel(src.TrainPathNumber)))
-                        .ForMember(dest => dest.TrainTypeByRyleId,
-                            opt => opt.MapFrom(src => src.TrainTypeByRyle.Id))
-                        .ForMember(dest => dest.ActionTrainsId,
-                            opt => opt.MapFrom(src => src.ActionTrains.Select(tr => tr.Id)))
-                        .ForMember(dest => dest.EmergencyTrainsId,
-                            opt => opt.MapFrom(src => src.EmergencyTrains.Select(tr => tr.Id))).ReverseMap();
+            {
+                cfg.CreateMap<TrainTableRec, TrainTableRecXmlModel>()
+                    .ForMember(dest => dest.Id,
+                        opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.RouteXmlModel,
+                        opt => opt.MapFrom(src => new RouteXmlModel
+                        {
+                            RouteType = src.Route.RouteType,
+                            StationsId = src.Route.Stations.Select(st => st.Id).ToList()
+                        }))
+                    .ForMember(dest => dest.DirectionId,
+                        opt => opt.MapFrom(src => src.Direction.Id))
+                    .ForMember(dest => dest.StationArrivalId,
+                        opt => opt.MapFrom(src => src.StationArrival.Id))
+                    .ForMember(dest => dest.StationDepartId,
+                        opt => opt.MapFrom(src => src.StationDepart.Id))
+                    .ForMember(dest => dest.TrainPathNumber,
+                        opt => opt.MapFrom(src => ConvertTrainPathNumberToRepModel(src.TrainPathNumber)))
+                    .ForMember(dest => dest.TrainTypeByRyleId,
+                        opt => opt.MapFrom(src => src.TrainTypeByRyle.Id))
+                    .ForMember(dest => dest.ActionTrainsId,
+                        opt => opt.MapFrom(src => src.ActionTrains.Select(tr => tr.Id)))
+                .ForMember(dest => dest.EmergencyTrainsId,
+                    opt => opt.MapFrom(src => src.EmergencyTrains.Select(tr => tr.Id))).ReverseMap();
 
-                    cfg.CreateMap<TrainTableRecXmlModel, TrainTableRec>()
-                        .ForMember(dest => dest.Id,
-                            opt => opt.MapFrom(src => src.Id))
+                cfg.CreateMap<TrainTableRecXmlModel, TrainTableRec>()
+                    .ForMember(dest => dest.Id,
+                        opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.Route,
                         opt => opt.MapFrom(src => new Route
                         {
@@ -58,12 +58,13 @@ namespace DAL.Serialize.Mappers
                     .ForMember(dest => dest.TrainTypeByRyle,
                         opt => opt.MapFrom(src => new TrainTypeByRyle { Id = src.TrainTypeByRyleId }))
                     .ForMember(dest => dest.ActionTrains,
-                        opt => opt.MapFrom(src => src.ActionTrainsId.Select(id => new ActionTrain {Id = id })))
+                        opt => opt.MapFrom(src => src.ActionTrainsId.Select(id => new ActionTrain { Id = id })))
                     .ForMember(dest => dest.EmergencyTrains,
                         opt => opt.MapFrom(src => src.EmergencyTrainsId.Select(id => new ActionTrain { Id = id })));
-                });
-             }
-        
+
+            });
+        }
+
 
 
 

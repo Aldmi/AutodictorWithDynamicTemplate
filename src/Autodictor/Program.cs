@@ -208,9 +208,7 @@ namespace MainExample
                     EmergencyTrains = emergencyByTrainType.DeepClone()
                 }
             };
-            serv.ReWriteAll(items);
-
-            ResolveStaticServices();
+            //serv.ReWriteAll(items);
 
             ОкноНастроек.ЗагрузитьНастройки();
 
@@ -318,16 +316,6 @@ namespace MainExample
 
 
 
-        public static void ResolveStaticServices()
-        {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"ResolveStaticServices. Исключение: {ex.Message}");
-            }
-        }
 
 
 

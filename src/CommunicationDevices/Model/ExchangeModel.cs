@@ -108,13 +108,14 @@ namespace CommunicationDevices.Model
 
         public ExchangeModel()
         {
+            //TODO: регистрация AutoMapper может быть только одна на процесс приложения.
             //РЕГИСТРАЦИЯ МАППИНГА
-            AutoMapperConfig.Register();
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<UniversalInputType, UniversalDisplayType>();
-                cfg.CreateMap<UniversalDisplayType, UniversalInputType>();
-            });
+            //AutoMapperConfig.Register();
+            //Mapper.Initialize(cfg =>
+            //{
+            //    cfg.CreateMap<UniversalInputType, UniversalDisplayType>();
+            //    cfg.CreateMap<UniversalDisplayType, UniversalInputType>();
+            //});
         }
 
         #endregion

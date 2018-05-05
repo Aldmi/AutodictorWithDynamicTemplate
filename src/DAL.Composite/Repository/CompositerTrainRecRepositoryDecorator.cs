@@ -135,6 +135,8 @@ namespace DAL.Composite.Repository
                 }
             }
 
+            //TODO: восстановить Station по id
+
             return trainTableRec;
         }
 
