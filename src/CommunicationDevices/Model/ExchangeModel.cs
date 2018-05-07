@@ -110,7 +110,7 @@ namespace CommunicationDevices.Model
         {
             //TODO: регистрация AutoMapper может быть только одна на процесс приложения.
             //РЕГИСТРАЦИЯ МАППИНГА
-            //AutoMapperConfig.Register();
+            AutoMapperConfig.Register();
             //Mapper.Initialize(cfg =>
             //{
             //    cfg.CreateMap<UniversalInputType, UniversalDisplayType>();

@@ -59,7 +59,8 @@ namespace DAL.Serialize.XML.Reposirory
             try
             {
                 var listTrainTableRecXmlModel = XmlSerializerWorker.Load<ListTrainRecsXml>(_folderName, _fileName).TrainTableRecXmlModels;
-                var listTrainTableRec = Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
+                //var listTrainTableRec = Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
+                var listTrainTableRec = AutoMapperConfig.Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
                 return listTrainTableRec;
             }
             catch (Exception ex)
@@ -83,7 +84,7 @@ namespace DAL.Serialize.XML.Reposirory
 
         public void AddRange(IEnumerable<TrainTableRec> entitys)//TODO: realize
         {
-            var listTrainRecsXml = Mapper.Map<IEnumerable<TrainTableRecXmlModel>>(entitys).ToList();
+            var listTrainRecsXml = AutoMapperConfig.Mapper.Map<IEnumerable<TrainTableRecXmlModel>>(entitys).ToList();
             var container = new ListTrainRecsXml { TrainTableRecXmlModels = listTrainRecsXml };
             XmlSerializerWorker.Save(container, _folderName, _fileName);
         }
