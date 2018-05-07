@@ -19,14 +19,17 @@ namespace MainExample
         private readonly PathwaysService _pathwaysService;
         private readonly DirectionService _directionService;
         private readonly ISoundReсordWorkerService _soundReсordWorkerService;
+        private readonly Func<Route, List<Station>, EditListStationForm> _editListStationFormFactory;
         private SoundRecord _record;
         private readonly SoundRecord _recordOld;
 
         public bool ПрименитьКоВсемСообщениям = true;
         private bool _сделаныИзменения = false;
         private bool _разрешениеИзменений = false;
-        private List<string> СтанцииВыбранногоНаправления { get; }
+        private List<Station> CurrentDirectionStations { get; }
         public List<Pathway> НомераПутей { get; set; }
+
+        private Route RouteVm { get; set; }
 
         #endregion
 
@@ -35,15 +38,20 @@ namespace MainExample
 
         #region ctor
 
-        public SoundRecordEditForm(PathwaysService pathwaysService, DirectionService directionService, ISoundReсordWorkerService soundReсordWorkerService, SoundRecord record)
+        public SoundRecordEditForm(PathwaysService pathwaysService,
+                                   DirectionService directionService,
+                                   ISoundReсordWorkerService soundReсordWorkerService,
+                                   Func<Route, List<Station>, EditListStationForm> editListStationFormFactory,
+                                   SoundRecord record)
         {
             _pathwaysService = pathwaysService;
             _directionService = directionService;
             _soundReсordWorkerService = soundReсordWorkerService;
+            _editListStationFormFactory = editListStationFormFactory;
             _record = record;
             _record.ИспользоватьДополнение = new Dictionary<string, bool>(record.ИспользоватьДополнение);//ссылочные переменные копируются по ссылке, т.е. их нужно создать заново
             _recordOld = record;
-            СтанцииВыбранногоНаправления= _directionService.GetStationsInDirectionByName(record.Направление)?.Select(st => st.NameRu).ToList();
+            CurrentDirectionStations= _directionService.GetStationsInDirectionByName(record.Направление).ToList();
             НомераПутей= _pathwaysService.GetAll().ToList();
 
             InitializeComponent();
@@ -56,7 +64,7 @@ namespace MainExample
 
         #region Methode
 
-        private void Model2UiControls(SoundRecord record)
+        private void Model2Ui(SoundRecord record)
         {
             tb_typeTrain.Text = record.ТипПоезда.NameRu;
             var categoryText = "Не определенн";
@@ -92,7 +100,6 @@ namespace MainExample
 
 
             cB_НомерПути.SelectedIndex = paths.IndexOf(record.НомерПути) + 1;
-
 
 
             dTP_Прибытие.Value = record.ВремяПрибытия;
@@ -138,12 +145,12 @@ namespace MainExample
             txb_НомерПоезда.Text = record.НомерПоезда;
             txb_НомерПоезда2.Text = record.НомерПоезда2;
 
-            if (СтанцииВыбранногоНаправления != null && СтанцииВыбранногоНаправления.Any())
+            if (CurrentDirectionStations != null && CurrentDirectionStations.Any())
             {
                 cBОткуда.Items.Clear();
                 cBКуда.Items.Clear();
-                cBОткуда.Items.AddRange(СтанцииВыбранногоНаправления.ToArray());
-                cBКуда.Items.AddRange(СтанцииВыбранногоНаправления.ToArray());
+                cBОткуда.Items.AddRange(CurrentDirectionStations.ToArray());
+                cBКуда.Items.AddRange(CurrentDirectionStations.ToArray());
             }
             cBОткуда.Text = record.СтанцияОтправления;
             cBКуда.Text = record.СтанцияНазначения;
@@ -164,6 +171,35 @@ namespace MainExample
                     btnПовторения.Text = "3 ПОВТОРА";
                     break;
             };
+
+
+            //Станции маршрута
+            RouteVm = record.Route;
+            lbRoute.DataSource = RouteVm?.Stations;
+            lbRoute.DisplayMember = "NameRu";
+            if (record.Route.RouteType == RouteType.WithAllStops)
+            {
+                rBСоВсемиОстановками.Checked = true;
+            }
+            else if (record.Route.RouteType == RouteType.None)
+            {
+                rBНеОповещать.Checked = true;
+            }
+            else if (record.Route.RouteType == RouteType.WithStopsAt)
+            {
+                rBСОстановкамиНа.Checked = true;
+            }
+            else if (record.Route.RouteType == RouteType.WithStopsExcept)
+            {
+                rBСОстановкамиКроме.Checked = true;
+            }
+            else
+            {
+                rBНеОповещать.Checked = true;
+            }
+
+
+
 
             //ЗАПОЛНЕНИЕ СПИСКА ШАБЛОНОВ------------
             lVШаблоны.Items.Clear();
@@ -249,57 +285,12 @@ namespace MainExample
             else if ((_record.ТипСообщения == SoundRecordType.ДвижениеПоезда) || (_record.ТипСообщения == SoundRecordType.ДвижениеПоездаНеПодтвержденное))
             {
                 #region Движение по станциям
-                lB_ПоСтанциям.Items.Clear();
-                rB_ПоРасписанию.Checked = false;
-                rB_ПоСтанциям.Checked = false;
-                rB_КромеСтанций.Checked = false;
-                rB_СоВсемиОстановками.Checked = false;
+             
+                rBНеОповещать.Checked = false;
+                rBСОстановкамиНа.Checked = false;
+                rBСОстановкамиКроме.Checked = false;
+                rBСоВсемиОстановками.Checked = false;
 
-                if (_record.ТипПоезда.CategoryTrain == CategoryTrain.Suburb)
-                {
-                    string Примечание = this._record.Примечание;
-                    var списокСтанцийParse = Примечание.Substring(Примечание.IndexOf(":", StringComparison.Ordinal) + 1).Split(',').Select(st => st.Trim()).ToList();
-
-                    if (Примечание.Contains("С остановк"))
-                    {
-                        rB_ПоСтанциям.Checked = true;
-                        foreach (var станция in СтанцииВыбранногоНаправления)
-                        {
-                            if (списокСтанцийParse.Contains(станция))
-                                lB_ПоСтанциям.Items.Add(станция);
-                        }
-
-                        lB_ПоСтанциям.Enabled = true;
-                        btnРедактировать.Enabled = true;
-                    }
-                    else if (Примечание.Contains("Со всеми остановками"))
-                    {
-                        rB_СоВсемиОстановками.Checked = true;
-                        foreach (var станция in СтанцииВыбранногоНаправления)
-                            lB_ПоСтанциям.Items.Add(станция);
-
-                        lB_ПоСтанциям.Enabled = true;
-                        btnРедактировать.Enabled = true;
-                    }
-                    else if (Примечание.Contains("Кроме"))
-                    {
-                        rB_КромеСтанций.Checked = true;
-                        foreach (var станция in СтанцииВыбранногоНаправления)
-                        {
-                            if (списокСтанцийParse.Contains(станция))
-                                lB_ПоСтанциям.Items.Add(станция);
-                        }
-
-                        lB_ПоСтанциям.Enabled = true;
-                        btnРедактировать.Enabled = true;
-                    }
-                    else
-                    {
-                        rB_ПоРасписанию.Checked = true;
-                        lB_ПоСтанциям.Enabled = false;
-                        btnРедактировать.Enabled = false;
-                    }
-                }
                 #endregion
             }
 
@@ -441,7 +432,7 @@ namespace MainExample
         /// Значения из UI контролов в SoundRecord
         /// (полная копия ApplyChange)
         /// </summary>
-        private void UiControls2Model(ref SoundRecord rec)
+        private void Ui2Model(ref SoundRecord rec)
         {
             bool ПерваяСтанция = true;
             string Примечание = "";
@@ -455,37 +446,6 @@ namespace MainExample
 
             _record.ВыводНаТабло = chBoxВыводНаТабло.Checked;
             _record.ВыводЗвука = chBoxВыводЗвука.Checked;
-
-            if (rB_СоВсемиОстановками.Checked == true)
-                Примечание = "Со всеми остановками";
-            else if (rB_ПоСтанциям.Checked == true)
-            {
-                Примечание = "С остановками: ";
-                foreach (var станция in СтанцииВыбранногоНаправления)
-                    if (lB_ПоСтанциям.Items.Contains(станция))
-                    {
-                        if (ПерваяСтанция == true)
-                            ПерваяСтанция = false;
-                        else
-                            Примечание += ", ";
-
-                        Примечание += станция;
-                    }
-            }
-            else if (rB_КромеСтанций.Checked == true)
-            {
-                Примечание = "Кроме: ";
-                foreach (var станция in СтанцииВыбранногоНаправления)
-                    if (lB_ПоСтанциям.Items.Contains(станция))
-                    {
-                        if (ПерваяСтанция == true)
-                            ПерваяСтанция = false;
-                        else
-                            Примечание += ", ";
-                        Примечание += станция;
-                    }
-            }
-            this._record.Примечание = Примечание;
 
             _record.СтанцияОтправления = cBОткуда.Text;
             _record.СтанцияНазначения = cBКуда.Text;
@@ -517,6 +477,23 @@ namespace MainExample
                 _record.ВремяПрибытия = _record.ВремяПрибытия.AddDays(-1);
             }
 
+            _record.Route = RouteVm;
+            if (rBСоВсемиОстановками.Checked)
+            {
+                _record.Route.RouteType = RouteType.WithAllStops;
+            }
+            else if (rBСОстановкамиНа.Checked)
+            {
+                _record.Route.RouteType = RouteType.WithStopsAt;
+            }
+            else if (rBСОстановкамиКроме.Checked)
+            {
+                _record.Route.RouteType = RouteType.WithStopsExcept;
+            }
+            else
+            {
+                _record.Route.RouteType = RouteType.NotNotify;
+            }
 
 
             //Применение битов нештатных ситуаций------------------------------
@@ -586,37 +563,6 @@ namespace MainExample
             _record.ВыводНаТабло = chBoxВыводНаТабло.Checked;
             _record.ВыводЗвука = chBoxВыводЗвука.Checked;
 
-            if (rB_СоВсемиОстановками.Checked == true)
-                Примечание = "Со всеми остановками";
-            else if (rB_ПоСтанциям.Checked == true)
-            {
-                Примечание = "С остановками: ";
-                foreach (var станция in СтанцииВыбранногоНаправления)
-                    if (lB_ПоСтанциям.Items.Contains(станция))
-                    {
-                        if (ПерваяСтанция == true)
-                            ПерваяСтанция = false;
-                        else
-                            Примечание += ", ";
-
-                        Примечание += станция;
-                    }
-            }
-            else if (rB_КромеСтанций.Checked == true)
-            {
-                Примечание = "Кроме: ";
-                foreach (var станция in СтанцииВыбранногоНаправления)
-                    if (lB_ПоСтанциям.Items.Contains(станция))
-                    {
-                        if (ПерваяСтанция == true)
-                            ПерваяСтанция = false;
-                        else
-                            Примечание += ", ";
-                        Примечание += станция;
-                    }
-            }
-            this._record.Примечание = Примечание;
-
             _record.СтанцияОтправления = cBОткуда.Text;
             _record.СтанцияНазначения = cBКуда.Text;
 
@@ -648,7 +594,23 @@ namespace MainExample
                 _record.ВремяПрибытия = _record.ВремяПрибытия.AddDays(-1);
             }
 
-
+            _record.Route = RouteVm;
+            if (rBСоВсемиОстановками.Checked)
+            {
+                _record.Route.RouteType = RouteType.WithAllStops;
+            }
+            else if (rBСОстановкамиНа.Checked)
+            {
+                _record.Route.RouteType = RouteType.WithStopsAt;
+            }
+            else if (rBСОстановкамиКроме.Checked)
+            {
+                _record.Route.RouteType = RouteType.WithStopsExcept;
+            }
+            else
+            {
+                _record.Route.RouteType = RouteType.NotNotify;
+            }
 
             //Применение битов нештатных ситуаций------------------------------
             _record.Emergency = Emergency.None;
@@ -711,7 +673,7 @@ namespace MainExample
 
         protected override void OnLoad(EventArgs e)
         {
-            Model2UiControls(_record);
+            Model2Ui(_record);
             base.OnLoad(e);
         }
 
@@ -782,73 +744,26 @@ namespace MainExample
         }
 
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnРедактировать_Click(object sender, EventArgs e)
         {
-            string СписокВыбранныхСтанций = "";
-            for (int i = 0; i < lB_ПоСтанциям.Items.Count; i++)
-                СписокВыбранныхСтанций += lB_ПоСтанциям.Items[i] + ",";
-
-            //СписокСтанцийForm списокСтанцийForm = new СписокСтанцийForm(СписокВыбранныхСтанций, СтанцииВыбранногоНаправления.ToArray());
-            //if (списокСтанцийForm.ShowDialog() == DialogResult.OK)
-            //{
-            //    List<string> РезультирующиеСтанции = списокСтанцийForm.ПолучитьСписокВыбранныхСтанций();
-            //    lB_ПоСтанциям.Items.Clear();
-            //    foreach (var res in РезультирующиеСтанции)
-            //        lB_ПоСтанциям.Items.Add(res);
-
-            //    bool ПерваяСтанция = true;
-
-            //    string Примечание = "";
-            //    if (rB_СоВсемиОстановками.Checked == true)
-            //    {
-            //        Примечание = "Со всеми остановками";
-            //    }
-            //    else if (rB_ПоСтанциям.Checked == true)
-            //    {
-            //        Примечание = "С остановками: ";
-            //        foreach (var станция in СтанцииВыбранногоНаправления)
-            //            if (lB_ПоСтанциям.Items.Contains(станция))
-            //            {
-            //                if (ПерваяСтанция == true)
-            //                    ПерваяСтанция = false;
-            //                else
-            //                    Примечание += ", ";
-
-            //                Примечание += станция;
-            //            }
-            //    }
-            //    else if (rB_КромеСтанций.Checked == true)
-            //    {
-            //        Примечание = "Кроме: ";
-            //        foreach (var станция in СтанцииВыбранногоНаправления)
-            //            if (lB_ПоСтанциям.Items.Contains(станция))
-            //            {
-            //                if (ПерваяСтанция == true)
-            //                    ПерваяСтанция = false;
-            //                else
-            //                    Примечание += ", ";
-            //                Примечание += станция;
-            //            }
-            //    }
-
-            //    this._record.Примечание = Примечание;
-
-            //    ОбновитьТекстВОкне();
-            //    if (_разрешениеИзменений == true) _сделаныИзменения = true;
-            //}
+            var editRouteForm = _editListStationFormFactory(RouteVm, CurrentDirectionStations);
+            if (editRouteForm.ShowDialog() == DialogResult.OK)
+            {
+                RouteVm.Stations = editRouteForm.EditListStationFormViewModel.RouteStations;
+            }
         }
 
 
         private void rB_ПоСтанциям_CheckedChanged(object sender, EventArgs e)
         {
-            if ((rB_ПоСтанциям.Checked == true) || (rB_КромеСтанций.Checked == true) || (rB_СоВсемиОстановками.Checked == true))
+            if ((rBСОстановкамиНа.Checked == true) || (rBСОстановкамиКроме.Checked == true) || (rBСоВсемиОстановками.Checked == true))
             {
-                lB_ПоСтанциям.Enabled = true;
+                lbRoute.Enabled = true;
                 btnРедактировать.Enabled = true;
             }
             else
             {
-                lB_ПоСтанциям.Enabled = false;
+                lbRoute.Enabled = false;
                 btnРедактировать.Enabled = false;
             }
             if (_разрешениеИзменений == true) _сделаныИзменения = true;
@@ -903,7 +818,7 @@ namespace MainExample
             if (selectedActionTrainDyn != null)
             {
                 var recCopy= _record;
-                UiControls2Model(ref recCopy);
+                Ui2Model(ref recCopy);
                 var textFragments= _soundReсordWorkerService.CalcTextFragment(ref recCopy, selectedActionTrainDyn.ActionTrain);
                 rTB_Сообщение.ShowTextFragment(textFragments);
             }

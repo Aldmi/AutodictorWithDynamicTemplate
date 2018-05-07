@@ -71,7 +71,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
                 [WeekDays.Вс] = null
             };
             TrainTableRec.PathWeekDayes = false;
-            TrainTableRec.Примечание = "";
+            TrainTableRec.Route = null;
             TrainTableRec.Addition = "";
             TrainTableRec.ИспользоватьДополнение = new Dictionary<string, bool>
             {

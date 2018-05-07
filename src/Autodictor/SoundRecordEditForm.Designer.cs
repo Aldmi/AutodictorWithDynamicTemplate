@@ -72,12 +72,12 @@
             this.comboBox_displayTable = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rB_СоВсемиОстановками = new System.Windows.Forms.RadioButton();
+            this.lbRoute = new DevExpress.XtraEditors.ListBoxControl();
+            this.rBСоВсемиОстановками = new System.Windows.Forms.RadioButton();
             this.btnРедактировать = new System.Windows.Forms.Button();
-            this.lB_ПоСтанциям = new System.Windows.Forms.ListBox();
-            this.rB_КромеСтанций = new System.Windows.Forms.RadioButton();
-            this.rB_ПоСтанциям = new System.Windows.Forms.RadioButton();
-            this.rB_ПоРасписанию = new System.Windows.Forms.RadioButton();
+            this.rBСОстановкамиКроме = new System.Windows.Forms.RadioButton();
+            this.rBСОстановкамиНа = new System.Windows.Forms.RadioButton();
+            this.rBНеОповещать = new System.Windows.Forms.RadioButton();
             this.cBКуда = new System.Windows.Forms.ComboBox();
             this.cBОткуда = new System.Windows.Forms.ComboBox();
             this.cBОтменен = new System.Windows.Forms.CheckBox();
@@ -110,6 +110,7 @@
             this.groupBox2.SuspendLayout();
             this.gB_Прибытие.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lbRoute)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.gBНастройкиПоезда.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -592,12 +593,12 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.rB_СоВсемиОстановками);
+            this.groupBox1.Controls.Add(this.lbRoute);
+            this.groupBox1.Controls.Add(this.rBСоВсемиОстановками);
             this.groupBox1.Controls.Add(this.btnРедактировать);
-            this.groupBox1.Controls.Add(this.lB_ПоСтанциям);
-            this.groupBox1.Controls.Add(this.rB_КромеСтанций);
-            this.groupBox1.Controls.Add(this.rB_ПоСтанциям);
-            this.groupBox1.Controls.Add(this.rB_ПоРасписанию);
+            this.groupBox1.Controls.Add(this.rBСОстановкамиКроме);
+            this.groupBox1.Controls.Add(this.rBСОстановкамиНа);
+            this.groupBox1.Controls.Add(this.rBНеОповещать);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox1.Location = new System.Drawing.Point(11, 164);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
@@ -608,18 +609,27 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Движение с остановками";
             // 
-            // rB_СоВсемиОстановками
+            // lbRoute
             // 
-            this.rB_СоВсемиОстановками.AutoSize = true;
-            this.rB_СоВсемиОстановками.Location = new System.Drawing.Point(13, 87);
-            this.rB_СоВсемиОстановками.Margin = new System.Windows.Forms.Padding(2);
-            this.rB_СоВсемиОстановками.Name = "rB_СоВсемиОстановками";
-            this.rB_СоВсемиОстановками.Size = new System.Drawing.Size(197, 24);
-            this.rB_СоВсемиОстановками.TabIndex = 18;
-            this.rB_СоВсемиОстановками.TabStop = true;
-            this.rB_СоВсемиОстановками.Text = "со всеми остановками";
-            this.rB_СоВсемиОстановками.UseVisualStyleBackColor = true;
-            this.rB_СоВсемиОстановками.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
+            this.lbRoute.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbRoute.Appearance.Options.UseFont = true;
+            this.lbRoute.Location = new System.Drawing.Point(244, 21);
+            this.lbRoute.Name = "lbRoute";
+            this.lbRoute.Size = new System.Drawing.Size(402, 148);
+            this.lbRoute.TabIndex = 52;
+            // 
+            // rBСоВсемиОстановками
+            // 
+            this.rBСоВсемиОстановками.AutoSize = true;
+            this.rBСоВсемиОстановками.Location = new System.Drawing.Point(13, 87);
+            this.rBСоВсемиОстановками.Margin = new System.Windows.Forms.Padding(2);
+            this.rBСоВсемиОстановками.Name = "rBСоВсемиОстановками";
+            this.rBСоВсемиОстановками.Size = new System.Drawing.Size(197, 24);
+            this.rBСоВсемиОстановками.TabIndex = 18;
+            this.rBСоВсемиОстановками.TabStop = true;
+            this.rBСоВсемиОстановками.Text = "со всеми остановками";
+            this.rBСоВсемиОстановками.UseVisualStyleBackColor = true;
+            this.rBСоВсемиОстановками.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
             // 
             // btnРедактировать
             // 
@@ -632,59 +642,47 @@
             this.btnРедактировать.TabIndex = 13;
             this.btnРедактировать.Text = "РЕДАКТИРОВАТЬ";
             this.btnРедактировать.UseVisualStyleBackColor = true;
-            this.btnРедактировать.Click += new System.EventHandler(this.button2_Click);
+            this.btnРедактировать.Click += new System.EventHandler(this.btnРедактировать_Click);
             // 
-            // lB_ПоСтанциям
+            // rBСОстановкамиКроме
             // 
-            this.lB_ПоСтанциям.Enabled = false;
-            this.lB_ПоСтанциям.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lB_ПоСтанциям.FormattingEnabled = true;
-            this.lB_ПоСтанциям.ItemHeight = 20;
-            this.lB_ПоСтанциям.Location = new System.Drawing.Point(278, 20);
-            this.lB_ПоСтанциям.Margin = new System.Windows.Forms.Padding(2);
-            this.lB_ПоСтанциям.Name = "lB_ПоСтанциям";
-            this.lB_ПоСтанциям.Size = new System.Drawing.Size(368, 144);
-            this.lB_ПоСтанциям.TabIndex = 3;
+            this.rBСОстановкамиКроме.AutoSize = true;
+            this.rBСОстановкамиКроме.Location = new System.Drawing.Point(13, 65);
+            this.rBСОстановкамиКроме.Margin = new System.Windows.Forms.Padding(2);
+            this.rBСОстановкамиКроме.Name = "rBСОстановкамиКроме";
+            this.rBСОстановкамиКроме.Size = new System.Drawing.Size(215, 24);
+            this.rBСОстановкамиКроме.TabIndex = 2;
+            this.rBСОстановкамиКроме.TabStop = true;
+            this.rBСОстановкамиКроме.Text = "кроме станций из списка";
+            this.rBСОстановкамиКроме.UseVisualStyleBackColor = true;
+            this.rBСОстановкамиКроме.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
             // 
-            // rB_КромеСтанций
+            // rBСОстановкамиНа
             // 
-            this.rB_КромеСтанций.AutoSize = true;
-            this.rB_КромеСтанций.Location = new System.Drawing.Point(13, 65);
-            this.rB_КромеСтанций.Margin = new System.Windows.Forms.Padding(2);
-            this.rB_КромеСтанций.Name = "rB_КромеСтанций";
-            this.rB_КромеСтанций.Size = new System.Drawing.Size(215, 24);
-            this.rB_КромеСтанций.TabIndex = 2;
-            this.rB_КромеСтанций.TabStop = true;
-            this.rB_КромеСтанций.Text = "кроме станций из списка";
-            this.rB_КромеСтанций.UseVisualStyleBackColor = true;
-            this.rB_КромеСтанций.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
+            this.rBСОстановкамиНа.AutoSize = true;
+            this.rBСОстановкамиНа.Location = new System.Drawing.Point(13, 43);
+            this.rBСОстановкамиНа.Margin = new System.Windows.Forms.Padding(2);
+            this.rBСОстановкамиНа.Name = "rBСОстановкамиНа";
+            this.rBСОстановкамиНа.Size = new System.Drawing.Size(198, 24);
+            this.rBСОстановкамиНа.TabIndex = 1;
+            this.rBСОстановкамиНа.TabStop = true;
+            this.rBСОстановкамиНа.Text = "по станциям из списка";
+            this.rBСОстановкамиНа.UseVisualStyleBackColor = true;
+            this.rBСОстановкамиНа.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
             // 
-            // rB_ПоСтанциям
+            // rBНеОповещать
             // 
-            this.rB_ПоСтанциям.AutoSize = true;
-            this.rB_ПоСтанциям.Location = new System.Drawing.Point(13, 43);
-            this.rB_ПоСтанциям.Margin = new System.Windows.Forms.Padding(2);
-            this.rB_ПоСтанциям.Name = "rB_ПоСтанциям";
-            this.rB_ПоСтанциям.Size = new System.Drawing.Size(198, 24);
-            this.rB_ПоСтанциям.TabIndex = 1;
-            this.rB_ПоСтанциям.TabStop = true;
-            this.rB_ПоСтанциям.Text = "по станциям из списка";
-            this.rB_ПоСтанциям.UseVisualStyleBackColor = true;
-            this.rB_ПоСтанциям.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
-            // 
-            // rB_ПоРасписанию
-            // 
-            this.rB_ПоРасписанию.AutoSize = true;
-            this.rB_ПоРасписанию.Checked = true;
-            this.rB_ПоРасписанию.Location = new System.Drawing.Point(13, 21);
-            this.rB_ПоРасписанию.Margin = new System.Windows.Forms.Padding(2);
-            this.rB_ПоРасписанию.Name = "rB_ПоРасписанию";
-            this.rB_ПоРасписанию.Size = new System.Drawing.Size(136, 24);
-            this.rB_ПоРасписанию.TabIndex = 0;
-            this.rB_ПоРасписанию.TabStop = true;
-            this.rB_ПоРасписанию.Text = "не озвучивать";
-            this.rB_ПоРасписанию.UseVisualStyleBackColor = true;
-            this.rB_ПоРасписанию.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
+            this.rBНеОповещать.AutoSize = true;
+            this.rBНеОповещать.Checked = true;
+            this.rBНеОповещать.Location = new System.Drawing.Point(13, 21);
+            this.rBНеОповещать.Margin = new System.Windows.Forms.Padding(2);
+            this.rBНеОповещать.Name = "rBНеОповещать";
+            this.rBНеОповещать.Size = new System.Drawing.Size(136, 24);
+            this.rBНеОповещать.TabIndex = 0;
+            this.rBНеОповещать.TabStop = true;
+            this.rBНеОповещать.Text = "не озвучивать";
+            this.rBНеОповещать.UseVisualStyleBackColor = true;
+            this.rBНеОповещать.CheckedChanged += new System.EventHandler(this.rB_ПоСтанциям_CheckedChanged);
             // 
             // cBКуда
             // 
@@ -1013,7 +1011,7 @@
             this.chBoxВыводНаТабло.Text = "На табло";
             this.chBoxВыводНаТабло.UseVisualStyleBackColor = true;
             // 
-            // КарточкаДвиженияПоезда
+            // SoundRecordEditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -1041,6 +1039,7 @@
             this.gB_Прибытие.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lbRoute)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.gBНастройкиПоезда.ResumeLayout(false);
@@ -1075,11 +1074,10 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnРедактировать;
-        private System.Windows.Forms.ListBox lB_ПоСтанциям;
-        private System.Windows.Forms.RadioButton rB_КромеСтанций;
-        private System.Windows.Forms.RadioButton rB_ПоСтанциям;
-        private System.Windows.Forms.RadioButton rB_ПоРасписанию;
-        private System.Windows.Forms.RadioButton rB_СоВсемиОстановками;
+        private System.Windows.Forms.RadioButton rBСОстановкамиКроме;
+        private System.Windows.Forms.RadioButton rBСОстановкамиНа;
+        private System.Windows.Forms.RadioButton rBНеОповещать;
+        private System.Windows.Forms.RadioButton rBСоВсемиОстановками;
         private System.Windows.Forms.ComboBox cBКуда;
         private System.Windows.Forms.ComboBox cBОткуда;
         private System.Windows.Forms.Button btnПовторения;
@@ -1132,5 +1130,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox tb_Category;
         private System.Windows.Forms.TextBox tb_typeTrain;
+        private DevExpress.XtraEditors.ListBoxControl lbRoute;
     }
 }

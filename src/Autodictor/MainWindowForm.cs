@@ -706,7 +706,7 @@ namespace MainExample
             rec.НомерПутиБезАвтосброса = newRec.НомерПутиБезАвтосброса;
             rec.Описание = newRec.Описание;
             rec.ОписаниеСостоянияКарточки = newRec.ОписаниеСостоянияКарточки;
-            rec.Примечание = newRec.Примечание;
+            rec.Route = newRec.Route;
             rec.РазрешениеНаОтображениеПути = newRec.РазрешениеНаОтображениеПути;
             rec.НумерацияПоезда = newRec.НумерацияПоезда;
             rec.СтанцияНазначения = newRec.СтанцияНазначения;
@@ -789,7 +789,7 @@ namespace MainExample
                                                                        Данные.Value.НазваниеПоезда,
                                                                        ВремяПрибытия,
                                                                        ВремяОтправления,
-                                                                       Данные.Value.Примечание,
+                                                                       Данные.Value.Route.ToString(),
                                                                        Данные.Value.ИспользоватьДополнение["звук"] ? Данные.Value.Дополнение : String.Empty});
                     lvi1.Tag = Данные.Value.Id;
                     lvi1.Checked = Данные.Value.Состояние != SoundRecordStatus.Выключена;
@@ -1098,9 +1098,12 @@ namespace MainExample
                                         break;
                                 }
 
+                                var routeStr = данные.Route.ToString() + нумерацияПоезда;
+                                if (lv.Items[item].SubItems[6].Text != routeStr)
+                                    lv.Items[item].SubItems[6].Text = routeStr;
 
-                                if (lv.Items[item].SubItems[6].Text != данные.Примечание + нумерацияПоезда)
-                                    lv.Items[item].SubItems[6].Text = данные.Примечание + нумерацияПоезда;
+                                //if (lv.Items[item].SubItems[6].Text != данные.Примечание + нумерацияПоезда)
+                                //    lv.Items[item].SubItems[6].Text = данные.Примечание + нумерацияПоезда;
                             }
                         }
                     }
@@ -2831,57 +2834,57 @@ namespace MainExample
                             break;
 
                         case "СТАНЦИИ":
-                            if ((rec.ТипПоезда.CategoryTrain == CategoryTrain.Suburb))
+                            if (rec.ТипПоезда.CategoryTrain == CategoryTrain.Suburb)
                             {
-                                var списокСтанцийParse = rec.Примечание.Substring(rec.Примечание.IndexOf(":", StringComparison.Ordinal) + 1).Split(',').Select(st => st.Trim()).ToList();
-                                if (!списокСтанцийParse.Any())
+                                var routeStations = rec.Route.Stations;
+                                if (!routeStations.Any())
                                     break;
 
-                                if (rec.Примечание.Contains("Со всеми остановками"))
+                                switch (rec.Route.RouteType)
                                 {
-                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СоВсемиОстановками";
-                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
-                                    logMessage += "Электропоезд движется со всеми остановками ";
-                                }
-                                else
-                                if (rec.Примечание.Contains("С остановк"))
-                                {
-                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СОстановками";
-                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
-                                    foreach (var станция in списокСтанцийParse)
-                                    {
-                                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                    case RouteType.WithStopsAt:
+                                        воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СОстановками";
+                                        воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                        foreach (var станция in routeStations)
                                         {
-                                            ИмяВоспроизводимогоФайла = станция,
-                                            MessageType = messageType,
-                                            Язык = notificationLang,
-                                            ParentId = actionTrainDynamic.Id,
-                                            RootId = actionTrainDynamic.SoundRecordId,
-                                            ПриоритетГлавный = actionTrainDynamic.PriorityMain
-                                        });
-                                    }
-                                    logMessage += "Электропоезд движется с остановками на станциях: ";
-                                    logMessage = списокСтанцийParse.Aggregate(logMessage, (current, станция) => current + (станция + " "));
-                                }
-                                else
-                                if (rec.Примечание.Contains("Кроме"))
-                                {
-                                    воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СОстановкамиКроме";
-                                    воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
-                                    foreach (var станция in списокСтанцийParse)
-                                    {
-                                        воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                            {
+                                                ИмяВоспроизводимогоФайла = станция.NameRu,
+                                                MessageType = messageType,
+                                                Язык = notificationLang,
+                                                ParentId = actionTrainDynamic.Id,
+                                                RootId = actionTrainDynamic.SoundRecordId,
+                                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                            });
+                                        }
+                                        logMessage += "Электропоезд движется с остановками на станциях: ";
+                                        logMessage = routeStations.Aggregate(logMessage, (current, станция) => current + (станция + " "));
+                                        break;
+
+                                    case RouteType.WithStopsExcept:
+                                        воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СОстановкамиКроме";
+                                        воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                        foreach (var станция in routeStations)
                                         {
-                                            ИмяВоспроизводимогоФайла = станция,
-                                            MessageType = messageType,
-                                            Язык = notificationLang,
-                                            ParentId = actionTrainDynamic.Id,
-                                            RootId = actionTrainDynamic.SoundRecordId,
-                                            ПриоритетГлавный = actionTrainDynamic.PriorityMain
-                                        });
-                                    }
-                                    logMessage += "Электропоезд движется с остановками кроме станций: ";
-                                    logMessage = списокСтанцийParse.Aggregate(logMessage, (current, станция) => current + (станция + " "));
+                                            воспроизводимыеСообщения.Add(new ВоспроизводимоеСообщение
+                                            {
+                                                ИмяВоспроизводимогоФайла = станция.NameRu,
+                                                MessageType = messageType,
+                                                Язык = notificationLang,
+                                                ParentId = actionTrainDynamic.Id,
+                                                RootId = actionTrainDynamic.SoundRecordId,
+                                                ПриоритетГлавный = actionTrainDynamic.PriorityMain
+                                            });
+                                        }
+                                        logMessage += "Электропоезд движется с остановками кроме станций: ";
+                                        logMessage = routeStations.Aggregate(logMessage, (current, станция) => current + (станция + " "));
+                                        break;
+
+                                    case RouteType.WithAllStops:
+                                        воспроизводимоеСообщение.ИмяВоспроизводимогоФайла = "СоВсемиОстановками";
+                                        воспроизводимыеСообщения.Add(воспроизводимоеСообщение);
+                                        logMessage += "Электропоезд движется со всеми остановками ";
+                                        break;
                                 }
                             }
                             break;

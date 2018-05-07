@@ -37,7 +37,10 @@ namespace CommunicationDevices.DataProviders
         public Station StationDeparture { get; set; }
         public Station StationArrival { get; set; }
 
-        public string Note { get; set; }                             //Примечание.
+        public string Note { get; set; }                             //Примечание. УБРАТЬ!!!!
+        public Route Route { get; set; }                             //Маршрут (список станций)
+
+
         public string DaysFollowing { get; set; }                    //Дни следования
         public string DaysFollowingAlias { get; set; }               //Дни следования, заданные в строке в нужном формате
 

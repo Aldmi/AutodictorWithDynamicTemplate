@@ -243,12 +243,12 @@ namespace AutodictorBL.Services.SoundRecordServices
                     case "СТАНЦИИ":
                         if (rec.ТипПоезда.CategoryTrain == CategoryTrain.Suburb)
                         {
-                            if (string.IsNullOrEmpty(rec.Примечание))
+                            if(rec.Route == null || rec.Route.RouteType == RouteType.None)
                                break;
 
                             str = "Электропоезд движется ";
                             txtFrag.AddWord(str, Color.Black);
-                            текстПодстановки = rec.Примечание;
+                            текстПодстановки = rec.Route.ToString();
                             txtFrag.AddWord(текстПодстановки, color);
                         }
                         break;

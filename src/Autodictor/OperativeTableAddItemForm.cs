@@ -165,38 +165,38 @@ namespace MainExample
 
 
             // станции следования
-            if (tableRec.Примечание.Contains("Со всеми остановками"))
-            {
-                rBСоВсемиОстановками.Checked = true;
-            }
-            else if (tableRec.Примечание.Contains("Без остановок"))
-            {
-                rBБезОстановок.Checked = true;
-            }
-            else if (tableRec.Примечание.Contains("С остановками: "))
-            {
-                string примечание = tableRec.Примечание.Replace("С остановками: ", "");
-                string[] списокСтанций = примечание.Split(',');
-                foreach (var станция in списокСтанций)
-                    if (СтанцииВыбранногоНаправления.Contains(станция))
-                        lB_ПоСтанциям.Items.Add(станция);
+            //if (tableRec.Примечание.Contains("Со всеми остановками"))
+            //{
+            //    rBСоВсемиОстановками.Checked = true;
+            //}
+            //else if (tableRec.Примечание.Contains("Без остановок"))
+            //{
+            //    rBБезОстановок.Checked = true;
+            //}
+            //else if (tableRec.Примечание.Contains("С остановками: "))
+            //{
+            //    string примечание = tableRec.Примечание.Replace("С остановками: ", "");
+            //    string[] списокСтанций = примечание.Split(',');
+            //    foreach (var станция in списокСтанций)
+            //        if (СтанцииВыбранногоНаправления.Contains(станция))
+            //            lB_ПоСтанциям.Items.Add(станция);
 
-                rBСОстановкамиНа.Checked = true;
-            }
-            else if (tableRec.Примечание.Contains("Кроме: "))
-            {
-                string примечание = tableRec.Примечание.Replace("Кроме: ", "");
-                string[] списокСтанций = примечание.Split(',');
-                foreach (var станция in списокСтанций)
-                    if (СтанцииВыбранногоНаправления.Contains(станция))
-                        lB_ПоСтанциям.Items.Add(станция);
+            //    rBСОстановкамиНа.Checked = true;
+            //}
+            //else if (tableRec.Примечание.Contains("Кроме: "))
+            //{
+            //    string примечание = tableRec.Примечание.Replace("Кроме: ", "");
+            //    string[] списокСтанций = примечание.Split(',');
+            //    foreach (var станция in списокСтанций)
+            //        if (СтанцииВыбранногоНаправления.Contains(станция))
+            //            lB_ПоСтанциям.Items.Add(станция);
 
-                rBСОстановкамиКроме.Checked = true;
-            }
-            else
-            {
-                rBНеОповещать.Checked = true;
-            }
+            //    rBСОстановкамиКроме.Checked = true;
+            //}
+            //else
+            //{
+            //    rBНеОповещать.Checked = true;
+            //}
 
             //Время действия расписания и дни следования
             rBВремяДействияС.Checked = false;

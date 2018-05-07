@@ -107,7 +107,7 @@ namespace MainExample.Mappers
             record.НомерПутиБезАвтосброса = record.НомерПути;
             record.НумерацияПоезда = (byte)config.WagonsNumbering;
             record.СменнаяНумерацияПоезда = config.ChangeTrainPathDirection ?? false;
-            record.Примечание = config.Примечание;
+            record.Route = config.Route;
             record.ТипПоезда = config.TrainTypeByRyle;
             record.Состояние = SoundRecordStatus.ОжиданиеВоспроизведения;
             record.ТипСообщения = SoundRecordType.ДвижениеПоездаНеПодтвержденное;
@@ -252,7 +252,8 @@ namespace MainExample.Mappers
                 Event = t.Event,
                 TypeTrain = t.TrainTypeByRyle.NameRu,
                 TrainTypeByRyle = t.TrainTypeByRyle,
-                Note = t.Примечание, //C остановками: ...
+                Note = t.Route.ToString(), //TODO: убрать
+                Route = t.Route,
                 WagonsNumbering = t.WagonsNumbering,
                 NumberOfTrain = t.Num,
                 Stations = t.Name,
@@ -458,7 +459,7 @@ namespace MainExample.Mappers
                     TrainTypeByRyle = data.ТипПоезда,
                     StationDeparture = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияОтправления : new Station(),
                     StationArrival = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияНазначения : new Station(),
-                    Note = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? data.Примечание : "   ",
+                    Route = (data.СостояниеОтображения != TableRecordStatus.Очистка) ? data.Route : null,
                     TypeTrain = data.ТипПоезда.NameRu,
                     DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(data.ДниСледования).ПолучитьСтрокуОписанияРасписания(),
                     DaysFollowingAlias = data.ДниСледованияAlias,
@@ -493,7 +494,7 @@ namespace MainExample.Mappers
                     TrainTypeByRyle = data.ТипПоезда,
                     StationDeparture =  cтанцияОтправления,  //(data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияОтправления : new Station(),
                     StationArrival = cтанцияНазначения,     // (data.СостояниеОтображения != TableRecordStatus.Очистка) ? cтанцияНазначения : new Station(), 
-                    Note = data.Примечание,
+                    Route = data.Route,
                     TypeTrain = data.ТипПоезда.NameRu,
                     DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(data.ДниСледования).ПолучитьСтрокуОписанияРасписания(),
                     DaysFollowingAlias = data.ДниСледованияAlias,
