@@ -114,6 +114,19 @@ namespace DAL.Composite.Repository
             {
                 var direction = _directionRep.GetById(directionId.Value);
                 trainTableRec.Direction = direction;
+
+                var stationsByDirection = direction.Stations;
+                if (stationsByDirection != null && stationsByDirection.Any())
+                {
+                    trainTableRec.StationArrival = stationsByDirection.FirstOrDefault(st=> st.Id == trainTableRec.StationArrival.Id);
+                    trainTableRec.StationDepart = stationsByDirection.FirstOrDefault(st=> st.Id == trainTableRec.StationDepart.Id);
+                    for (var i = 0; i < trainTableRec.Route.Stations.Count; i++)
+                    {
+                        var station = trainTableRec.Route.Stations[i];
+                        var statRestore = stationsByDirection.FirstOrDefault(st => st.Id == station.Id);
+                        trainTableRec.Route.Stations[i] = statRestore;
+                    }
+                }
             }
 
             var trainTypeByRyleId = trainTableRec.TrainTypeByRyle?.Id;
@@ -123,7 +136,7 @@ namespace DAL.Composite.Repository
                 trainTableRec.TrainTypeByRyle = trainTypeByRyle;
             }
 
-            for (int i = 0; i < trainTableRec.TrainPathNumber.Count; i++)
+            for (var i = 0; i < trainTableRec.TrainPathNumber.Count; i++)
             {
                 var pathKey = trainTableRec.TrainPathNumber.Keys.ElementAt(i);
                 var pathValue = trainTableRec.TrainPathNumber.Values.ElementAt(i);
@@ -134,8 +147,6 @@ namespace DAL.Composite.Repository
                     trainTableRec.TrainPathNumber[pathKey] = path;
                 }
             }
-
-            //TODO: восстановить Station по id
 
             return trainTableRec;
         }

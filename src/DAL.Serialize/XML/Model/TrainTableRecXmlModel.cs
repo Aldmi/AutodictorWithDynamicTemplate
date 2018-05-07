@@ -58,14 +58,14 @@ namespace DAL.Serialize.XML.Model
         public XmlSerializableDictionary<string, bool> ИспользоватьДополнение;   //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
         public string Addition;                                    //Дополнение
 
-        public int TrainTypeByRyleId;                             // тип поезда Id
+        public int TrainTypeByRyleId;                              // тип поезда Id
 
         [XmlArray("ActionTrains")]
         [XmlArrayItem("ActId")]
-        public List<int> ActionTrainsId;                            // Текущие действия поезда Id (шаблоны поезда).
+        public List<ActionTrain> ActionTrains;                       // Текущие действия поезда  (Сохраняется полностью).
 
         [XmlArray("EmergencyTrains")]
         [XmlArrayItem("EmId")]
-        public List<int> EmergencyTrainsId;                         // Текущие список НЕШТАТОК поезда Id (фиксированный набор нештаток, скопированный из типа поезда).
+        public List<ActionTrain> EmergencyTrains;                    // Текущие список НЕШТАТОК поезда (Сохраняется полностью).
     }
 }
