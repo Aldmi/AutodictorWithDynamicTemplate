@@ -7,9 +7,11 @@ namespace CommunicationDevices.Mappers
 {
     public class AutoMapperConfig
     {
+        public static IMapper Mapper { get; set; }
+
         public static void Register()
         {
-            Mapper.Initialize(cfg =>
+            var config = new MapperConfiguration(cfg =>
                 cfg.CreateMap<UniversalInputType, ItemSibWay>()
                     .ForMember(dest => dest.TimeArrival,
                         opt => opt.MapFrom(src => (src.TransitTime != null && src.TransitTime.ContainsKey("приб")) ? src.TransitTime["приб"] : (DateTime?)null))
@@ -25,6 +27,8 @@ namespace CommunicationDevices.Mappers
                         opt => opt.MapFrom(src => src.StationDeparture.NameRu))
                     .ForMember(dest => dest.Command,
                         opt => opt.MapFrom(src => src.Command.ToString())));
+
+            Mapper = config.CreateMapper();
         }
 
         private static string PathNumberConverter(string pathNumber)

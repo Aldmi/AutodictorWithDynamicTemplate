@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using AutoMapper;
 using CommunicationDevices.DataProviders;
+using CommunicationDevices.Mappers;
 using Library.Logs;
 using WCFAvtodictor2PcTableContract.Contract;
 using WCFAvtodictor2PcTableContract.DataContract;
@@ -188,7 +189,7 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.PcBehavior
 
             if (inData != null)
             {
-                var displayData = Mapper.Map<UniversalDisplayType>(inData);
+                var displayData = AutoMapperConfig.Mapper.Map<UniversalDisplayType>(inData);
                 DataExchangeSuccess = await SendDisplayData(displayData);
 
                 inData.Message = $"Размер табл. = {inData.TableData.Count}";

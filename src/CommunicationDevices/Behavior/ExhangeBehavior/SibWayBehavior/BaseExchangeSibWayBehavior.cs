@@ -10,6 +10,7 @@ using System.Timers;
 using AutoMapper;
 using Communication.SibWayApi;
 using CommunicationDevices.DataProviders;
+using CommunicationDevices.Mappers;
 using Timer = System.Timers.Timer;
 
 
@@ -172,7 +173,7 @@ namespace CommunicationDevices.Behavior.ExhangeBehavior.SibWayBehavior
             _sendLock = true;
             if (inData?.TableData != null && inData.TableData.Any())
             {
-                var listSibWays = Mapper.Map<IEnumerable<ItemSibWay>>(inData.TableData).ToList();
+                var listSibWays = AutoMapperConfig.Mapper.Map<IEnumerable<ItemSibWay>>(inData.TableData).ToList();
                 DataExchangeSuccess = await ClientSibWay.SendData(listSibWays);
                 LastSendData = inData;
             }

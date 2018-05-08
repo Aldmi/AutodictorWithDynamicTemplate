@@ -40,7 +40,6 @@ using CommunicationDevices.Settings.XmlDeviceSettings.XmlTransportSettings;
 using DAL.Abstract.Entitys;
 using Library.Logs;
 using Library.Xml;
-using WCFAvtodictor2PcTableContract.DataContract;
 
 
 namespace CommunicationDevices.Model
@@ -103,7 +102,6 @@ namespace CommunicationDevices.Model
 
 
 
-
         #region ctor
 
         public ExchangeModel()
@@ -111,11 +109,6 @@ namespace CommunicationDevices.Model
             //TODO: регистрация AutoMapper может быть только одна на процесс приложения.
             //РЕГИСТРАЦИЯ МАППИНГА
             AutoMapperConfig.Register();
-            //Mapper.Initialize(cfg =>
-            //{
-            //    cfg.CreateMap<UniversalInputType, UniversalDisplayType>();
-            //    cfg.CreateMap<UniversalDisplayType, UniversalInputType>();
-            //});
         }
 
         #endregion
