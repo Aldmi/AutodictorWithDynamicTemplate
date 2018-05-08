@@ -33,7 +33,10 @@ namespace DAL.NoSqlLiteDb.Entityes
         public string НомерПути { get; set; }
         public string НомерПутиБезАвтосброса { get; set; }                //выставленные пути не обнуляются через определенное время
         public int IdТипПоезда { get; set; }                              // В БД хранится Id типа TrainTypeByRyle.
+
         public string Примечание { get; set; }                            //С остановками....
+        public Route Route { get; set; }                                  //Маршрут
+
         public string Описание { get; set; }
         public SoundRecordStatus Состояние { get; set; }
         public SoundRecordType ТипСообщения { get; set; }

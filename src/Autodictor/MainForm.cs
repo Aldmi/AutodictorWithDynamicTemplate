@@ -116,9 +116,6 @@ namespace MainExample
         /// <param name="flagApplicationExit">ВЫХОД из приложения</param>
         private void CheckAuthentication(bool flagApplicationExit)
         {
-            if(_authentificationService.CurrentUser == null)
-                return;
-
             tSBAdmin.Visible = false;
             while (_authentificationService.IsAuthentification == false)
             {

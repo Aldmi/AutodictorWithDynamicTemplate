@@ -60,8 +60,6 @@ namespace DAL.Abstract.Entitys
         public Pathway Pathway;                              //NEW Выставленный Путь
 
         public TrainTypeByRyle ТипПоезда;                    //TODO: при переходе SoundRecord на class, ТипПоезда сделать readOnly
-
-        public string Примечание { get; set; }              //С остановками.... !!!!!!!!!!
         public Route Route { get; set; }                     //Маршрут (список станций)
 
         public string Описание;

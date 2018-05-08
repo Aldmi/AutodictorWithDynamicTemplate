@@ -149,8 +149,8 @@ namespace MainExample
             {
                 cBОткуда.Items.Clear();
                 cBКуда.Items.Clear();
-                cBОткуда.Items.AddRange(CurrentDirectionStations.ToArray());
-                cBКуда.Items.AddRange(CurrentDirectionStations.ToArray());
+                cBОткуда.Items.AddRange(CurrentDirectionStations.Select(st=>st.NameRu).ToArray());
+                cBКуда.Items.AddRange(CurrentDirectionStations.Select(st => st.NameRu).ToArray());
             }
             cBОткуда.Text = record.СтанцияОтправления;
             cBКуда.Text = record.СтанцияНазначения;

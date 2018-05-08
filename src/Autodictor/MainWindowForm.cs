@@ -21,6 +21,7 @@ using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
 using DAL.Abstract.Entitys.Changes;
+using Force.DeepCloner;
 using Library.Convertion;
 using MainExample.Extension;
 using MainExample.Infrastructure;
@@ -2202,10 +2203,10 @@ namespace MainExample
                         if (SoundRecords.Keys.Contains(key) == true)
                         {
                             SoundRecord данные = SoundRecords[key];
+                            SoundRecord старыеДанные = данные.DeepClone();
                             SoundRecordEditForm карточка = _soundRecordEditFormFactory(данные);
                             if (карточка.ShowDialog() == DialogResult.OK)
                             {
-                                SoundRecord старыеДанные = данные;
                                 данные = карточка.ПолучитьИзмененнуюКарточку();
 
                                 данные= ПрименитьИзмененияSoundRecord(данные, старыеДанные, key, keyOld, listView);

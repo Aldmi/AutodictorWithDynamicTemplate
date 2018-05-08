@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 
@@ -41,6 +42,9 @@ namespace DAL.Abstract.Entitys
                 case RouteType.WithStopsExcept:
                     strBuild.Append("Кроме: ");
                     break;
+                case RouteType.NotNotify:
+                    return string.Empty;
+
             }
 
             foreach (var station in Stations)
@@ -48,8 +52,7 @@ namespace DAL.Abstract.Entitys
                 strBuild.Append(station.NameRu);
                 strBuild.Append(",");
             }
-
-            return strBuild.ToString();
+            return strBuild.ToString().TrimEnd(',');
         }
     }
 }

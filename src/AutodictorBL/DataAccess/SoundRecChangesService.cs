@@ -18,12 +18,6 @@ namespace AutodictorBL.DataAccess
         public SoundRecChangesService(IParticirovanieService<SoundRecordChangesDb> particirovanieService)
         {
             _particirovanieService = particirovanieService;
-
-            //DEBUG---
-           // var rep = _particirovanieService.GetRepositoryOnCurrentDay();
-           //var list=  rep.List();
-           //rep.Add(new SoundRecordChangesDb {CauseOfChange = "dsdsd"});
-            //DEBUG---
         }
 
         #endregion
@@ -33,7 +27,6 @@ namespace AutodictorBL.DataAccess
 
         #region Methode
 
-        //TODO:Методы для работы с партицированным репозиторием
         public void Add(SoundRecordChangesDb change)
         {
             var rep = _particirovanieService.GetRepositoryOnCurrentDay();

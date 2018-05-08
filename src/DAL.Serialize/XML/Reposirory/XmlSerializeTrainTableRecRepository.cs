@@ -59,11 +59,10 @@ namespace DAL.Serialize.XML.Reposirory
             try
             {
                 var listTrainTableRecXmlModel = XmlSerializerWorker.Load<ListTrainRecsXml>(_folderName, _fileName).TrainTableRecXmlModels;
-                //var listTrainTableRec = Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
                 var listTrainTableRec = AutoMapperConfig.Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
                 return listTrainTableRec;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
