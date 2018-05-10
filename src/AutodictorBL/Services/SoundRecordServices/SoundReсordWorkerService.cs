@@ -46,7 +46,7 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// Для Нештатных шаблонов "время фикс. нешатаки" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
         /// Для Обычных шаблонов "Время относительно которого заданн шаблон" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
         /// </summary>
-        public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, DateTime? startDate4Cycle=null, DateTime? endDate4Cycle=null)
+        public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, double lowDelta4Cycle=-60, double hightDelta4Cycle=60)
         {
             var dynamiсLists = new List<ActionTrainDynamic>();
             var idActDyn = 1;
@@ -73,19 +73,11 @@ namespace AutodictorBL.Services.SoundRecordServices
                 }
                 else                                   //Указан циклический повтор
                 {
-                    DateTime eventTime;
-                    if (action.Emergency == Emergency.None)
-                    {
-                        eventTime = (action.ActionType == ActionType.Arrival) ? record.ВремяПрибытия : record.ВремяОтправления;
-                    }
-                    else
-                    {
-                        eventTime = action.FixedTimeEmergencyEvent;
-                    }
-                    startDate4Cycle = startDate4Cycle ?? eventTime;              //startDate4Cycle ?? eventTime.AddHours(-10);
-                    endDate4Cycle = endDate4Cycle ?? eventTime.AddHours(27 - eventTime.Hour); //часы до конца суток  +3 часа;
+                    DateTime eventTime = (action.ActionType == ActionType.Arrival) ? record.ВремяПрибытия : record.ВремяОтправления;
+                    var startDate4Cycle = eventTime.AddMinutes(lowDelta4Cycle);
+                    var endDate4Cycle = eventTime.AddMinutes(hightDelta4Cycle);
                     var interval = action.Time.CycleTime.Value;
-                    for (var date = startDate4Cycle.Value; date < endDate4Cycle.Value; date += new TimeSpan(0, interval, 0))
+                    for (var date = startDate4Cycle; date < endDate4Cycle; date += new TimeSpan(0, interval, 0))
                     {
                         var time = (((eventTime - date).Hours * 60) + (eventTime - date).Minutes) * -1;
                         var newActionTrain= action.DeepClone();
