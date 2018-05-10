@@ -600,8 +600,6 @@ namespace MainExample.Mappers
                 СтанцияНазначения = data.СтанцияНазначения ?? string.Empty,
                 СтанцияОтправления = data.СтанцияОтправления ?? string.Empty,
                 ТаймерПовторения = data.ТаймерПовторения,
-                //TODO: использовать TrainTypeByRyleService
-                //ТипПоезда = Program.TrainRules.TrainTypeRules.FirstOrDefault(r=>r.Id == data.IdТипПоезда),
                 ТипСообщения = data.ТипСообщения,
                 ФиксированноеВремяОтправления = data.ФиксированноеВремяОтправления,
                 ФиксированноеВремяПрибытия = data.ФиксированноеВремяПрибытия,

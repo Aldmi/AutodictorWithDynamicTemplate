@@ -948,6 +948,9 @@ namespace MainExample
                         break;
                     case CategoryTrain.LongDist:
                         gBОстановки.Enabled = false;
+                        RouteVm.RouteType = RouteType.None;
+                        RouteVm.Stations.Clear();
+                        rBНеОповещать.Checked = true;
                         categoryText = "Дальнего след.";
                         break;
                 }

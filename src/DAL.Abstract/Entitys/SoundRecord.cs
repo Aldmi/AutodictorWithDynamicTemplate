@@ -120,10 +120,10 @@ namespace DAL.Abstract.Entitys
         }
 
         public int ScheduleId { get; }                   //Id поезда в распсиании
-        public DateTime ДеньПрибытия { get; set; }      //сутки в которые поезд ПРИБ.  
-        public DateTime ДеньОтправления { get; set; }   //сутки в которые поезд ОТПР.
-        public string НомерПоезда { get; set; }        //номер поезда 1
-        public string НомерПоезда2 { get; set; }       //номер поезда 2
+        public DateTime ДеньПрибытия { get; set; }       //сутки в которые поезд ПРИБ.  
+        public DateTime ДеньОтправления { get; set; }    //сутки в которые поезд ОТПР.
+        public string НомерПоезда { get; set; }          //номер поезда 1
+        public string НомерПоезда2 { get; set; }         //номер поезда 2
         public string СтанцияОтправления { get; set; }
         public string СтанцияНазначения { get; set; }
     }
