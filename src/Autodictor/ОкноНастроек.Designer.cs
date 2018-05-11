@@ -29,6 +29,15 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ОкноНастроек));
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel1 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel2 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel3 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel4 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel5 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel6 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel7 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel8 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
+            DevExpress.XtraEditors.Repository.TrackBarLabel trackBarLabel9 = new DevExpress.XtraEditors.Repository.TrackBarLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label112 = new System.Windows.Forms.Label();
             this.cBРЭКСEng = new System.Windows.Forms.CheckBox();
@@ -60,6 +69,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tBUtcЗвука = new System.Windows.Forms.TextBox();
+            this.label121 = new System.Windows.Forms.Label();
             this.tBСамоеРанееВремяШаблона = new System.Windows.Forms.TextBox();
             this.label115 = new System.Windows.Forms.Label();
             this.tBИнтОповещООтпрПоГотов = new System.Windows.Forms.TextBox();
@@ -83,7 +94,6 @@
             this.btnЗагрузить = new System.Windows.Forms.Button();
             this.btnСохранить = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label118 = new System.Windows.Forms.Label();
             this.pCol18 = new System.Windows.Forms.Panel();
             this.label117 = new System.Windows.Forms.Label();
             this.pCol17 = new System.Windows.Forms.Panel();
@@ -294,8 +304,12 @@
             this.chBox2_LongDist = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
             this.chBox1_LongDist = new System.Windows.Forms.CheckBox();
-            this.tBUtcЗвука = new System.Windows.Forms.TextBox();
-            this.label121 = new System.Windows.Forms.Label();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.label118 = new System.Windows.Forms.Label();
+            this.tb_MaxCycleDeltaT = new System.Windows.Forms.TextBox();
+            this.Min = new System.Windows.Forms.Label();
+            this.tb_MinCycleDeltaT = new System.Windows.Forms.TextBox();
+            this.rangeTrackBar_DeltaCycleActionTime = new DevExpress.XtraEditors.RangeTrackBarControl();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -308,6 +322,9 @@
             this.groupBox8.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.groupBox11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rangeTrackBar_DeltaCycleActionTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rangeTrackBar_DeltaCycleActionTime.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -656,6 +673,23 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Общие настройки";
             // 
+            // tBUtcЗвука
+            // 
+            this.tBUtcЗвука.Location = new System.Drawing.Point(428, 177);
+            this.tBUtcЗвука.Name = "tBUtcЗвука";
+            this.tBUtcЗвука.Size = new System.Drawing.Size(53, 26);
+            this.tBUtcЗвука.TabIndex = 25;
+            this.tBUtcЗвука.Text = "3";
+            // 
+            // label121
+            // 
+            this.label121.AutoSize = true;
+            this.label121.Location = new System.Drawing.Point(8, 181);
+            this.label121.Name = "label121";
+            this.label121.Size = new System.Drawing.Size(347, 20);
+            this.label121.TabIndex = 24;
+            this.label121.Text = "UTC для звуковой переменой шаблона , мин";
+            // 
             // tBСамоеРанееВремяШаблона
             // 
             this.tBСамоеРанееВремяШаблона.Location = new System.Drawing.Point(428, 150);
@@ -669,7 +703,7 @@
             this.label115.AutoSize = true;
             this.label115.Location = new System.Drawing.Point(8, 154);
             this.label115.Name = "label115";
-            this.label115.Size = new System.Drawing.Size(410, 20);
+            this.label115.Size = new System.Drawing.Size(481, 20);
             this.label115.TabIndex = 22;
             this.label115.Text = "EditTrainTableRecForm самого раннего времени шаблона , мин";
             // 
@@ -857,8 +891,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.groupBox11);
             this.groupBox3.Controls.Add(this.txtb_Дальние);
-            this.groupBox3.Controls.Add(this.label118);
             this.groupBox3.Controls.Add(this.pCol18);
             this.groupBox3.Controls.Add(this.txtb_Пригород);
             this.groupBox3.Controls.Add(this.label117);
@@ -896,16 +930,6 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Цветовые настройки";
-            // 
-            // label118
-            // 
-            this.label118.AutoSize = true;
-            this.label118.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label118.Location = new System.Drawing.Point(418, 13);
-            this.label118.Name = "label118";
-            this.label118.Size = new System.Drawing.Size(69, 20);
-            this.label118.TabIndex = 35;
-            this.label118.Text = "Шрифт";
             // 
             // pCol18
             // 
@@ -3085,28 +3109,111 @@
             this.chBox1_LongDist.TabIndex = 20;
             this.chBox1_LongDist.UseVisualStyleBackColor = true;
             // 
-            // tBUtcЗвука
+            // groupBox11
             // 
-            this.tBUtcЗвука.Location = new System.Drawing.Point(428, 177);
-            this.tBUtcЗвука.Name = "tBUtcЗвука";
-            this.tBUtcЗвука.Size = new System.Drawing.Size(53, 26);
-            this.tBUtcЗвука.TabIndex = 25;
-            this.tBUtcЗвука.Text = "3";
+            this.groupBox11.Controls.Add(this.label118);
+            this.groupBox11.Controls.Add(this.tb_MaxCycleDeltaT);
+            this.groupBox11.Controls.Add(this.Min);
+            this.groupBox11.Controls.Add(this.tb_MinCycleDeltaT);
+            this.groupBox11.Controls.Add(this.rangeTrackBar_DeltaCycleActionTime);
+            this.groupBox11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox11.Location = new System.Drawing.Point(440, 30);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Size = new System.Drawing.Size(428, 172);
+            this.groupBox11.TabIndex = 35;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Временная дельта  сработки циклических шаблонов";
             // 
-            // label121
+            // label118
             // 
-            this.label121.AutoSize = true;
-            this.label121.Location = new System.Drawing.Point(8, 181);
-            this.label121.Name = "label121";
-            this.label121.Size = new System.Drawing.Size(347, 20);
-            this.label121.TabIndex = 24;
-            this.label121.Text = "UTC для звуковой переменой шаблона , мин";
+            this.label118.AutoSize = true;
+            this.label118.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.label118.Location = new System.Drawing.Point(278, 135);
+            this.label118.Name = "label118";
+            this.label118.Size = new System.Drawing.Size(40, 20);
+            this.label118.TabIndex = 10;
+            this.label118.Text = "Max";
+            // 
+            // tb_MaxCycleDeltaT
+            // 
+            this.tb_MaxCycleDeltaT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.tb_MaxCycleDeltaT.Location = new System.Drawing.Point(321, 132);
+            this.tb_MaxCycleDeltaT.Name = "tb_MaxCycleDeltaT";
+            this.tb_MaxCycleDeltaT.Size = new System.Drawing.Size(98, 26);
+            this.tb_MaxCycleDeltaT.TabIndex = 9;
+            this.tb_MaxCycleDeltaT.Validated += new System.EventHandler(this.tb_MaxCycleDeltaT_Validated);
+            // 
+            // Min
+            // 
+            this.Min.AutoSize = true;
+            this.Min.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.Min.Location = new System.Drawing.Point(16, 138);
+            this.Min.Name = "Min";
+            this.Min.Size = new System.Drawing.Size(36, 20);
+            this.Min.TabIndex = 8;
+            this.Min.Text = "Min";
+            // 
+            // tb_MinCycleDeltaT
+            // 
+            this.tb_MinCycleDeltaT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.tb_MinCycleDeltaT.Location = new System.Drawing.Point(55, 135);
+            this.tb_MinCycleDeltaT.Name = "tb_MinCycleDeltaT";
+            this.tb_MinCycleDeltaT.Size = new System.Drawing.Size(98, 26);
+            this.tb_MinCycleDeltaT.TabIndex = 7;
+            this.tb_MinCycleDeltaT.Validated += new System.EventHandler(this.tb_MinCycleDeltaT_Validated);
+            // 
+            // rangeTrackBar_DeltaCycleActionTime
+            // 
+            this.rangeTrackBar_DeltaCycleActionTime.EditValue = new DevExpress.XtraEditors.Repository.TrackBarRange(20, 40);
+            this.rangeTrackBar_DeltaCycleActionTime.Location = new System.Drawing.Point(10, 26);
+            this.rangeTrackBar_DeltaCycleActionTime.Name = "rangeTrackBar_DeltaCycleActionTime";
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 12.25F);
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.Appearance.Options.UseFont = true;
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.LabelAppearance.Options.UseTextOptions = true;
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.LabelAppearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            trackBarLabel1.Label = "-200";
+            trackBarLabel1.Value = -200;
+            trackBarLabel2.Label = "-150";
+            trackBarLabel2.Value = -150;
+            trackBarLabel3.Label = "-100";
+            trackBarLabel3.Value = -100;
+            trackBarLabel4.Label = "-50";
+            trackBarLabel4.Value = -50;
+            trackBarLabel5.Label = "0";
+            trackBarLabel6.Label = "50";
+            trackBarLabel6.Value = 50;
+            trackBarLabel7.Label = "100";
+            trackBarLabel7.Value = 100;
+            trackBarLabel8.Label = "150";
+            trackBarLabel8.Value = 150;
+            trackBarLabel9.Label = "200";
+            trackBarLabel9.Value = 200;
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.Labels.AddRange(new DevExpress.XtraEditors.Repository.TrackBarLabel[] {
+            trackBarLabel1,
+            trackBarLabel2,
+            trackBarLabel3,
+            trackBarLabel4,
+            trackBarLabel5,
+            trackBarLabel6,
+            trackBarLabel7,
+            trackBarLabel8,
+            trackBarLabel9});
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.Maximum = 200;
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.Minimum = -200;
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.ShowLabels = true;
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.ShowLabelsForHiddenTicks = true;
+            this.rangeTrackBar_DeltaCycleActionTime.Properties.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.rangeTrackBar_DeltaCycleActionTime.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.rangeTrackBar_DeltaCycleActionTime.Size = new System.Drawing.Size(409, 99);
+            this.rangeTrackBar_DeltaCycleActionTime.TabIndex = 6;
+            this.rangeTrackBar_DeltaCycleActionTime.Value = new DevExpress.XtraEditors.Repository.TrackBarRange(20, 40);
+            this.rangeTrackBar_DeltaCycleActionTime.ValueChanged += new System.EventHandler(this.rangeTrackBar_DeltaCycleActionTime_ValueChanged);
             // 
             // ОкноНастроек
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1438, 635);
+            this.ClientSize = new System.Drawing.Size(1438, 636);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -3141,6 +3248,10 @@
             this.groupBox10.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.groupBox11.ResumeLayout(false);
+            this.groupBox11.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rangeTrackBar_DeltaCycleActionTime.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rangeTrackBar_DeltaCycleActionTime)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -3411,8 +3522,13 @@
         private System.Windows.Forms.Label lbl_громкостьДень;
         private System.Windows.Forms.TextBox txtb_Пригород;
         private System.Windows.Forms.TextBox txtb_Дальние;
-        private System.Windows.Forms.Label label118;
         private System.Windows.Forms.TextBox tBUtcЗвука;
         private System.Windows.Forms.Label label121;
+        private System.Windows.Forms.GroupBox groupBox11;
+        private System.Windows.Forms.Label label118;
+        private System.Windows.Forms.TextBox tb_MaxCycleDeltaT;
+        private System.Windows.Forms.Label Min;
+        private System.Windows.Forms.TextBox tb_MinCycleDeltaT;
+        private DevExpress.XtraEditors.RangeTrackBarControl rangeTrackBar_DeltaCycleActionTime;
     }
 }

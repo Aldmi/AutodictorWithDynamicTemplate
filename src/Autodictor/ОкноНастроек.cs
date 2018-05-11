@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Repository;
 
 
 namespace MainExample
@@ -69,7 +71,11 @@ namespace MainExample
         public bool GetDataCisRegShStart;               //Получение данных, ЦИС регулярное расписание
         public bool GetDataCisOperShStart;              //Получение данных, ЦИС оперативное расписание
 
+        public int MinDeltaCycleActionTime;             //Стартовое время= rec.Время.AddMinute(MinDeltaCycleActionTime).
+        public int MaxDeltaCycleActionTime;             //Конечное время= rec.Время.AddMinute(MaxDeltaCycleActionTime).
+
         public string SourceTrainTableRecordLoad;       //переключатель источника загрузки расписания.
+
 
         #region Methode
 
@@ -206,7 +212,10 @@ namespace MainExample
             dTP_НочнойПериодНачало.Value=Program.Настройки.ВремяНочнойПериодНачало;
             dTP_НочнойПериодКонец.Value=Program.Настройки.ВремяНочнойПериодКонец;
 
-            FontДальние= Program.Настройки.FontДальние;
+            rangeTrackBar_DeltaCycleActionTime.Value = new TrackBarRange(Program.Настройки.MinDeltaCycleActionTime, Program.Настройки.MaxDeltaCycleActionTime);
+            rangeTrackBar_DeltaCycleActionTime_ValueChanged(rangeTrackBar_DeltaCycleActionTime, EventArgs.Empty);
+
+            FontДальние = Program.Настройки.FontДальние;
             FontПригород = Program.Настройки.FontПригород;
             txtb_Дальние.Text = $@"{FontДальние?.Name ?? string.Empty} {FontДальние?.Size ?? 0.0}";
             txtb_Пригород.Text = $@"{FontПригород?.Name ?? string.Empty} {FontПригород?.Size ?? 0.0}";
@@ -278,6 +287,9 @@ namespace MainExample
 
             Program.Настройки.ВремяНочнойПериодНачало = dTP_НочнойПериодНачало.Value;
             Program.Настройки.ВремяНочнойПериодКонец = dTP_НочнойПериодКонец.Value;
+
+            Program.Настройки.MinDeltaCycleActionTime = rangeTrackBar_DeltaCycleActionTime.Value.Minimum;
+            Program.Настройки.MaxDeltaCycleActionTime = rangeTrackBar_DeltaCycleActionTime.Value.Maximum;
 
             Program.Настройки.FontДальние  = FontДальние;
             Program.Настройки.FontПригород = FontПригород;
@@ -513,6 +525,16 @@ namespace MainExample
                                     Program.Настройки.FontПригород = ConverString2Font(Settings[1]);
                                     break;
 
+                                case "MinDeltaCycleActionTime":
+                                    if (int.TryParse(Settings[1], out ПеременнаяInt))
+                                        Program.Настройки.MinDeltaCycleActionTime = ПеременнаяInt;
+                                    break;
+
+                                case "MaxDeltaCycleActionTime":
+                                    if (int.TryParse(Settings[1], out ПеременнаяInt))
+                                        Program.Настройки.MaxDeltaCycleActionTime = ПеременнаяInt;
+                                    break;
+
                                 case "UTC":
                                     if (int.TryParse(Settings[1], out ПеременнаяInt))
                                         Program.Настройки.UTC = ПеременнаяInt;
@@ -688,6 +710,9 @@ namespace MainExample
                     DumpFile.WriteLine("FontДальние=" + $"{Program.Настройки.FontДальние.Name}:{Program.Настройки.FontДальние.Size}:{Program.Настройки.FontДальние.Style}");
                     DumpFile.WriteLine("FontПригород=" + $"{Program.Настройки.FontПригород.Name}:{Program.Настройки.FontПригород.Size}:{Program.Настройки.FontПригород.Style}");
 
+                    DumpFile.WriteLine("MinDeltaCycleActionTime=" + $"{Program.Настройки.MinDeltaCycleActionTime}");
+                    DumpFile.WriteLine("MaxDeltaCycleActionTime=" + $"{Program.Настройки.MaxDeltaCycleActionTime}");
+
                     DumpFile.WriteLine("UTC=" + Program.Настройки.UTC.ToString("D"));
 
                     DumpFile.WriteLine("SourceTrainTableRecordLoad=" + Program.Настройки.SourceTrainTableRecordLoad);
@@ -774,6 +799,76 @@ namespace MainExample
             {
                 FontДальние = fontDialog.Font;
                 txtb_Дальние.Text = $@"{FontДальние.Name} {FontДальние.Size}";
+            }
+        }
+
+
+        /// <summary>
+        /// Изменение диапазона времени сработки циклических шаблонов
+        /// </summary>
+        private void rangeTrackBar_DeltaCycleActionTime_ValueChanged(object sender, EventArgs e)
+        {
+            var rangeCtrl = sender as RangeTrackBarControl;
+            if (rangeCtrl != null)
+            {
+                var minRangeCtrl = rangeCtrl.Value.Minimum;
+                var maxRangeCtrl = rangeCtrl.Value.Maximum;
+                tb_MinCycleDeltaT.Text = minRangeCtrl.ToString();
+                tb_MaxCycleDeltaT.Text = maxRangeCtrl.ToString();
+            }
+        }
+
+        private void tb_MinCycleDeltaT_Validated(object sender, EventArgs e)
+        {
+            var tbMin = sender as TextBox;
+            if (tbMin != null)
+            {
+                var rangeCtrlValMax = rangeTrackBar_DeltaCycleActionTime.Value.Maximum;
+                var rangeCtrlValMin = rangeTrackBar_DeltaCycleActionTime.Value.Minimum;
+                var rangeCtrlPropMin = rangeTrackBar_DeltaCycleActionTime.Properties.Minimum;
+
+                int min;
+                if (int.TryParse(tbMin.Text, out min))
+                {
+                    if (min > rangeCtrlValMax || min < rangeCtrlPropMin)
+                    {
+                        tbMin.Text = rangeCtrlValMin.ToString();
+                        return;
+                    }
+
+                    rangeTrackBar_DeltaCycleActionTime.Value = new TrackBarRange(min, rangeCtrlValMax);
+                }
+                else
+                {
+                    tbMin.Text = rangeCtrlValMin.ToString();
+                }
+            }
+        }
+
+        private void tb_MaxCycleDeltaT_Validated(object sender, EventArgs e)
+        {
+            var tbMax = sender as TextBox;
+            if (tbMax != null)
+            {
+                var rangeCtrlValMax = rangeTrackBar_DeltaCycleActionTime.Value.Maximum;
+                var rangeCtrlValMin = rangeTrackBar_DeltaCycleActionTime.Value.Minimum;
+                var rangeCtrlPropMax = rangeTrackBar_DeltaCycleActionTime.Properties.Maximum;
+
+                int max;
+                if (int.TryParse(tbMax.Text, out max))
+                {
+                    if (max < rangeCtrlValMin || max > rangeCtrlPropMax)
+                    {
+                        tbMax.Text = rangeCtrlValMax.ToString();
+                        return;
+                    }
+
+                    rangeTrackBar_DeltaCycleActionTime.Value = new TrackBarRange(rangeCtrlValMin, max);
+                }
+                else
+                {
+                    tbMax.Text = rangeCtrlValMax.ToString();
+                }
             }
         }
     }

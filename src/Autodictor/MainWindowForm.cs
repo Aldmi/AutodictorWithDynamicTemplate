@@ -2364,7 +2364,7 @@ namespace MainExample
             emergency.FixedTimeEmergencyEvent = DateTime.Now.Date.AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute); //зафисксируем время выставления НЕШТАТКИ.
 
             //Сформируем список нештатных сообщений--------------------------------------------------------------------------------------------
-            record.EmergencyTrainDynamiсList = _soundReсordWorkerService.СreateActionTrainDynamic(record, new List<ActionTrain> {emergency});
+            record.EmergencyTrainDynamiсList = _soundReсordWorkerService.СreateActionTrainDynamic(record, new List<ActionTrain> {emergency}, Program.Настройки.MinDeltaCycleActionTime, Program.Настройки.MaxDeltaCycleActionTime);
             record.EmergencyTrainDynamiсList.ForEach(em=> em.Id+=1000);
 
             if (!string.IsNullOrEmpty(key))
