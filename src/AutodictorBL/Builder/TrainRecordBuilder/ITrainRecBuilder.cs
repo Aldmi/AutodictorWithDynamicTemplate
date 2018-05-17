@@ -4,12 +4,12 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 {
     public interface ITrainRecBuilder
     {
-        TrainRecBuilderFluent SetDefaultMain(int newId);
-        TrainRecBuilderFluent SetDefaultDaysOfGoing();
-        TrainRecBuilderFluent SetDefaultTrainTypeAndActionsAndEmergency();
-        TrainRecBuilderFluent SetActionTrainsByType(TrainTypeByRyle trainTypeByRyle);
-        TrainRecBuilderFluent SetActionTrainsByTypeId(int typeId);
-        TrainRecBuilderFluent SetEmergencysByType(TrainTypeByRyle trainTypeByRyle);
+        ITrainRecBuilder SetDefaultMain(int newId);
+        ITrainRecBuilder SetDefaultDaysOfGoing();
+        ITrainRecBuilder SetDefaultTrainTypeAndActionsAndEmergency();
+        ITrainRecBuilder SetActionTrainsByType(TrainTypeByRyle trainTypeByRyle);
+        ITrainRecBuilder SetActionTrainsByTypeId(int typeId);
+        ITrainRecBuilder SetEmergencysByType(TrainTypeByRyle trainTypeByRyle);
         TrainTableRec Build();
     }
 }

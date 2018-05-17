@@ -39,7 +39,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         #region Methode
 
-        public TrainRecBuilderFluent SetDefaultMain(int newId)
+        public ITrainRecBuilder SetDefaultMain(int newId)
         {
             TrainTableRec = TrainTableRec ?? new TrainTableRec();
 
@@ -86,7 +86,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
-        public TrainRecBuilderFluent SetDefaultDaysOfGoing()
+        public ITrainRecBuilder SetDefaultDaysOfGoing()
         {
             TrainTableRec = TrainTableRec ?? new TrainTableRec();
             TrainTableRec.ВремяНачалаДействияРасписания = DateTime.MinValue;
@@ -98,7 +98,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
-        public TrainRecBuilderFluent SetDefaultTrainTypeAndActionsAndEmergency()
+        public ITrainRecBuilder SetDefaultTrainTypeAndActionsAndEmergency()
         {
             TrainTableRec = TrainTableRec ?? new TrainTableRec();
             TrainTableRec.TrainTypeByRyle = _trainRecService.GetTrainTypeByRyles().FirstOrDefault();
@@ -109,7 +109,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
-        public TrainRecBuilderFluent SetActionTrainsByType(TrainTypeByRyle trainTypeByRyle)
+        public ITrainRecBuilder SetActionTrainsByType(TrainTypeByRyle trainTypeByRyle)
         {
             trainTypeByRyle = trainTypeByRyle ?? TrainTableRec.TrainTypeByRyle;
             TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).ToList();
@@ -117,7 +117,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             return this;
         }
 
-        public TrainRecBuilderFluent SetActionTrainsByTypeId(int typeId)
+        public ITrainRecBuilder SetActionTrainsByTypeId(int typeId)
         {
            var trainTypeByRyle= _trainRecService.GetTrainTypeByRyleById(typeId);
            if(trainTypeByRyle == null)
@@ -129,7 +129,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
-        public TrainRecBuilderFluent SetEmergencysByType(TrainTypeByRyle trainTypeByRyle)
+        public ITrainRecBuilder SetEmergencysByType(TrainTypeByRyle trainTypeByRyle)
         {
             trainTypeByRyle = trainTypeByRyle ?? TrainTableRec.TrainTypeByRyle;
             TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).ToList();
