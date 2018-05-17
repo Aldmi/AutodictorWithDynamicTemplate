@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
 using AutodictorBL;
-using AutodictorBL.DataAccess;
 using Autofac;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
 
-
-namespace AutodictorBL.DataAccess
+namespace AutodictorBL.Services.DataAccessServices
 {
     public class UserService
     {

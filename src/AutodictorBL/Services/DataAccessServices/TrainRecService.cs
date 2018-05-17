@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 
-namespace AutodictorBL.DataAccess
+namespace AutodictorBL.Services.DataAccessServices
 {
     public class TrainRecService : IDisposable
     {

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 
-namespace AutodictorBL.DataAccess
+namespace AutodictorBL.Services.DataAccessServices
 {
     public class DirectionService
     {

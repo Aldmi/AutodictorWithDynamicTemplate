@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using AutodictorBL.DataAccess;
+using AutodictorBL.Services.DataAccessServices;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Concrete;

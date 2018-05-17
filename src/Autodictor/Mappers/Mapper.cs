@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutodictorBL.DataAccess;
+using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.SoundRecordServices;
 using Autofac;
 using CommunicationDevices.DataProviders;

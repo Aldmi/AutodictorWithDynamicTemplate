@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using AutodictorBL.DataAccess;
 using AutodictorBL.Services;
+using AutodictorBL.Services.DataAccessServices;
 using Autofac.Features.OwnedInstances;
 using DAL.Abstract.Entitys.Authentication;
 

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutodictorBL.Builder.TrainRecordBuilder;
-using AutodictorBL.DataAccess;
+using AutodictorBL.Services.DataAccessServices;
 using Autofac.Features.OwnedInstances;
 using DAL.Abstract.Entitys;
 using MainExample.Extension;

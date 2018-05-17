@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using DAL.Abstract.Abstract;
 using DAL.NoSqlLiteDb.Entityes;
 
-namespace AutodictorBL.DataAccess
+namespace AutodictorBL.Services.DataAccessServices
 {
     public class SoundRecChangesService
     {
