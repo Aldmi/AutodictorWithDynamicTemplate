@@ -589,6 +589,7 @@ namespace MainExample
             //DEBUG----------------------------------
             var soundRecs= _soundRecCollectionBuilder
                 .SetSheduleByTrainRecService()
+                .SetActualityFilterRelativeCurrentTime(48, 48, РаботаПоНомеруДняНедели)
                 .Build();
             //DEBUG----------------------------------
 

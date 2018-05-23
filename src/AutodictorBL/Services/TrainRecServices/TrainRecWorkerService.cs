@@ -52,6 +52,48 @@ namespace AutodictorBL.Services.TrainRecServices
             return true;
         }
 
+
+        public bool CheckTrainActualityByOffset(TrainTableRec config, DateTime dateCheck, Func<DateTime, bool> offsetTime, byte workWithNumberOfDays)
+        {
+            var планРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(config.Days, config.StartTimeSchedule, config.StopTimeSchedule);
+            if ((workWithNumberOfDays == 7) || (планРасписанияПоезда.ПолучитьРежимРасписания() != РежимРасписанияДвиженияПоезда.ПоДням)) // TODO: добавить || для всех дальних
+            {
+                var активностьНаДень = планРасписанияПоезда.ПолучитьАктивностьДняДвижения((byte) (dateCheck.Month - 1), (byte) (dateCheck.Day - 1), dateCheck);
+                if (активностьНаДень == false)
+                    return false;
+
+                DateTime time = DateTime.Now;
+                switch (config.Event)
+                {
+                    case Event.None:
+                        break;
+
+                    case Event.Arrival:
+                        if (!config.ArrivalTime.HasValue)
+                            return false;
+                        time = dateCheck.Date
+                              .AddHours(config.ArrivalTime.Value.Hour)
+                              .AddMinutes(config.ArrivalTime.Value.Minute);  
+                        break;
+
+                    case Event.Departure:
+                    case Event.Transit:
+                        if (!config.DepartureTime.HasValue)
+                            return false;
+                        time = dateCheck.Date
+                            .AddHours(config.DepartureTime.Value.Hour)
+                            .AddMinutes(config.DepartureTime.Value.Minute);
+                        break;
+                }
+
+                return offsetTime(time);
+            }
+
+            return true; //TODO: добавить работу по дням недели
+        }
+
+
+
         public string GetUniqueKey(IEnumerable<string> currentKeys, DateTime addingKey)
         {
             throw new NotImplementedException();

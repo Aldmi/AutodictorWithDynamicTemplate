@@ -9,7 +9,8 @@ namespace AutodictorBL.Services.TrainRecServices
     /// </summary>
     public interface ITrainRecWorkerService // TODO: замена SchedulingPipelineService
     {
-        bool CheckTrainActuality(TrainTableRec config, DateTime dateCheck, Func<int, bool> limitationTime,byte workWithNumberOfDays);
+        bool CheckTrainActuality(TrainTableRec config, DateTime dateCheck, Func<int, bool> limitationTime, byte workWithNumberOfDays);
+        bool CheckTrainActualityByOffset(TrainTableRec config, DateTime dateCheck, Func<DateTime, bool> offsetTime, byte workWithNumberOfDays);
         string GetUniqueKey(IEnumerable<string> currentKeys, DateTime addingKey);
     }
 }
