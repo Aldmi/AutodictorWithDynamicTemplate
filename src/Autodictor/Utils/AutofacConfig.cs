@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Services;
+using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.SoundRecordServices;
 using Autofac;
@@ -18,7 +19,7 @@ using DAL.XmlRaw.Repository;
 using MainExample.Services;
 using MainExample.ViewModel.AddingTrainFormVM;
 using MainExample.ViewModel.EditRouteFormVM;
-using AuthenticationService = AutodictorBL.Services.AuthenticationService;
+using AuthenticationService = AutodictorBL.Services.AuthenticationServices.AuthenticationService;
 
 
 namespace MainExample.Utils

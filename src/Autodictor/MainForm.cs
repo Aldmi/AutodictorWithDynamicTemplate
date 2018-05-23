@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using AutodictorBL.Services;
+using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Sound;
 using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.BindingBehavior.ToStatic;

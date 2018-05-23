@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Linq;
 using AutodictorBL.Entites;
 using AutodictorBL.Services;
+using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.SoundRecordServices;
 using AutodictorBL.Sound;

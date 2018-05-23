@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using AutodictorBL.Entites;
 using AutodictorBL.Services;
+using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;

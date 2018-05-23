@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BCrypt.Net;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys.Authentication;
-using BCrypt.Net;
 
-
-namespace AutodictorBL.Services
+namespace AutodictorBL.Services.AuthenticationServices
 {
     public class AuthenticationService : IAuthentificationService
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using DAL.Abstract.Entitys.Authentication;
 
-namespace AutodictorBL.Services
+namespace AutodictorBL.Services.AuthenticationServices
 {
     public interface IAuthentificationService
     {
