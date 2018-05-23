@@ -321,7 +321,6 @@
     <Compile Include="EditTrainTableRecForm.Designer.cs">
       <DependentUpon>EditTrainTableRecForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ПланРасписанияПоезда.cs" />
     <Compile Include="Предупреждение.cs">
       <SubType>Form</SubType>
     </Compile>

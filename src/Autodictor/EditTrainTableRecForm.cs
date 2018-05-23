@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using AutodictorBL.Models;
 using AutodictorBL.Services.DataAccessServices;
 using DAL.Abstract.Entitys;
 using DevExpress.Utils;
@@ -202,26 +203,26 @@ namespace MainExample
             cBОткуда.Text = TrainRec.StationDepart?.NameRu ?? string.Empty;
             cBКуда.Text = TrainRec.StationArrival?.NameRu ?? string.Empty;
 
-            if ((TrainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
-                (TrainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
+            if ((TrainRec.StartTimeSchedule <= DateTime.MinValue) &&
+                (TrainRec.StopTimeSchedule >= DateTime.MaxValue))
                 rBВремяДействияПостоянно.Checked = true;
-            else if ((TrainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
-                     (TrainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
+            else if ((TrainRec.StartTimeSchedule > DateTime.MinValue) &&
+                     (TrainRec.StopTimeSchedule < DateTime.MaxValue))
             {
-                dTPВремяДействияС2.Value = TrainRec.ВремяНачалаДействияРасписания;
-                dTPВремяДействияПо2.Value = TrainRec.ВремяОкончанияДействияРасписания;
+                dTPВремяДействияС2.Value = TrainRec.StartTimeSchedule;
+                dTPВремяДействияПо2.Value = TrainRec.StopTimeSchedule;
                 rBВремяДействияСПо.Checked = true;
             }
-            else if ((TrainRec.ВремяНачалаДействияРасписания > DateTime.MinValue) &&
-                     (TrainRec.ВремяОкончанияДействияРасписания >= DateTime.MaxValue))
+            else if ((TrainRec.StartTimeSchedule > DateTime.MinValue) &&
+                     (TrainRec.StopTimeSchedule >= DateTime.MaxValue))
             {
-                dTPВремяДействияС.Value = TrainRec.ВремяНачалаДействияРасписания;
+                dTPВремяДействияС.Value = TrainRec.StartTimeSchedule;
                 rBВремяДействияС.Checked = true;
             }
-            else if ((TrainRec.ВремяНачалаДействияРасписания <= DateTime.MinValue) &&
-                     (TrainRec.ВремяОкончанияДействияРасписания < DateTime.MaxValue))
+            else if ((TrainRec.StartTimeSchedule <= DateTime.MinValue) &&
+                     (TrainRec.StopTimeSchedule < DateTime.MaxValue))
             {
-                dTPВремяДействияПо.Value = TrainRec.ВремяОкончанияДействияРасписания;
+                dTPВремяДействияПо.Value = TrainRec.StopTimeSchedule;
                 rBВремяДействияПо.Checked = true;
             }
 
@@ -238,8 +239,8 @@ namespace MainExample
             cb_Дополнение_Табло.Checked = TrainRec.ИспользоватьДополнение["табло"];
             cb_Дополнение_Звук.Checked = TrainRec.ИспользоватьДополнение["звук"];
 
-            rB_РежРабАвтомат.Checked = TrainRec.Автомат;
-            rB_РежРабРучной.Checked = !TrainRec.Автомат;
+            rB_РежРабАвтомат.Checked = TrainRec.Automate;
+            rB_РежРабРучной.Checked = !TrainRec.Automate;
 
             dTPПрибытие.Value= DateTime.Parse("00:00");
             dTPОтправление.Value = DateTime.Parse("00:00");
@@ -392,7 +393,7 @@ namespace MainExample
             TrainRec.ИспользоватьДополнение["табло"] = cb_Дополнение_Табло.Checked;
             TrainRec.ИспользоватьДополнение["звук"] = cb_Дополнение_Звук.Checked;
 
-            TrainRec.Автомат = rB_РежРабАвтомат.Checked;
+            TrainRec.Automate = rB_РежРабАвтомат.Checked;
 
             if (cBОткуда.Text != "")
                 TrainRec.Name = cBОткуда.Text + " - " + cBКуда.Text;
@@ -405,23 +406,23 @@ namespace MainExample
 
             if (rBВремяДействияС.Checked == true)
             {
-                TrainRec.ВремяНачалаДействияРасписания = dTPВремяДействияС.Value;
-                TrainRec.ВремяОкончанияДействияРасписания = DateTime.MaxValue;
+                TrainRec.StartTimeSchedule = dTPВремяДействияС.Value;
+                TrainRec.StopTimeSchedule = DateTime.MaxValue;
             }
             else if (rBВремяДействияПо.Checked == true)
             {
-                TrainRec.ВремяНачалаДействияРасписания = DateTime.MinValue;
-                TrainRec.ВремяОкончанияДействияРасписания = dTPВремяДействияПо.Value;
+                TrainRec.StartTimeSchedule = DateTime.MinValue;
+                TrainRec.StopTimeSchedule = dTPВремяДействияПо.Value;
             }
             else if (rBВремяДействияСПо.Checked == true)
             {
-                TrainRec.ВремяНачалаДействияРасписания = dTPВремяДействияС2.Value;
-                TrainRec.ВремяОкончанияДействияРасписания = dTPВремяДействияПо2.Value;
+                TrainRec.StartTimeSchedule = dTPВремяДействияС2.Value;
+                TrainRec.StopTimeSchedule = dTPВремяДействияПо2.Value;
             }
             else if (rBВремяДействияПостоянно.Checked == true)
             {
-                TrainRec.ВремяНачалаДействияРасписания = DateTime.MinValue;
-                TrainRec.ВремяОкончанияДействияРасписания = DateTime.MaxValue;
+                TrainRec.StartTimeSchedule = DateTime.MinValue;
+                TrainRec.StopTimeSchedule = DateTime.MaxValue;
             }
 
             TrainRec.Active = !cBБлокировка.Checked;

@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.SoundRecordServices;
 using DAL.Abstract.Entitys;

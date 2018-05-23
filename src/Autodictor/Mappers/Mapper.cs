@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutodictorBL.Models;
 using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.SoundRecordServices;
 using Autofac;
@@ -100,7 +101,7 @@ namespace MainExample.Mappers
             record.ДниСледования = config.Days;
             record.ДниСледованияAlias = config.DaysAlias;
             record.Активность = config.Active;
-            record.Автомат = config.Автомат;
+            record.Автомат = config.Automate;
             record.ШаблонВоспроизведенияСообщений = String.Empty;//config.SoundTemplates;
             record.Pathway = ПолучитьНомерПутиПоДнямНедели(config).DeepClone();
             record.НомерПути = ПолучитьНомерПутиПоДнямНедели(config)?.Name ?? string.Empty;

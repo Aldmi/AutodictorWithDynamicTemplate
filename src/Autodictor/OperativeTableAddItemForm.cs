@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using AutodictorBL.Models;
 using AutodictorBL.Services.DataAccessServices;
 using DAL.Abstract.Entitys;
 
@@ -203,22 +204,22 @@ namespace MainExample
             rBВремяДействияПо.Checked = false;
             rBВремяДействияСПо.Checked = false;
             rBВремяДействияПостоянно.Checked = false;
-            if ((tableRec.ВремяНачалаДействияРасписания <= new DateTime(1901, 1, 1)) && (tableRec.ВремяОкончанияДействияРасписания >= new DateTime(2099, 1, 1)))
+            if ((tableRec.StartTimeSchedule <= new DateTime(1901, 1, 1)) && (tableRec.StopTimeSchedule >= new DateTime(2099, 1, 1)))
                 rBВремяДействияПостоянно.Checked = true;
-            else if ((tableRec.ВремяНачалаДействияРасписания > new DateTime(1901, 1, 1)) && (tableRec.ВремяОкончанияДействияРасписания < new DateTime(2099, 1, 1)))
+            else if ((tableRec.StartTimeSchedule > new DateTime(1901, 1, 1)) && (tableRec.StopTimeSchedule < new DateTime(2099, 1, 1)))
             {
-                dTPВремяДействияС2.Value = tableRec.ВремяНачалаДействияРасписания;
-                dTPВремяДействияПо2.Value = tableRec.ВремяОкончанияДействияРасписания;
+                dTPВремяДействияС2.Value = tableRec.StartTimeSchedule;
+                dTPВремяДействияПо2.Value = tableRec.StopTimeSchedule;
                 rBВремяДействияСПо.Checked = true;
             }
-            else if ((tableRec.ВремяНачалаДействияРасписания > new DateTime(1901, 1, 1)) && (tableRec.ВремяОкончанияДействияРасписания >= new DateTime(2099, 1, 1)))
+            else if ((tableRec.StartTimeSchedule > new DateTime(1901, 1, 1)) && (tableRec.StopTimeSchedule >= new DateTime(2099, 1, 1)))
             {
-                dTPВремяДействияС.Value = tableRec.ВремяНачалаДействияРасписания;
+                dTPВремяДействияС.Value = tableRec.StartTimeSchedule;
                 rBВремяДействияС.Checked = true;
             }
-            else if ((tableRec.ВремяНачалаДействияРасписания <= new DateTime(1901, 1, 1)) && (tableRec.ВремяОкончанияДействияРасписания < new DateTime(2099, 1, 1)))
+            else if ((tableRec.StartTimeSchedule <= new DateTime(1901, 1, 1)) && (tableRec.StopTimeSchedule < new DateTime(2099, 1, 1)))
             {
-                dTPВремяДействияПо.Value = tableRec.ВремяОкончанияДействияРасписания;
+                dTPВремяДействияПо.Value = tableRec.StopTimeSchedule;
                 rBВремяДействияПо.Checked = true;
             }
 

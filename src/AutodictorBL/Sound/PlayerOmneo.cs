@@ -2,7 +2,7 @@
 using System.Reactive.Subjects;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 using AutodictorBL.Settings.XmlSound;
 using AutodictorBL.Sound.Converters;
 using PRAESIDEOOPENINTERFACECOMSERVERLib;

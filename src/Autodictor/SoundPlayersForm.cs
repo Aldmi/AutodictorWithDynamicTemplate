@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
 using MainExample.Extension;

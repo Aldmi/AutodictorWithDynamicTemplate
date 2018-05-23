@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Subjects;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
 using Library.Logs;

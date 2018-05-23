@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 using AutodictorBL.Settings.XmlSound;
 using AutodictorBL.Sound.Converters;
 using DAL.Abstract.Entitys;

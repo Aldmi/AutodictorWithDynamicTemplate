@@ -78,7 +78,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
                 ["звук"] = false,
                 ["табло"] = false
             };
-            TrainTableRec.Автомат = true;
+            TrainTableRec.Automate = true;
             TrainTableRec.IsScoreBoardOutput = false;
             TrainTableRec.IsSoundOutput = true;
 
@@ -89,8 +89,8 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         public ITrainRecBuilder SetDefaultDaysOfGoing()
         {
             TrainTableRec = TrainTableRec ?? new TrainTableRec();
-            TrainTableRec.ВремяНачалаДействияРасписания = DateTime.MinValue;
-            TrainTableRec.ВремяОкончанияДействияРасписания = DateTime.MaxValue;
+            TrainTableRec.StartTimeSchedule = DateTime.MinValue;
+            TrainTableRec.StopTimeSchedule = DateTime.MaxValue;
             TrainTableRec.Days = string.Empty;
             TrainTableRec.DaysAlias = string.Empty;
 

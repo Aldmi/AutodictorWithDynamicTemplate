@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
-
-
+using AutodictorBL.Models;
 
 
 namespace MainExample
@@ -23,7 +21,7 @@ namespace MainExample
         private string[] stringMonths = new string[14];
 
         public int[] intMonths = new int[14];
-        public enum Months { Январь = 1, Февраль, Март, Апрель, Май, Июнь, Июль, Август, Сентябрь, Октябрь, Ноябрь, Декабрь }
+
         // byte[] КоличествоДнейВМесяце = new byte[] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 28 };
         // Назначить английское название функции
         private UInt32 СтепеньЧисла(int number, int степень)

@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using AutodictorBL.Builder.SoundRecordCollectionBuilder;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Services;
 using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.SoundRecordServices;
+using AutodictorBL.Services.TrainRecServices;
 using Autofac;
 using Autofac.Core;
 using DAL.Abstract.Abstract;
@@ -132,6 +134,8 @@ namespace MainExample.Utils
                         (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis))
                 }).SingleInstance();
 
+            builder.RegisterType<TrainRecWorkerService>().As<ITrainRecWorkerService>().SingleInstance();
+            builder.RegisterType<SoundRecCollectionBuilderFluent>().As<ISoundRecCollectionBuilder>().InstancePerDependency();
 
             #endregion
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
 

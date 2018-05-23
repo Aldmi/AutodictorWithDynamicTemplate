@@ -4,7 +4,8 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Linq;
-using AutodictorBL.Entites;
+using AutodictorBL.Builder.SoundRecordCollectionBuilder;
+using AutodictorBL.Models;
 using AutodictorBL.Services;
 using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Services.DataAccessServices;
@@ -46,6 +47,7 @@ namespace MainExample
         private static ISoundReсordWorkerService _soundReсordWorkerService; //DEL
         private readonly TrainRecService _trainRecService;
         private readonly SoundRecChangesService _soundRecChangesService;
+        private readonly ISoundRecCollectionBuilder _soundRecCollectionBuilder;
 
         private const int ВремяЗадержкиВоспроизведенныхСобытий = 20;  //сек
 
@@ -119,7 +121,8 @@ namespace MainExample
                               IUsersRepository usersRepository,
                               ISoundReсordWorkerService soundReсordWorkerService,
                               TrainRecService trainRecService,
-                              SoundRecChangesService soundRecChangesService)
+                              SoundRecChangesService soundRecChangesService,
+                              ISoundRecCollectionBuilder soundRecCollectionBuilder)
         {
             if (myMainForm != null)
                 return;
@@ -133,6 +136,7 @@ namespace MainExample
             _soundReсordWorkerService = soundReсordWorkerService;
             _trainRecService = trainRecService;
             _soundRecChangesService = soundRecChangesService;
+            _soundRecCollectionBuilder = soundRecCollectionBuilder;
 
             InitializeComponent();
 
@@ -582,6 +586,12 @@ namespace MainExample
         /// </summary>
         public void СозданиеРасписанияЖдТранспорта()
         {
+            //DEBUG----------------------------------
+            var soundRecs= _soundRecCollectionBuilder
+                .SetSheduleByTrainRecService()
+                .Build();
+            //DEBUG----------------------------------
+
             int id = 1;
 
             //загрузим список изменений на текущий день.

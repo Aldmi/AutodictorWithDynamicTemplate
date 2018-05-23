@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutodictorBL.Mappers;
 using AutodictorBL.Settings.XmlSound;
 using AutodictorBL.Sound;
 using DAL.Abstract.Entitys;
@@ -31,6 +32,12 @@ namespace AutodictorBL
 
 
 
+
+        public AutodictorModel()
+        {
+            //РЕГИСТРАЦИЯ МАППИНГА
+            AutoMapperConfig.Register();
+        }
 
 
 

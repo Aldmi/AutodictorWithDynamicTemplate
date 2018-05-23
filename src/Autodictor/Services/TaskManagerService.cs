@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 
 
 namespace MainExample.Services

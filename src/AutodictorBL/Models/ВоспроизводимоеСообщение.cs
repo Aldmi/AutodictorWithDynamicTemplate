@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DAL.Abstract.Entitys;
 
-namespace AutodictorBL.Entites
+namespace AutodictorBL.Models
 {
     public enum MessageType
     {

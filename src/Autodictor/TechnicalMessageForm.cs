@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using AutodictorBL.Entites;
+using AutodictorBL.Models;
 using AutodictorBL.Services.DataAccessServices;
 using DAL.Abstract.Entitys;
 

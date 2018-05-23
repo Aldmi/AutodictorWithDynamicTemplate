@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-
-
-
-
-namespace MainExample
+namespace AutodictorBL.Models
 {
     public enum РежимРасписанияДвиженияПоезда
     {
@@ -17,6 +13,7 @@ namespace MainExample
         ПоДням = 5,
     };
 
+    public enum Months { Январь = 1, Февраль, Март, Апрель, Май, Июнь, Июль, Август, Сентябрь, Октябрь, Ноябрь, Декабрь }
 
 
     public class ПланРасписанияПоезда
@@ -285,7 +282,7 @@ namespace MainExample
                         int monthIndex = i + DateTime.Now.Month - 1;
                         if (БитыРасписания[i] != 0x00000000)
                         {
-                            СтрокаРасписания += ((Расписание.Months)(monthIndex % 12 + 1)).ToString() + ":";
+                            СтрокаРасписания += ((Months)(monthIndex % 12 + 1)).ToString() + ":";
                             for (int j = 0; j < 31; j++)
                                 if ((БитыРасписания[i] & (1 << j)) != 0x00000000)
                                     СтрокаРасписания += (j + 1).ToString() + ",";
