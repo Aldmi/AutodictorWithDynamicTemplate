@@ -587,10 +587,10 @@ namespace MainExample
         public void СозданиеРасписанияЖдТранспорта()
         {
             //DEBUG----------------------------------
-            var soundRecs= _soundRecCollectionBuilder
-                .SetSheduleByTrainRecService()
-                .SetActualityFilterRelativeCurrentTime(48, 48, РаботаПоНомеруДняНедели)
-                .Build();
+            //var soundRecs= _soundRecCollectionBuilder
+            //    .SetSheduleByTrainRecService()
+            //    .SetActualityFilterRelativeCurrentTime(5, 5, РаботаПоНомеруДняНедели)
+            //    .Build();
             //DEBUG----------------------------------
 
             int id = 1;
@@ -2373,7 +2373,6 @@ namespace MainExample
             if (emergency == null)
                 return record;
 
-            emergency.FixedTimeEmergencyEvent = DateTime.Now.Date.AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute); //зафисксируем время выставления НЕШТАТКИ.
 
             //Сформируем список нештатных сообщений--------------------------------------------------------------------------------------------
             record.EmergencyTrainDynamiсList = _soundReсordWorkerService.СreateActionTrainDynamic(record, new List<ActionTrain> {emergency}, Program.Настройки.MinDeltaCycleActionTime, Program.Настройки.MaxDeltaCycleActionTime);

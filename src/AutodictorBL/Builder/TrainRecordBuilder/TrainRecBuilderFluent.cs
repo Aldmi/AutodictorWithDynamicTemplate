@@ -73,7 +73,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             TrainTableRec.PathWeekDayes = false;
             TrainTableRec.Route = null;
             TrainTableRec.Addition = "";
-            TrainTableRec.ИспользоватьДополнение = new Dictionary<string, bool>
+            TrainTableRec.UseAddition = new Dictionary<string, bool>
             {
                 ["звук"] = false,
                 ["табло"] = false

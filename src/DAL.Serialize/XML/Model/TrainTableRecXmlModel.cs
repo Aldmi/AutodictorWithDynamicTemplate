@@ -25,13 +25,12 @@ namespace DAL.Serialize.XML.Model
         public string Num;                                        //Номер поезда
         public string Num2;                                       //Номер поезда 2 (для транзита)
         public string Name;                                       //Название поезда
-        public string Примечание;
 
         [XmlElement("Route")]
         public RouteXmlModel RouteXmlModel;                       //Маршрут
 
         public bool Active;                                       //активность, отметка галочкой
-        public bool Автомат;                                      // true - поезд обрабатывается в автомате.
+        public bool Automate;                                      // true - поезд обрабатывается в автомате.
         public bool IsScoreBoardOutput;                           // Вывод на табло. true. (Работает если указанн Contrains SendingDataLimit)
         public bool IsSoundOutput;                                // Вывод звука. true.
         public int DirectionId;                                   //Направление Id
@@ -45,8 +44,8 @@ namespace DAL.Serialize.XML.Model
         public string Days;                                       //дни следования
         public string DaysAlias;                                  //дни следования алиас (строка заполняется в ручную)
 
-        public DateTime ВремяНачалаДействияРасписания;
-        public DateTime ВремяОкончанияДействияРасписания;
+        public DateTime StartTimeSchedule;
+        public DateTime StopTimeSchedule;
 
         public WagonsNumbering WagonsNumbering;                    //Нумерация вагонов
         public Event Event;                                        // Событие поезда (ПРИБ. ОТПР. ТРАНЗ.)
@@ -55,7 +54,7 @@ namespace DAL.Serialize.XML.Model
         public XmlSerializableDictionary<WeekDays, int> TrainPathNumber; //Пути по дням недели или постоянно  (key= день нгедели value= Id пути)
         public bool PathWeekDayes;                                 //true - установленны пути по дням недели, false - путь установленн постоянно
 
-        public XmlSerializableDictionary<string, bool> ИспользоватьДополнение;   //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
+        public XmlSerializableDictionary<string, bool> UseAddition;   //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
         public string Addition;                                    //Дополнение
 
         public int TrainTypeByRyleId;                              // тип поезда Id

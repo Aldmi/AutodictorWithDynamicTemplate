@@ -236,8 +236,8 @@ namespace MainExample
             tBНомерПоездаДоп.Text = TrainRec.Num2;
 
             tb_Дополнение.Text = TrainRec.Addition;
-            cb_Дополнение_Табло.Checked = TrainRec.ИспользоватьДополнение["табло"];
-            cb_Дополнение_Звук.Checked = TrainRec.ИспользоватьДополнение["звук"];
+            cb_Дополнение_Табло.Checked = TrainRec.UseAddition["табло"];
+            cb_Дополнение_Звук.Checked = TrainRec.UseAddition["звук"];
 
             rB_РежРабАвтомат.Checked = TrainRec.Automate;
             rB_РежРабРучной.Checked = !TrainRec.Automate;
@@ -390,8 +390,8 @@ namespace MainExample
             TrainRec.Num2 = tBНомерПоездаДоп.Text;
 
             TrainRec.Addition = tb_Дополнение.Text;
-            TrainRec.ИспользоватьДополнение["табло"] = cb_Дополнение_Табло.Checked;
-            TrainRec.ИспользоватьДополнение["звук"] = cb_Дополнение_Звук.Checked;
+            TrainRec.UseAddition["табло"] = cb_Дополнение_Табло.Checked;
+            TrainRec.UseAddition["звук"] = cb_Дополнение_Звук.Checked;
 
             TrainRec.Automate = rB_РежРабАвтомат.Checked;
 

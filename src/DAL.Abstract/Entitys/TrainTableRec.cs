@@ -45,7 +45,7 @@ namespace DAL.Abstract.Entitys
         public bool? ChangeTrainPathDirection { get; set; }                     //смена направления (для транзитов)
         public Dictionary<WeekDays, Pathway> TrainPathNumber { get; set; }      //Пути по дням недели или постоянно
         public bool PathWeekDayes { get; set; }                                 //true - установленны пути по дням недели, false - путь установленн постоянно
-        public Dictionary<string, bool> ИспользоватьДополнение { get; set; }    //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
+        public Dictionary<string, bool> UseAddition { get; set; }              //[звук] - использовать дополнение для звука.  [табло] - использовать дополнение для табло.
         public string Addition { get; set; }                                    //Дополнение
 
         public TrainTypeByRyle TrainTypeByRyle { get; set; }                    // Правила основанные на типе поезда. Содержит список базовых действий поезда.

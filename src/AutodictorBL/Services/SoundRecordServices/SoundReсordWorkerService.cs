@@ -43,8 +43,6 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// <summary>
         /// Возвращает список дианмических шаблонов на базе ActionTrain.
         /// Учитывается Время активации шаблона.
-        /// Для Нештатных шаблонов "время фикс. нешатаки" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
-        /// Для Обычных шаблонов "Время относительно которого заданн шаблон" ... "часы до конца суток +3 часа" с шагом указанном в шаблоне
         /// </summary>
         public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, double lowDelta4Cycle=-60, double hightDelta4Cycle=60)
         {

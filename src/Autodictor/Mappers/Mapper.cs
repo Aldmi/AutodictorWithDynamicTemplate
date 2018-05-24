@@ -94,8 +94,8 @@ namespace MainExample.Mappers
             record.Дополнение = config.Addition;
             record.ИспользоватьДополнение = new Dictionary<string, bool>
             {
-                ["звук"] = config.ИспользоватьДополнение["звук"],
-                ["табло"] = config.ИспользоватьДополнение["табло"]
+                ["звук"] = config.UseAddition["звук"],
+                ["табло"] = config.UseAddition["табло"]
             };
             record.Направление = config.Direction?.Name;
             record.ДниСледования = config.Days;

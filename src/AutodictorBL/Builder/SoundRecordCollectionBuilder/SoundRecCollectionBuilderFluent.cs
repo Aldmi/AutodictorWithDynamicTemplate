@@ -102,8 +102,8 @@ namespace AutodictorBL.Builder.SoundRecordCollectionBuilder
                 if (train.Active == false) //&& Program.Настройки.РазрешениеДобавленияЗаблокированныхПоездовВСписок == false
                     continue;
 
-                var minOffset = DateTime.Now.AddMinutes(offsetMin * -1);
-                var maxOffset = DateTime.Now.AddMinutes(offsetMax);
+                var minOffset = DateTime.Now.AddHours(offsetMin * -1);
+                var maxOffset = DateTime.Now.AddHours(offsetMax);
                 for (var day = minOffset; day <= maxOffset; day = day.AddDays(1))
                 {
                     var actuality = _trainRecWorkerService.CheckTrainActualityByOffset(train, day, (date => date > minOffset && date < maxOffset), workWithNumberOfDays);
