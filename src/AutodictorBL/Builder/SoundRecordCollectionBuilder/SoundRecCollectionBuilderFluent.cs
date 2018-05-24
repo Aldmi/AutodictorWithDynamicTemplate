@@ -106,10 +106,10 @@ namespace AutodictorBL.Builder.SoundRecordCollectionBuilder
                 var maxOffset = DateTime.Now.AddHours(offsetMax);
                 for (var day = minOffset; day <= maxOffset; day = day.AddDays(1))
                 {
-                    var actuality = _trainRecWorkerService.CheckTrainActualityByOffset(train, day, (date => date > minOffset && date < maxOffset), workWithNumberOfDays);
+                    var actuality = _trainRecWorkerService.CheckTrainActualityByOffset(train, day.Date, (date => date > minOffset && date < maxOffset), workWithNumberOfDays);
                     if (actuality)
                     {
-                        resultList.Add(train); //train.DeepClone()
+                        resultList.Add(train.DeepClone());
                     }
                 }
             }

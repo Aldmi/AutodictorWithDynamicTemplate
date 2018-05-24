@@ -53,6 +53,15 @@ namespace AutodictorBL.Services.TrainRecServices
         }
 
 
+        /// <summary>
+        /// Проверяет, актуальность движения поезда в день dateCheck. Если проверка успешная то проверяется на диапазон offsetTime.
+        /// Внимение!!! Функция меняет дату в config.ArrivalTime или в config.DepartureTime на дату переданную в dateCheck. (с сохранением времени)
+        /// </summary>
+        /// <param name="config"> Проверяемый поезд из расписания</param>
+        /// <param name="dateCheck">дата на которую проверяется ходит ли поезд</param>
+        /// <param name="offsetTime">функция проверки попадает ли поезд в заданный диапазон дат (со временем)</param>
+        /// <param name="workWithNumberOfDays">работа по календарю</param>
+        /// <returns></returns>
         public bool CheckTrainActualityByOffset(TrainTableRec config, DateTime dateCheck, Func<DateTime, bool> offsetTime, byte workWithNumberOfDays)
         {
             var планРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(config.Days, config.StartTimeSchedule, config.StopTimeSchedule);
@@ -62,7 +71,7 @@ namespace AutodictorBL.Services.TrainRecServices
                 if (активностьНаДень == false)
                     return false;
 
-                DateTime time = DateTime.Now;
+                var time = DateTime.Now;
                 switch (config.Event)
                 {
                     case Event.None:
@@ -73,7 +82,8 @@ namespace AutodictorBL.Services.TrainRecServices
                             return false;
                         time = dateCheck.Date
                               .AddHours(config.ArrivalTime.Value.Hour)
-                              .AddMinutes(config.ArrivalTime.Value.Minute);  
+                              .AddMinutes(config.ArrivalTime.Value.Minute);
+                        config.ArrivalTime = time;
                         break;
 
                     case Event.Departure:
@@ -83,6 +93,7 @@ namespace AutodictorBL.Services.TrainRecServices
                         time = dateCheck.Date
                             .AddHours(config.DepartureTime.Value.Hour)
                             .AddMinutes(config.DepartureTime.Value.Minute);
+                        config.DepartureTime = time;
                         break;
                 }
 
