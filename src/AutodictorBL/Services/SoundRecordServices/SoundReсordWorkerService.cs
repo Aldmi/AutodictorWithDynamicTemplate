@@ -21,21 +21,14 @@ namespace AutodictorBL.Services.SoundRecordServices
                 ? actionTrainDyn.ActionTrain.Time.DeltaTimes[0]
                 : actionTrainDyn.ActionTrain.Time.CycleTime.Value;
 
-            DateTime activationTime;
-            if (actionTrainDyn.ActionTrain.Emergency == Emergency.None)
-            {
-                var manualTemplate= actionTrainDyn.ActionTrain.Name.StartsWith("@");
-                var arrivalTime= (rec.ФиксированноеВремяПрибытия == null || !manualTemplate) ? rec.ВремяПрибытия : rec.ФиксированноеВремяПрибытия.Value;
-                var departTime= (rec.ФиксированноеВремяОтправления == null || !manualTemplate) ? rec.ВремяОтправления : rec.ФиксированноеВремяОтправления.Value;
+            var manualTemplate = actionTrainDyn.ActionTrain.Name.StartsWith("@");
+            var arrivalTime = (rec.ФиксированноеВремяПрибытия == null || !manualTemplate) ? rec.ВремяПрибытия : rec.ФиксированноеВремяПрибытия.Value;
+            var departTime = (rec.ФиксированноеВремяОтправления == null || !manualTemplate) ? rec.ВремяОтправления : rec.ФиксированноеВремяОтправления.Value;
 
-                activationTime= (actionTrainDyn.ActionTrain.ActionType == ActionType.Arrival)
-                    ? arrivalTime.AddMinutes(timeSift)
-                    : departTime.AddMinutes(timeSift);
-            }
-            else
-            {
-                activationTime = actionTrainDyn.ActionTrain.FixedTimeEmergencyEvent.AddMinutes(timeSift);
-            }
+            var activationTime = (actionTrainDyn.ActionTrain.ActionType == ActionType.Arrival)
+                ? arrivalTime.AddMinutes(timeSift)
+                : departTime.AddMinutes(timeSift);
+
             return activationTime;
         }
 
@@ -44,7 +37,7 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// Возвращает список дианмических шаблонов на базе ActionTrain.
         /// Учитывается Время активации шаблона.
         /// </summary>
-        public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, double lowDelta4Cycle=-60, double hightDelta4Cycle=60)
+        public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, double lowDelta4Cycle = -60, double hightDelta4Cycle = 60)
         {
             var dynamiсLists = new List<ActionTrainDynamic>();
             var idActDyn = 1;
@@ -78,7 +71,7 @@ namespace AutodictorBL.Services.SoundRecordServices
                     for (var date = startDate4Cycle; date < endDate4Cycle; date += new TimeSpan(0, interval, 0))
                     {
                         var time = (((eventTime - date).Hours * 60) + (eventTime - date).Minutes) * -1;
-                        var newActionTrain= action.DeepClone();
+                        var newActionTrain = action.DeepClone();
                         newActionTrain.Time.DeltaTimes = new List<int> { time };
                         var actDyn = new ActionTrainDynamic
                         {
@@ -101,15 +94,15 @@ namespace AutodictorBL.Services.SoundRecordServices
         public TextFragment CalcTextFragment(ref SoundRecord rec, ActionTrain actionTrain)
         {
             string[] названиеФайловНумерацииПутей = { "", "Нумерация поезда с головы состава", "Нумерация поезда с хвоста состава" };
-            Color color= Color.Red;
+            Color color = Color.Red;
             string str = string.Empty;
             TextFragment txtFrag = new TextFragment();
 
-            var langRutemplate= actionTrain.Langs.FirstOrDefault(lang => lang.Name == "Rus");
+            var langRutemplate = actionTrain.Langs.FirstOrDefault(lang => lang.Name == "Rus");
             if (langRutemplate == null)
                 return null;
 
-            var fullTemplate= langRutemplate.TemplateSoundStart.Concat(langRutemplate.TemplateSoundBody).Concat(langRutemplate.TemplateSoundEnd).ToList();
+            var fullTemplate = langRutemplate.TemplateSoundStart.Concat(langRutemplate.TemplateSoundBody).Concat(langRutemplate.TemplateSoundEnd).ToList();
             foreach (string шаблон in fullTemplate)
             {
                 string текстПодстановки = string.Empty;
@@ -129,10 +122,10 @@ namespace AutodictorBL.Services.SoundRecordServices
                         break;
 
                     case "ПУТЬ ДОПОЛНЕНИЕ":
-                        pathway= rec.Pathway;
+                        pathway = rec.Pathway;
                         if (pathway == null)
                             break;
-                        текстПодстановки= pathway.Addition ?? string.Empty;
+                        текстПодстановки = pathway.Addition ?? string.Empty;
                         txtFrag.AddWord(текстПодстановки, color);
                         break;
 
@@ -173,7 +166,7 @@ namespace AutodictorBL.Services.SoundRecordServices
                     case "ВРЕМЯ ПРИБЫТИЯ UTC":
                         str = "Время прибытия UTC: ";
                         txtFrag.AddWord(str, Color.Black);
-                        var времяUtc= rec.ВремяПрибытия.AddMinutes(0); //Program.Настройки.UTC
+                        var времяUtc = rec.ВремяПрибытия.AddMinutes(0); //Program.Настройки.UTC
                         текстПодстановки = времяUtc.ToString("HH:mm");
                         txtFrag.AddWord(текстПодстановки, color);
                         break;
@@ -183,12 +176,12 @@ namespace AutodictorBL.Services.SoundRecordServices
                         txtFrag.AddWord(str, Color.Black);
                         if (rec.ВремяСтоянки.HasValue)
                         {
-                            текстПодстановки= (rec.ВремяСтоянки.Value.Hours.ToString("D2") + ":" + rec.ВремяСтоянки.Value.Minutes.ToString("D2"));
+                            текстПодстановки = (rec.ВремяСтоянки.Value.Hours.ToString("D2") + ":" + rec.ВремяСтоянки.Value.Minutes.ToString("D2"));
                         }
                         else
                         if (rec.БитыАктивностиПолей == 31)
                         {
-                            текстПодстановки= "Время стоянки будет измененно";
+                            текстПодстановки = "Время стоянки будет измененно";
                         }
                         txtFrag.AddWord(текстПодстановки, color);
                         break;
@@ -233,8 +226,8 @@ namespace AutodictorBL.Services.SoundRecordServices
                     case "СТАНЦИИ":
                         if (rec.ТипПоезда.CategoryTrain == CategoryTrain.Suburb)
                         {
-                            if(rec.Route == null || rec.Route.RouteType == RouteType.None)
-                               break;
+                            if (rec.Route == null || rec.Route.RouteType == RouteType.None)
+                                break;
 
                             str = "Электропоезд движется ";
                             txtFrag.AddWord(str, Color.Black);
@@ -259,21 +252,21 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// <param name="allowedLang">список разрещенных языков</param>
         public List<TemplateItem> CalcTemplateItems(ActionTrain actionTrain, List<string> allowedLang)
         {
-            var templateItems= new List<TemplateItem>();
+            var templateItems = new List<TemplateItem>();
             foreach (var lang in actionTrain.Langs)
             {
-                if(!allowedLang.Contains(lang.Name))
-                continue;
+                if (!allowedLang.Contains(lang.Name))
+                    continue;
 
                 if (!lang.IsEnable)
-                continue;
+                    continue;
 
-                templateItems.AddRange(lang.TemplateSoundStart.Select(tmp=> new TemplateItem {Template = tmp, NameLang = lang.Name}));
+                templateItems.AddRange(lang.TemplateSoundStart.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
                 for (int i = 0; i < lang.RepeatSoundBody; i++)
                 {
-                    templateItems.AddRange(lang.TemplateSoundBody.Select(tmp=> new TemplateItem { Template = tmp, NameLang = lang.Name }));
+                    templateItems.AddRange(lang.TemplateSoundBody.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
                 }
-                templateItems.AddRange(lang.TemplateSoundEnd.Select(tmp=> new TemplateItem { Template = tmp, NameLang = lang.Name }));
+                templateItems.AddRange(lang.TemplateSoundEnd.Select(tmp => new TemplateItem { Template = tmp, NameLang = lang.Name }));
             }
 
             return templateItems;
@@ -325,9 +318,9 @@ namespace AutodictorBL.Services.SoundRecordServices
         {
             FragmentOptions.Add(new FragmentOption
             {
-                StartIndex= StringBuilder.Length,
-                Lenght= text.Length,
-                Color= color
+                StartIndex = StringBuilder.Length,
+                Lenght = text.Length,
+                Color = color
             });
             StringBuilder.Append(text + " ");
         }
