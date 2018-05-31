@@ -9,12 +9,7 @@ using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.Services.DataAccessServices
 {
-
-    /// <summary>
-    /// Сервис доступа к расписанию.
-    /// StateFull - хранит SourceLoad, Т.е. выбор репозитория ITrainTableRecRepository по умолчанию.
-    /// </summary>
-    public class TrainRecService : IDisposable
+    public class TrainRecWithSourceLoadService
     {
         #region field
 
@@ -38,6 +33,8 @@ namespace AutodictorBL.Services.DataAccessServices
 
 
 
+
+
         #region Rx
 
         public Subject<TrainRecRepType> TableChangeRx { get; } = new Subject<TrainRecRepType>();
@@ -46,23 +43,22 @@ namespace AutodictorBL.Services.DataAccessServices
 
 
 
-
-
         #region ctor
 
-        public TrainRecService(ITrainTableRecRepository repLocalMain,
-                               ITrainTableRecRepository repLocalOperative,
-                               ITrainTableRecRepository repRemoteCis,
-                               TrainTypeByRyleService trainTypeByRyleService,
-                               PathwaysService pathwaysService,
-                               DirectionService directionService)
+        public TrainRecWithSourceLoadService(ITrainTableRecRepository repLocalMain,
+                                             ITrainTableRecRepository repLocalOperative,
+                                             ITrainTableRecRepository repRemoteCis,
+                                             TrainTypeByRyleService trainTypeByRyleService,
+                                             PathwaysService pathwaysService,
+                                             DirectionService directionService)
         {
             _repLocalMain = repLocalMain;
             _repLocalOperative = repLocalOperative;
-            _repRemoteCis = repRemoteCis;      
+            _repRemoteCis = repRemoteCis;
             _trainTypeByRyleService = trainTypeByRyleService;
             _pathwaysService = pathwaysService;
             _directionService = directionService;
+           
         }
 
         #endregion
@@ -72,24 +68,24 @@ namespace AutodictorBL.Services.DataAccessServices
 
         #region Methode
 
-        public TrainTableRec GetById(int id, TrainRecRepType? trainRecRepType = null)
+        public TrainTableRec GetById(int id)
         {
-            var sourceLoad = trainRecRepType ?? SourceLoad;
-            var rep = GetRepBySourceLoad(sourceLoad);
+            var rep = (SourceLoad == TrainRecRepType.LocalMain) ? _repLocalMain : _repRemoteCis;
             return rep.GetById(id);
         }
+
 
         public IEnumerable<TrainTableRec> GetAll(TrainRecRepType? trainRecRepType = null)
         {
             var sourceLoad = trainRecRepType ?? SourceLoad;
-            var rep= GetRepBySourceLoad(sourceLoad);
+            var rep = (sourceLoad == TrainRecRepType.LocalMain) ? _repLocalMain : _repRemoteCis;
             return rep.List();
         }
 
         public async Task<IEnumerable<TrainTableRec>> GetAllAsync(TrainRecRepType? trainRecRepType = null)
         {
             var sourceLoad = trainRecRepType ?? SourceLoad;
-            var rep = GetRepBySourceLoad(sourceLoad);
+            var rep = (sourceLoad == TrainRecRepType.LocalMain) ? _repLocalMain : _repRemoteCis;
             return rep.List(); //TODO добавить async версии для репозиториев
         }
 
@@ -97,30 +93,23 @@ namespace AutodictorBL.Services.DataAccessServices
         public void ReWriteAll(IEnumerable<TrainTableRec> list, TrainRecRepType? trainRecRepType = null)
         {
             var sourceLoad = trainRecRepType ?? SourceLoad;
-            var rep = GetRepBySourceLoad(sourceLoad);
-            rep.Delete(t=> true);
+            var rep = (sourceLoad == TrainRecRepType.LocalMain) ? _repLocalMain : _repRemoteCis;
+            rep.Delete(t => true);
             rep.AddRange(list);
             TableChangeRx.OnNext(SourceLoad);
         }
 
 
-        public void DeleteItem(TrainTableRec item, TrainRecRepType? trainRecRepType = null)
+        public void DeleteItem(TrainTableRec item)
         {
-            var sourceLoad = trainRecRepType ?? SourceLoad;
-            var rep = GetRepBySourceLoad(sourceLoad);
+            var rep = (SourceLoad == TrainRecRepType.LocalMain) ? _repLocalMain : _repRemoteCis;
             rep.Delete(item);
         }
 
-        public void DeleteItem(Expression<Func<TrainTableRec, bool>> predicate, TrainRecRepType? trainRecRepType = null)
+        public void DeleteItem(Expression<Func<TrainTableRec, bool>> predicate)
         {
-            var sourceLoad = trainRecRepType ?? SourceLoad;
-            var rep = GetRepBySourceLoad(sourceLoad);
+            var rep = (SourceLoad == TrainRecRepType.LocalMain) ? _repLocalMain : _repRemoteCis;
             rep.Delete(predicate);
-        }
-
-        public async Task SaveListByRemoteCis(IEnumerable<TrainTableRec> trainTableRecords)
-        {
-            ReWriteAll(trainTableRecords, TrainRecRepType.RemoteCis);
         }
 
 
@@ -147,7 +136,7 @@ namespace AutodictorBL.Services.DataAccessServices
 
         public IEnumerable<Station> GetStationsInDirectionByName(string directionName)
         {
-           return _directionService.GetStationsInDirectionByName(directionName);
+            return _directionService.GetStationsInDirectionByName(directionName);
         }
 
         public Station GetStationInDirectionByNameStation(string directionName, string stationNameRu)
@@ -164,7 +153,7 @@ namespace AutodictorBL.Services.DataAccessServices
         {
             foreach (var direction in _directionService.GetAll())
             {
-               var station= direction.Stations.FirstOrDefault(st => st.CodeExpress == codeExpress);
+                var station = direction.Stations.FirstOrDefault(st => st.CodeExpress == codeExpress);
                 if (station != null)
                     return station;
             }
@@ -187,12 +176,17 @@ namespace AutodictorBL.Services.DataAccessServices
         }
 
 
-        private ITrainTableRecRepository GetRepBySourceLoad(TrainRecRepType sourceLoad)
+        public async Task SaveListByRemoteCis(IEnumerable<TrainTableRec> trainTableRecords)
         {
-            switch (sourceLoad)
+            ReWriteAll(trainTableRecords, TrainRecRepType.RemoteCis);
+        }
+
+        private ITrainTableRecRepository GetRepBySourceLoad()
+        {
+            switch (SourceLoad)
             {
                 case TrainRecRepType.LocalMain:
-                    return _repLocalMain;
+                    return _repLocalMain;                    
                 case TrainRecRepType.LocalOper:
                     return _repLocalOperative;
                 case TrainRecRepType.RemoteCis:
@@ -201,6 +195,7 @@ namespace AutodictorBL.Services.DataAccessServices
                     throw new ArgumentOutOfRangeException();
             }
         }
+
 
         #endregion
 
@@ -215,4 +210,5 @@ namespace AutodictorBL.Services.DataAccessServices
             }
         }
     }
+
 }

@@ -587,10 +587,10 @@ namespace MainExample
         public void СозданиеРасписанияЖдТранспорта()
         {
             //DEBUG----------------------------------
-            var soundRecs = _soundRecCollectionBuilder
-                .SetSheduleByTrainRecService()
-                .SetActualityFilterRelativeCurrentTime(5, 5, РаботаПоНомеруДняНедели)
-                .Build();
+            //var soundRecs = _soundRecCollectionBuilder
+            //    .SetSheduleByTrainRecService()
+            //    .SetActualityFilterRelativeCurrentTime(5, 5, РаботаПоНомеруДняНедели)
+            //    .Build();
             //DEBUG----------------------------------
 
             int id = 1;

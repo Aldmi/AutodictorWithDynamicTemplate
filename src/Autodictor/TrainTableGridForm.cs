@@ -70,10 +70,10 @@ namespace MainExample
             Model2Controls();
 
 
-             rbSourseSheduleCis.Checked = (_trainRecService.SourceLoad == TrainRecType.RemoteCis);
+             rbSourseSheduleCis.Checked = (_trainRecService.SourceLoad == TrainRecRepType.RemoteCis);
             _dispouseRemoteCisTableChangeRx = _trainRecService.TableChangeRx.Subscribe(data =>   //обновим tableRec в списке, при получении данных.
             {
-                if (data == TrainRecType.RemoteCis)
+                if (data == TrainRecRepType.RemoteCis)
                 {
                     btnLoad_Click(null, EventArgs.Empty);
                 }
@@ -559,7 +559,7 @@ namespace MainExample
             var rb = sender as RadioButton;
             if (rb != null)
             {
-                _trainRecService.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecType.LocalMain : TrainRecType.RemoteCis;
+                _trainRecService.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecRepType.LocalMain : TrainRecRepType.RemoteCis;
                 _listRecords = _trainRecService.GetAll().ToList();
                 //Сохранение настроек-----------------------------
                 //Program.Настройки.SourceTrainTableRecordLoad = _trainRecService.SourceLoad.ToString();

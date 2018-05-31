@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DAL.Abstract.Entitys
 {
-    public enum TrainRecType { LocalMain, LocalOper, RemoteCis }
+    public enum TrainRecRepType { LocalMain, LocalOper, RemoteCis }
     public enum WeekDays { Постоянно, Пн, Вт, Ср, Чт, Пт, Сб, Вс }
 
 

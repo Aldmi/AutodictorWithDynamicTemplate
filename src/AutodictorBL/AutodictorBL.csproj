@@ -81,6 +81,7 @@
     <Compile Include="Services\DataAccessServices\DirectionService.cs" />
     <Compile Include="Services\DataAccessServices\PathwaysService.cs" />
     <Compile Include="Services\DataAccessServices\SoundRecChangesService.cs" />
+    <Compile Include="Services\DataAccessServices\TrainRecWithSourceLoadService.cs" />
     <Compile Include="Services\DataAccessServices\TrainRecService.cs" />
     <Compile Include="Services\DataAccessServices\TrainTypeByRyleService.cs" />
     <Compile Include="Services\DataAccessServices\UserService.cs" />

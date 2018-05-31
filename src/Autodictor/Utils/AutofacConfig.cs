@@ -66,15 +66,6 @@ namespace MainExample.Utils
                 .WithParameters(new List<Parameter> { new NamedParameter("baseFileName", @"NoSqlDb\Main_") }).InstancePerLifetimeScope();
 
 
-            ////ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "LocalMain"
-            //builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("LocalMain")
-            //    .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain") }).InstancePerLifetimeScope();
-
-            ////ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "RemoteCis"
-            //builder.RegisterType<InMemoryTrainRecRepository>().Named<ITrainTableRecRepository>("RemoteCis")
-            //    .WithParameters(new List<Parameter> { new NamedParameter("key", @"RemoteCis") }).InstancePerLifetimeScope();
-
-
             //ITrainTableRecRepository -> InMemoryTrainRecRepository with name= "LocalMain"
             builder.RegisterType<XmlSerializeTrainTableRecRepository>().Named<ITrainTableRecRepository>("LocalMain")
                 .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalMain"),
@@ -87,9 +78,14 @@ namespace MainExample.Utils
                                                       new NamedParameter("folderName", @"XmlSerialize"),
                                                       new NamedParameter("fileName", @"TrainTableRecRemoteCis.xml")}).InstancePerLifetimeScope();
 
+            builder.RegisterType<XmlSerializeTrainTableRecRepository>().Named<ITrainTableRecRepository>("LocalOperative")
+                .WithParameters(new List<Parameter> { new NamedParameter("key", @"LocalOperative"),
+                    new NamedParameter("folderName", @"XmlSerialize"),
+                    new NamedParameter("fileName", @"TrainTableRecLocalOperative.xml")}).InstancePerLifetimeScope();
+
 
             //ITrainTableRecRepository -> CompositerTrainRecRepositoryDecorator with key= TrainRecType.LocalMain
-            builder.RegisterType<CompositerTrainRecRepositoryDecorator>().Keyed<ITrainTableRecRepository>(TrainRecType.LocalMain)
+            builder.RegisterType<CompositerTrainRecRepositoryDecorator>().Keyed<ITrainTableRecRepository>(TrainRecRepType.LocalMain)
                 .WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "trainTableRecRep")),
@@ -100,11 +96,22 @@ namespace MainExample.Utils
                 }).InstancePerLifetimeScope();
 
             //ITrainTableRecRepository -> CompositerTrainRecRepositoryDecorator with key= TrainRecType.RemoteCis
-            builder.RegisterType<CompositerTrainRecRepositoryDecorator>().Keyed<ITrainTableRecRepository>(TrainRecType.RemoteCis)
+            builder.RegisterType<CompositerTrainRecRepositoryDecorator>().Keyed<ITrainTableRecRepository>(TrainRecRepType.RemoteCis)
                 .WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "trainTableRecRep")),
                         (pi, ctx) => ctx.ResolveNamed<ITrainTableRecRepository>("RemoteCis")),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "trainTypeByRyleRep")),
+                        (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>())
+                }).InstancePerLifetimeScope();
+
+            //ITrainTableRecRepository -> CompositerTrainRecRepositoryDecorator with key= TrainRecType.LocalOper
+            builder.RegisterType<CompositerTrainRecRepositoryDecorator>().Keyed<ITrainTableRecRepository>(TrainRecRepType.LocalOper)
+                .WithParameters(new List<ResolvedParameter> {
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "trainTableRecRep")),
+                        (pi, ctx) => ctx.ResolveNamed<ITrainTableRecRepository>("LocalOperative")),
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTypeByRyleRepository) && (pi.Name == "trainTypeByRyleRep")),
                         (pi, ctx) => ctx.Resolve<ITrainTypeByRyleRepository>())
@@ -128,10 +135,13 @@ namespace MainExample.Utils
             builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repLocalMain")),
-                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.LocalMain)),
+                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecRepType.LocalMain)),
+                    new ResolvedParameter(
+                        (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repLocalOperative")),
+                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecRepType.LocalOper)),
                     new ResolvedParameter(
                         (pi, ctx) => (pi.ParameterType == typeof(ITrainTableRecRepository) && (pi.Name == "repRemoteCis")),
-                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecType.RemoteCis))
+                        (pi, ctx) => ctx.ResolveKeyed<ITrainTableRecRepository>(TrainRecRepType.RemoteCis))
                 }).SingleInstance();
 
             builder.RegisterType<TrainRecWorkerService>().As<ITrainRecWorkerService>().SingleInstance();

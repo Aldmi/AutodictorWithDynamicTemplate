@@ -1,2 +1,19 @@
+1. Создать сервис для доступа к репозиторию Cis (отдельно от TrainRecService).
+   Будет использоваться для удаленной записи с Cis.
 
-1. 
+2. Доделать окно добавления оперативного поезда.
+
+3. Доделать "SoundRecCollectionBuilderFluent" 
+
+4. Доделать тип SoundRec. 
+   В именновании свойств взять правило совпадения имен с TableRec. 
+   Для однотипности и выполнения AutoMapper.
+
+5. Создать сервис хранения для новой коллекции ConcurrentSortedDict<SoundRec>.
+   Конечная цель: Используя SoundRecCollectionBuilderFluent получаем Ilist<SoundRec>.
+   Потом Ilist<SoundRec> помещаем в сервис для ConcurrentSortedDict.
+
+6. Добавить async версии для Репозиториев 
+   var items= await rep.ListAsync();
+
+7.Создать реализацию билдера ITrainRecBuilder для remoteCis
