@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using AutodictorBL.Mappers;
 using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.TrainRecServices;
@@ -121,48 +122,44 @@ namespace AutodictorBL.Builder.SoundRecordCollectionBuilder
         }
 
 
-        //private void СозданиеЗвуковыхФайловРасписанияЖдТранспорта(IList<TrainTableRec> trainTableRecords, DateTime день, Func<int, bool> ограничениеВремениПоЧасам, ref int id)
-        //{
-        //    var pipelineService = new SchedulingPipelineService();
-        //    for (var index = 0; index < trainTableRecords.Count; index++)
-        //    {
-        //        var config = trainTableRecords[index];
-        //        if (config.Active == false && Program.Настройки.РазрешениеДобавленияЗаблокированныхПоездовВСписок == false)
-        //            continue;
 
-        //        if (!pipelineService.CheckTrainActuality(config, день, ограничениеВремениПоЧасам, РаботаПоНомеруДняНедели))
-        //            continue;
+        public async Task<ISoundRecCollectionBuilder> SetActualityFilterRelativeCurrentTimeAsync(int offsetMin, int offsetMax, byte workWithNumberOfDays)
+        {
+            CheckBaseCollection();
 
-        //        var newId = id++;
-        //        SoundRecord record = Mapper.MapTrainTableRecord2SoundRecord(config, _soundReсordWorkerService, день, newId);
+            var minOffset = DateTime.Now.AddHours(offsetMin * -1);
+            var maxOffset = DateTime.Now.AddHours(offsetMax);
+            var tasks = new List<Task<List<TrainTableRec>>>();
+            for (var index = 0; index < TrainTableRecs.Count; index++)
+            {
+                var train = TrainTableRecs[index];
+                if (train.Active == false) //&& Program.Настройки.РазрешениеДобавленияЗаблокированныхПоездовВСписок == false
+                    continue;
 
+                tasks.Add(Task.Run(() =>
+                {
+                    var resultList = new List<TrainTableRec>();
+                    for (var day = minOffset; day <= maxOffset; day = day.AddDays(1))
+                    {
+                        var actuality = _trainRecWorkerService.CheckTrainActualityByOffset(train, day.Date, (date => date > minOffset && date < maxOffset), workWithNumberOfDays);
+                        if (actuality)
+                        {
+                            resultList.Add(train.DeepClone());
+                        }
+                    }
+                    return resultList;
+                }));
+            }
 
-        //        //выдать список привязанных табло
-        //        record.НазванияТабло = record.НомерПути != "0" ? Binding2PathBehaviors.Select(beh => beh.GetDevicesName4Path(record.НомерПути)).Where(str => str != null).ToArray() : null;
-        //        record.СостояниеОтображения = TableRecordStatus.Выключена;
+            //ожидание выполнение ВСЕХ задач
+            var res = await Task.WhenAll(tasks.ToArray());  //Список массивов
+            var sumList = res.SelectMany(s=> s).ToList();
 
-
-        //        //СБРОСИТЬ НОМЕР ПУТИ, НА ВРЕМЯ МЕНЬШЕ ТЕКУЩЕГО
-        //        if (record.Время < DateTime.Now)
-        //        {
-        //            record.НомерПути = string.Empty;
-        //            record.НомерПутиБезАвтосброса = string.Empty;
-        //        }
-
-
-        //        //Добавление созданной записи
-        //        var newkey = pipelineService.GetUniqueKey(SoundRecords.Keys, record.Время);
-        //        if (!string.IsNullOrEmpty(newkey))
-        //        {
-        //            record.Время = DateTime.ParseExact(newkey, "yy.MM.dd  HH:mm:ss", new DateTimeFormatInfo());
-        //            SoundRecords.Add(newkey, record);
-        //            SoundRecordsOld.Add(newkey, record);
-        //        }
-
-        //        MainWindowForm.ФлагОбновитьСписокЖелезнодорожныхСообщенийВТаблице = true;
-        //    }
-        //}
-
+            //Перезапишем на отфильтрованный List
+            TrainTableRecs.Clear();
+            TrainTableRecs.AddRange(sumList);
+            return this;
+        }
 
 
 
