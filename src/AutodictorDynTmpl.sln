@@ -31,6 +31,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.InMemory", "DAL.InMemor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.Composite", "DAL.Composite\DAL.Composite.csproj", "{6C145733-3A76-4AFA-85F6-8E782108A27B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{20CCC127-B4FE-47FE-BFEE-09938D89D91C}"
+	ProjectSection(SolutionItems) = preProject
+		31052018.txt = 31052018.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
