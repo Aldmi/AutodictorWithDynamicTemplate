@@ -10,12 +10,21 @@ namespace MainExample.Services.GetDataService
 {
     public class GetSheduleApkDk : GetSheduleAbstract
     {
+        #region field
+
+        private readonly SortedDictionary<string, SoundRecord> _soundRecords;
+
+        #endregion
+
+
+
+
         #region ctor
 
         public GetSheduleApkDk(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords) 
-            : base(baseGetDataBehavior, soundRecords)
+            : base(baseGetDataBehavior)
         {
-
+            _soundRecords = soundRecords;
         }
 
         #endregion

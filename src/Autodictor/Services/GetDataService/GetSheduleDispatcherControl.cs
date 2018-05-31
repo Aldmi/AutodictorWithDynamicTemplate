@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
@@ -10,12 +11,30 @@ namespace MainExample.Services.GetDataService
 {
     public class GetSheduleDispatcherControl : GetSheduleAbstract
     {
+        #region field
+
+        private readonly SortedDictionary<string, SoundRecord> _soundRecords;
+
+        #endregion
+
+
+
+
+        #region RxEvent
+
+        public ISubject<SoundRecordChange> SoundRecordChangesRx { get; } = new Subject<SoundRecordChange>();
+
+        #endregion
+
+
+
+
         #region ctor
 
         public GetSheduleDispatcherControl(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords) 
-            : base(baseGetDataBehavior, soundRecords)
+            : base(baseGetDataBehavior)
         {
-
+            _soundRecords = soundRecords;
         }
 
         #endregion

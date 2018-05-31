@@ -16,28 +16,17 @@ namespace MainExample.Services.GetDataService
 
     public abstract class GetSheduleAbstract : IDisposable
     {
-        #region field
-
-        private readonly ISubject<IEnumerable<UniversalInputType>> _sheduleGetRx;
-        protected readonly SortedDictionary<string, SoundRecord> _soundRecords;
-
-        #endregion
-
-
-
-
         #region prop
 
-        public ISubject<IExhangeBehavior> ConnectChangeRx { get; }
-        public ISubject<IExhangeBehavior> DataExchangeSuccessRx { get; }
+        protected ISubject<IEnumerable<UniversalInputType>> SheduleGetRx { get; } //Входное событие "Получение данных"
+        protected ISubject<IExhangeBehavior> ConnectChangeRx { get; }              //Входное событие "Состояние соединения"
+        protected ISubject<IExhangeBehavior> DataExchangeSuccessRx { get; }        //Входное событие "Состояние обмена данными"
 
-        public IDisposable DispouseSheduleGetRx { get; set; }
-        public IDisposable DispouseConnectChangeRx { get; set; }
-        public IDisposable DispouseDataExchangeSuccessChangeRx { get; set; }
+        protected IDisposable DispouseSheduleGetRx { get; set; }
+        protected IDisposable DispouseConnectChangeRx { get; set; }
+        protected IDisposable DispouseDataExchangeSuccessChangeRx { get; set; }
 
         public bool Enable { get; set; }
-
-        public ISubject<SoundRecordChange> SoundRecordChangesRx { get; } = new Subject<SoundRecordChange>();
 
         #endregion
 
@@ -46,12 +35,11 @@ namespace MainExample.Services.GetDataService
 
         #region ctor
 
-        protected GetSheduleAbstract(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords) //TODO: убрать soundRecords из ctor. Вставить soundRecords только в ctor наследника, которому это нужно
+        protected GetSheduleAbstract(BaseGetDataBehavior baseGetDataBehavior)
         {
-            _sheduleGetRx = baseGetDataBehavior.ConvertedDataChangeRx;
+            SheduleGetRx = baseGetDataBehavior.ConvertedDataChangeRx;
             ConnectChangeRx = baseGetDataBehavior.ConnectChangeRx;
             DataExchangeSuccessRx = baseGetDataBehavior.DataExchangeSuccessRx;
-            _soundRecords = soundRecords;
         }
 
         #endregion
@@ -69,7 +57,7 @@ namespace MainExample.Services.GetDataService
         {
             try
             {
-                DispouseSheduleGetRx = _sheduleGetRx?.Subscribe(GetaDataRxEventHandler);
+                DispouseSheduleGetRx = SheduleGetRx?.Subscribe(GetaDataRxEventHandler);
                 DispouseConnectChangeRx = ConnectChangeRx.Subscribe(behavior =>                       //контролл не активен, если нет связи
                 {
                     control.InvokeIfNeeded(() =>

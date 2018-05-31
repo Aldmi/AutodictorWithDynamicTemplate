@@ -80,18 +80,17 @@ namespace MainExample
         public Device SoundChanelManagment { get; }
 
 
-        public IDisposable DispouseCisClientIsConnectRx { get; set; }
+
         public IDisposable DispouseQueueChangeRx { get; set; }
         public IDisposable DispouseStaticChangeRx { get; set; }
         public IDisposable DispouseTemplateChangeRx { get; set; }
-        public IDisposable DispouseApkDkVolgogradSheduleChangeRx { get; set; }
-        public IDisposable DispouseApkDkVolgogradSheduleChangeConnectRx { get; set; }
-        public IDisposable DispouseApkDkVolgogradSheduleDataExchangeSuccessChangeRx { get; set; }
 
-        public GetSheduleAbstract GetSheduleAbstract { get; set; }                  //сервис получения данных от АпкДк Волгоград
-        public GetSheduleAbstract DispatcherGetSheduleAbstract { get; set; }        //сервис получения данных от диспетчера
-        public GetSheduleAbstract CisRegShAbstract { get; set; }                    //сервис получения данных от CIS (рег. расписание)
-        public GetSheduleAbstract CisOperShAbstract { get; set; }                   //сервис получения данных от CIS (опер. расписание)
+
+
+        public GetSheduleApkDk GetSheduleApkDk { get; set; }                          //сервис получения данных от АпкДк Волгоград
+        public GetSheduleDispatcherControl GetSheduleDispatcherControl { get; set; }  //сервис получения данных от диспетчера
+        public GetCisRegSh GetCisRegSh { get; set; }                                  //сервис получения данных от CIS (рег. расписание)
+        public GetCisOperSh GetCisOperSh { get; set; }                                //сервис получения данных от CIS (опер. расписание)
 
 
         public int ВремяЗадержкиМеждуСообщениями = 0;
@@ -205,38 +204,37 @@ namespace MainExample
                         chbox_apkDk.Visible = true;
                         chbox_apkDk.Checked = Program.Настройки.GetDataApkDkStart;
 
-                        GetSheduleAbstract= new GetSheduleApkDk(beh.BaseGetDataBehavior, SoundRecords);
-                        GetSheduleAbstract.SubscribeAndStart(chbox_apkDk);
-                        GetSheduleAbstract.Enable = chbox_apkDk.Checked;
+                        GetSheduleApkDk = new GetSheduleApkDk(beh.BaseGetDataBehavior, SoundRecords);
+                        GetSheduleApkDk.SubscribeAndStart(chbox_apkDk);
+                        GetSheduleApkDk.Enable = chbox_apkDk.Checked;
                         break;
 
                     case "HttpDispatcher":
                         chbox_DispatcherControl.Visible = true;
                         chbox_DispatcherControl.Checked = Program.Настройки.GetDataDispatcherControlStart;
 
-                        DispatcherGetSheduleAbstract = new GetSheduleDispatcherControl(beh.BaseGetDataBehavior, SoundRecords);
-                        DispatcherGetSheduleAbstract.SoundRecordChangesRx.Subscribe(HttpDispatcherSoundRecordChanges);
-                        DispatcherGetSheduleAbstract.SubscribeAndStart(chbox_DispatcherControl);
-                        DispatcherGetSheduleAbstract.Enable = chbox_DispatcherControl.Checked;
+                        GetSheduleDispatcherControl = new GetSheduleDispatcherControl(beh.BaseGetDataBehavior, SoundRecords);
+                        GetSheduleDispatcherControl.SoundRecordChangesRx.Subscribe(HttpDispatcherSoundRecordChanges);
+                        GetSheduleDispatcherControl.SubscribeAndStart(chbox_DispatcherControl);
+                        GetSheduleDispatcherControl.Enable = chbox_DispatcherControl.Checked;
                         break;
 
                     case "HttpCisRegSh":
                         chbox_CisRegShControl.Visible = true;
                         chbox_CisRegShControl.Checked = Program.Настройки.GetDataCisRegShStart;
 
-                        CisRegShAbstract = new GetCisRegSh(beh.BaseGetDataBehavior, null, _usersRepository, _trainRecService);
-                        CisRegShAbstract.SubscribeAndStart(chbox_CisRegShControl);
-                        CisRegShAbstract.Enable = chbox_CisRegShControl.Checked;
+                        GetCisRegSh = new GetCisRegSh(beh.BaseGetDataBehavior, _usersRepository, _trainRecService);
+                        GetCisRegSh.SubscribeAndStart(chbox_CisRegShControl);
+                        GetCisRegSh.Enable = chbox_CisRegShControl.Checked;
                         break;
 
                     case "HttpCisOperSh":
                         chbox_CisOperShControl.Visible = true;
                         chbox_CisOperShControl.Checked = Program.Настройки.GetDataCisOperShStart;
 
-                        CisOperShAbstract = new GetCisOperSh(beh.BaseGetDataBehavior, SoundRecords);
-                       // CisOperShAbstract.SoundRecordChangesRx.Subscribe(HttpDispatcherSoundRecordChanges);
-                        CisOperShAbstract.SubscribeAndStart(chbox_CisOperShControl);
-                        CisOperShAbstract.Enable = chbox_CisOperShControl.Checked;
+                        GetCisOperSh = new GetCisOperSh(beh.BaseGetDataBehavior);
+                        GetCisOperSh.SubscribeAndStart(chbox_CisOperShControl);
+                        GetCisOperSh.Enable = chbox_CisOperShControl.Checked;
                         break;
                 }
 
@@ -276,8 +274,8 @@ namespace MainExample
             var chBox = sender as CheckBox;
             if (chBox != null)
             {
-                if(GetSheduleAbstract != null)
-                   GetSheduleAbstract.Enable = chbox_apkDk.Checked;
+                if(GetSheduleApkDk != null)
+                    GetSheduleApkDk.Enable = chbox_apkDk.Checked;
 
                 Program.Настройки.GetDataApkDkStart= chbox_apkDk.Checked;
                 ОкноНастроек.СохранитьНастройки();
@@ -289,8 +287,8 @@ namespace MainExample
             var chBox = sender as CheckBox;
             if (chBox != null)
             {
-                if (DispatcherGetSheduleAbstract != null)
-                    DispatcherGetSheduleAbstract.Enable = chbox_DispatcherControl.Checked;
+                if (GetSheduleDispatcherControl != null)
+                    GetSheduleDispatcherControl.Enable = chbox_DispatcherControl.Checked;
 
                 Program.Настройки.GetDataDispatcherControlStart = chbox_DispatcherControl.Checked;
                 ОкноНастроек.СохранитьНастройки();
@@ -302,8 +300,8 @@ namespace MainExample
             var chBox = sender as CheckBox;
             if (chBox != null)
             {
-                if (CisRegShAbstract != null)
-                    CisRegShAbstract.Enable = chbox_CisRegShControl.Checked;
+                if (GetCisRegSh != null)
+                    GetCisRegSh.Enable = chbox_CisRegShControl.Checked;
 
                 Program.Настройки.GetDataCisRegShStart = chbox_CisRegShControl.Checked;
                 ОкноНастроек.СохранитьНастройки();
@@ -315,8 +313,8 @@ namespace MainExample
             var chBox = sender as CheckBox;
             if (chBox != null)
             {
-                if (CisOperShAbstract != null)
-                    CisOperShAbstract.Enable = chbox_CisOperShControl.Checked;
+                if (GetCisOperSh != null)
+                    GetCisOperSh.Enable = chbox_CisOperShControl.Checked;
 
                 Program.Настройки.GetDataCisOperShStart = chbox_CisOperShControl.Checked;
                 ОкноНастроек.СохранитьНастройки();
@@ -3557,16 +3555,13 @@ namespace MainExample
 
         protected override void OnClosed(EventArgs e)
         {
-            DispouseCisClientIsConnectRx?.Dispose();
             DispouseQueueChangeRx?.Dispose();
             DispouseStaticChangeRx?.Dispose();
 
-            DispouseApkDkVolgogradSheduleChangeRx?.Dispose();
-            DispouseApkDkVolgogradSheduleChangeConnectRx?.Dispose();
-            DispouseApkDkVolgogradSheduleDataExchangeSuccessChangeRx?.Dispose();
-
-            GetSheduleAbstract?.Dispose();
-            DispatcherGetSheduleAbstract?.Dispose();
+            GetSheduleApkDk?.Dispose();
+            GetSheduleDispatcherControl?.Dispose();
+            GetCisRegSh?.Dispose();
+            GetCisOperSh?.Dispose();
 
             base.OnClosed(e);
         }

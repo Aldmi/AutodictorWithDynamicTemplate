@@ -7,12 +7,12 @@ using DAL.Abstract.Entitys;
 
 namespace MainExample.Services.GetDataService
 {
-    class GetCisOperSh : GetSheduleAbstract
+    public class GetCisOperSh : GetSheduleAbstract
     {
         #region ctor
 
-        public GetCisOperSh(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords) 
-            : base(baseGetDataBehavior, soundRecords)
+        public GetCisOperSh(BaseGetDataBehavior baseGetDataBehavior) 
+            : base(baseGetDataBehavior)
         {
 
         }

@@ -7,7 +7,7 @@ using DAL.Abstract.Entitys;
 
 namespace MainExample.Services.GetDataService
 {
-    class GetCisRegSh : GetSheduleAbstract
+    public class GetCisRegSh : GetSheduleAbstract
     {
         private readonly IUsersRepository _usersRepository;
         private readonly TrainRecService _trainRecService;
@@ -15,8 +15,8 @@ namespace MainExample.Services.GetDataService
 
         #region ctor
 
-        public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords, IUsersRepository usersRepository, TrainRecService trainRecService) 
-            : base(baseGetDataBehavior, soundRecords)
+        public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior, IUsersRepository usersRepository, TrainRecService trainRecService) 
+            : base(baseGetDataBehavior)
         {
             _usersRepository = usersRepository;
             _trainRecService = trainRecService;
