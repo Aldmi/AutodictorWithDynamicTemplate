@@ -59,7 +59,7 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
 
 
         /// <summary>
-        /// Обработчик события получения потока данных от сервера апк-дк ВОЛГОГРАД (GET запрос)
+        /// Обработчик события получения ответа от сервера на GET запрос.
         /// </summary>
         private void GetStreamRxHandler(Stream stream)
         {
@@ -76,7 +76,7 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
             }
             catch (Exception ex)
             {
-                Log.log.Error($"метод GetStreamRxHandler:  {ex.Message}");
+                Log.log.Error($"BaseGetDataBehavior.GetStreamRxHandler(). Exception:  {ex.Message}");
             }
         }
 

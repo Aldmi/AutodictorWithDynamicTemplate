@@ -11,7 +11,7 @@ namespace Communication.Interfaces
         bool IsOutDataValid { get; }       // флаг валидности выходных данных (OutputData)
 
 
-        Subject<TOutput> OutputDataChangeRx { get; }
+        Subject<TOutput> OutputDataChangeRx { get; } //Событие получения выходных данных
         string ProviderName { get; set; }
     }
 }

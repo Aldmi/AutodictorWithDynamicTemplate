@@ -46,7 +46,7 @@ namespace MainExample.Services.GetDataService
 
         #region ctor
 
-        protected GetSheduleAbstract(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords)
+        protected GetSheduleAbstract(BaseGetDataBehavior baseGetDataBehavior, SortedDictionary<string, SoundRecord> soundRecords) //TODO: убрать soundRecords из ctor. Вставить soundRecords только в ctor наследника, которому это нужно
         {
             _sheduleGetRx = baseGetDataBehavior.ConvertedDataChangeRx;
             ConnectChangeRx = baseGetDataBehavior.ConnectChangeRx;
