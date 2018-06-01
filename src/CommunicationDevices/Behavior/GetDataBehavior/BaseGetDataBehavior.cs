@@ -13,6 +13,15 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
 {
     public class BaseGetDataBehavior : IDisposable
     {
+
+        #region field
+
+        private readonly IExhangeBehavior _exhangeBehavior;
+
+        #endregion
+
+
+
         #region prop
         //название поведения получения данных
 
@@ -34,6 +43,8 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
 
         private object locker= new object();
 
+        public bool IsConnect => _exhangeBehavior.IsConnect;
+
         #endregion
 
 
@@ -41,14 +52,14 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
 
         #region ctor
 
-        public BaseGetDataBehavior(string name, ISubject<IExhangeBehavior> connectChangeRx,
-                                                ISubject<IExhangeBehavior> dataExchangeSuccessRx,
+        public BaseGetDataBehavior(string name, IExhangeBehavior exhangeBehavior,
                                                 ISubject<Stream> getStreamRx,
                                                 IInputDataConverter inputConverter)
         {
+            _exhangeBehavior = exhangeBehavior;
             Name = name;
-            ConnectChangeRx = connectChangeRx;
-            DataExchangeSuccessRx = dataExchangeSuccessRx;
+            ConnectChangeRx = exhangeBehavior.IsConnectChange;
+            DataExchangeSuccessRx = exhangeBehavior.IsDataExchangeSuccessChange;
             GetStreamRxHandlerDispose = getStreamRx.Subscribe(GetStreamRxHandler);      //подписка на событие получения потока данных
             InputConverter = inputConverter;
         }

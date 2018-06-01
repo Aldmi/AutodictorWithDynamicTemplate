@@ -16,9 +16,18 @@ namespace MainExample.Services.GetDataService
 
     public abstract class GetSheduleAbstract : IDisposable
     {
+        #region field
+
+        private readonly BaseGetDataBehavior _baseGetDataBehavior;
+
+        #endregion
+
+
+
+
         #region prop
 
-        protected ISubject<IEnumerable<UniversalInputType>> SheduleGetRx { get; } //Входное событие "Получение данных"
+        protected ISubject<IEnumerable<UniversalInputType>> SheduleGetRx { get; }  //Входное событие "Получение данных"
         protected ISubject<IExhangeBehavior> ConnectChangeRx { get; }              //Входное событие "Состояние соединения"
         protected ISubject<IExhangeBehavior> DataExchangeSuccessRx { get; }        //Входное событие "Состояние обмена данными"
 
@@ -37,6 +46,7 @@ namespace MainExample.Services.GetDataService
 
         protected GetSheduleAbstract(BaseGetDataBehavior baseGetDataBehavior)
         {
+            _baseGetDataBehavior = baseGetDataBehavior;
             SheduleGetRx = baseGetDataBehavior.ConvertedDataChangeRx;
             ConnectChangeRx = baseGetDataBehavior.ConnectChangeRx;
             DataExchangeSuccessRx = baseGetDataBehavior.DataExchangeSuccessRx;
@@ -58,8 +68,9 @@ namespace MainExample.Services.GetDataService
             try
             {
                 DispouseSheduleGetRx = SheduleGetRx?.Subscribe(GetaDataRxEventHandler);
+                control.Enabled = _baseGetDataBehavior.IsConnect;
                 DispouseConnectChangeRx = ConnectChangeRx.Subscribe(behavior =>                       //контролл не активен, если нет связи
-                {
+                {              
                     control.InvokeIfNeeded(() =>
                     {
                         control.Enabled = behavior.IsConnect;

@@ -954,14 +954,14 @@ namespace CommunicationDevices.Model
 
                                 case "HttpCisRegSh":
                                     dataConverter = new CisRegularShDataConverter();
-                                    break;
+                                    break; 
 
                                 case "HttpCisOperSh":
                                     dataConverter = new CisOperativeShDataConverter();
                                     break;
                             }
 
-                            getDataBehavior = new BaseGetDataBehavior(xmlDeviceHttp.Name, httpBeh.IsConnectChange, httpBeh.IsDataExchangeSuccessChange, provider.OutputDataChangeRx, dataConverter);
+                            getDataBehavior = new BaseGetDataBehavior(xmlDeviceHttp.Name, httpBeh, provider.OutputDataChangeRx, dataConverter);
                             break;
 
                     }
