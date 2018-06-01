@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using CommunicationDevices.DataProviders;
 
@@ -6,7 +7,7 @@ namespace CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData
 {
     class CisOperativeShDataConverter : IInputDataConverter
     {
-        public IEnumerable<UniversalInputType> ParseXml2Uit(XDocument xDoc)
+        public async Task<IEnumerable<UniversalInputType>> ParseXml2Uit(XDocument xDoc)
         {
 
             return new List<UniversalInputType>

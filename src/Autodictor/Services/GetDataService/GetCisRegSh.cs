@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutodictorBL.Services.DataAccessServices;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
@@ -11,6 +14,7 @@ namespace MainExample.Services.GetDataService
     {
         private readonly IUsersRepository _usersRepository;
         private readonly TrainRecService _trainRecService;
+
 
 
         #region ctor
@@ -32,12 +36,31 @@ namespace MainExample.Services.GetDataService
         /// <summary>
         /// Обработка полученных данных
         /// </summary>
-        protected override void GetaDataRxEventHandler(IEnumerable<UniversalInputType> data)
+        protected override async Task GetaDataRxEventHandler(Task<IEnumerable<UniversalInputType>> getDataTask)
         {
+            if (!Enable)
+                return;
+   
+            try
+            {
+                var data = await getDataTask;
+                var inputDatas = data as IList<UniversalInputType> ?? data.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+
+
+
+
+
+
+
             //try
             //{
-            //    if (!Enable)
-            //        return;
+
 
             //    var universalInputTypes = data as IList<UniversalInputType> ?? data.ToList();
             //    if (universalInputTypes.Any())
@@ -91,7 +114,7 @@ namespace MainExample.Services.GetDataService
             //        }
             //        else
             //        {
-                       
+
             //            var localTable = _trainRecService.GetAllAsync(TrainRecType.LocalMain).GetAwaiter().GetResult();
             //            if (localTable == null)
             //                return;

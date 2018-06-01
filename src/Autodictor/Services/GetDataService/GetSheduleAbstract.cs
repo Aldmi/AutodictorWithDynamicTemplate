@@ -27,7 +27,7 @@ namespace MainExample.Services.GetDataService
 
         #region prop
 
-        protected ISubject<IEnumerable<UniversalInputType>> SheduleGetRx { get; }  //Входное событие "Получение данных"
+        protected ISubject<Task<IEnumerable<UniversalInputType>>> SheduleGetRx { get; }  //Входное событие "Получение данных"
         protected ISubject<IExhangeBehavior> ConnectChangeRx { get; }              //Входное событие "Состояние соединения"
         protected ISubject<IExhangeBehavior> DataExchangeSuccessRx { get; }        //Входное событие "Состояние обмена данными"
 
@@ -67,7 +67,7 @@ namespace MainExample.Services.GetDataService
         {
             try
             {
-                DispouseSheduleGetRx = SheduleGetRx?.Subscribe(GetaDataRxEventHandler);
+                DispouseSheduleGetRx = SheduleGetRx?.Subscribe(data => GetaDataRxEventHandler(data));
                 control.Enabled = _baseGetDataBehavior.IsConnect;
                 DispouseConnectChangeRx = ConnectChangeRx.Subscribe(behavior =>                       //контролл не активен, если нет связи
                 {              
@@ -108,7 +108,7 @@ namespace MainExample.Services.GetDataService
         /// <summary>
         /// Обработка полученных данных.
         /// </summary>
-        protected abstract void GetaDataRxEventHandler(IEnumerable<UniversalInputType> data);
+        protected abstract Task GetaDataRxEventHandler(Task<IEnumerable<UniversalInputType>> data);
 
         #endregion
 

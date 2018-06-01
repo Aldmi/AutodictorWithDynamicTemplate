@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using CommunicationDevices.Behavior.ExhangeBehavior;
 using CommunicationDevices.Behavior.GetDataBehavior.ConvertGetedData;
@@ -28,7 +29,7 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
         public string Name { get; set; }     
 
         //издатель события "данные получены и преобразованны в IEnumerable<UniversalInputType>"
-        public ISubject<IEnumerable<UniversalInputType>> ConvertedDataChangeRx { get; } = new Subject<IEnumerable<UniversalInputType>>();
+        public ISubject<Task<IEnumerable<UniversalInputType>>> ConvertedDataChangeRx { get; } = new Subject<Task<IEnumerable<UniversalInputType>>>();
 
         //издатель события "изменения состояния соединения с сервером"
         public ISubject<IExhangeBehavior> ConnectChangeRx { get; }
@@ -81,8 +82,8 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
                     StreamReader reader = new StreamReader(stream);
                     string text = reader.ReadToEnd();
                     XDocument xDoc = XDocument.Parse(text);
-                    var data = InputConverter.ParseXml2Uit(xDoc)?.ToList();
-                    ConvertedDataChangeRx.OnNext(data);
+                    var convertGetDataTask = InputConverter.ParseXml2Uit(xDoc);
+                    ConvertedDataChangeRx.OnNext(convertGetDataTask);
                 }
             }
             catch (Exception ex)
@@ -90,6 +91,14 @@ namespace CommunicationDevices.Behavior.GetDataBehavior
                 Log.log.Error($"BaseGetDataBehavior.GetStreamRxHandler(). Exception:  {ex.Message}");
             }
         }
+
+
+
+        //private async Task<IEnumerable<UniversalInputType>> Data()
+        //{
+        //  var ff= await Task.Run(() => new List<UniversalInputType>());
+        //  return ff;
+        //}
 
 
 

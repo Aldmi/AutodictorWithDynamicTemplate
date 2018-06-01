@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
@@ -37,11 +38,12 @@ namespace MainExample.Services.GetDataService
         /// <summary>
         /// Обработка полученных данных
         /// </summary>
-        protected override void GetaDataRxEventHandler(IEnumerable<UniversalInputType> data)
+        protected override async Task GetaDataRxEventHandler(Task<IEnumerable<UniversalInputType>> getDataTask)
         {
             if (!Enable)
                 return;
 
+            var data = await getDataTask;
             if (data != null && data.Any())
             {
                 var trainWithPut = data.Where(sh => !(string.IsNullOrEmpty(sh.PathNumber) || string.IsNullOrWhiteSpace(sh.PathNumber))).ToList();

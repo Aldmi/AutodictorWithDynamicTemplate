@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
@@ -27,18 +29,20 @@ namespace MainExample.Services.GetDataService
         /// <summary>
         /// Обработка полученных данных
         /// </summary>
-        protected override void GetaDataRxEventHandler(IEnumerable<UniversalInputType> data)
+        protected override async Task GetaDataRxEventHandler(Task<IEnumerable<UniversalInputType>> getDataTask)
         {
             if (!Enable)
                 return;
 
-            var universalInputTypes = data as IList<UniversalInputType> ?? data.ToList();
-            if (universalInputTypes.Any())
+            try
             {
-                foreach (var tr in universalInputTypes)
-                {
-                    
-                }
+                var data = await getDataTask;
+                var inputDatas = data as IList<UniversalInputType> ?? data.ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
