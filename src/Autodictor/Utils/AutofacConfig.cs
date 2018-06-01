@@ -130,7 +130,7 @@ namespace MainExample.Utils
             builder.RegisterType<SoundRecChangesService>().InstancePerDependency();
             builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
             builder.RegisterType<SoundReсordWorkerService>().As<ISoundReсordWorkerService>().InstancePerLifetimeScope();
-            builder.RegisterType<TrainRecBuilderFluent>().As<ITrainRecBuilder>().InstancePerDependency();
+            builder.RegisterType<TrainRecBuilderLocalFluent>().As<ITrainRecBuilder>().InstancePerDependency();
             builder.RegisterType<SchedulingPipelineService>().InstancePerLifetimeScope();
             builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(

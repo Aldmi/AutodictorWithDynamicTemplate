@@ -16,4 +16,13 @@
 6. Добавить async версии для Репозиториев 
    var items= await rep.ListAsync();
 
-7.Создать реализацию билдера ITrainRecBuilder для remoteCis
+7. Создать реализацию билдера ITrainRecBuilder для remoteCis
+
+8. Убрать Note из UniversalInputType.
+
+9. Зарегистрировать TrainRecBuilderRemoteCisFluent в DI.
+   Не регистрировать как Named, регистрировать как IEnumerable<ITrainRecBuilder>, резолвить в GetCisRegSh по типу
+
+	new ResolvedParameter(
+	(pi, ctx) => (pi.ParameterType == typeof(ITrainRecBuilder) && (pi.Name == "trainRecBuilder")),
+	(pi, ctx) => ctx.Resolve<ITrainRecBuilder>()), //перебрать коллекцию IEnumerable<ITrainRecBuilder> и выбрать по типу нужный.

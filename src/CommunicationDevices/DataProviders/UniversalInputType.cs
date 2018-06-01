@@ -18,7 +18,7 @@ namespace CommunicationDevices.DataProviders
         public string AddressDevice { get; set; }                    //Адресс устройсва
         public bool IsActive { get; set; }                           //Флаг активности записи ("Отменен без объявления")
 
-        public string TypeTrain { get; set; }                        //тип поезда
+        public string TypeTrain { get; set; }                        //!!!!! тип поезда
         public string NumberOfTrain { get; set; }                    //Номер поезда
         public string PathNumber { get; set; }                       //Номер пути
         public string PathNumberWithoutAutoReset { get; set; }       //Номер пути Без Автосброса
@@ -27,7 +27,7 @@ namespace CommunicationDevices.DataProviders
         public Event Event { get; set; }                             //Событие(ОТПР./ПРИБ./СТОЯНКА)
 
         public string Addition { get; set; }                         //Дополнение (свободная строка)
-        public string Stations { get; set; }                         //Станции Отправления-Прибытия. (название поезда)
+        public string Stations { get; set; }                         //!!!!! Станции Отправления-Прибытия. (название поезда)
 
         public string DirectionStation { get; set; }                 //!!!!! Направление.
         public Direction Direction { get; set; }                     //Направление
@@ -37,18 +37,15 @@ namespace CommunicationDevices.DataProviders
         public Station StationDeparture { get; set; }
         public Station StationArrival { get; set; }
 
-        public string Note { get; set; }                             //Примечание. УБРАТЬ!!!!
+        public string Note { get; set; }                             //!!!! Примечание.
         public Route Route { get; set; }                             //Маршрут (список станций)
-
 
         public string DaysFollowing { get; set; }                    //Дни следования
         public string DaysFollowingAlias { get; set; }               //Дни следования, заданные в строке в нужном формате
 
-
         public DateTime Time { get; set; }                           //!!!!!Время
         public DateTime? ArrivalTime { get; set; }                   //Время прибытия
         public DateTime? DepartureTime { get; set; }                 //Время Отправления
-
 
         public Dictionary<string, DateTime> TransitTime { get; set; } //Транзитное время ["приб"]/["отпр"]
         public DateTime? DelayTime { get; set; }                     //Время задержки (прибытия или отправления поезда)
@@ -57,6 +54,7 @@ namespace CommunicationDevices.DataProviders
         public WagonsNumbering WagonsNumbering { get; set; }         //Нумерация вагона (с головы, с хвоста)
         public bool ChangeVagonDirection { get; set; }               //флаг смены нумерации вагонов
         public bool SendingDataLimit { get; set; }                   //Ограниение отправки данных (если Contrains="SendingDataLimit", то выводим только с галкой)
+
         public string Message { get; set; }                          //Сообщение
 
         public byte EmergencySituation { get; set; }                 // !!!! Нешатная ситуация (бит 0 - Отмена, бит 1 - задержка прибытия, бит 2 - задержка отправления, бит 3 - отправление по готовности)

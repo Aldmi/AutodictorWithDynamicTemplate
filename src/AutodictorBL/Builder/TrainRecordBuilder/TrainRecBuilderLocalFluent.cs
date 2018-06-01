@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutodictorBL.Services.DataAccessServices;
+using CommunicationDevices.DataProviders;
 using DAL.Abstract.Entitys;
 using Force.DeepCloner;
 
 namespace AutodictorBL.Builder.TrainRecordBuilder
 {
-    public class TrainRecBuilderFluent : ITrainRecBuilder
+    public class TrainRecBuilderLocalFluent : ITrainRecBuilder
     {
         private readonly TrainRecService _trainRecService;
 
@@ -24,7 +25,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         #region ctor
 
-        public TrainRecBuilderFluent(TrainRecService trainRecService)
+        public TrainRecBuilderLocalFluent(TrainRecService trainRecService)
         {
             if(trainRecService == null)
                 throw new ArgumentNullException("trainRecService не может быть Null");
@@ -82,6 +83,12 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             TrainTableRec.IsScoreBoardOutput = false;
             TrainTableRec.IsSoundOutput = true;
 
+            return this;
+        }
+
+
+        public ITrainRecBuilder SetExternalData(UniversalInputType uit)
+        {
             return this;
         }
 

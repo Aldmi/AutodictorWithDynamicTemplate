@@ -75,7 +75,8 @@
     <Compile Include="Builder\SoundRecordCollectionBuilder\ISoundRecCollectionBuilder.cs" />
     <Compile Include="Builder\SoundRecordCollectionBuilder\SoundRecCollectionBuilderFluent.cs" />
     <Compile Include="Builder\TrainRecordBuilder\ITrainRecBuilder.cs" />
-    <Compile Include="Builder\TrainRecordBuilder\TrainRecBuilderFluent.cs" />
+    <Compile Include="Builder\TrainRecordBuilder\TrainRecBuilderLocalFluent.cs" />
+    <Compile Include="Builder\TrainRecordBuilder\TrainRecBuilderRemoteCisFluent.cs" />
     <Compile Include="Mappers\AutoMapperConfig.cs" />
     <Compile Include="Models\ПланРасписанияПоезда.cs" />
     <Compile Include="Services\DataAccessServices\DirectionService.cs" />
@@ -113,6 +114,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommunicationDevices\CommunicationDevices.csproj">
+      <Project>{6A763286-F0A3-4218-85D1-DD8EB40DCFF3}</Project>
+      <Name>CommunicationDevices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DAL.Abstract\DAL.Abstract.csproj">
       <Project>{b3cf5fb8-856d-4b3e-ad4c-376388da658b}</Project>
       <Name>DAL.Abstract</Name>

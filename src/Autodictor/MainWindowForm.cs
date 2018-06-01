@@ -223,7 +223,7 @@ namespace MainExample
                         chbox_CisRegShControl.Visible = true;
                         chbox_CisRegShControl.Checked = Program.Настройки.GetDataCisRegShStart;
 
-                        GetCisRegSh = new GetCisRegSh(beh.BaseGetDataBehavior, _usersRepository, _trainRecService);
+                        GetCisRegSh = new GetCisRegSh(beh.BaseGetDataBehavior, _usersRepository, _trainRecService, null); //TODO: GetCisRegSh - зарегистрировать в DI, передавать ITrainRecBuilder заместо null
                         GetCisRegSh.SubscribeAndStart(chbox_CisRegShControl);
                         GetCisRegSh.Enable = chbox_CisRegShControl.Checked;
                         break;
