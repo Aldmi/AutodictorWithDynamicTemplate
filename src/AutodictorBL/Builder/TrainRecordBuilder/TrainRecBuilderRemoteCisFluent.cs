@@ -74,6 +74,26 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             return this;
         }
 
+        public ITrainRecBuilder SetDirectionByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITrainRecBuilder SetStationsByCodeEsr(int codeEsrStationArrival, int codeEsrStationDeparture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITrainRecBuilder SetStationsById(int idStationArrival, int idStationDeparture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITrainRecBuilder SetAllByTypeId(int typeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public TrainTableRec Build()
         {
             return TrainTableRec;

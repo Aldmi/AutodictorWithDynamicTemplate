@@ -41,7 +41,7 @@ namespace DAL.Serialize.XML.Model
         public DateTime? DepartureTime;                           //время отправление
         public DateTime? FollowingTime;                           //время следования (время в пути)
 
-        public string Days;                                       //дни следования
+        public string DaysFollowing;                                       //дни следования
         public string DaysAlias;                                  //дни следования алиас (строка заполняется в ручную)
 
         public DateTime StartTimeSchedule;

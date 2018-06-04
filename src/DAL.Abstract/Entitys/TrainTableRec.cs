@@ -26,7 +26,7 @@ namespace DAL.Abstract.Entitys
         public string Name { get; set; }                                       //Название поезда
         public Route Route { get; set; }                                        //Маршрут (список станций)
         public bool Active { get; set; }                                        //активность, отметка галочкой
-        public bool Automate { get; set; }                                       // true - поезд обрабатывается в автомате.
+        public bool Automate { get; set; }                                      // true - поезд обрабатывается в автомате.
         public bool IsScoreBoardOutput { get; set; }                            // Вывод на табло. true. (Работает если указанн Contrains SendingDataLimit)
         public bool IsSoundOutput { get; set; }                                 // Вывод звука. true.
         public Direction Direction { get; set; }                                //Направление
@@ -36,7 +36,7 @@ namespace DAL.Abstract.Entitys
         public TimeSpan? StopTime { get; set; }                                 //время стоянка (для транзитов)
         public DateTime? DepartureTime { get; set; }                            //время отправление
         public DateTime? FollowingTime { get; set; }                            //время следования (время в пути)
-        public string Days { get; set; }                                        //дни следования
+        public string DaysFollowing { get; set; }                               //дни следования
         public string DaysAlias { get; set; }                                   //дни следования алиас (строка заполняется в ручную)
         public DateTime StartTimeSchedule { get; set; }
         public DateTime StopTimeSchedule { get; set; }

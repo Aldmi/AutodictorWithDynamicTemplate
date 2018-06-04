@@ -98,7 +98,7 @@ namespace MainExample.Mappers
                 ["табло"] = config.UseAddition["табло"]
             };
             record.Направление = config.Direction?.Name;
-            record.ДниСледования = config.Days;
+            record.ДниСледования = config.DaysFollowing;
             record.ДниСледованияAlias = config.DaysAlias;
             record.Активность = config.Active;
             record.Автомат = config.Automate;
@@ -269,7 +269,7 @@ namespace MainExample.Mappers
                 DelayTime = null,
                 StopTime = t.StopTime,
                 ExpectedTime = timePars(t.ArrivalTime, t.DepartureTime),
-                DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(t.Days).ПолучитьСтрокуОписанияРасписания(),
+                DaysFollowing = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(t.DaysFollowing).ПолучитьСтрокуОписанияРасписания(),
                 DaysFollowingAlias = t.DaysAlias,
                 Addition = t.Addition,
                 SendingDataLimit = t.IsScoreBoardOutput,

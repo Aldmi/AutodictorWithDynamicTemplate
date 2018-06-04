@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Services.DataAccessServices;
+using Autofac;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Concrete;
@@ -29,7 +30,8 @@ namespace MainExample.Services.GetDataService
         public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior,
                            IUsersRepository usersRepository,
                            TrainRecService trainRecService,
-                           ITrainRecBuilder trainRecBuilder) 
+                           ITrainRecBuilder trainRecBuilder,
+                           IContainer cc) 
             : base(baseGetDataBehavior)
         {
             _usersRepository = usersRepository;
@@ -57,21 +59,25 @@ namespace MainExample.Services.GetDataService
                 //ПОЛУЧЕНИЕ ДАННЫХ--------------------------------------------------------
                 var data = await getDataTask;
                 var inputDatas = data as IList<UniversalInputType> ?? data.ToList();
-                inputDatas = CreateMoqDatas();
+                inputDatas = CreateMoqDatas(); //DEBUG
 
                 //СОЗДАНИЕ РАСПИСАНИЯ НА БАЗЕ ПОЛУЧЕННЫХ ДАННЫХ---------------------------
                 var resultList= new List<TrainTableRec>();
                 foreach (var uit in inputDatas)
                 {
-                    var trainRec = _trainRecBuilder
+                    var trainRec= _trainRecBuilder
+                        .SetDefaultMain(uit.Id)
                         .SetExternalData(uit)
+                        .SetDirectionByName(uit.Direction.Name)
+                        .SetStationsById(uit.StationArrival.Id, uit.StationDeparture.Id)
+                        .SetAllByTypeId(uit.TrainTypeByRyle.Id)
                         .Build();
 
                     resultList.Add(trainRec);
                 }
 
                 //ПЕРЕЗАПИСАТЬ РЕПОЗИТОРИЙ RemoteCis
-                //_trainRecService.ReWriteAll(resultList, TrainRecRepType.RemoteCis);
+                _trainRecService.ReWriteAll(resultList, TrainRecRepType.RemoteCis);
             }
             catch (Exception ex)
             {
@@ -363,16 +369,15 @@ namespace MainExample.Services.GetDataService
                     NumberOfTrain = "695",
                     Event = Event.Transit,
                     Addition = "Дополнение 1",
-                    Direction = new Direction {Id = 1},
+                    Direction = new Direction {Id = 1, Name = "Дальнее следование"},
                     TrainTypeByRyle = new TrainTypeByRyle {Id = 2},
-                    StationArrival = new Station {CodeEsr = 965, NameRu = "Абакан"},
-                    StationDeparture = new Station {CodeEsr = 723, NameRu = "Москва"},
+                    StationArrival = new Station {Id=1, CodeEsr = 965, NameRu = "Абакан"},
+                    StationDeparture = new Station {Id=3,  CodeEsr = 723, NameRu = "Москва"},
                     Route = null,
                     DaysFollowing = "еж", //???
                     ArrivalTime = DateTime.Parse("12:10"),
                     DepartureTime = DateTime.Parse("13:20"),
-                    WagonsNumbering = WagonsNumbering.Head,
-                    ChangeVagonDirection = false
+                    WagonsNumbering = WagonsNumbering.Head
                 },
                 new UniversalInputType
                 {
@@ -380,16 +385,15 @@ namespace MainExample.Services.GetDataService
                     NumberOfTrain = "763",
                     Event = Event.Transit,
                     Addition = "Дополнение 2",
-                    Direction = new Direction {Id = 2},
+                    Direction = new Direction {Id = 2, Name = "Дальнее следование"},
                     TrainTypeByRyle = new TrainTypeByRyle {Id = 3},
-                    StationArrival = new Station {CodeEsr = 452, NameRu = "Челябинск"},
-                    StationDeparture = new Station {CodeEsr = 753, NameRu = "Омск"},
+                    StationArrival = new Station {Id=2, CodeEsr = 452, NameRu = "Челябинск"},
+                    StationDeparture = new Station {Id=4, CodeEsr = 753, NameRu = "Омск"},
                     Route = null,
                     DaysFollowing = "еж",//???
                     ArrivalTime = DateTime.Parse("14:10"),
                     DepartureTime = DateTime.Parse("15:20"),
-                    WagonsNumbering = WagonsNumbering.Rear,
-                    ChangeVagonDirection = false
+                    WagonsNumbering = WagonsNumbering.Rear    
                 }
 
             };

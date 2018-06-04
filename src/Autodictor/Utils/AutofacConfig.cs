@@ -19,6 +19,7 @@ using DAL.NoSqlLiteDb.Service;
 using DAL.Serialize.XML.Reposirory;
 using DAL.XmlRaw.Repository;
 using MainExample.Services;
+using MainExample.Services.GetDataService;
 using MainExample.ViewModel.AddingTrainFormVM;
 using MainExample.ViewModel.EditRouteFormVM;
 using AuthenticationService = AutodictorBL.Services.AuthenticationServices.AuthenticationService;
@@ -130,7 +131,7 @@ namespace MainExample.Utils
             builder.RegisterType<SoundRecChangesService>().InstancePerDependency();
             builder.RegisterType<AuthenticationService>().As<IAuthentificationService>().SingleInstance();
             builder.RegisterType<SoundReсordWorkerService>().As<ISoundReсordWorkerService>().InstancePerLifetimeScope();
-            builder.RegisterType<TrainRecBuilderLocalFluent>().As<ITrainRecBuilder>().InstancePerDependency();
+            builder.RegisterType<TrainRecBuilderFluent>().As<ITrainRecBuilder>().InstancePerDependency();
             builder.RegisterType<SchedulingPipelineService>().InstancePerLifetimeScope();
             builder.RegisterType<TrainRecService>().WithParameters(new List<ResolvedParameter> {
                     new ResolvedParameter(
@@ -146,6 +147,7 @@ namespace MainExample.Utils
 
             builder.RegisterType<TrainRecWorkerService>().As<ITrainRecWorkerService>().SingleInstance();
             builder.RegisterType<SoundRecCollectionBuilderFluent>().As<ISoundRecCollectionBuilder>().InstancePerDependency();
+            builder.RegisterType<GetCisRegSh>().SingleInstance();
 
             #endregion
 

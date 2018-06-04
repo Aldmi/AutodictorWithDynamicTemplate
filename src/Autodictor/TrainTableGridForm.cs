@@ -262,7 +262,7 @@ namespace MainExample
                 for (var i = 0; i < _listRecords.Count; i++)
                 {
                     var данные = _listRecords[i];
-                    string строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.Days).ПолучитьСтрокуОписанияРасписания();
+                    string строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(данные.DaysFollowing).ПолучитьСтрокуОписанияРасписания();
 
                     var row = DataTable.NewRow();
                     row["Id"] = данные.Id;
@@ -290,9 +290,9 @@ namespace MainExample
         /// <param name="index">Если указанн индекс то элемент уже есть в списке, если равен null, то это новый элемент добавленный в конец списка</param>
         private TrainTableRec AddOrEdit(TrainTableRec tableRec, int? index = null)
         {
-            ПланРасписанияПоезда текущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(tableRec.Days);
-            текущийПланРасписанияПоезда.УстановитьНомерПоезда(tableRec.Num);
-            текущийПланРасписанияПоезда.УстановитьНазваниеПоезда(tableRec.Name);
+            //ПланРасписанияПоезда текущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(tableRec.DaysFollowing);
+            //текущийПланРасписанияПоезда.УстановитьНомерПоезда(tableRec.Num);
+            //текущийПланРасписанияПоезда.УстановитьНазваниеПоезда(tableRec.Name);
 
             var editForm = _editTrainTableRecFormFactory(tableRec);
             editForm.ShowDialog();
@@ -300,7 +300,7 @@ namespace MainExample
             if (editForm.DialogResult == DialogResult.OK)
             {
                 tableRec = editForm.TrainRec;
-                var строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(tableRec.Days).ПолучитьСтрокуОписанияРасписания();
+                var строкаОписанияРасписания = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(tableRec.DaysFollowing).ПолучитьСтрокуОписанияРасписания();
                 if (index != null)
                 {
                     var row = DataTable.Rows[index.Value];

@@ -8,9 +8,13 @@ using Force.DeepCloner;
 
 namespace AutodictorBL.Builder.TrainRecordBuilder
 {
-    public class TrainRecBuilderLocalFluent : ITrainRecBuilder
+    public class TrainRecBuilderFluent : ITrainRecBuilder
     {
+        #region field
+
         private readonly TrainRecService _trainRecService;
+
+        #endregion
 
 
 
@@ -25,7 +29,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         #region ctor
 
-        public TrainRecBuilderLocalFluent(TrainRecService trainRecService)
+        public TrainRecBuilderFluent(TrainRecService trainRecService)
         {
             if(trainRecService == null)
                 throw new ArgumentNullException("trainRecService не может быть Null");
@@ -89,6 +93,15 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         public ITrainRecBuilder SetExternalData(UniversalInputType uit)
         {
+            TrainTableRec.Num = uit.NumberOfTrain;
+            TrainTableRec.Event = uit.Event;
+            TrainTableRec.Addition = uit.Addition;
+            TrainTableRec.Route = uit.Route;
+            TrainTableRec.DaysFollowing = uit.DaysFollowing;
+            TrainTableRec.ArrivalTime = uit.ArrivalTime;
+            TrainTableRec.DepartureTime = uit.DepartureTime;
+            TrainTableRec.WagonsNumbering = uit.WagonsNumbering;
+
             return this;
         }
 
@@ -98,7 +111,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             TrainTableRec = TrainTableRec ?? new TrainTableRec();
             TrainTableRec.StartTimeSchedule = DateTime.MinValue;
             TrainTableRec.StopTimeSchedule = DateTime.MaxValue;
-            TrainTableRec.Days = string.Empty;
+            TrainTableRec.DaysFollowing = string.Empty;
             TrainTableRec.DaysAlias = string.Empty;
 
             return this;
@@ -124,6 +137,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             return this;
         }
 
+
         public ITrainRecBuilder SetActionTrainsByTypeId(int typeId)
         {
            var trainTypeByRyle= _trainRecService.GetTrainTypeByRyleById(typeId);
@@ -144,6 +158,55 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             return this;
         }
 
+
+        public ITrainRecBuilder SetAllByTypeId(int typeId)
+        {
+            var trainTypeByRyle = _trainRecService.GetTrainTypeByRyleById(typeId);
+            if (trainTypeByRyle == null)
+                throw new ArgumentException($"Элемент с {typeId} не найден");
+
+            TrainTableRec.TrainTypeByRyle = trainTypeByRyle;
+            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).ToList();
+            TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).ToList();
+
+            return this;
+        }
+
+
+        public ITrainRecBuilder SetDirectionByName(string name)
+        {
+            var direction = _trainRecService.GetDirectionByName(name);
+            if (direction == null)
+                throw new ArgumentException($"Направление {direction} не найдено");
+
+            TrainTableRec.Direction = direction;
+
+            return this;
+        }
+
+
+        public ITrainRecBuilder SetStationsByCodeEsr(int codeEsrStationArrival, int codeEsrStationDeparture)
+        {
+            if (TrainTableRec.Direction == null)
+                throw new ArgumentException("Направление (Direction) не установленно");
+
+            TrainTableRec.StationArrival= TrainTableRec.Direction.Stations.FirstOrDefault(st=> st.CodeEsr == codeEsrStationArrival);
+            TrainTableRec.StationDepart= TrainTableRec.Direction.Stations.FirstOrDefault(st=> st.CodeEsr == codeEsrStationDeparture);
+
+            return this;
+        }
+
+
+        public ITrainRecBuilder SetStationsById(int idStationArrival, int idStationDeparture)
+        {
+            if (TrainTableRec.Direction == null)
+                throw new ArgumentException("Направление (Direction) не установленно");
+
+            TrainTableRec.StationArrival = TrainTableRec.Direction.Stations.FirstOrDefault(st => st.Id == idStationArrival);
+            TrainTableRec.StationDepart = TrainTableRec.Direction.Stations.FirstOrDefault(st => st.Id == idStationDeparture);
+
+            return this;
+        }
 
 
         public TrainTableRec Build()

@@ -120,11 +120,14 @@ namespace DAL.Composite.Repository
                 {
                     trainTableRec.StationArrival = stationsByDirection.FirstOrDefault(st=> st.Id == trainTableRec.StationArrival.Id);
                     trainTableRec.StationDepart = stationsByDirection.FirstOrDefault(st=> st.Id == trainTableRec.StationDepart.Id);
-                    for (var i = 0; i < trainTableRec.Route.Stations.Count; i++)
+                    if (trainTableRec.Route?.Stations != null)
                     {
-                        var station = trainTableRec.Route.Stations[i];
-                        var statRestore = stationsByDirection.FirstOrDefault(st => st.Id == station.Id);
-                        trainTableRec.Route.Stations[i] = statRestore;
+                        for (var i = 0; i < trainTableRec.Route.Stations.Count; i++)
+                        {
+                            var station = trainTableRec.Route.Stations[i];
+                            var statRestore = stationsByDirection.FirstOrDefault(st => st.Id == station.Id);
+                            trainTableRec.Route.Stations[i] = statRestore;
+                        }
                     }
                 }
             }

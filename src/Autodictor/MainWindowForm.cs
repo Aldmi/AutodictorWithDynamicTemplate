@@ -15,6 +15,7 @@ using CommunicationDevices.Behavior.BindingBehavior.ToChange;
 using CommunicationDevices.Behavior.BindingBehavior.ToGeneralSchedule;
 using CommunicationDevices.Behavior.BindingBehavior.ToGetData;
 using CommunicationDevices.Behavior.BindingBehavior.ToPath;
+using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.ClientWCF;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
@@ -48,6 +49,7 @@ namespace MainExample
         private readonly TrainRecService _trainRecService;
         private readonly SoundRecChangesService _soundRecChangesService;
         private readonly ISoundRecCollectionBuilder _soundRecCollectionBuilder;
+        private readonly Func<BaseGetDataBehavior, GetCisRegSh> _getCisRegShFactory;
 
         private const int ВремяЗадержкиВоспроизведенныхСобытий = 20;  //сек
 
@@ -121,7 +123,8 @@ namespace MainExample
                               ISoundReсordWorkerService soundReсordWorkerService,
                               TrainRecService trainRecService,
                               SoundRecChangesService soundRecChangesService,
-                              ISoundRecCollectionBuilder soundRecCollectionBuilder)
+                              ISoundRecCollectionBuilder soundRecCollectionBuilder,
+                              Func<BaseGetDataBehavior, GetCisRegSh> getCisRegShFactory)
         {
             if (myMainForm != null)
                 return;
@@ -136,6 +139,7 @@ namespace MainExample
             _trainRecService = trainRecService;
             _soundRecChangesService = soundRecChangesService;
             _soundRecCollectionBuilder = soundRecCollectionBuilder;
+            _getCisRegShFactory = getCisRegShFactory;
 
             InitializeComponent();
 
@@ -223,7 +227,8 @@ namespace MainExample
                         chbox_CisRegShControl.Visible = true;
                         chbox_CisRegShControl.Checked = Program.Настройки.GetDataCisRegShStart;
 
-                        GetCisRegSh = new GetCisRegSh(beh.BaseGetDataBehavior, _usersRepository, _trainRecService, null); //TODO: GetCisRegSh - зарегистрировать в DI, передавать ITrainRecBuilder заместо null
+                        //GetCisRegSh = new GetCisRegSh(beh.BaseGetDataBehavior, _usersRepository, _trainRecService, null); //TODO: GetCisRegSh - зарегистрировать в DI, передавать ITrainRecBuilder заместо null
+                        GetCisRegSh = _getCisRegShFactory(beh.BaseGetDataBehavior);
                         GetCisRegSh.SubscribeAndStart(chbox_CisRegShControl);
                         GetCisRegSh.Enable = chbox_CisRegShControl.Checked;
                         break;
