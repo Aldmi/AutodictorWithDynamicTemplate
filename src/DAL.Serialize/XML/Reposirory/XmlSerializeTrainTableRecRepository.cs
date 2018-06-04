@@ -81,9 +81,10 @@ namespace DAL.Serialize.XML.Reposirory
         }
 
 
-        public void AddRange(IEnumerable<TrainTableRec> entitys)//TODO: realize
+        public void AddRange(IEnumerable<TrainTableRec> entitys)
         {
             var listTrainRecsXml = AutoMapperConfig.Mapper.Map<IEnumerable<TrainTableRecXmlModel>>(entitys).ToList();
+            AssignId(listTrainRecsXml);
             var container = new ListTrainRecsXml { TrainTableRecXmlModels = listTrainRecsXml };
             XmlSerializerWorker.Save(container, _folderName, _fileName);
         }
@@ -102,6 +103,24 @@ namespace DAL.Serialize.XML.Reposirory
         public void Edit(TrainTableRec entity)
         {
             throw new NotImplementedException();
+        }
+
+
+        private IList<TrainTableRecXmlModel> AssignId(IList<TrainTableRecXmlModel> listRecs)
+        {
+            for (int i = 0; i < listRecs.Count; i++)
+            {
+                listRecs[i].Id = i + 1;
+            }
+            return listRecs;
+        }
+
+        private TrainTableRecXmlModel AssignId(TrainTableRecXmlModel rec)
+        {
+            var allItems = List().ToList();
+            int maxId = allItems.Any() ? allItems.Max(t => t.Id) : 0;
+            rec.Id = ++maxId;
+            return rec;
         }
 
         #endregion

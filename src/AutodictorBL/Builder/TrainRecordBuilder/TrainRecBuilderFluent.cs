@@ -18,6 +18,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
 
 
+
         #region prop
 
         private TrainTableRec TrainTableRec { get; set; }
@@ -35,6 +36,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
                 throw new ArgumentNullException("trainRecService не может быть Null");
 
             _trainRecService = trainRecService;
+            TrainTableRec = new TrainTableRec();
         }
 
         #endregion
@@ -44,11 +46,13 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         #region Methode
 
-        public ITrainRecBuilder SetDefaultMain(int newId)
-        {
-            TrainTableRec = TrainTableRec ?? new TrainTableRec();
 
-            TrainTableRec.Id = newId;
+        /// <summary>
+        /// Установить дефолтное состояние объекта
+        /// </summary>
+        public ITrainRecBuilder SetDefault()
+        {
+            TrainTableRec.Id = 0;
             TrainTableRec.Num = "";
             TrainTableRec.Num2 = "";
             TrainTableRec.Addition = "";
@@ -94,13 +98,20 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
+
+        /// <summary>
+        /// Установить состояние объекта из внешнего объекта UniversalInputType
+        /// </summary>
         public ITrainRecBuilder SetExternalData(UniversalInputType uit)
         {
+            TrainTableRec.Id = uit.Id;
             TrainTableRec.Num = uit.NumberOfTrain;
             TrainTableRec.Event = uit.Event;
             TrainTableRec.Addition = uit.Addition;
             TrainTableRec.Route = uit.Route;
             TrainTableRec.DaysFollowing = uit.DaysFollowing;
+            TrainTableRec.StartTimeSchedule = uit.StartTimeSchedule;
+            TrainTableRec.StopTimeSchedule = uit.StopTimeSchedule;
             TrainTableRec.ArrivalTime = uit.ArrivalTime;
             TrainTableRec.DepartureTime = uit.DepartureTime;
             TrainTableRec.WagonsNumbering = uit.WagonsNumbering;
@@ -109,9 +120,11 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
+        /// <summary>
+        /// Установить состояние объекта из внешнего объекта UniversalInputType
+        /// </summary>
         public ITrainRecBuilder SetDefaultDaysOfGoing()
         {
-            TrainTableRec = TrainTableRec ?? new TrainTableRec();
             TrainTableRec.StartTimeSchedule = DateTime.MinValue;
             TrainTableRec.StopTimeSchedule = DateTime.MaxValue;
             TrainTableRec.DaysFollowing = string.Empty;
@@ -123,7 +136,6 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         public ITrainRecBuilder SetDefaultTrainTypeAndActionsAndEmergency()
         {
-            TrainTableRec = TrainTableRec ?? new TrainTableRec();
             TrainTableRec.TrainTypeByRyle = _trainRecService.GetTrainTypeByRyles().FirstOrDefault();
             TrainTableRec.ActionTrains = new List<ActionTrain>();
             TrainTableRec.EmergencyTrains = TrainTableRec.TrainTypeByRyle?.EmergencyTrains.DeepClone();
@@ -162,6 +174,9 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
+        /// <summary>
+        /// Выставить свойства определяемые ТИПОМ поезда
+        /// </summary>
         public ITrainRecBuilder SetAllByTypeId(int typeId)
         {
             var trainTypeByRyle = _trainRecService.GetTrainTypeByRyleById(typeId);
@@ -176,6 +191,9 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
+        /// <summary>
+        /// Найти и установить направление по ИМЕНИ
+        /// </summary>
         public ITrainRecBuilder SetDirectionByName(string name)
         {
             var direction = _trainRecService.GetDirectionByName(name);
@@ -188,6 +206,9 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
+        /// <summary>
+        /// Найти и установить станции ПРИБ и ОТПР по ЕСР коду
+        /// </summary>
         public ITrainRecBuilder SetStationsByCodeEsr(int codeEsrStationArrival, int codeEsrStationDeparture)
         {
             if (TrainTableRec.Direction == null)
@@ -200,6 +221,9 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
+        /// <summary>
+        /// Найти и установить станции ПРИБ и ОТПР по коду
+        /// </summary>
         public ITrainRecBuilder SetStationsById(int idStationArrival, int idStationDeparture)
         {
             if (TrainTableRec.Direction == null)
@@ -210,6 +234,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
             return this;
         }
+
 
 
         public TrainTableRec Build()

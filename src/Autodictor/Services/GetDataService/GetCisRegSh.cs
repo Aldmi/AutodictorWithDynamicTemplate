@@ -67,8 +67,15 @@ namespace MainExample.Services.GetDataService
                     using (var scope = _lifetimeScope.BeginLifetimeScope())
                     {
                         var trainRecBuilder = scope.Resolve<ITrainRecBuilder>();
+                        //var trainRec = trainRecBuilder
+                        //    .SetDefault()
+                        //    .SetExternalData(uit)
+                        //    .SetDirectionByName(uit.Direction.Name)
+                        //    .SetStationsById(uit.StationArrival.Id, uit.StationDeparture.Id)
+                        //    .SetAllByTypeId(uit.TrainTypeByRyle.Id)
+                        //    .Build();
+
                         var trainRec = trainRecBuilder
-                            .SetDefaultMain(uit.Id)
                             .SetExternalData(uit)
                             .SetDirectionByName(uit.Direction.Name)
                             .SetStationsById(uit.StationArrival.Id, uit.StationDeparture.Id)
@@ -379,6 +386,8 @@ namespace MainExample.Services.GetDataService
                     StationDeparture = new Station {Id=3,  CodeEsr = 723, NameRu = "Москва"},
                     Route = null,
                     DaysFollowing = "еж", //???
+                    StartTimeSchedule = DateTime.MinValue,
+                    StopTimeSchedule = DateTime.MaxValue,
                     ArrivalTime = DateTime.Parse("12:10"),
                     DepartureTime = DateTime.Parse("13:20"),
                     WagonsNumbering = WagonsNumbering.Head
@@ -395,6 +404,8 @@ namespace MainExample.Services.GetDataService
                     StationDeparture = new Station {Id=4, CodeEsr = 753, NameRu = "Омск"},
                     Route = null,
                     DaysFollowing = "еж",//???
+                    StartTimeSchedule = DateTime.MinValue,
+                    StopTimeSchedule = DateTime.MaxValue,
                     ArrivalTime = DateTime.Parse("14:10"),
                     DepartureTime = DateTime.Parse("15:20"),
                     WagonsNumbering = WagonsNumbering.Rear    

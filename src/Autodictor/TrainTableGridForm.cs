@@ -290,10 +290,6 @@ namespace MainExample
         /// <param name="index">Если указанн индекс то элемент уже есть в списке, если равен null, то это новый элемент добавленный в конец списка</param>
         private TrainTableRec AddOrEdit(TrainTableRec tableRec, int? index = null)
         {
-            //ПланРасписанияПоезда текущийПланРасписанияПоезда = ПланРасписанияПоезда.ПолучитьИзСтрокиПланРасписанияПоезда(tableRec.DaysFollowing);
-            //текущийПланРасписанияПоезда.УстановитьНомерПоезда(tableRec.Num);
-            //текущийПланРасписанияПоезда.УстановитьНазваниеПоезда(tableRec.Name);
-
             var editForm = _editTrainTableRecFormFactory(tableRec);
             editForm.ShowDialog();
             tableRec.Active = !editForm.cBБлокировка.Checked;
@@ -514,12 +510,11 @@ namespace MainExample
         /// </summary>
         private void btn_ДобавитьЗапись_Click(object sender, EventArgs e)
         {
-            int maxId = _listRecords.Any() ? _listRecords.Max(t => t.Id) : 0;
-            var item= _trainRecBuilder.SetDefaultMain(++maxId)
+            var item= _trainRecBuilder.SetDefault()
                                       .SetDefaultDaysOfGoing()
                                       .SetDefaultTrainTypeAndActionsAndEmergency()
                                       .Build();
-        
+
             //Добавили в список
             _listRecords.Add(item);
 

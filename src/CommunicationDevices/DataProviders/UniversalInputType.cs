@@ -42,6 +42,9 @@ namespace CommunicationDevices.DataProviders
 
         public string DaysFollowing { get; set; }                    //Дни следования
         public string DaysFollowingAlias { get; set; }               //Дни следования, заданные в строке в нужном формате
+        public DateTime StartTimeSchedule { get; set; }              //Время действия расписания Начальная дата
+        public DateTime StopTimeSchedule { get; set; }               //Время действия расписания Конечная дата
+
 
         public DateTime Time { get; set; }                           //!!!!!Время
         public DateTime? ArrivalTime { get; set; }                   //Время прибытия

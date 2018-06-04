@@ -5,7 +5,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 {
     public interface ITrainRecBuilder
     {
-        ITrainRecBuilder SetDefaultMain(int newId);
+        ITrainRecBuilder SetDefault();
         ITrainRecBuilder SetExternalData(UniversalInputType uit);
         ITrainRecBuilder SetDefaultDaysOfGoing();
         ITrainRecBuilder SetDefaultTrainTypeAndActionsAndEmergency();
