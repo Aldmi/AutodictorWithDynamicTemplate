@@ -87,6 +87,9 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             TrainTableRec.IsScoreBoardOutput = false;
             TrainTableRec.IsSoundOutput = true;
 
+            TrainTableRec.StartTimeSchedule = DateTime.MinValue;
+            TrainTableRec.StopTimeSchedule = DateTime.MaxValue;
+
             return this;
         }
 
@@ -132,7 +135,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         public ITrainRecBuilder SetActionTrainsByType(TrainTypeByRyle trainTypeByRyle)
         {
             trainTypeByRyle = trainTypeByRyle ?? TrainTableRec.TrainTypeByRyle;
-            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).ToList();
+            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).Select(act => act.DeepClone()).ToList();
 
             return this;
         }
@@ -144,7 +147,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
            if(trainTypeByRyle == null)
               throw new ArgumentException($"Элемент с {typeId} не найден");
 
-            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).ToList();
+            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).Select(act => act.DeepClone()).ToList();
 
             return this;
         }
@@ -153,7 +156,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         public ITrainRecBuilder SetEmergencysByType(TrainTypeByRyle trainTypeByRyle)
         {
             trainTypeByRyle = trainTypeByRyle ?? TrainTableRec.TrainTypeByRyle;
-            TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).ToList();
+            TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).Select(act => act.DeepClone()).ToList();
 
             return this;
         }
@@ -166,8 +169,8 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
                 throw new ArgumentException($"Элемент с {typeId} не найден");
 
             TrainTableRec.TrainTypeByRyle = trainTypeByRyle;
-            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).ToList();
-            TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).ToList();
+            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).Select(act=> act.DeepClone()).ToList();
+            TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).Select(act=> act.DeepClone()).ToList();
 
             return this;
         }

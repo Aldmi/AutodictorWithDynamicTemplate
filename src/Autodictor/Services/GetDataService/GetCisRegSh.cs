@@ -18,7 +18,7 @@ namespace MainExample.Services.GetDataService
 
         private readonly IUsersRepository _usersRepository;
         private readonly TrainRecService _trainRecService;
-        private readonly ITrainRecBuilder _trainRecBuilder;
+        private readonly ILifetimeScope _lifetimeScope;
 
         #endregion
 
@@ -30,13 +30,12 @@ namespace MainExample.Services.GetDataService
         public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior,
                            IUsersRepository usersRepository,
                            TrainRecService trainRecService,
-                           ITrainRecBuilder trainRecBuilder,
-                           IContainer cc) 
+                           ILifetimeScope lifetimeScope) 
             : base(baseGetDataBehavior)
         {
             _usersRepository = usersRepository;
             _trainRecService = trainRecService;
-            _trainRecBuilder = trainRecBuilder;
+            _lifetimeScope = lifetimeScope;
         }
 
         #endregion
@@ -53,7 +52,7 @@ namespace MainExample.Services.GetDataService
         {
             if (!Enable)
                 return;
-   
+
             try
             {
                 //ПОЛУЧЕНИЕ ДАННЫХ--------------------------------------------------------
@@ -62,18 +61,22 @@ namespace MainExample.Services.GetDataService
                 inputDatas = CreateMoqDatas(); //DEBUG
 
                 //СОЗДАНИЕ РАСПИСАНИЯ НА БАЗЕ ПОЛУЧЕННЫХ ДАННЫХ---------------------------
-                var resultList= new List<TrainTableRec>();
+                var resultList = new List<TrainTableRec>();
                 foreach (var uit in inputDatas)
                 {
-                    var trainRec= _trainRecBuilder
-                        .SetDefaultMain(uit.Id)
-                        .SetExternalData(uit)
-                        .SetDirectionByName(uit.Direction.Name)
-                        .SetStationsById(uit.StationArrival.Id, uit.StationDeparture.Id)
-                        .SetAllByTypeId(uit.TrainTypeByRyle.Id)
-                        .Build();
+                    using (var scope = _lifetimeScope.BeginLifetimeScope())
+                    {
+                        var trainRecBuilder = scope.Resolve<ITrainRecBuilder>();
+                        var trainRec = trainRecBuilder
+                            .SetDefaultMain(uit.Id)
+                            .SetExternalData(uit)
+                            .SetDirectionByName(uit.Direction.Name)
+                            .SetStationsById(uit.StationArrival.Id, uit.StationDeparture.Id)
+                            .SetAllByTypeId(uit.TrainTypeByRyle.Id)
+                            .Build();
 
-                    resultList.Add(trainRec);
+                        resultList.Add(trainRec);
+                    }
                 }
 
                 //ПЕРЕЗАПИСАТЬ РЕПОЗИТОРИЙ RemoteCis
@@ -83,6 +86,7 @@ namespace MainExample.Services.GetDataService
             {
                 Console.WriteLine(ex.Message);
             }
+
 
 
 

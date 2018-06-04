@@ -62,8 +62,8 @@ namespace MainExample
             TrainRec = trainRec;
 
             //DEBUG------------------
-            if(TrainRec.Route == null)
-              TrainRec.Route = new Route {Stations = _trainRecService.GetDirections().FirstOrDefault().Stations.Take(20).ToList(), RouteType = RouteType.WithAllStops};
+            //if(TrainRec.Route == null)
+            //  TrainRec.Route = new Route {Stations = _trainRecService.GetDirections().FirstOrDefault().Stations.Take(20).ToList(), RouteType = RouteType.WithAllStops};
 
 
             InitializeComponent();
@@ -279,25 +279,28 @@ namespace MainExample
             lbRoute.DataSource = RouteVm?.Stations;
             lbRoute.DisplayMember = "NameRu";
 
-            if (TrainRec.Route.RouteType == RouteType.WithAllStops)
+            if (RouteVm != null)
             {
-                rBСоВсемиОстановками.Checked = true;
-            }
-            else if (TrainRec.Route.RouteType == RouteType.None)
-            {
-                rBБезОстановок.Checked = true;
-            }
-            else if (TrainRec.Route.RouteType == RouteType.WithStopsAt)
-            {
-                rBСОстановкамиНа.Checked = true;
-            }
-            else if (TrainRec.Route.RouteType == RouteType.WithStopsExcept)
-            {
-                rBСОстановкамиКроме.Checked = true;
-            }
-            else
-            {
-                rBНеОповещать.Checked = true;
+                if (TrainRec.Route.RouteType == RouteType.WithAllStops)
+                {
+                    rBСоВсемиОстановками.Checked = true;
+                }
+                else if (TrainRec.Route.RouteType == RouteType.None)
+                {
+                    rBБезОстановок.Checked = true;
+                }
+                else if (TrainRec.Route.RouteType == RouteType.WithStopsAt)
+                {
+                    rBСОстановкамиНа.Checked = true;
+                }
+                else if (TrainRec.Route.RouteType == RouteType.WithStopsExcept)
+                {
+                    rBСОстановкамиКроме.Checked = true;
+                }
+                else
+                {
+                    rBНеОповещать.Checked = true;
+                }
             }
 
             //Заполнение таблицы шаблонов
@@ -466,25 +469,28 @@ namespace MainExample
             TrainRec.FollowingTime = dTPСледования.Value;
 
             TrainRec.Route = RouteVm;
-            if (rBСоВсемиОстановками.Checked)
+            if (TrainRec.Route != null)
             {
-                TrainRec.Route.RouteType = RouteType.WithAllStops;
-            }
-            else if (rBБезОстановок.Checked)
-            {
-                TrainRec.Route.RouteType = RouteType.None;
-            }
-            else if (rBСОстановкамиНа.Checked)
-            {
-                TrainRec.Route.RouteType = RouteType.WithStopsAt;
-            }
-            else if (rBСОстановкамиКроме.Checked)
-            {
-                TrainRec.Route.RouteType = RouteType.WithStopsExcept;
-            }
-            else
-            {
-                TrainRec.Route.RouteType = RouteType.NotNotify;
+                if (rBСоВсемиОстановками.Checked)
+                {
+                    TrainRec.Route.RouteType = RouteType.WithAllStops;
+                }
+                else if (rBБезОстановок.Checked)
+                {
+                    TrainRec.Route.RouteType = RouteType.None;
+                }
+                else if (rBСОстановкамиНа.Checked)
+                {
+                    TrainRec.Route.RouteType = RouteType.WithStopsAt;
+                }
+                else if (rBСОстановкамиКроме.Checked)
+                {
+                    TrainRec.Route.RouteType = RouteType.WithStopsExcept;
+                }
+                else
+                {
+                    TrainRec.Route.RouteType = RouteType.NotNotify;
+                }
             }
 
             TrainRec.DaysAlias = tb_ДниСледованияAlias.Text;

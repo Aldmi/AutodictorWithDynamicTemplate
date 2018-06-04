@@ -76,7 +76,6 @@
     <Compile Include="Builder\SoundRecordCollectionBuilder\SoundRecCollectionBuilderFluent.cs" />
     <Compile Include="Builder\TrainRecordBuilder\ITrainRecBuilder.cs" />
     <Compile Include="Builder\TrainRecordBuilder\TrainRecBuilderFluent.cs" />
-    <Compile Include="Builder\TrainRecordBuilder\TrainRecBuilderRemoteCisFluent.cs" />
     <Compile Include="Mappers\AutoMapperConfig.cs" />
     <Compile Include="Models\ПланРасписанияПоезда.cs" />
     <Compile Include="Services\DataAccessServices\DirectionService.cs" />
