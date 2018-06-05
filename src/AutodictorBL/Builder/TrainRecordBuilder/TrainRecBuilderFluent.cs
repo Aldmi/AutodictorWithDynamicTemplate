@@ -8,7 +8,7 @@ using Force.DeepCloner;
 
 namespace AutodictorBL.Builder.TrainRecordBuilder
 {
-    public class TrainRecBuilderFluent : ITrainRecBuilder
+    public class TrainRecBuilderFluent : ITrainRecBuilder, IDisposable
     {
         #region field
 
@@ -21,7 +21,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         #region prop
 
-        private TrainTableRec TrainTableRec { get; set; }
+        private TrainTableRec TrainTableRec { get; }
 
         #endregion
 
@@ -244,5 +244,15 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         #endregion
 
+
+
+        #region Disposable
+
+        public void Dispose()
+        {
+         
+        }
+
+        #endregion
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Services.DataAccessServices;
 using Autofac;
+using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;
 using DAL.Abstract.Concrete;
@@ -18,7 +19,7 @@ namespace MainExample.Services.GetDataService
 
         private readonly IUsersRepository _usersRepository;
         private readonly TrainRecService _trainRecService;
-        private readonly ILifetimeScope _lifetimeScope;
+        private readonly Func<Owned<ITrainRecBuilder>> _trainRecBuilderFactory;
 
         #endregion
 
@@ -30,12 +31,12 @@ namespace MainExample.Services.GetDataService
         public GetCisRegSh(BaseGetDataBehavior baseGetDataBehavior,
                            IUsersRepository usersRepository,
                            TrainRecService trainRecService,
-                           ILifetimeScope lifetimeScope) 
+                           Func<Owned<ITrainRecBuilder>> trainRecBuilderFactory) 
             : base(baseGetDataBehavior)
         {
             _usersRepository = usersRepository;
             _trainRecService = trainRecService;
-            _lifetimeScope = lifetimeScope;
+            _trainRecBuilderFactory = trainRecBuilderFactory;
         }
 
         #endregion
@@ -64,18 +65,11 @@ namespace MainExample.Services.GetDataService
                 var resultList = new List<TrainTableRec>();
                 foreach (var uit in inputDatas)
                 {
-                    using (var scope = _lifetimeScope.BeginLifetimeScope())
+                    using (var scope = _trainRecBuilderFactory())
                     {
-                        var trainRecBuilder = scope.Resolve<ITrainRecBuilder>();
-                        //var trainRec = trainRecBuilder
-                        //    .SetDefault()
-                        //    .SetExternalData(uit)
-                        //    .SetDirectionByName(uit.Direction.Name)
-                        //    .SetStationsById(uit.StationArrival.Id, uit.StationDeparture.Id)
-                        //    .SetAllByTypeId(uit.TrainTypeByRyle.Id)
-                        //    .Build();
-
-                        var trainRec = trainRecBuilder
+                        var builder = scope.Value;
+                        var trainRec = builder
+                            .SetDefault()
                             .SetExternalData(uit)
                             .SetDirectionByName(uit.Direction.Name)
                             .SetStationsById(uit.StationArrival.Id, uit.StationDeparture.Id)
