@@ -557,8 +557,8 @@ namespace MainExample
                 _trainRecService.SourceLoad = (rb.Name == "rbSourseSheduleLocal" && rb.Checked) ? TrainRecRepType.LocalMain : TrainRecRepType.RemoteCis;
                 _listRecords = _trainRecService.GetAll().ToList();
                 //Сохранение настроек-----------------------------
-                //Program.Настройки.SourceTrainTableRecordLoad = _trainRecService.SourceLoad.ToString();
-                //ОкноНастроек.СохранитьНастройки();
+                Program.Настройки.SourceTrainTableRecordLoad = _trainRecService.SourceLoad.ToString();
+                ОкноНастроек.СохранитьНастройки();
                 //------------------------------------------------
 
                 await ОбновитьДанныеВСпискеAsync();

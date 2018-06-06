@@ -22,6 +22,8 @@ namespace DAL.Serialize.XML.Reposirory
         private readonly string _folderName;
         private readonly string _fileName;
 
+        private readonly object _locker= new object();
+
         #endregion
 
 
@@ -58,11 +60,14 @@ namespace DAL.Serialize.XML.Reposirory
         {
             try
             {
-                var listTrainTableRecXmlModel = XmlSerializerWorker.Load<ListTrainRecsXml>(_folderName, _fileName).TrainTableRecXmlModels;
-                var listTrainTableRec = AutoMapperConfig.Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
-                return listTrainTableRec;
+                lock (_locker)
+                {
+                    var listTrainTableRecXmlModel = XmlSerializerWorker.Load<ListTrainRecsXml>(_folderName, _fileName).TrainTableRecXmlModels;
+                    var listTrainTableRec = AutoMapperConfig.Mapper.Map<IList<TrainTableRec>>(listTrainTableRecXmlModel);
+                    return listTrainTableRec;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -83,10 +88,20 @@ namespace DAL.Serialize.XML.Reposirory
 
         public void AddRange(IEnumerable<TrainTableRec> entitys)
         {
-            var listTrainRecsXml = AutoMapperConfig.Mapper.Map<IEnumerable<TrainTableRecXmlModel>>(entitys).ToList();
-            AssignId(listTrainRecsXml);
-            var container = new ListTrainRecsXml { TrainTableRecXmlModels = listTrainRecsXml };
-            XmlSerializerWorker.Save(container, _folderName, _fileName);
+            try
+            {
+                lock (_locker)
+                {
+                    var listTrainRecsXml = AutoMapperConfig.Mapper.Map<IEnumerable<TrainTableRecXmlModel>>(entitys).ToList();
+                    AssignId(listTrainRecsXml);
+                    var container = new ListTrainRecsXml { TrainTableRecXmlModels = listTrainRecsXml };
+                    XmlSerializerWorker.Save(container, _folderName, _fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                // ignored
+            }
         }
 
 
@@ -110,7 +125,7 @@ namespace DAL.Serialize.XML.Reposirory
         {
             for (int i = 0; i < listRecs.Count; i++)
             {
-                listRecs[i].Id = i + 1;
+                listRecs[i].Id= i + 1;
             }
             return listRecs;
         }
