@@ -12,9 +12,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
-using MainExample.ViewModel;
 using MainExample.ViewModel.ActionTrainFormVM;
-using MainExample.ViewModel.EditRouteFormVM;
 
 
 namespace MainExample
@@ -52,19 +50,12 @@ namespace MainExample
 
 
 
-
         #region ctor
-     //   public EditTrainTableRecForm(TrainRecService trainRecService, Func<List<Station>, List<Station>, EditListStationForm> editListStationFormFactory, TrainTableRec trainRec)
         public EditTrainTableRecForm(TrainRecService trainRecService, Func<Route, List<Station>, EditListStationForm> editListStationFormFactory, TrainTableRec trainRec)
         {
             _trainRecService = trainRecService;
             _editListStationFormFactory = editListStationFormFactory;
             TrainRec = trainRec;
-
-            //DEBUG------------------
-            //if(TrainRec.Route == null)
-            //  TrainRec.Route = new Route {Stations = _trainRecService.GetDirections().FirstOrDefault().Stations.Take(20).ToList(), RouteType = RouteType.WithAllStops};
-
 
             InitializeComponent();
         }

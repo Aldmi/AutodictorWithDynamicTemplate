@@ -7,7 +7,6 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using AutoMapper;
 using Communication.SibWayApi;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Mappers;

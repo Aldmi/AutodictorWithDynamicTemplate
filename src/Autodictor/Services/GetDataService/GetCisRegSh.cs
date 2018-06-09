@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Services.DataAccessServices;
-using Autofac;
 using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.GetDataBehavior;
 using CommunicationDevices.DataProviders;

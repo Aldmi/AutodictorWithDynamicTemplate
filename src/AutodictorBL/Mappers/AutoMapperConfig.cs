@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.Mappers

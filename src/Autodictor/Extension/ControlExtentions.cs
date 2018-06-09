@@ -19,7 +19,7 @@ namespace MainExample.Extension
                 else
                     doit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // ignored
             }

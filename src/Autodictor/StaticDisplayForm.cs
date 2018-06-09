@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using AutodictorBL.Services;
 using AutodictorBL.Services.AuthenticationServices;
 using CommunicationDevices.Behavior.BindingBehavior.ToStatic;
 using CommunicationDevices.DataProviders;

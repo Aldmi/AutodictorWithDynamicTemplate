@@ -177,27 +177,30 @@ namespace MainExample
             RouteVm = record.Route;
             lbRoute.DataSource = RouteVm?.Stations;
             lbRoute.DisplayMember = "NameRu";
-            if (record.Route.RouteType == RouteType.WithAllStops)
-            {
-                rBСоВсемиОстановками.Checked = true;
-            }
-            else if (record.Route.RouteType == RouteType.None)
-            {
-                rBНеОповещать.Checked = true;
-            }
-            else if (record.Route.RouteType == RouteType.WithStopsAt)
-            {
-                rBСОстановкамиНа.Checked = true;
-            }
-            else if (record.Route.RouteType == RouteType.WithStopsExcept)
-            {
-                rBСОстановкамиКроме.Checked = true;
-            }
-            else
-            {
-                rBНеОповещать.Checked = true;
-            }
 
+            if (record.Route != null)
+            {
+                if (record.Route.RouteType == RouteType.WithAllStops)
+                {
+                    rBСоВсемиОстановками.Checked = true;
+                }
+                else if (record.Route.RouteType == RouteType.None)
+                {
+                    rBНеОповещать.Checked = true;
+                }
+                else if (record.Route.RouteType == RouteType.WithStopsAt)
+                {
+                    rBСОстановкамиНа.Checked = true;
+                }
+                else if (record.Route.RouteType == RouteType.WithStopsExcept)
+                {
+                    rBСОстановкамиКроме.Checked = true;
+                }
+                else
+                {
+                    rBНеОповещать.Checked = true;
+                }
+            }
 
 
 
@@ -478,21 +481,24 @@ namespace MainExample
             }
 
             _record.Route = RouteVm;
-            if (rBСоВсемиОстановками.Checked)
+            if (_record.Route != null)
             {
-                _record.Route.RouteType = RouteType.WithAllStops;
-            }
-            else if (rBСОстановкамиНа.Checked)
-            {
-                _record.Route.RouteType = RouteType.WithStopsAt;
-            }
-            else if (rBСОстановкамиКроме.Checked)
-            {
-                _record.Route.RouteType = RouteType.WithStopsExcept;
-            }
-            else
-            {
-                _record.Route.RouteType = RouteType.NotNotify;
+                if (rBСоВсемиОстановками.Checked)
+                {
+                    _record.Route.RouteType = RouteType.WithAllStops;
+                }
+                else if (rBСОстановкамиНа.Checked)
+                {
+                    _record.Route.RouteType = RouteType.WithStopsAt;
+                }
+                else if (rBСОстановкамиКроме.Checked)
+                {
+                    _record.Route.RouteType = RouteType.WithStopsExcept;
+                }
+                else
+                {
+                    _record.Route.RouteType = RouteType.NotNotify;
+                }
             }
 
 
@@ -595,21 +601,24 @@ namespace MainExample
             }
 
             _record.Route = RouteVm;
-            if (rBСоВсемиОстановками.Checked)
+            if (_record.Route != null)
             {
-                _record.Route.RouteType = RouteType.WithAllStops;
-            }
-            else if (rBСОстановкамиНа.Checked)
-            {
-                _record.Route.RouteType = RouteType.WithStopsAt;
-            }
-            else if (rBСОстановкамиКроме.Checked)
-            {
-                _record.Route.RouteType = RouteType.WithStopsExcept;
-            }
-            else
-            {
-                _record.Route.RouteType = RouteType.NotNotify;
+                if (rBСоВсемиОстановками.Checked)
+                {
+                    _record.Route.RouteType = RouteType.WithAllStops;
+                }
+                else if (rBСОстановкамиНа.Checked)
+                {
+                    _record.Route.RouteType = RouteType.WithStopsAt;
+                }
+                else if (rBСОстановкамиКроме.Checked)
+                {
+                    _record.Route.RouteType = RouteType.WithStopsExcept;
+                }
+                else
+                {
+                    _record.Route.RouteType = RouteType.NotNotify;
+                }
             }
 
             //Применение битов нештатных ситуаций------------------------------

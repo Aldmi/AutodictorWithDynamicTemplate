@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using CommunicationDevices.ConditionsHandler;
 using CommunicationDevices.DataProviders;
-using CommunicationDevices.Settings;
 
 
 namespace CommunicationDevices.Rules.ExchangeRules

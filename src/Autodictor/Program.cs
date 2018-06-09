@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
 using AutodictorBL;
 using Autofac;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
-using Force.DeepCloner;
 using Library.Logs;
 using MainExample.Utils;
 

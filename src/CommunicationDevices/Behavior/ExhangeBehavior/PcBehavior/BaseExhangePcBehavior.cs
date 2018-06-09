@@ -6,7 +6,6 @@ using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using AutoMapper;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Mappers;
 using Library.Logs;

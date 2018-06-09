@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutodictorBL.Builder.SoundRecordCollectionBuilder;
 using AutodictorBL.Builder.TrainRecordBuilder;
-using AutodictorBL.Services;
 using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Services.DataAccessServices;
 using AutodictorBL.Services.SoundRecordServices;
@@ -12,7 +11,6 @@ using DAL.Abstract.Abstract;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Composite.Repository;
-using DAL.InMemory.Repository;
 using DAL.NoSqlLiteDb.Entityes;
 using DAL.NoSqlLiteDb.Repository;
 using DAL.NoSqlLiteDb.Service;

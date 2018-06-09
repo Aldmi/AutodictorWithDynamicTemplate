@@ -5,7 +5,6 @@ using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AutoMapper;
 using Castle.Windsor;
 using Communication.Interfaces;
 using Communication.SerialPort;

@@ -97,7 +97,10 @@ namespace MainExample.Mappers
                 ["звук"] = config.UseAddition["звук"],
                 ["табло"] = config.UseAddition["табло"]
             };
+
+            record.Direction = config.Direction;
             record.Направление = config.Direction?.Name;
+
             record.ДниСледования = config.DaysFollowing;
             record.ДниСледованияAlias = config.DaysAlias;
             record.Активность = config.Active;
@@ -123,24 +126,24 @@ namespace MainExample.Mappers
             record.ФиксированноеВремяПрибытия = null;
             record.ФиксированноеВремяОтправления = null;
 
+
+            record.StationArrival = config.StationArrival;
+            record.StationDepart = config.StationDepart;
             record.СтанцияОтправления = config.StationDepart != null ? config.StationDepart.NameRu : string.Empty;
             record.СтанцияНазначения = config.StationArrival != null ? config.StationArrival.NameRu : string.Empty;
 
             record.ВыводНаТабло = config.IsScoreBoardOutput;
             record.ВыводЗвука= config.IsSoundOutput;
 
-
-            //DateTime времяПрибытия = new DateTime(2000, 1, 1, 0, 0, 0);
-            //DateTime времяОтправления = new DateTime(2000, 1, 1, 0, 0, 0);
             record.ВремяПрибытия = day;
             record.ВремяОтправления = day;
             record.ОжидаемоеВремя = day;
             record.ВремяСледования = null;
             record.ВремяЗадержки = null;
-            byte номерСписка = 0x00;
-
+ 
             record.Event = config.Event;
 
+            byte номерСписка = 0x00;
             if (config.ArrivalTime.HasValue)
             {
                 record.ВремяПрибытия = day.Add(config.ArrivalTime.Value.TimeOfDay);

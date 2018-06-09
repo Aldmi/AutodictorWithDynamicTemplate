@@ -4,8 +4,6 @@ using CommunicationDevices.Behavior.BindingBehavior.Helpers;
 using CommunicationDevices.ConditionsHandler;
 using CommunicationDevices.DataProviders;
 using CommunicationDevices.Devices;
-using CommunicationDevices.Settings;
-
 
 
 namespace CommunicationDevices.Behavior.BindingBehavior.ToChange

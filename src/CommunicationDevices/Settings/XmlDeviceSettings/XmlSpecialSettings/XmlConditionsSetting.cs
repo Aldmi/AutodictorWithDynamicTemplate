@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using CommunicationDevices.ConditionsHandler;
-using CommunicationDevices.DataProviders;
+﻿using CommunicationDevices.ConditionsHandler;
 
 
 namespace CommunicationDevices.Settings.XmlDeviceSettings.XmlSpecialSettings

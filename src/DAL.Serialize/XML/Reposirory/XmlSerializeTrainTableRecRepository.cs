@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Xml.Serialization;
-using AutoMapper;
 using DAL.Abstract.Concrete;
 using DAL.Abstract.Entitys;
 using DAL.Serialize.Mappers;
