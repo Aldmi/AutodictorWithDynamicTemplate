@@ -36,6 +36,8 @@ namespace AutodictorBL.Services.SoundRecordServices
         /// <summary>
         /// Возвращает список дианмических шаблонов на базе ActionTrain.
         /// Учитывается Время активации шаблона.
+        /// Если СПИСОК ВРЕМЕННЫХ СМЕЩЕНИЙ:
+        /// Если ЦИКЛИЧЕСКИЙ ПОВТОР: Для транзитов у которых  (ActionType == none) шаблона не учитывается, берется временной отрезок (ПРИБ - lowDelta4Cycle)....(ОТПР + hightDelta4Cycle)
         /// </summary>
         public List<ActionTrainDynamic> СreateActionTrainDynamic(SoundRecord record, IEnumerable<ActionTrain> actions, double lowDelta4Cycle = -60, double hightDelta4Cycle = 60)
         {
@@ -44,7 +46,7 @@ namespace AutodictorBL.Services.SoundRecordServices
 
             foreach (var action in actions)
             {
-                if (action.Time.IsDeltaTimes)      //Указанны временные смещения
+                if (action.Time.IsDeltaTimes)      //СПИСОК ВРЕМЕННЫХ СМЕЩЕНИЙ
                 {
                     foreach (var time in action.Time.DeltaTimes) //копируем шаблон для каждого временного смещения
                     {
@@ -62,11 +64,27 @@ namespace AutodictorBL.Services.SoundRecordServices
                         dynamiсLists.Add(actDyn);
                     }
                 }
-                else                                   //Указан циклический повтор
+                else                                   //ЦИКЛИЧЕСКИЙ ПОВТОР
                 {
-                    DateTime eventTime = (action.ActionType == ActionType.Arrival) ? record.ВремяПрибытия : record.ВремяОтправления;
-                    var startDate4Cycle = eventTime.AddMinutes(lowDelta4Cycle);
-                    var endDate4Cycle = eventTime.AddMinutes(hightDelta4Cycle);
+                    DateTime eventTime;
+                    DateTime startDate4Cycle;
+                    DateTime endDate4Cycle;
+
+                    if (record.Event == Event.Transit && action.ActionType == ActionType.None)
+                    {
+                        eventTime = record.ВремяПрибытия;
+                        startDate4Cycle = eventTime.AddMinutes(lowDelta4Cycle);
+                        eventTime = record.ВремяОтправления;
+                        endDate4Cycle = eventTime.AddMinutes(hightDelta4Cycle);
+                    }
+                    else
+                    {
+                        eventTime = (action.ActionType == ActionType.Arrival) ? record.ВремяПрибытия : record.ВремяОтправления;
+                        startDate4Cycle = eventTime.AddMinutes(lowDelta4Cycle);
+                        endDate4Cycle = eventTime.AddMinutes(hightDelta4Cycle);
+
+                    }
+
                     var interval = action.Time.CycleTime.Value;
                     for (var date = startDate4Cycle; date < endDate4Cycle; date += new TimeSpan(0, interval, 0))
                     {
