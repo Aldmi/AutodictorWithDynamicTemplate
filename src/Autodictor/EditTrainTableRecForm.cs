@@ -772,16 +772,30 @@ namespace MainExample
                     MessageBox.Show(@"У выбранного типа поезда нет Шаблонов обовещениея");
                     return;
                 }
-                
-                var actionTrains = trainTypeSelected.ActionTrains.Where(at => at.IsActiveBase).Select(MapActionTrain2ViewModel).ToList();
+
+                //Отфильтровать щаблоны только IsActiveBase и совпадающие по Event с поездом (Для приб. поезда только приб. шаблоны)
+                var actionTrains = trainTypeSelected.ActionTrains
+                .Where(at =>
+                {
+                    if (!at.IsActiveBase)
+                        return false;
+
+                    if (rBПрибытие.Checked == true)
+                    {
+                        return at.ActionType == ActionType.Arrival;
+                    }
+                    if (rBОтправление.Checked == true)
+                    {
+                        return at.ActionType == ActionType.Departure;
+                    }
+                    return at.ActionType != ActionType.None;
+                })
+                .Select(MapActionTrain2ViewModel).ToList();
+
                 ActionTrainsVm.Clear();
                 ActionTrainsVm.AddRange(actionTrains);
                 gv_ActionTrains.RefreshData();
                 gv_ActionTrains.BestFitColumns();
-
-                //var builder = new TrainRecordBuilderManual(TrainRec, null, rule);
-                //var factory = new TrainRecordFactoryManual(builder);
-                //TrainRec = factory.Construct();
 
                 //Скорректируем список выбора.-----------------------
                 actionTrains = trainTypeSelected.ActionTrains.Where(l2 => ActionTrainsVm.All(l1 => l1.Id != l2.Id)).Select(MapActionTrain2ViewModel).ToList();
