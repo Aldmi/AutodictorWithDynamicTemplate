@@ -26,3 +26,11 @@
 	new ResolvedParameter(
 	(pi, ctx) => (pi.ParameterType == typeof(ITrainRecBuilder) && (pi.Name == "trainRecBuilder")),
 	(pi, ctx) => ctx.Resolve<ITrainRecBuilder>()), //перебрать коллекцию IEnumerable<ITrainRecBuilder> и выбрать по типу нужный.
+
+10. Вычисление циклических шаблонов для транзитов    
+     (ПРИБ - Мин ........ ОТПР + Макс)
+
+11. Автоматическая генерация не только если стоит флаг IsAuto. Но и учитывать EVENT поезда   
+	ПРИБ. = шаблоны только с приб
+	ОТПР. = шаблоноы только с отпр
+	ТРАНЗ = приб или отпр
