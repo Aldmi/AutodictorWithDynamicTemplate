@@ -32,7 +32,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         public TrainRecBuilderFluent(TrainRecService trainRecService)
         {
-            if(trainRecService == null)
+            if (trainRecService == null)
                 throw new ArgumentNullException("trainRecService не может быть Null");
 
             _trainRecService = trainRecService;
@@ -67,6 +67,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             TrainTableRec.Active = false;
             TrainTableRec.WagonsNumbering = WagonsNumbering.None;
             TrainTableRec.ChangeTrainPathDirection = false;
+            TrainTableRec.Event = Event.Arrival;
             TrainTableRec.TrainPathNumber = new Dictionary<WeekDays, Pathway>
             {
                 [WeekDays.Постоянно] = null,
@@ -134,11 +135,37 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
         }
 
 
-        public ITrainRecBuilder SetDefaultTrainTypeAndActionsAndEmergency()
+        public ITrainRecBuilder SetDefaultTrainTypeAndActions()
         {
             TrainTableRec.TrainTypeByRyle = _trainRecService.GetTrainTypeByRyles().FirstOrDefault();
             TrainTableRec.ActionTrains = new List<ActionTrain>();
-            TrainTableRec.EmergencyTrains = TrainTableRec.TrainTypeByRyle?.EmergencyTrains.DeepClone();
+            return this;
+        }
+
+
+        public ITrainRecBuilder SetEmergencyByTrainEvent(Event? trainEvent = null)
+        {   
+            var emergencyTrains= TrainTableRec.TrainTypeByRyle?.EmergencyTrains;
+            var trEvent= trainEvent ?? TrainTableRec.Event;
+            IEnumerable<ActionTrain> resList;
+            switch (trEvent)
+            {
+                case Event.Arrival:
+                    resList= emergencyTrains.Where(act => (act.ActionType == ActionType.Arrival) ||       
+                                                           (act.ActionType == ActionType.None));
+                    break;
+
+                case Event.Departure:
+                    resList= emergencyTrains.Where(act => (act.ActionType == ActionType.Departure) ||
+                                                           (act.ActionType == ActionType.None));
+                    break;
+
+                default:
+                    resList= emergencyTrains;
+                    break;
+            }
+
+            TrainTableRec.EmergencyTrains= resList.ToList().DeepClone();
 
             return this;
         }
@@ -155,9 +182,9 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         public ITrainRecBuilder SetActionTrainsByTypeId(int typeId)
         {
-           var trainTypeByRyle= _trainRecService.GetTrainTypeByRyleById(typeId);
-           if(trainTypeByRyle == null)
-              throw new ArgumentException($"Элемент с {typeId} не найден");
+            var trainTypeByRyle = _trainRecService.GetTrainTypeByRyleById(typeId);
+            if (trainTypeByRyle == null)
+                throw new ArgumentException($"Элемент с {typeId} не найден");
 
             TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).Select(act => act.DeepClone()).ToList();
 
@@ -184,8 +211,8 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
                 throw new ArgumentException($"Элемент с {typeId} не найден");
 
             TrainTableRec.TrainTypeByRyle = trainTypeByRyle;
-            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).Select(act=> act.DeepClone()).ToList();
-            TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).Select(act=> act.DeepClone()).ToList();
+            TrainTableRec.ActionTrains = trainTypeByRyle.ActionTrains.Where(at => at.IsActiveBase).Select(act => act.DeepClone()).ToList();
+            TrainTableRec.EmergencyTrains = trainTypeByRyle.EmergencyTrains.Where(at => at.IsActiveBase).Select(act => act.DeepClone()).ToList();
 
             return this;
         }
@@ -214,8 +241,8 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
             if (TrainTableRec.Direction == null)
                 throw new ArgumentException("Направление (Direction) не установленно");
 
-            TrainTableRec.StationArrival= TrainTableRec.Direction.Stations.FirstOrDefault(st=> st.CodeEsr == codeEsrStationArrival);
-            TrainTableRec.StationDepart= TrainTableRec.Direction.Stations.FirstOrDefault(st=> st.CodeEsr == codeEsrStationDeparture);
+            TrainTableRec.StationArrival = TrainTableRec.Direction.Stations.FirstOrDefault(st => st.CodeEsr == codeEsrStationArrival);
+            TrainTableRec.StationDepart = TrainTableRec.Direction.Stations.FirstOrDefault(st => st.CodeEsr == codeEsrStationDeparture);
 
             return this;
         }
@@ -251,7 +278,7 @@ namespace AutodictorBL.Builder.TrainRecordBuilder
 
         public void Dispose()
         {
-         
+
         }
 
         #endregion

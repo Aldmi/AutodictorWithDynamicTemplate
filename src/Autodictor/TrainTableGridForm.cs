@@ -512,7 +512,8 @@ namespace MainExample
         {
             var item= _trainRecBuilder.SetDefault()
                                       .SetDefaultDaysOfGoing()
-                                      .SetDefaultTrainTypeAndActionsAndEmergency()
+                                      .SetDefaultTrainTypeAndActions()
+                                      .SetEmergencyByTrainEvent(Event.Transit)
                                       .Build();
 
             //Добавили в список

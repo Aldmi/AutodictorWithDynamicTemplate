@@ -2535,9 +2535,7 @@ namespace MainExample
 
 
             //Сформируем список нештатных сообщений--------------------------------------------------------------------------------------------
-            record.EmergencyTrainDynamiсList = _soundReсordWorkerService.СreateActionTrainDynamic(record,
-                new List<ActionTrain> {emergency}, Program.Настройки.MinDeltaCycleActionTime,
-                Program.Настройки.MaxDeltaCycleActionTime);
+            record.EmergencyTrainDynamiсList = _soundReсordWorkerService.СreateActionTrainDynamic(record, new List<ActionTrain> {emergency}, Program.Настройки.MinDeltaCycleActionTime, Program.Настройки.MaxDeltaCycleActionTime);
             record.EmergencyTrainDynamiсList.ForEach(em => em.Id += 1000);
 
             if (!string.IsNullOrEmpty(key))

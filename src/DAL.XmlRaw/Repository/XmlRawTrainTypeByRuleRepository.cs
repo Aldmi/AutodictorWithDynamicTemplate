@@ -134,7 +134,7 @@ namespace DAL.XmlRaw.Repository
                                     (string)act.Attribute("Id"),
                                     true.ToString(),
                                     (string)act.Attribute("Name"),
-                                    string.Empty, 
+                                    (string)act.Attribute("Type"), 
                                     (string)act.Attribute("Priority"),
                                     false.ToString(),
                                     (string)act.Attribute("Emergency"),
