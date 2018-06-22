@@ -306,8 +306,8 @@ namespace MainExample
             ActionTrainsSelectedTypeVm = TrainRec.TrainTypeByRyle?.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
 
             //Заполнение таблицы НЕШТАТОК
-            ActionEmergencyVm.AddRange(TrainRec.EmergencyTrains.Select(MapActionTrain2ViewModel));
             gridCtrl_Emergence.DataSource = ActionEmergencyVm;
+            ReformEmergencyByEvent(TrainRec.Event);
         }
 
 
@@ -342,8 +342,8 @@ namespace MainExample
                     Id= lang.Id,
                     Name= lang.Name,
                     IsEnable= lang.IsEnable,
-                    RepeatSoundBody = lang.RepeatSoundBody,
-                    TemplateSoundBody = lang.TemplateSoundBody,
+                    RepeatSoundBody= lang.RepeatSoundBody,
+                    TemplateSoundBody= lang.TemplateSoundBody,
                     TemplateSoundStart= lang.TemplateSoundStart,
                     TemplateSoundEnd= lang.TemplateSoundEnd
                 }).ToList()
@@ -582,6 +582,36 @@ namespace MainExample
             }
         }
 
+
+        /// <summary>
+        /// Переформировать
+        /// </summary>
+        private void ReformEmergencyByEvent(Event trainEvent)
+        {
+            var emergencyTrains= TrainRec.TrainTypeByRyle?.EmergencyTrains;
+            IEnumerable<ActionTrain> resList;
+            switch (trainEvent)
+            {
+                case Event.Arrival:
+                    resList = emergencyTrains.Where(act => (act.ActionType == ActionType.Arrival) ||
+                                                           (act.ActionType == ActionType.None));
+                    break;
+
+                case Event.Departure:
+                    resList = emergencyTrains.Where(act => (act.ActionType == ActionType.Departure) ||
+                                                           (act.ActionType == ActionType.None));
+                    break;
+
+                default:
+                    resList = emergencyTrains;
+                    break;
+            }
+
+            ActionEmergencyVm.Clear();
+            ActionEmergencyVm.AddRange(resList.Select(MapActionTrain2ViewModel));
+            gv_Emergence.RefreshData();
+        }
+
         #endregion
 
 
@@ -616,8 +646,10 @@ namespace MainExample
         }
 
 
-        private void rBОтправление_CheckedChanged(object sender, EventArgs e)
+        private void RBEvent_CheckedChanged(object sender, EventArgs e)
         {
+            Event trainEvent;
+
             if (rBПрибытие.Checked)
             {
                 dTPПрибытие.Visible = true;
@@ -626,6 +658,8 @@ namespace MainExample
                 tBНомерПоездаДоп.Visible = false;
                 chBox_сменнаяНумерация.Checked = false;
                 chBox_сменнаяНумерация.Enabled = false;
+
+                trainEvent = Event.Arrival;
             }
             else if (rBОтправление.Checked)
             {
@@ -635,6 +669,8 @@ namespace MainExample
                 tBНомерПоездаДоп.Visible = false;
                 chBox_сменнаяНумерация.Checked = false;
                 chBox_сменнаяНумерация.Enabled = false;
+
+                trainEvent = Event.Departure;
             }
             else
             {
@@ -643,6 +679,14 @@ namespace MainExample
 
                 tBНомерПоездаДоп.Visible = true;
                 chBox_сменнаяНумерация.Enabled = true;
+
+                trainEvent = Event.Transit;
+            }
+
+            var rb = sender as RadioButton;
+            if (rb.Checked)
+            {
+                ReformEmergencyByEvent(trainEvent);
             }
         }
 
@@ -960,8 +1004,11 @@ namespace MainExample
                         break;
                     case CategoryTrain.LongDist:
                         gBОстановки.Enabled = false;
-                        RouteVm.RouteType = RouteType.None;
-                        RouteVm.Stations.Clear();
+                        if (RouteVm != null)
+                        {
+                            RouteVm.RouteType = RouteType.None;
+                            RouteVm.Stations.Clear();
+                        }
                         rBНеОповещать.Checked = true;
                         categoryText = "Дальнего след.";
                         break;

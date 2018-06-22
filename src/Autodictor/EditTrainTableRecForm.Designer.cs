@@ -826,7 +826,7 @@
             this.rBТранзит.TabStop = true;
             this.rBТранзит.Text = "Транзит";
             this.rBТранзит.UseVisualStyleBackColor = true;
-            this.rBТранзит.CheckedChanged += new System.EventHandler(this.rBОтправление_CheckedChanged);
+            this.rBТранзит.CheckedChanged += new System.EventHandler(this.RBEvent_CheckedChanged);
             // 
             // rBОтправление
             // 
@@ -838,7 +838,7 @@
             this.rBОтправление.TabIndex = 1;
             this.rBОтправление.Text = "Отправление";
             this.rBОтправление.UseVisualStyleBackColor = true;
-            this.rBОтправление.CheckedChanged += new System.EventHandler(this.rBОтправление_CheckedChanged);
+            this.rBОтправление.CheckedChanged += new System.EventHandler(this.RBEvent_CheckedChanged);
             // 
             // rBПрибытие
             // 
@@ -850,7 +850,7 @@
             this.rBПрибытие.TabIndex = 0;
             this.rBПрибытие.Text = "Прибытие";
             this.rBПрибытие.UseVisualStyleBackColor = true;
-            this.rBПрибытие.CheckedChanged += new System.EventHandler(this.rBОтправление_CheckedChanged);
+            this.rBПрибытие.CheckedChanged += new System.EventHandler(this.RBEvent_CheckedChanged);
             // 
             // gBДниСледования
             // 
