@@ -17,7 +17,6 @@ using MainExample.ViewModel.ActionTrainFormVM;
 
 namespace MainExample
 {
-
     /// <summary>
     /// Форма редактирования поезда в расписаннии
     /// TrainTableRec попадает по значению (сам элемент раписания)
@@ -73,6 +72,8 @@ namespace MainExample
             Model2Ui();
             SettingUiInitialization();
             base.OnLoad(e);
+
+            //РАЗРЕШЕНИЕ ОБРАБОТКИ СОБЫТИЙ ПОСЛЕ ЗАГРУЗКИ ДАННЫХ
             _isLoaded = true;
         }
 
@@ -172,6 +173,7 @@ namespace MainExample
                 cBТипПоезда.DataSource = listTypeTrains;
                 cBТипПоезда.DisplayMember = "NameRu";
                 cBТипПоезда.SelectedItem = TrainRec.TrainTypeByRyle;
+                _selIndex_cBТипПоезда = cBТипПоезда.SelectedIndex;
             }
             //Изменение категории поезда в зависимости от типа.
             var categoryText = "Не определенн";
@@ -261,6 +263,7 @@ namespace MainExample
                     }
                     break;
             }
+            _rBEvent_lastVal = TrainRec.Event;
 
             dTPСледования.Value = TrainRec.FollowingTime ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             cBБлокировка.Checked = !TrainRec.Active;
@@ -306,8 +309,8 @@ namespace MainExample
             ActionTrainsSelectedTypeVm = TrainRec.TrainTypeByRyle?.ActionTrains.Select(MapActionTrain2ViewModel).ToList();
 
             //Заполнение таблицы НЕШТАТОК
+            ActionEmergencyVm.AddRange(TrainRec.EmergencyTrains.Select(MapActionTrain2ViewModel));
             gridCtrl_Emergence.DataSource = ActionEmergencyVm;
-            ReformEmergencyByEvent(TrainRec.Event);
         }
 
 
@@ -584,32 +587,37 @@ namespace MainExample
 
 
         /// <summary>
-        /// Переформировать
+        /// Переформировать таблицу нештатных сообщений
         /// </summary>
         private void ReformEmergencyByEvent(Event trainEvent)
         {
-            var emergencyTrains= TrainRec.TrainTypeByRyle?.EmergencyTrains;
-            IEnumerable<ActionTrain> resList;
-            switch (trainEvent)
+            var selectedItem = cBТипПоезда.SelectedItem as TrainTypeByRyle;
+            if (selectedItem != null)
             {
-                case Event.Arrival:
-                    resList = emergencyTrains.Where(act => (act.ActionType == ActionType.Arrival) ||
-                                                           (act.ActionType == ActionType.None));
-                    break;
+                var emergencyTrains = selectedItem?.EmergencyTrains;
+                IEnumerable<ActionTrain> resList;
+                switch (trainEvent)
+                {
+                    case Event.Arrival:
+                        resList = emergencyTrains.Where(act => (act.ActionType == ActionType.Arrival) ||
+                                                               (act.ActionType == ActionType.None));
+                        break;
 
-                case Event.Departure:
-                    resList = emergencyTrains.Where(act => (act.ActionType == ActionType.Departure) ||
-                                                           (act.ActionType == ActionType.None));
-                    break;
+                    case Event.Departure:
+                        resList = emergencyTrains.Where(act => (act.ActionType == ActionType.Departure) ||
+                                                               (act.ActionType == ActionType.None));
+                        break;
 
-                default:
-                    resList = emergencyTrains;
-                    break;
+                    default:
+                        resList = emergencyTrains;
+                        break;
+                }
+
+                ActionEmergencyVm.Clear();
+                ActionEmergencyVm.AddRange(resList.Select(MapActionTrain2ViewModel));
+                gv_Emergence.RefreshData();
+                gv_Emergence.BestFitColumns();
             }
-
-            ActionEmergencyVm.Clear();
-            ActionEmergencyVm.AddRange(resList.Select(MapActionTrain2ViewModel));
-            gv_Emergence.RefreshData();
         }
 
         #endregion
@@ -646,48 +654,78 @@ namespace MainExample
         }
 
 
+        Event _rBEvent_lastVal;
         private void RBEvent_CheckedChanged(object sender, EventArgs e)
         {
+            if (!_isLoaded)
+                return;
+
+            var rb = sender as RadioButton;
+            if (!rb.Checked)
+            {
+                return;
+            }
+
             Event trainEvent;
+            if (rBПрибытие.Checked)
+            {
+                trainEvent = Event.Arrival;
+            }
+            else if (rBОтправление.Checked)
+            {
+                trainEvent = Event.Departure;
+            }
+            else
+            {
+                trainEvent = Event.Transit;
+            }
+
+            //отмена действия "переключения переключателя СОБЫТИЕ поезда" если пользователь нажал НЕТ.
+            if (trainEvent == _rBEvent_lastVal)
+                return;
+            if (MessageBox.Show(@"При изменени СОБЫТИЯ поезда таблица НЕШТАТНЫХ шаблонов  будет Изменена в зависимости от выбранного события", @"Предупреждение", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            {             
+                switch(_rBEvent_lastVal)
+                {
+                    case Event.Arrival:
+                        rBПрибытие.Checked = true;
+                        return;
+                    case Event.Departure:
+                        rBОтправление.Checked = true;
+                        return;
+                    default:
+                        rBТранзит.Checked = true;
+                        return;
+                }
+            }
+            _rBEvent_lastVal = trainEvent;
+
 
             if (rBПрибытие.Checked)
             {
                 dTPПрибытие.Visible = true;
                 dTPОтправление.Visible = false;
-
                 tBНомерПоездаДоп.Visible = false;
                 chBox_сменнаяНумерация.Checked = false;
-                chBox_сменнаяНумерация.Enabled = false;
-
-                trainEvent = Event.Arrival;
+                chBox_сменнаяНумерация.Enabled = false;    
             }
             else if (rBОтправление.Checked)
             {
                 dTPПрибытие.Visible = false;
                 dTPОтправление.Visible = true;
-
                 tBНомерПоездаДоп.Visible = false;
                 chBox_сменнаяНумерация.Checked = false;
-                chBox_сменнаяНумерация.Enabled = false;
-
-                trainEvent = Event.Departure;
+                chBox_сменнаяНумерация.Enabled = false;           
             }
             else
             {
                 dTPПрибытие.Visible = true;
                 dTPОтправление.Visible = true;
-
                 tBНомерПоездаДоп.Visible = true;
-                chBox_сменнаяНумерация.Enabled = true;
-
-                trainEvent = Event.Transit;
+                chBox_сменнаяНумерация.Enabled = true;           
             }
 
-            var rb = sender as RadioButton;
-            if (rb.Checked)
-            {
-                ReformEmergencyByEvent(trainEvent);
-            }
+             ReformEmergencyByEvent(trainEvent);
         }
 
 
@@ -818,8 +856,7 @@ namespace MainExample
                 }
 
                 //Отфильтровать щаблоны только IsActiveBase и совпадающие по Event с поездом (Для приб. поезда только приб. шаблоны)
-                var actionTrains = trainTypeSelected.ActionTrains
-                .Where(at =>
+                var actionTrains = trainTypeSelected.ActionTrains.Where(at =>
                 {
                     if (!at.IsActiveBase)
                         return false;
@@ -964,7 +1001,7 @@ namespace MainExample
         /// <summary>
         /// Изменяя тип поезда обновляем его категорию
         /// </summary>
-        int _selIndex = -1;
+        int _selIndex_cBТипПоезда = -1;
         private void cBТипПоезда_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(!_isLoaded)
@@ -973,16 +1010,16 @@ namespace MainExample
             var selectedItem = cBТипПоезда.SelectedItem as TrainTypeByRyle;
             if (selectedItem != null)
             {
-                if (cBТипПоезда.SelectedIndex == _selIndex)
+                if (cBТипПоезда.SelectedIndex == _selIndex_cBТипПоезда)
                     return;
 
                 var actionTrainsVmAny= ActionTrainsVm.Any();
                 if (actionTrainsVmAny && MessageBox.Show(@"При изменени типа поезда таблица шаблонов будет очищена", @"Предупреждение", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 {
-                    cBТипПоезда.SelectedIndex = _selIndex;
+                    cBТипПоезда.SelectedIndex = _selIndex_cBТипПоезда;
                     return;
                 }
-                _selIndex= cBТипПоезда.SelectedIndex;
+                _selIndex_cBТипПоезда= cBТипПоезда.SelectedIndex;
 
 
                 //Очистить текущий список шаблонов----------------------------
@@ -1016,11 +1053,22 @@ namespace MainExample
                 tb_Category.Text = categoryText;
 
                 //Заполнить список НЕШТАТОК из TrainTypeByRyle
-                var actionTrains = selectedItem.EmergencyTrains.Select(MapActionTrain2ViewModel).ToList();
-                ActionEmergencyVm.Clear();
-                ActionEmergencyVm.AddRange(actionTrains);
-                gv_Emergence.RefreshData();
-                gv_Emergence.BestFitColumns();
+                var eventTrain = Event.None;
+                if(rBПрибытие.Checked)
+                {
+                    eventTrain = Event.Arrival;
+                }
+                else
+                if(rBОтправление.Checked)
+                {
+                    eventTrain = Event.Departure;
+                }
+                else
+                {
+                    eventTrain = Event.Transit;
+                }
+
+                ReformEmergencyByEvent(eventTrain);
             }
         }
 
