@@ -87,8 +87,6 @@ namespace MainExample
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-
-
             var mainForm = AutofacConfig.Container.Resolve<MainForm>();
             Application.Run(mainForm);
 

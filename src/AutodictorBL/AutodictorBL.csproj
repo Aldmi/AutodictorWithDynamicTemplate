@@ -78,6 +78,7 @@
     <Compile Include="Builder\TrainRecordBuilder\TrainRecBuilderFluent.cs" />
     <Compile Include="Mappers\AutoMapperConfig.cs" />
     <Compile Include="Models\ПланРасписанияПоезда.cs" />
+    <Compile Include="Services\SoundFileServices\CheckFilesActionTrainService.cs" />
     <Compile Include="Services\DataAccessServices\DirectionService.cs" />
     <Compile Include="Services\DataAccessServices\PathwaysService.cs" />
     <Compile Include="Services\DataAccessServices\SoundRecChangesService.cs" />

@@ -7,7 +7,9 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using AutodictorBL.Services.AuthenticationServices;
+using AutodictorBL.Services.SoundFileServices;
 using AutodictorBL.Sound;
 using Autofac.Features.OwnedInstances;
 using CommunicationDevices.Behavior.BindingBehavior.ToStatic;
@@ -18,6 +20,9 @@ using DAL.Abstract.Entitys.Authentication;
 using MainExample.Extension;
 using MainExample.Services;
 using CommunicationDevices.DataProviders;
+using DevExpress.Utils;
+using DevExpress.XtraSplashScreen;
+using DevExpress.XtraWaitForm;
 
 
 namespace MainExample
@@ -36,6 +41,7 @@ namespace MainExample
         private readonly Func<TechnicalMessageForm> _technicalMessageFormFormFactory;
 
         private readonly IDisposable _authentificationServiceOwner;
+        private readonly CheckFilesActionTrainService _checkFilesActionTrainService;
         private readonly IAuthentificationService _authentificationService;
 
 
@@ -67,7 +73,8 @@ namespace MainExample
                         Func<ArchiveChangesForm> archiveChangesFormFactory,
                         Func<AddingTrainForm> addingTrainFormFactory,
                         Func<TechnicalMessageForm> technicalMessageFormFormFactory,
-                        Owned<IAuthentificationService> authentificationService)
+                        Owned<IAuthentificationService> authentificationService,
+                        CheckFilesActionTrainService checkFilesActionTrainService)
         {
             _adminFormFactory = adminFormFactory;
             _authenticationFormFactory = authenticationFormFactory;
@@ -81,8 +88,9 @@ namespace MainExample
             _technicalMessageFormFormFactory = technicalMessageFormFormFactory;
             _authentificationService = authentificationService.Value;
             _authentificationServiceOwner = authentificationService;
-            _authentificationService.UsersDbInitialize();               //Инициализируем БД Юзеров при загрузки
+            _checkFilesActionTrainService = checkFilesActionTrainService;
 
+            _authentificationService.UsersDbInitialize();               //Инициализируем БД Юзеров при загрузки
 
             InitializeComponent();
 
@@ -203,8 +211,27 @@ namespace MainExample
         }
 
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async Task CheckExistsActionTrainFiles()
         {
+            SplashScreenManager.ShowDefaultWaitForm(this, true, true, false, 0, "ПРОВЕРКА", "наличие звуковых файлов ...");
+            var res = await _checkFilesActionTrainService.CheckExistsActionTrainFiles();
+            SplashScreenManager.CloseDefaultWaitForm();
+            if (res != null)
+            {
+                //TODO: открыть окно показа недостоющих файлов, в диалоговом окне, результат работы "YesNo" и выход по NO
+                if (MessageBox.Show(@"НЕ всме файлы найденны, хотите продолжить?", @"Предупреждение", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    Application.Exit();                  //ВЫХОД
+                }
+            }
+        }
+
+
+
+        private async void MainForm_Load(object sender, EventArgs e)
+        {
+            await CheckExistsActionTrainFiles();
+
             ExchangeModel.LoadSetting();
             CheckAuthentication(true); // переместил сюда, т.к. иначе данные о первом логине не отправляются по причине незагруженной модели обмена
                                        // это выключило возможность включения/отключения галки получения данных из ЦИС на нижней панели программы
@@ -223,7 +250,7 @@ namespace MainExample
                });
             });
 
-            btnMainWindowShow_Click(null, EventArgs.Empty);
+            btnMainWindowShow_Click(null, EventArgs.Empty); 
         }
 
 

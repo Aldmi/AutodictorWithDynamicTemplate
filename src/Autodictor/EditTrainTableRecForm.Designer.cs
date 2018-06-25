@@ -50,13 +50,14 @@
             this.btnАвтогенерацияШаблонов = new System.Windows.Forms.Button();
             this.tab_StopsStations = new DevExpress.XtraTab.XtraTabPage();
             this.gBОстановки = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lbRoute = new DevExpress.XtraEditors.ListBoxControl();
             this.btnРедактировать = new System.Windows.Forms.Button();
+            this.rBНеОповещать = new System.Windows.Forms.RadioButton();
             this.rBСОстановкамиКроме = new System.Windows.Forms.RadioButton();
+            this.rBСоВсемиОстановками = new System.Windows.Forms.RadioButton();
             this.rBСОстановкамиНа = new System.Windows.Forms.RadioButton();
             this.rBБезОстановок = new System.Windows.Forms.RadioButton();
-            this.rBСоВсемиОстановками = new System.Windows.Forms.RadioButton();
-            this.rBНеОповещать = new System.Windows.Forms.RadioButton();
             this.tab_main = new DevExpress.XtraTab.XtraTabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -112,7 +113,7 @@
             this.tab_EmergencyTmp = new DevExpress.XtraTab.XtraTabPage();
             this.gridCtrl_Emergence = new DevExpress.XtraGrid.GridControl();
             this.gv_Emergence = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.gbРежимРаботы.SuspendLayout();
             this.gbВыводИнформации.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -123,6 +124,7 @@
             this.gb_Генерация.SuspendLayout();
             this.tab_StopsStations.SuspendLayout();
             this.gBОстановки.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lbRoute)).BeginInit();
             this.tab_main.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -138,7 +140,6 @@
             this.tab_EmergencyTmp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridCtrl_Emergence)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gv_Emergence)).BeginInit();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_Принять
@@ -359,6 +360,21 @@
             this.gBОстановки.TabIndex = 49;
             this.gBОстановки.TabStop = false;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.lbRoute);
+            this.groupBox2.Controls.Add(this.btnРедактировать);
+            this.groupBox2.Controls.Add(this.rBНеОповещать);
+            this.groupBox2.Controls.Add(this.rBСОстановкамиКроме);
+            this.groupBox2.Controls.Add(this.rBСоВсемиОстановками);
+            this.groupBox2.Controls.Add(this.rBСОстановкамиНа);
+            this.groupBox2.Controls.Add(this.rBБезОстановок);
+            this.groupBox2.Location = new System.Drawing.Point(10, 20);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(658, 347);
+            this.groupBox2.TabIndex = 52;
+            this.groupBox2.TabStop = false;
+            // 
             // lbRoute
             // 
             this.lbRoute.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -379,6 +395,19 @@
             this.btnРедактировать.UseVisualStyleBackColor = true;
             this.btnРедактировать.Click += new System.EventHandler(this.btnРедактировать_Click);
             // 
+            // rBНеОповещать
+            // 
+            this.rBНеОповещать.AutoSize = true;
+            this.rBНеОповещать.Checked = true;
+            this.rBНеОповещать.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rBНеОповещать.Location = new System.Drawing.Point(18, 20);
+            this.rBНеОповещать.Name = "rBНеОповещать";
+            this.rBНеОповещать.Size = new System.Drawing.Size(137, 24);
+            this.rBНеОповещать.TabIndex = 44;
+            this.rBНеОповещать.TabStop = true;
+            this.rBНеОповещать.Text = "Не оповещать";
+            this.rBНеОповещать.UseVisualStyleBackColor = true;
+            // 
             // rBСОстановкамиКроме
             // 
             this.rBСОстановкамиКроме.AutoSize = true;
@@ -389,6 +418,17 @@
             this.rBСОстановкамиКроме.TabIndex = 48;
             this.rBСОстановкамиКроме.Text = "С остановками кроме:";
             this.rBСОстановкамиКроме.UseVisualStyleBackColor = true;
+            // 
+            // rBСоВсемиОстановками
+            // 
+            this.rBСоВсемиОстановками.AutoSize = true;
+            this.rBСоВсемиОстановками.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rBСоВсемиОстановками.Location = new System.Drawing.Point(19, 116);
+            this.rBСоВсемиОстановками.Name = "rBСоВсемиОстановками";
+            this.rBСоВсемиОстановками.Size = new System.Drawing.Size(200, 24);
+            this.rBСоВсемиОстановками.TabIndex = 45;
+            this.rBСоВсемиОстановками.Text = "Со всеми остановками";
+            this.rBСоВсемиОстановками.UseVisualStyleBackColor = true;
             // 
             // rBСОстановкамиНа
             // 
@@ -411,30 +451,6 @@
             this.rBБезОстановок.TabIndex = 46;
             this.rBБезОстановок.Text = "Без остановок";
             this.rBБезОстановок.UseVisualStyleBackColor = true;
-            // 
-            // rBСоВсемиОстановками
-            // 
-            this.rBСоВсемиОстановками.AutoSize = true;
-            this.rBСоВсемиОстановками.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rBСоВсемиОстановками.Location = new System.Drawing.Point(19, 116);
-            this.rBСоВсемиОстановками.Name = "rBСоВсемиОстановками";
-            this.rBСоВсемиОстановками.Size = new System.Drawing.Size(200, 24);
-            this.rBСоВсемиОстановками.TabIndex = 45;
-            this.rBСоВсемиОстановками.Text = "Со всеми остановками";
-            this.rBСоВсемиОстановками.UseVisualStyleBackColor = true;
-            // 
-            // rBНеОповещать
-            // 
-            this.rBНеОповещать.AutoSize = true;
-            this.rBНеОповещать.Checked = true;
-            this.rBНеОповещать.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rBНеОповещать.Location = new System.Drawing.Point(18, 20);
-            this.rBНеОповещать.Name = "rBНеОповещать";
-            this.rBНеОповещать.Size = new System.Drawing.Size(137, 24);
-            this.rBНеОповещать.TabIndex = 44;
-            this.rBНеОповещать.TabStop = true;
-            this.rBНеОповещать.Text = "Не оповещать";
-            this.rBНеОповещать.UseVisualStyleBackColor = true;
             // 
             // tab_main
             // 
@@ -1058,21 +1074,6 @@
             this.gv_Emergence.OptionsView.ShowGroupPanel = false;
             this.gv_Emergence.ValidatingEditor += new DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventHandler(this.gv_ActionTrains_ValidatingEditor);
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.lbRoute);
-            this.groupBox2.Controls.Add(this.btnРедактировать);
-            this.groupBox2.Controls.Add(this.rBНеОповещать);
-            this.groupBox2.Controls.Add(this.rBСОстановкамиКроме);
-            this.groupBox2.Controls.Add(this.rBСоВсемиОстановками);
-            this.groupBox2.Controls.Add(this.rBСОстановкамиНа);
-            this.groupBox2.Controls.Add(this.rBБезОстановок);
-            this.groupBox2.Location = new System.Drawing.Point(10, 20);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(658, 347);
-            this.groupBox2.TabIndex = 52;
-            this.groupBox2.TabStop = false;
-            // 
             // EditTrainTableRecForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
@@ -1101,6 +1102,8 @@
             this.gb_Генерация.ResumeLayout(false);
             this.tab_StopsStations.ResumeLayout(false);
             this.gBОстановки.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lbRoute)).EndInit();
             this.tab_main.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
@@ -1123,8 +1126,6 @@
             this.tab_EmergencyTmp.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridCtrl_Emergence)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gv_Emergence)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1215,5 +1216,6 @@
         private DevExpress.XtraGrid.Views.Grid.GridView gv_Emergence;
         private DevExpress.XtraEditors.ListBoxControl lbRoute;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.ComponentModel.BackgroundWorker backgroundWorker2;
     }
 }

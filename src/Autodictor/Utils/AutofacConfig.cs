@@ -3,6 +3,7 @@ using AutodictorBL.Builder.SoundRecordCollectionBuilder;
 using AutodictorBL.Builder.TrainRecordBuilder;
 using AutodictorBL.Services.AuthenticationServices;
 using AutodictorBL.Services.DataAccessServices;
+using AutodictorBL.Services.SoundFileServices;
 using AutodictorBL.Services.SoundRecordServices;
 using AutodictorBL.Services.TrainRecServices;
 using Autofac;
@@ -146,7 +147,7 @@ namespace MainExample.Utils
             builder.RegisterType<TrainRecWorkerService>().As<ITrainRecWorkerService>().SingleInstance();
             builder.RegisterType<SoundRecCollectionBuilderFluent>().As<ISoundRecCollectionBuilder>().InstancePerDependency();
             builder.RegisterType<GetCisRegSh>().SingleInstance();
-
+            builder.RegisterType<CheckFilesActionTrainService>().SingleInstance();
             #endregion
 
 
