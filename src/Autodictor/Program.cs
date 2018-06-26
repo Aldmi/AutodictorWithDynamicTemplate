@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Threading;
 using AutodictorBL;
+using AutodictorBL.Services.SoundFileServices;
 using Autofac;
 using DAL.Abstract.Entitys;
 using DAL.Abstract.Entitys.Authentication;
@@ -72,8 +73,19 @@ namespace MainExample
                 СписокДинамическихСообщений = new List<string>();
                 foreach (FileInfo file in dir.GetFiles("*.wav"))
                     СписокДинамическихСообщений.Add(Path.GetFileNameWithoutExtension(file.FullName));
+
+                //DEBUG-------------------------------------------------
+                var checkFilesActionTrainService = AutofacConfig.Container.Resolve<CheckFilesActionTrainService>();
+                checkFilesActionTrainService.LoadStaticMessages();
+                checkFilesActionTrainService.LoadDynamicMessages();
+                checkFilesActionTrainService.LoadNumbers();
+                checkFilesActionTrainService.LoadSounds();
+                //DEBUG-------------------------------------------------
             }
-            catch (Exception ex) { };
+            catch (Exception ex)
+            {
+                
+            };
 
 
             AutodictorModel = new AutodictorModel();

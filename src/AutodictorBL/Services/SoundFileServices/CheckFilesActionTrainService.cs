@@ -71,16 +71,73 @@ namespace AutodictorBL.Services.SoundFileServices
         }
 
 
-        public async Task<IEnumerable<string>> CheckExistsActionTrainFiles()
+        public async Task<IEnumerable<SoundFileError>> CheckExistsActionTrainFiles()
         {
-            var res = await Task.Run(async () =>
+            var errorsList= new List<SoundFileError>();
+            var res = await Task.Run( () =>
             {
-                  await Task.Delay(5000);
-                  return new List<string> { "sdfsds", "hytuyt" };
-              });
+                var rules= _trainTypeByRyleRepository.List();
+                foreach (var rule in rules)
+                {
+                    var actionTrains = rule.ActionTrains;
+                    foreach (var act in actionTrains)
+                    {
+                        foreach (var lang in act.Langs)
+                        {
+                            var listSounds= new List<string>();
+                            if (lang.TemplateSoundStart != null)
+                            {
+                                listSounds.AddRange(lang.TemplateSoundStart);
+                            }
+                            if (lang.TemplateSoundBody != null)
+                            {
+                                listSounds.AddRange(lang.TemplateSoundBody);
+                            }
+                            if (lang.TemplateSoundEnd != null)
+                            {
+                                listSounds.AddRange(lang.TemplateSoundEnd);
+                            }
+                            foreach (var soundName in listSounds)
+                            {
+                                if (soundName.Length > 0 && !char.IsUpper(soundName[0]))
+                                {
+                                    if (!CheckDynamicExists(soundName))
+                                    {
+                                        errorsList.Add(new SoundFileError
+                                        {
+                                            Type = "Динимический",
+                                            Name = rule.NameRu,
+                                            NameAction = act.Name,
+                                            NameLang = lang.Name,
+                                            SoundName = soundName
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return errorsList;
+            });
 
             return res;
         }
+
+
+
+        private bool CheckDynamicExists(string fileName)
+        {
+            if (SoundsFileInfoList.FirstOrDefault(file=> Path.GetFileNameWithoutExtension(file.FullName) == fileName) != null)
+                return true;
+
+            if (NumbersInfoList.FirstOrDefault(file=> Path.GetFileNameWithoutExtension(file.FullName) == fileName) != null)
+                return true;
+
+            if (DynamicMessagesFileInfoList.FirstOrDefault(file=> Path.GetFileNameWithoutExtension(file.FullName) == fileName) != null)
+                return true;
+
+            return false;
+        } 
 
 
 
@@ -97,9 +154,15 @@ namespace AutodictorBL.Services.SoundFileServices
         }
 
         #endregion
+    }
 
 
-
-
+    public class SoundFileError
+    {
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public string NameAction { get; set; }
+        public string NameLang { get; set; }
+        public string SoundName { get; set; }
     }
 }

@@ -177,6 +177,12 @@
     <Compile Include="BoardForm.Designer.cs">
       <DependentUpon>BoardForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CheckSoundFilesExistsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CheckSoundFilesExistsForm.Designer.cs">
+      <DependentUpon>CheckSoundFilesExistsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommunicationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -365,6 +371,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BoardForm.resx">
       <DependentUpon>BoardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckSoundFilesExistsForm.resx">
+      <DependentUpon>CheckSoundFilesExistsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CommunicationForm.resx">
       <DependentUpon>CommunicationForm.cs</DependentUpon>

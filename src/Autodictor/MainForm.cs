@@ -211,27 +211,30 @@ namespace MainExample
         }
 
 
-        private async Task CheckExistsActionTrainFiles()
+        private async Task<bool> CheckExistsActionTrainFiles()
         {
             SplashScreenManager.ShowDefaultWaitForm(this, true, true, false, 0, "ПРОВЕРКА", "наличие звуковых файлов ...");
             var res = await _checkFilesActionTrainService.CheckExistsActionTrainFiles();
             SplashScreenManager.CloseDefaultWaitForm();
             if (res != null)
             {
-                //TODO: открыть окно показа недостоющих файлов, в диалоговом окне, результат работы "YesNo" и выход по NO
-                if (MessageBox.Show(@"НЕ всме файлы найденны, хотите продолжить?", @"Предупреждение", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                var form= new CheckSoundFilesExistsForm(res);
+                if (form.ShowDialog(this) == DialogResult.Cancel)
                 {
                     Application.Exit();                  //ВЫХОД
+                    return false;
                 }
             }
-        }
 
+            return true;
+        }
 
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            await CheckExistsActionTrainFiles();
-
+           if(!await CheckExistsActionTrainFiles())
+              return;
+                
             ExchangeModel.LoadSetting();
             CheckAuthentication(true); // переместил сюда, т.к. иначе данные о первом логине не отправляются по причине незагруженной модели обмена
                                        // это выключило возможность включения/отключения галки получения данных из ЦИС на нижней панели программы
