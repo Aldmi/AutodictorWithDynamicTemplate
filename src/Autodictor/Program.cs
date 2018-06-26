@@ -18,7 +18,6 @@ namespace MainExample
 
     static class Program
     {
-        static Mutex m_mutex;
         public static List<string> FilesFolder = null;
         public static List<string> NumbersFolder = null;
         public static List<string> СписокСтатическихСообщений = null;
@@ -29,10 +28,6 @@ namespace MainExample
         public static string[] ТипыОповещения = new string[] { "Не определено", "На Х-ый путь", "На Х-ом пути", "С Х-ого пути" };
         public static string[] ТипыВремени = new string[] { "Прибытие", "Отправление" };
         public static List<string> ШаблоныОповещения = new List<string>();
-        public static string[] ШаблонОповещенияОбОтменеПоезда = new string[] { "", "Отмена пассажирского поезда", "Отмена пригородного электропоезда", "Отмена фирменного поезда", "Отмена скорого поезда", "Отмена скоростного поезда", "Отмена ласточки", "Отмена РЭКСа" };
-        public static string[] ШаблонОповещенияОЗадержкеПрибытияПоезда = new string[] { "", "Задержка прибытия пассажирского поезда", "Задержка прибытия пригородного электропоезда", "Задержка прибытия фирменного поезда", "Задержка прибытия скорого поезда", "Задержка прибытия скоростного поезда", "Задержка прибытия ласточки", "Задержка прибытия РЭКСа" };
-        public static string[] ШаблонОповещенияОЗадержкеОтправленияПоезда = new string[] { "", "Задержка отправления пассажирского поезда", "Задержка отправления пригородного электропоезда", "Задержка отправления фирменного поезда", "Задержка отправления скорого поезда", "Задержка отправления скоростного поезда", "Задержка отправления ласточки", "Задержка отправления РЭКСа" };
-        public static string[] ШаблонОповещенияООтправлениеПоГотовностиПоезда = new string[] { "", "Отправление по готовности пассажирского поезда", "Отправление по готовности пригородного электропоезда", "Отправление по готовности фирменного поезда", "Отправление по готовности скорого поезда", "Отправление по готовности скоростного поезда", "Отправление по готовности ласточки", "Отправление по готовности РЭКСа" };
         public static DateTime StartTime { get; } = DateTime.Now;
         public static AutodictorModel AutodictorModel { get; set; }
 
@@ -44,9 +39,6 @@ namespace MainExample
         [STAThread]
         static void Main(string[] args)
         {
-            if (InstanceExists())
-                return;
-
             AutofacConfig.ConfigureContainer();
             Mappers.Mapper.SetContainer(AutofacConfig.Container);//Передача контейнера в статический класс
 
@@ -87,10 +79,8 @@ namespace MainExample
                 
             };
 
-
             AutodictorModel = new AutodictorModel();
             AutodictorModel.LoadSetting(Настройки.ВыборУровняГромкости, GetFileName);
-
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -121,12 +111,7 @@ namespace MainExample
 
 
 
-        static bool InstanceExists()
-        {
-            bool createdNew;
-            m_mutex = new Mutex(false, "AutodictorOneInstanceApplication", out createdNew);
-            return (!createdNew);
-        }
+
 
 
 

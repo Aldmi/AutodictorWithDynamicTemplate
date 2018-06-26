@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutodictorBL.Services.DataAccessServices;
 using DAL.Abstract.Concrete;
+using DAL.Abstract.Entitys;
 
 namespace AutodictorBL.Services.SoundFileServices
 {
@@ -11,7 +13,7 @@ namespace AutodictorBL.Services.SoundFileServices
     {
         #region field
 
-        private readonly ITrainTypeByRyleRepository _trainTypeByRyleRepository;
+        private readonly TrainTypeByRyleService _trainTypeByRyleService;
 
         #endregion
 
@@ -33,9 +35,9 @@ namespace AutodictorBL.Services.SoundFileServices
 
         #region ctor
 
-        public CheckFilesActionTrainService(ITrainTypeByRyleRepository trainTypeByRyleRepository)
+        public CheckFilesActionTrainService(TrainTypeByRyleService trainTypeByRyleService )
         {
-            _trainTypeByRyleRepository = trainTypeByRyleRepository;
+            _trainTypeByRyleService = trainTypeByRyleService;
         }
 
         #endregion
@@ -71,12 +73,13 @@ namespace AutodictorBL.Services.SoundFileServices
         }
 
 
-        public async Task<IEnumerable<SoundFileError>> CheckExistsActionTrainFiles()
+        public async Task<IEnumerable<SoundFileError>> CheckExistsActionTrainFiles(IEnumerable<SoundRecordStatic> soundRecordStatics)//TODO: Список статики передавать через репозиторий обернутый в сенрвс (как динамику)
         {
             var errorsList= new List<SoundFileError>();
             var res = await Task.Run( () =>
             {
-                var rules= _trainTypeByRyleRepository.List();
+                //ДИНАМИКА----------------------------------------------------
+                var rules= _trainTypeByRyleService.GetAll();
                 foreach (var rule in rules)
                 {
                     var actionTrains = rule.ActionTrains;
@@ -117,6 +120,24 @@ namespace AutodictorBL.Services.SoundFileServices
                         }
                     }
                 }
+
+                //СТАТИКА---------------------------------------------------
+                foreach (var staicRec in soundRecordStatics)
+                {
+                    var soundName = staicRec.Name;
+                    if (!CheckStaticExists(soundName))
+                    {
+                        errorsList.Add(new SoundFileError
+                        {
+                            Type = "Статический",
+                            Name = String.Empty,
+                            NameAction = String.Empty,
+                            NameLang = String.Empty,
+                            SoundName = soundName
+                        });
+                    }
+                }
+
                 return errorsList;
             });
 
@@ -137,10 +158,18 @@ namespace AutodictorBL.Services.SoundFileServices
                 return true;
 
             return false;
-        } 
+        }
 
 
+        private bool CheckStaticExists(string fileName)
+        {
+            if (StaticMessagesFileInfoList.FirstOrDefault(file => Path.GetFileNameWithoutExtension(file.FullName) == fileName) != null)
+                return true;
 
+            return false;
+        }
+
+        
         private List<FileInfo> LoadFileInfoList(string path)
         {
             if (!Directory.Exists(path))

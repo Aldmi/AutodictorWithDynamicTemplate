@@ -60,6 +60,7 @@
             // 
             this.dgv_Errors.AllowUserToAddRows = false;
             this.dgv_Errors.AllowUserToDeleteRows = false;
+            this.dgv_Errors.AllowUserToResizeRows = false;
             this.dgv_Errors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -82,7 +83,7 @@
             this.Controls.Add(this.btn_Apply);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "CheckSoundFilesExistsForm";
-            this.Text = "CheckSoundFilesExistsForm";
+            this.Text = "СПИСОК НЕНАЙДЕННЫХ ФАЙЛОВ";
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Errors)).EndInit();
             this.ResumeLayout(false);
 

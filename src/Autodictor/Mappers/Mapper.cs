@@ -23,7 +23,7 @@ namespace MainExample.Mappers
         }
 
 
-        public static List<СтатическоеСообщение> MapSoundConfigurationRecord2СтатическоеСообщение(SoundConfigurationRecord scr, ref int newId)
+        public static List<СтатическоеСообщение> MapSoundConfigurationRecord2СтатическоеСообщение(SoundRecordStatic scr, ref int newId)
         {
             СтатическоеСообщение statRecord;
             statRecord.СостояниеВоспроизведения = SoundRecordStatus.ОжиданиеВоспроизведения;

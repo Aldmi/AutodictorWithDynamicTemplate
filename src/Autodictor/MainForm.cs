@@ -214,7 +214,7 @@ namespace MainExample
         private async Task<bool> CheckExistsActionTrainFiles()
         {
             SplashScreenManager.ShowDefaultWaitForm(this, true, true, false, 0, "ПРОВЕРКА", "наличие звуковых файлов ...");
-            var res = await _checkFilesActionTrainService.CheckExistsActionTrainFiles();
+            var res = await _checkFilesActionTrainService.CheckExistsActionTrainFiles(SoundConfiguration.SoundRecordsStatic);
             SplashScreenManager.CloseDefaultWaitForm();
             if (res != null)
             {

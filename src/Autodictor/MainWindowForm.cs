@@ -61,8 +61,7 @@ namespace MainExample
         public static SortedDictionary<string, SoundRecord> SoundRecordsOld =
             new SortedDictionary<string, SoundRecord>();
 
-        public static SortedDictionary<string, СтатическоеСообщение> СтатическиеЗвуковыеСообщения =
-            new SortedDictionary<string, СтатическоеСообщение>();
+        public static SortedDictionary<string, СтатическоеСообщение> СтатическиеЗвуковыеСообщения = new SortedDictionary<string, СтатическоеСообщение>();
 
         public static List<SoundRecordChange> SoundRecordChanges = new List<SoundRecordChange>()
             ; //Изменения на тек.сутки + изменения на пред. сутки для поездов ходящих в тек. сутки
@@ -522,10 +521,7 @@ namespace MainExample
             if (!_authentificationService.CheckRoleAcsess(
                 new List<Role> {Role.Администратор, Role.Диктор, Role.Инженер}))
             {
-                MessageBox.Show(
-                    $@"Нет прав!!!   С вашей ролью ""{
-                            _authentificationService.CurrentUser.Role
-                        }"" нельзя совершать  это действие.");
+                MessageBox.Show($@"Нет прав!!!   С вашей ролью ""{_authentificationService.CurrentUser.Role}"" нельзя совершать  это действие.");
                 return;
             }
 
@@ -596,7 +592,6 @@ namespace MainExample
             SoundRecords.Clear();
             SoundRecordsOld.Clear();
             СтатическиеЗвуковыеСообщения.Clear();
-
             СозданиеРасписанияЖдТранспорта();
             СозданиеСтатическихЗвуковыхФайлов();
         }
@@ -628,13 +623,11 @@ namespace MainExample
 
             //Вычтем из Главного расписания элементы оперативного расписания, уже добавленные к списку.
             var mainTrainTableRec = _trainRecService.GetAll();
-            var differences = mainTrainTableRec
-                .Where(l2 => !SoundRecords.Values.Any(l1 => l1.IdTrain.ScheduleId == l2.Id)).ToList();
+            var differences = mainTrainTableRec.Where(l2 => !SoundRecords.Values.Any(l1 => l1.IdTrain.ScheduleId == l2.Id)).ToList();
 
             //Добавим оставшиеся записи
             СозданиеЗвуковыхФайловРасписанияЖдТранспорта(differences, DateTime.Now.Date, null, ref id); // на тек. сутки
-            СозданиеЗвуковыхФайловРасписанияЖдТранспорта(differences, DateTime.Now.AddDays(1).Date,
-                hour => (hour >= 0 && hour <= 11), ref id); // на след. сутки на 2 первых часа
+            СозданиеЗвуковыхФайловРасписанияЖдТранспорта(differences, DateTime.Now.AddDays(1).Date,hour => (hour >= 0 && hour <= 11), ref id); // на след. сутки на 2 первых часа
 
             //Корректировка записей по изменениям
             КорректировкаЗаписейПоИзменениям();
@@ -662,10 +655,7 @@ namespace MainExample
 
 
                 //выдать список привязанных табло
-                record.НазванияТабло = record.НомерПути != "0"
-                    ? Binding2PathBehaviors.Select(beh => beh.GetDevicesName4Path(record.НомерПути))
-                        .Where(str => str != null).ToArray()
-                    : null;
+                record.НазванияТабло = record.НомерПути != "0" ? Binding2PathBehaviors.Select(beh => beh.GetDevicesName4Path(record.НомерПути)) .Where(str => str != null).ToArray(): null;
                 record.СостояниеОтображения = TableRecordStatus.Выключена;
 
 
@@ -769,7 +759,7 @@ namespace MainExample
         public static void СозданиеСтатическихЗвуковыхФайлов()
         {
             int id = 1;
-            foreach (SoundConfigurationRecord config in SoundConfiguration.SoundConfigurationRecords)
+            foreach (SoundRecordStatic config in SoundConfiguration.SoundRecordsStatic)
             {
                 var статСообщение = Mapper.MapSoundConfigurationRecord2СтатическоеСообщение(config, ref id);
                 if (статСообщение != null && статСообщение.Any())

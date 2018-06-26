@@ -2,27 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using DAL.Abstract.Entitys;
 
 
 namespace MainExample
 {
-    public struct SoundConfigurationRecord
-    {
-        public bool Enable;
-        public bool EnableSingle;
-        public bool EnablePeriodic;
-        public int ID;
-        public string Name;
-        public string MessagePeriodic;
-        public string MessageSingle;
-    };
-
 
     public partial class SoundConfiguration : Form
     {
         public static SoundConfiguration thisForm = null;
 
-        public static List<SoundConfigurationRecord> SoundConfigurationRecords = new List<SoundConfigurationRecord>();
+        public static List<SoundRecordStatic> SoundRecordsStatic = new List<SoundRecordStatic>();
         private static int ID = 0;
         public static int МинимальныйИнтервалМеждуОповещениемСекунд = 0;
 
@@ -55,9 +45,9 @@ namespace MainExample
 
             listView1.Items.Clear();
 
-            for (int i = 0; i < SoundConfigurationRecords.Count; i++)
+            for (int i = 0; i < SoundRecordsStatic.Count; i++)
             {
-                SoundConfigurationRecord Данные = SoundConfigurationRecords[i];
+                SoundRecordStatic Данные = SoundRecordsStatic[i];
 
                 string Message = "";
                 if (Данные.EnableSingle == true) Message = "Разовое (время включения): " + Данные.MessageSingle;
@@ -79,7 +69,7 @@ namespace MainExample
 
                 foreach (int item in sic)
                 {
-                    foreach (var it in SoundConfigurationRecords)
+                    foreach (var it in SoundRecordsStatic)
                     {
                         if (it.Name == this.listView1.Items[item].SubItems[1].Text)
                         {
@@ -110,7 +100,7 @@ namespace MainExample
 
         public static void ЗагрузитьСписок()
         {
-            SoundConfigurationRecords.Clear();
+            SoundRecordsStatic.Clear();
             ID = 0;
 
             System.IO.StreamReader file = null;
@@ -126,7 +116,7 @@ namespace MainExample
                     string[] Settings = line.Split(';');
                     if (Settings.Length == 5)
                     {
-                        SoundConfigurationRecord Данные;
+                        SoundRecordStatic Данные;
 
                         Данные.ID = int.Parse(Settings[0]);
                         Данные.Name = Settings[1];
@@ -141,7 +131,7 @@ namespace MainExample
                         Данные.EnableSingle = ((ConfigInt & 0x0002) != 0x0000) ? true : false;
                         Данные.EnablePeriodic = ((ConfigInt & 0x0004) != 0x0000) ? true : false;
 
-                        SoundConfigurationRecords.Add(Данные);
+                        SoundRecordsStatic.Add(Данные);
 
                         if (Данные.ID > ID)
                             ID = Данные.ID;
@@ -170,7 +160,7 @@ namespace MainExample
             {
                 System.IO.StreamWriter DumpFile = new System.IO.StreamWriter("SoundConfiguration.ini");
 
-                foreach (var Данные in SoundConfigurationRecords)
+                foreach (var Данные in SoundRecordsStatic)
                 {
                     int i = (Данные.Enable ? 1 : 0) + (Данные.EnableSingle ? 2 : 0) + (Данные.EnablePeriodic ? 4 : 0);
                     DumpFile.WriteLine(Данные.ID.ToString() + ";" + Данные.Name + ";" + i.ToString() + ";" + Данные.MessagePeriodic + ";" + Данные.MessageSingle);
@@ -203,7 +193,7 @@ namespace MainExample
         // Добавить сообщение
         private void button1_Click(object sender, EventArgs e)
         {
-            SoundConfigurationRecord Данные;
+            SoundRecordStatic Данные;
 
             Данные.ID = ++ID;
 
@@ -229,7 +219,7 @@ namespace MainExample
 
             Данные.MessagePeriodic = dTP_Начало.Text + "," + dTP_Конец.Text + "," + tB_Интервал.Text;
 
-            SoundConfigurationRecords.Add(Данные);
+            SoundRecordsStatic.Add(Данные);
             ОбновитьДанныеВСписке();
         }
 
@@ -243,7 +233,7 @@ namespace MainExample
 
             foreach (int item in sic)
             {
-                SoundConfigurationRecord Данные = SoundConfigurationRecords[item];
+                SoundRecordStatic Данные = SoundRecordsStatic[item];
                 Данные.Name = "";
                 if (cB_Messages.SelectedIndex >= 0)
                     Данные.Name = (string)cB_Messages.Items[cB_Messages.SelectedIndex];
@@ -265,7 +255,7 @@ namespace MainExample
                 }
 
                 Данные.MessagePeriodic = dTP_Начало.Text + "," + dTP_Конец.Text + "," + tB_Интервал.Text;
-                SoundConfigurationRecords[item] = Данные;
+                SoundRecordsStatic[item] = Данные;
 
                 string Message = "";
                 if (Данные.EnableSingle == true) Message = "Разовое (время включения): " + Данные.MessageSingle;
@@ -282,7 +272,7 @@ namespace MainExample
             ListView.SelectedIndexCollection sic = this.listView1.SelectedIndices;
 
             foreach (int item in sic)
-                SoundConfigurationRecords.RemoveAt(item);
+                SoundRecordsStatic.RemoveAt(item);
 
             ОбновитьДанныеВСписке();
         }
@@ -307,11 +297,11 @@ namespace MainExample
         {
             for (int item = 0; item < this.listView1.Items.Count; item++)
             {
-                if (item <= SoundConfigurationRecords.Count)
+                if (item <= SoundRecordsStatic.Count)
                 {
-                    SoundConfigurationRecord Данные = SoundConfigurationRecords[item];
+                    SoundRecordStatic Данные = SoundRecordsStatic[item];
                     Данные.Enable = this.listView1.Items[item].Checked;
-                    SoundConfigurationRecords[item] = Данные;
+                    SoundRecordsStatic[item] = Данные;
                 }
             }
         }
